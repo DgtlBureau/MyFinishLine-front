@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Allerta_Stencil,
+  Geist,
+  Geist_Mono,
+  Montserrat,
+  Stardos_Stencil,
+} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,10 +18,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const montserrat = Montserrat({
+  variable: "--font-montserrant",
+  display: "swap",
+  subsets: ["latin"],
+});
+
+const allerta_stencil = Allerta_Stencil({
+  variable: "--font-allerta-stencil",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "MyFinishLine",
-  description:
-    "Track your running progress with MyFinishLine, powered by Strava API.",
+  description: "Combine sports and pleasure",
 };
 
 export default function RootLayout({
@@ -26,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-100 font-mono`}
+        className={`${montserrat.variable} ${allerta_stencil.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
