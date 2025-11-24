@@ -7,6 +7,8 @@ import {
   Stardos_Stencil,
 } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "./components/theme-provider";
+import Navbar from "./components/ChallengeContent/Navbar/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,9 +44,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${allerta_stencil.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${montserrat.variable} ${allerta_stencil.variable} ${geistSans.variable} ${geistMono.variable} [--header-height:calc(var(--spacing)*14)] lg:[--header-height:calc(var(--spacing)*23)] antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          disableTransitionOnChange
+        >
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

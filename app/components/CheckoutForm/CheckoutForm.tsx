@@ -11,6 +11,7 @@ import { useState } from "react";
 import ImageBadge from "../ChallengesPayment/ImageBadge/ImageBadge";
 import Image from "next/image";
 import Loader from "../Shared/Loader/Loader";
+import { Input } from "../ui/input";
 
 const PaymentForm = ({ total }: { total: number }) => {
   const stripe = useStripe();
@@ -111,17 +112,13 @@ const PaymentForm = ({ total }: { total: number }) => {
       base: {
         fontFamily: '"Montserrat", sans-serif',
         fontSize: "16px",
-        color: "#424770",
+        color: "#aab7c4",
         "::placeholder": {
           color: "#aab7c4",
         },
-        backgroundColor: "#ffffff",
+        backgroundColor: "var(--color-background)",
         lineHeight: "24px",
         fontWeight: "400",
-      },
-      invalid: {
-        color: "#9e2146",
-        backgroundColor: "#ffffff",
       },
     },
     showIcon: true,
@@ -129,13 +126,13 @@ const PaymentForm = ({ total }: { total: number }) => {
 
   return (
     <form onSubmit={handleSubmit} className="">
-      <h2 className="text-white font-bold text-3xl">
+      <h2 className="text-foreground font-bold text-3xl">
         Sign up for your challenges
       </h2>
-      <fieldset className="rounded-md bg-[#F7F7F7] p-7 mt-6">
+      <fieldset className="rounded-md  bg-accent p-7 mt-6">
         <h3 className="font-bold text-2xl">Your details</h3>
-        <input
-          className="border p-4 border-neutral-300 rounded w-full bg-white mt-2 transition-colors outline-none focus:border-orange-400 focus:shadow-lg"
+        <Input
+          className="p-4 w-full mt-2"
           placeholder="Email address"
           type="email"
           autoComplete="email"
@@ -144,16 +141,16 @@ const PaymentForm = ({ total }: { total: number }) => {
           required
         />
         <div className="mt-2 flex gap-2">
-          <input
-            className="border p-4 border-neutral-300 rounded w-full bg-white transition-colors outline-none focus:border-orange-400 focus:shadow-lg"
+          <Input
+            className="p-4 w-full mt-2"
             placeholder="First name"
             autoComplete="given-name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
-          <input
-            className="border p-4 border-neutral-300 rounded w-full bg-white transition-colors outline-none focus:border-orange-400 focus:shadow-lg"
+          <Input
+            className="p-4 w-full mt-2"
             placeholder="Last name"
             autoComplete="family-name"
             value={lastName}
@@ -163,34 +160,28 @@ const PaymentForm = ({ total }: { total: number }) => {
         </div>
       </fieldset>
 
-      <fieldset className="mt-8 rounded-md bg-[#F7F7F7] p-7">
-        <h3 className="font-bold text-2xl">Payment</h3>
-        <p className="mt-2 text-xs text-[#424242]">
+      <fieldset className="mt-8 rounded-md bg-accent p-7">
+        <h3 className="font-bold text-2xl text-foreground">Payment</h3>
+        <p className="mt-2 text-xs text-muted-foreground">
           All transactions are secure and encrypted. Credit card information is
           never stored on our servers.
         </p>
 
-        <div className="border border-neutral-300 rounded mt-2 bg-white transition-colors outline-none focus-within:border-orange-400 focus-within:shadow-lg ">
+        <div className="dark:bg-input/30 text-foreground! rounded w-full mt-2 border border-input">
           <div className="p-4">
-            <CardNumberElement options={cardElementOptions} className="" />
+            <CardNumberElement options={cardElementOptions} />
           </div>
         </div>
 
         <div className="flex gap-2 mt-2">
-          <div className="border border-neutral-300 rounded w-full bg-white transition-colors outline-none focus-within:border-orange-400 focus-within:shadow-lg">
+          <div className="dark:bg-input/30 text-input rounded w-full border border-input">
             <div className="p-4">
-              <CardExpiryElement
-                options={cardElementOptions}
-                className="font-montserrat"
-              />
+              <CardExpiryElement options={cardElementOptions} />
             </div>
           </div>
-          <div className="border border-neutral-300 rounded w-full bg-white transition-colors outline-none focus-within:border-orange-400 focus-within:shadow-lg">
+          <div className="dark:bg-input/30 text-input rounded w-full border border-input">
             <div className="p-4">
-              <CardCvcElement
-                options={cardElementOptions}
-                className="font-montserrat"
-              />
+              <CardCvcElement options={cardElementOptions} />
             </div>
           </div>
         </div>
@@ -223,7 +214,13 @@ const PaymentForm = ({ total }: { total: number }) => {
       </section>
       <section className="mt-4 border-t border-neutral-200 pt-4 flex justify-between">
         <div className="flex gap-2">
-          <Image src="/icons/email.svg" width={24} height={24} alt="Email" />
+          <Image
+            src="/icons/email.svg"
+            width={24}
+            height={24}
+            alt="Email"
+            color="bg-accent"
+          />
           <div>
             <p className="text-xs font-bold">Email support</p>
             <a className="block text-xs" href="mailto:myfinishline@gmail.com">

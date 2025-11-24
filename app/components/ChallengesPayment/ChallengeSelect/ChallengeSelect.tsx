@@ -24,7 +24,7 @@ const ChallengeSelect = <T,>({
 
   return (
     <label
-      className={`border border-neutral-300 rounded p-4 relative flex-1 flex flex-col justify-end hover:bg-neutral-100 transition-all ${
+      className={`border border-neutral-300 rounded p-4 relative flex-1 flex flex-col justify-end hover:bg-accent transition-all ${
         isChecked && "border-orange-400 shadow-xl"
       }`}
     >

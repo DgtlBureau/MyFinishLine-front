@@ -1,4 +1,3 @@
-import React from "react";
 import { challenges } from "../data/challenges";
 import Challenge from "../components/Challenges/Challenge/Challenge";
 import LoggedLayout from "../components/LoggedLayout/LoggedLayout";
