@@ -6,6 +6,7 @@ import PurchaseChallenge from "@/app/components/ChallengePage/PurchaseChallenge/
 import Image from "next/image";
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
 import { ReactNode } from "react";
+import { cn } from "@/app/lib/utils";
 
 interface IChallenge {
   id: number;
@@ -71,15 +72,29 @@ const page = async ({ params }: IChallengesPageProps) => {
         <ChallengeContent content={challenge.content} />
       </section>
 
-      <div className="relative w-full py-20 flex items-center justify-center">
-        <Image
-          className="object-center object-contain "
-          src="/images/challenge-page/bg-blur.png"
-          alt="lumen blur"
-          fill
-        />
-        <PurchaseChallenge id={challenge.id} imageSrc={challenge.image.src} />
-      </div>
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute size-full mask-t-from-50% mask-t-to-100% mask-b-from-50% mask-b-to-90%">
+          <div
+            className={cn(
+              "bg-chart-2 absolute size-full rounded-full blur-3xl will-change-transform",
+              "top-0 left-0 -translate-y-1/3 md:-translate-x-1/3 md:translate-y-0"
+            )}
+          />
+          <div
+            className={cn(
+              "bg-chart-3 absolute size-full rounded-full blur-3xl will-change-transform",
+              "right-0 bottom-0 translate-y-1/3 md:top-0 md:translate-x-1/3 md:translate-y-0"
+            )}
+          />
+        </div>
+        <div className="relative w-full py-10 flex items-center justify-center">
+          <PurchaseChallenge
+            title={challenge.title}
+            id={challenge.id}
+            imageSrc={challenge.image.src}
+          />
+        </div>
+      </section>
       <FAQSection />
     </>
   );

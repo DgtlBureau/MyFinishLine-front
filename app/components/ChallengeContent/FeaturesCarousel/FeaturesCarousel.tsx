@@ -120,7 +120,7 @@ export default function FeaturesCarousel() {
       className="section-padding relative overflow-x-hidden"
     >
       <Noise />
-      <div className="container grid gap-8 lg:grid-cols-3 lg:gap-40">
+      <div className="container grid gap-8 lg:grid-cols-3">
         {/* Left Content */}
         <div className="flex flex-col gap-8 lg:col-span-1">
           {/* Title and Description */}

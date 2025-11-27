@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import Image from "next/image";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function Login() {
 
     console.log("Login data:", formData);
 
-    window.location.href = "/homepage";
+    window.location.href = "/";
   };
 
   const handleStravaLogin = () => {
@@ -38,7 +39,7 @@ export default function Login() {
 
   return (
     <section className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center px-2">
         <div className="max-w-[500px] w-full flex flex-col mx-auto">
           <h1 className="text-2xl sm:text-3xl font-semibold text-center">
             Welcome back
@@ -53,7 +54,7 @@ export default function Login() {
               name="email"
               type="email"
               required
-              className="w-full border border-neutral-300 py-3 px-4  placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
+              className="w-full py-3 px-4"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
@@ -63,7 +64,7 @@ export default function Login() {
               name="password"
               type="password"
               required
-              className="w-full  border border-neutral-300 py-3 px-4 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
+              className="w-full py-3 px-4"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
@@ -94,6 +95,7 @@ export default function Login() {
           </div>
 
           <Button
+            variant="outline"
             onClick={handleStravaLogin}
             disabled={loading}
             className={`w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
@@ -106,6 +108,19 @@ export default function Login() {
             Sign in with Strava
           </Button>
 
+          <Button
+            variant="outline"
+            disabled={loading}
+            className="w-full mt-2 py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3"
+          >
+            <Image
+              src="/icons/google.svg"
+              width={12}
+              height={12}
+              alt="Google"
+            />
+            Sign in with Google
+          </Button>
           <div className="mt-6 space-y-3 text-sm">
             <Link
               href="/signup"

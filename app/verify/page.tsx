@@ -94,7 +94,7 @@ export default function VerifyPage() {
       if (response.ok && data.success) {
         setSuccess("Email confirmed");
         setTimeout(() => {
-          router.push("/homepage");
+          router.push("/");
         }, 2000);
       } else {
         setError(data.message || "Wrong code");
@@ -154,7 +154,7 @@ export default function VerifyPage() {
               )}
 
               {success && (
-                <div className="bg-green-900 border border-green-700 text-green-200 px-4 py-3 rounded-lg">
+                <div className="bg-green-300 border text-green-700 px-4 py-3 rounded-lg">
                   {success}
                 </div>
               )}

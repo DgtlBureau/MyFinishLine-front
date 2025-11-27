@@ -92,20 +92,19 @@ export default function Pricing() {
           {Object.entries(pricingPlans).map(([key, plan]) => (
             <Card
               key={key}
-              className="bg-border hover:shadow-primary/5 h-full gap-4 p-3 transition-all duration-300 hover:shadow-lg md:p-6"
+              className="bg-border hover:shadow-primary/5 h-full gap-4 p-3 transition-all duration-300 hover:shadow-lg md:p-6 justify-between"
             >
               <CardHeader className="bg-card rounded-md p-4 md:p-6">
                 {/* Header with title and badge */}
                 <div className="flex items-start justify-between">
                   <h3 className="text-xl">{plan.title}</h3>
                   {plan.popular && (
-                    <Badge className="rounded-none bg-[#FFE6D0] px-4 py-1 text-[#FB6D21] dark:bg-[#6b3200] dark:text-[#fcaa7d]">
+                    <Badge className="rounded-md bg-[#FFE6D0] px-4 py-1 text-[#FB6D21] dark:bg-[#6b3200] dark:text-[#fcaa7d]">
                       Popular Plan
                     </Badge>
                   )}
                 </div>
 
-                {/* Subtitle and description */}
                 <div className="mt-6 text-2xl md:mt-8 md:space-y-2 md:text-4xl">
                   <div className="text-muted-foreground/70">
                     {plan.subtitle}
@@ -113,9 +112,7 @@ export default function Pricing() {
                   <div className="font-medium">{plan.description}</div>
                 </div>
 
-                {/* Price and contact section */}
                 <div className="mt-8 flex flex-col justify-between gap-8 md:mt-10 md:flex-row">
-                  {/* Left side - Price and main CTA */}
                   <div className="flex flex-1 flex-wrap justify-between gap-4 md:flex-col md:gap-8">
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-medium">$</span>
@@ -124,7 +121,7 @@ export default function Pricing() {
                       </span>
                       <span className="text-2xl">/mo</span>
                     </div>
-                    <Button className="h-10 !pl-5.5">
+                    <Button className="h-10 pl-5.5!">
                       Upgrade to Pro
                       <div className="bg-background/15 border-background/10 grid size-5.5 place-items-center rounded-full border">
                         <ChevronRight className="size-4" />
@@ -132,13 +129,11 @@ export default function Pricing() {
                     </Button>
                   </div>
 
-                  {/* Right side - Contact info */}
                   <div className="bg-border flex-1 space-y-4 p-6">
                     <div className="flex justify-between gap-6">
                       <p className="text-card-foreground text-xs leading-none font-medium">
                         {plan.cta.text}
                       </p>
-                      <Logo className="h-4 w-14" />
                     </div>
                     <Button
                       variant="light"

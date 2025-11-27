@@ -27,16 +27,14 @@ const ChallengeContent = ({ content = [] }: IChallengeProps) => {
     },
   };
 
-  console.log(content);
-
   return (
     <motion.div
-      className="z-1 max-w-6xl mx-auto text-center"
+      className="z-1 max-w-6xl mx-auto text-center px-4 md:px-2"
       variants={containerVariants}
       initial={prefersReducedMotion ? "visible" : "hidden"}
       animate="visible"
     >
-      <motion.div className="grid grid-cols-2 gap-16">
+      <motion.div className="flex flex-col gap-16">
         {content.map((item, index) => (
           <ImageTextBlock
             key={item.id}

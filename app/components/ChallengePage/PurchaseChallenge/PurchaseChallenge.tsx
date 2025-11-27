@@ -6,11 +6,19 @@ import Link from "next/link";
 interface IPurchaseChallengeProps {
   id: number;
   imageSrc: string;
+  title: string;
 }
 
-const PurchaseChallenge = ({ id, imageSrc }: IPurchaseChallengeProps) => {
+const PurchaseChallenge = ({
+  title,
+  id,
+  imageSrc,
+}: IPurchaseChallengeProps) => {
   return (
-    <div className="bg-background/45 border-background relative mt-10 justify-self-end overflow-hidden rounded-t-xl border p-2 md:mt-20 md:rounded-t-3xl md:p-4 lg:mt-25 mx-auto">
+    <div
+      id="challenge-pricing"
+      className="bg-background/45 border-background relative mt-10 justify-self-end overflow-hidden rounded-t-xl border p-2 md:mt-20 md:rounded-t-3xl md:p-4 lg:mt-25 mx-auto"
+    >
       <div className="rounded relative h-60">
         <Image
           className="border-background/45 rounded-t-sm md:rounded-t-xl w-full object-cover"
@@ -19,7 +27,8 @@ const PurchaseChallenge = ({ id, imageSrc }: IPurchaseChallengeProps) => {
           fill
         />
       </div>
-      <ul className="mt-2">
+      <h4 className="text-xl text-center mt-4">{title}</h4>
+      <ul className="mt-4">
         <li className="flex items-center gap-2">
           <Check />1 year activation period
         </li>

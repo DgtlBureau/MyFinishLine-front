@@ -32,7 +32,7 @@ export default function FAQSection() {
         </h2>
 
         {/* FAQ Content */}
-        <div className="mt-8 grid gap-6 lg:mt-12 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:mt-12 lg:grid-cols-2">
           {/* FAQ Accordion - Left Side */}
           <div className="lg:col-span-2">
             <Accordion type="single" collapsible className="space-y-4">
@@ -53,7 +53,7 @@ export default function FAQSection() {
             </Accordion>
           </div>
 
-          <Card className="hover:shadow-primary/5 h-full gap-6 transition-all duration-300 hover:shadow-lg">
+          {/* <Card className="hover:shadow-primary/5 h-full gap-6 transition-all duration-300 hover:shadow-lg">
             <CardHeader className="gap-6 md:gap-8 lg:gap-11">
               <MessageSquare className="text-secondary size-18 stroke-1 md:size-20" />
 
@@ -81,7 +81,7 @@ export default function FAQSection() {
                 </Link>
               </Button>
             </CardFooter>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </section>

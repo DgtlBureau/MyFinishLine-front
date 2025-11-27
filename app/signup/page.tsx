@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import Image from "next/image";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,7 @@ export default function Register() {
 
   return (
     <section className="grid min-h-svh lg:grid-cols-2">
-      <section className="flex items-center justify-center">
+      <section className="flex items-center justify-center px-2">
         <div className="max-w-[500px] w-full flex flex-col mx-auto">
           <h1 className="text-2xl sm:text-3xl font-semibold text-center">
             Create Account
@@ -66,7 +67,7 @@ export default function Register() {
               name="email"
               type="email"
               required
-              className="w-full py-3 px-4 focus:outline-none focus:border-orange-400 transition-colors"
+              className="w-full py-3 px-4"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
@@ -77,7 +78,7 @@ export default function Register() {
               name="password"
               type="password"
               required
-              className="w-full py-3 px-4 focus:outline-none focus:border-orange-400 transition-colors"
+              className="w-full py-3 px-4"
               placeholder="Create a password"
               value={formData.password}
               onChange={handleChange}
@@ -87,7 +88,7 @@ export default function Register() {
               name="confirmPassword"
               type="password"
               required
-              className="w-full py-3 px-4 focus:outline-none focus:border-orange-400 transition-colors"
+              className="w-full py-3 px-4"
               placeholder="Repeat your password"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -118,6 +119,7 @@ export default function Register() {
           </div>
 
           <Button
+            variant="outline"
             onClick={() => {
               setLoading(true);
               const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
@@ -135,6 +137,19 @@ export default function Register() {
               <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
             </svg>
             Sign up with Strava
+          </Button>
+          <Button
+            variant="outline"
+            disabled={loading}
+            className="w-full mt-2 py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3"
+          >
+            <Image
+              src="/icons/google.svg"
+              width={12}
+              height={12}
+              alt="Google"
+            />
+            Sign up with Google
           </Button>
 
           <div className="mt-6 space-y-3 text-sm">

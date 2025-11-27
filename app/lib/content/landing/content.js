@@ -1,4 +1,5 @@
 import {
+  Activity,
   Flag,
   FlagTriangleLeft,
   Flame,
@@ -17,12 +18,12 @@ const COMMON_CARDS_CLASSNAMES = {
 const content = {
   hero: {
     // Main top block with purple background
-    title: "Optimize Your Workflow \n Accelerate Your Growth",
+    title: "Level Up Your Running \n Unlock Your Achievements",
     subtitle:
-      "Simplify project management and boost team productivity with our SaaS platform.",
+      "Turn every run into an adventure. Complete quests, get achievements, and climb the leaderboards with our running platform.",
     description:
-      "Over 2+ million teams rely on Lumen to collaborate and get work done.",
-    button_label: "Start Testing",
+      "Over 2+ million players worldwide are gaming their way to fitness with MyFinishLine.",
+    button_label: "Start Winning",
     image: "/images/hero.webp",
   },
   logos: [
@@ -78,77 +79,82 @@ const content = {
   ],
   challenges: {
     // Carousel of challenges
-    title: "Choose your Challenge",
-    description: "Select your Challenge from the list",
+    title: "Choose Your Running Challenge",
+    description: "Pick a challenge that matches your goals and fitness level",
     features: [
       {
         id: 1,
-        icon: Flag,
-        title: "Navigate your way through Russia",
-        description: "A jogging challenge to make your moves",
+        icon: Trophy,
+        title: "The Ultimate Finisher's Journey",
+        description:
+          "Run your way to earning an exclusive finisher's medal and collecting 7 achievement badges. Each badge represents a different running skill - from endurance to speed. Complete all your runs to unlock the full set and claim your medal. Track your progress through our app and watch your collection grow with every milestone you hit.",
         distance: "315km / 215mi",
         content: [
           {
             id: 1,
-            title: "Earn a Chilling Medal",
+            title: "Earn Your Finisher's Medal",
             image: "/images/challenge-page/challenge1.jpg",
             paragraphs: [
               {
                 id: 1,
-                text: "Complete the IT™ Virtual Challenge and you’ll earn a medal straight out of your darkest nightmare",
+                text: "Push your limits and conquer this virtual challenge to claim a spectacular finisher's medal, the ultimate symbol of your dedication and strength.",
               },
               {
                 id: 2,
-                text: "Pennywise’s grin slides open to unleash the Deadlights, his true otherworldly form.",
+                text: "Designed for champions, this premium medal is a testament to the miles you've logged and the goals you've crushed.",
               },
               {
                 id: 3,
-                text: "The medal hangs on a red balloon ribbon and arrives in a custom collector’s box that feels like it’s been pulled from the sewers of Derry.",
+                text: "It arrives presented on a performance-grade ribbon, housed in a sleek, collector's case worthy of your accomplishment.",
               },
               {
                 id: 4,
-                text: "Can you spot the Losers’ Club mark on the back?",
+                text: "Wear it with pride—you've earned it.",
               },
             ],
           },
           {
             id: 2,
-            title: "Virtually travel beneath Derry",
+            title: "Run a Legendary Virtual Route",
             image: "/images/challenge-page/challenge2.jpg",
             paragraphs: [
               {
                 id: 1,
-                text: "Journey 89 miles (143 km) through key locations from the summer of 1989, starting in the Barrens where the Losers’ Club first banded together and ending where an oath takes place.",
+                text: "Embark on a 89-mile (143 km) virtual journey through iconic and challenging terrain. From the starting line in the urban wilds to the triumphant finish at the championship grounds, every step tells your story.",
               },
               {
                 id: 2,
-                text: "The app tracks your progress, and every time you add a workout, you’ll advance across a virtual map through the sewers.",
+                text: "Our app is your digital coach and map. Sync your runs, track your progress in real-time, and watch as you advance mile by mile toward the finish line.",
               },
             ],
           },
           {
             id: 3,
-            title: "Collect All 7 Losers’ Club Cards",
+            title: "Collect Your Achievement Badges",
             image: "/images/challenge-page/challenge3.jpg",
             paragraphs: [
               {
                 id: 1,
-                text: "Every member of the Losers’ Club has a story… and a fear. As you make your way through the challenge, you’ll collect seven exclusive cards, one for each of the kids who stood up to Pennywise.",
+                text: "Motivation is earned. As you clock your miles, you'll unlock a series of seven exclusive digital badges, each representing a core pillar of a runner's journey: endurance, speed, consistency, and more.",
               },
               {
                 id: 2,
-                text: "Complete the set, and you’ll know the Losers’ Club like you were one of them",
+                text: "Complete the collection to prove you've mastered the challenge from every angle.",
               },
             ],
           },
           {
             id: 4,
-            title: "Unlock Virtual Postcards",
+            title: "Unlock Milestone Postcards",
             image: "/images/challenge-page/challenge4.png",
             paragraphs: [
               {
                 id: 1,
-                text: "Unlock a haunting Virtual Postcard at every milestone. Piece by piece, unfold the nightmare of IT™ (2017) until you complete the full set of 12 and finish the story.",
+                text: "Celebrate every victory along the way! At each major milestone, you'll receive a virtual postcard featuring stunning sports photography and words of inspiration.",
+              },
+              {
+                id: 2,
+                text: "Collect all 12 to visually document your entire epic journey from start to finish.",
               },
             ],
           },
@@ -164,9 +170,10 @@ const content = {
       {
         id: 2,
         icon: Flame,
-        title: "Run with your friends",
-        description: "Run and win prizes for all of your family members",
-        distance: "315km / 215mi",
+        title: "The Championship Course Conquest",
+        description:
+          "Take on this 89-mile virtual race through iconic running terrain. From city streets to championship tracks, every mile brings new scenery. Sync your runs with our app to follow your progress on the interactive course map. Push through to the finish line to prove you've mastered this legendary distance.",
+        distance: "143km / 89mi",
         image: {
           src: "/images/features-carousel/2.jpg",
           alt: "Issue tracking with less noise",
@@ -174,22 +181,38 @@ const content = {
           height: 400,
           className: "pt-4",
         },
+        content: [
+          {
+            id: 2,
+            title: "Conquer the Championship Course",
+            image: "/images/challenge-page/challenge2.jpg",
+            paragraphs: [
+              {
+                id: 1,
+                text: "This is your race. Tackle a 89-mile (143 km) virtual course that pushes you through the heart of elite competition. From the grueling starting leg to the final stretch on the iconic track, you'll run a path designed for champions.",
+              },
+              {
+                id: 2,
+                text: "Your dedicated sports app is your command center. Log every training run and watch your avatar advance on a dynamic map. See your progress unfold with each workout, driving you closer to the ultimate finish line.",
+              },
+            ],
+          },
+        ],
       },
     ],
   },
   grid_block: {
-    // Cards block
-    title: "Feature management that fits your workflow",
+    title: "Game features that level up your running",
     description:
-      "Assign, prioritize, and monitor every feature with precision. Lumen helps teams ship faster by bringing structure to your development process, without slowing you down.",
+      "Earn XP, complete daily quests, and climb seasonal leaderboards.",
     features: [
       {
         id: 1,
         image: "/images/features-grid/1.webp",
-        imageAlt: "Feature management interface",
-        title: "Smart Task Management",
+        imageAlt: "Running analytics dashboard",
+        title: "Smart Run Tracking",
         description:
-          "Organize and prioritize tasks with intelligent automation that adapts to your workflow patterns.",
+          "Track pace, distance, and elevation with GPS accuracy. Get personalized insights to optimize your training.",
         className: "lg:col-span-3",
         width: 423,
         height: 228,
@@ -197,10 +220,10 @@ const content = {
       {
         id: 2,
         image: "/images/features-grid/2.webp",
-        imageAlt: "Team collaboration dashboard",
-        title: "Team Collaboration",
+        imageAlt: "Running community features",
+        title: "Running Community",
         description:
-          "Connect with your team seamlessly through integrated communication and shared workspaces.",
+          "Connect with fellow runners, join group challenges, and share your achievements with a supportive community.",
         className: "lg:col-span-3",
         width: 435,
         height: 228,
@@ -208,10 +231,10 @@ const content = {
       {
         id: 3,
         image: "/images/features-grid/3.webp",
-        imageAlt: "Analytics and reporting",
-        title: "Advanced Analytics",
+        imageAlt: "Performance analytics",
+        title: "Advanced Performance Analytics",
         description:
-          "Get comprehensive insights into your project performance with detailed analytics and customizable reports.",
+          "Get comprehensive insights into your running performance with detailed metrics and progress tracking.",
         className: "lg:col-span-4",
         width: 599,
         height: 218,
@@ -219,10 +242,10 @@ const content = {
       {
         id: 4,
         image: "/images/features-grid/4.webp",
-        imageAlt: "Project timeline view",
-        title: "Project Timeline",
+        imageAlt: "Training plans",
+        title: "Personalized Training Plans",
         description:
-          "Visualize project progress and milestones with interactive timeline views and dependency tracking.",
+          "Follow customized training programs designed for your fitness level and race goals.",
         className: "lg:col-span-2",
         width: 292,
         height: 215,
@@ -230,10 +253,10 @@ const content = {
       {
         id: 5,
         image: "/images/features-grid/5.webp",
-        imageAlt: "Integration capabilities",
-        title: "Seamless Integrations",
+        imageAlt: "Device integration",
+        title: "Seamless Device Integration",
         description:
-          "Connect with your favorite tools and services to create a unified workflow ecosystem.",
+          "Sync with your favorite running watches, fitness trackers, and heart rate monitors.",
         className: "lg:col-span-3",
         width: 417,
         height: 175,
@@ -241,10 +264,10 @@ const content = {
       {
         id: 6,
         image: "/images/features-grid/6.webp",
-        imageAlt: "Mobile application",
-        title: "Mobile Ready",
+        imageAlt: "Mobile running app",
+        title: "Mobile Running Companion",
         description:
-          "Access your projects anywhere with our fully responsive mobile application.",
+          "Take your running stats anywhere with our fully-featured mobile application.",
         className: "lg:col-span-3",
         width: 433,
         height: 155,
@@ -252,46 +275,19 @@ const content = {
     ],
   },
   list_block: {
-    // List of cards
-    title: "Feature intelligence built for modern product teams",
+    title: "Running intelligence built for modern athletes",
     decsription:
-      "Stay ahead of user needs. Lumen turns your product features into actionable insights, so you can prioritize what matters, streamline delivery, and scale with confidence.",
+      "Stay ahead of your training goals. MyFinishLine turns your running data into actionable insights, so you can optimize performance, prevent injuries, and achieve new personal bests.",
     features: [
       {
-        id: "security",
-        icon: Shield,
-        title: "Manage features with clarity, not clutter",
+        id: "performance",
+        icon: Activity,
+        title: "Track your runs with precision, not guesswork",
         description:
-          "Say goodbye to messy event logs. Lumen turns real usage data into clear, grouped feature insights, so you can track what matters, not just what happened.",
+          "Say goodbye to manual logging. MyFinishLine turns GPS data and heart rate metrics into clear, actionable insights, so you can focus on what matters - your performance.",
         image: {
           src: "/images/features-showcase/1.webp",
-          alt: "Advanced Security",
-          width: 500,
-          height: 400,
-        },
-      },
-      {
-        id: "performance",
-        icon: Zap,
-        title: "Instant answers to product usage questions",
-        description:
-          "Lumen’s powerful filters make it easy to get actionable usage insights, no SQL needed.",
-        image: {
-          src: "/images/features-showcase/2.webp",
-          alt: "Lightning Fast Performance",
-          width: 500,
-          height: 400,
-        },
-      },
-      {
-        id: "collaboration",
-        icon: Users,
-        title: "Segment users by feature behavior",
-        description:
-          "Slice your audience based on real feature interaction.Find champions, trial users, and at-risk accounts in seconds.",
-        image: {
-          src: "/images/features-showcase/3.webp",
-          alt: "Team Collaboration",
+          alt: "Running Performance Tracking",
           width: 500,
           height: 400,
         },
@@ -299,12 +295,38 @@ const content = {
       {
         id: "analytics",
         icon: TrendingUp,
-        title: "Export insights, tie them to business impact",
+        title: "Instant answers to your training questions",
         description:
-          "Send enriched usage data to your warehouse.Blend Lumen metrics with revenue, churn, or NPS to connect product behavior to outcomes.",
+          "MyFinishLine's powerful analytics make it easy to understand your progress, identify patterns, and adjust your training, no technical knowledge needed.",
+        image: {
+          src: "/images/features-showcase/2.webp",
+          alt: "Training Analytics",
+          width: 500,
+          height: 400,
+        },
+      },
+      {
+        id: "community",
+        icon: Users,
+        title: "Connect with runners at your level",
+        description:
+          "Find your running tribe based on pace, goals, and location. Join group runs, share routes, and motivate each other to new achievements.",
+        image: {
+          src: "/images/features-showcase/3.webp",
+          alt: "Running Community",
+          width: 500,
+          height: 400,
+        },
+      },
+      {
+        id: "goals",
+        icon: Flag,
+        title: "Set goals, track progress, celebrate wins",
+        description:
+          "Export your running data to create personalized training plans. Connect your running metrics with race results and personal achievements to see real progress.",
         image: {
           src: "/images/features-showcase/4.webp",
-          alt: "Smart Analytics",
+          alt: "Goal Tracking",
           width: 500,
           height: 400,
         },
@@ -313,14 +335,14 @@ const content = {
   },
   feedback_block: {
     // Carousel with feedback cards
-    title: "Trusted by modern teams",
+    title: "Trusted by runners worldwide",
     description:
-      "Join thousands of product managers, designers, and developers who rely on Lumen to plan, track, and deliver value without the chaos.",
+      "Join thousands of marathoners, casual joggers, and fitness enthusiasts who rely on MyFinishLine to plan, track, and achieve their running goals.",
     testimonials: [
       {
         id: "1",
         name: "Sarah Mitchell",
-        title: "Head of Product",
+        title: "Marathon Runner",
         company: "Nike",
         image:
           "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
@@ -330,18 +352,18 @@ const content = {
           height: 24,
         },
         testimonial:
-          "Lumen has completely changed the way we present our project workflows. We can create visual boards, share tasks instantly, and demo progress live. It’s business-focused collaboration without the overhead.",
+          "MyFinishLine turned my daily run into an epic quest. I'm hooked on completing daily objectives!",
         className: COMMON_CARDS_CLASSNAMES.big,
       },
       {
         id: "2",
         name: "Alex Chen",
-        title: "Senior Designer",
+        title: "Trail Runner",
         company: "Spotify",
         image:
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "Lumen was the missing layer between our product and engineering teams. We’ve never had this much clarity in how tasks move through the pipeline.",
+          "The elevation tracking and trail maps helped me prepare for my first 50K. I've never had this much clarity in my training progress.",
         className: "col-span-2 ",
       },
       {
@@ -352,7 +374,7 @@ const content = {
         image:
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "We used to lose track of deliverables every week. With Lumen, task ownership is crystal clear and timelines are actually realistic.",
+          "We used to lose track of deliverables every week. With MyFinishLine, task ownership is crystal clear and timelines are actually realistic.",
         className: "col-span-2 ",
       },
       {
@@ -363,7 +385,7 @@ const content = {
         image:
           "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "Lumen blended perfectly into our design-to-dev process. We organize prototypes, handoffs, and sprints without switching tools.",
+          "MyFinishLine blended perfectly into our design-to-dev process. We organize prototypes, handoffs, and sprints without switching tools.",
         className: "col-span-2 ",
       },
       {
@@ -374,7 +396,7 @@ const content = {
         image:
           "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "Since adopting Lumen, our feedback cycles became shorter and much more effective. It's a must-have for any growing product team.",
+          "Since adopting MyFinishLine, our feedback cycles became shorter and much more effective. It's a must-have for any growing product team.",
         className: "col-span-2 ",
       },
       {
@@ -385,7 +407,7 @@ const content = {
         image:
           "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "Lumen makes it incredibly easy to manage cross-functional work. We’ve cut coordination time in half and deliver with better insights.",
+          "MyFinishLine makes it incredibly easy to manage cross-functional work. We’ve cut coordination time in half and deliver with better insights.",
         className: "col-span-2",
       },
       {
@@ -396,7 +418,7 @@ const content = {
         image:
           "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=400&fit=crop&crop=face",
         testimonial:
-          "We use Lumen across all departments — from tech to support. Creating shared workflows has drastically improved internal communication.”",
+          "We use MyFinishLine across all departments — from tech to support. Creating shared workflows has drastically improved internal communication.”",
         className: "col-span-2",
       },
       {
@@ -412,7 +434,7 @@ const content = {
           height: 28,
         },
         testimonial:
-          "Lumen has completely transformed how we approach daily project planning and execution. Before switching, we constantly missed deadlines due to misalignment. Now, everyone knows what’s happening, who’s responsible, and when things are due. Our productivity skyrocketed, and team communication has never been clearer.",
+          "MyFinishLine has completely transformed how we approach daily project planning and execution. Before switching, we constantly missed deadlines due to misalignment. Now, everyone knows what’s happening, who’s responsible, and when things are due. Our productivity skyrocketed, and team communication has never been clearer.",
         className: cn(COMMON_CARDS_CLASSNAMES.big, ""),
       },
       {
@@ -428,7 +450,7 @@ const content = {
           height: 20,
         },
         testimonial:
-          "I created a workspace, invited my co-founder, and started assigning tasks in 45 seconds. That’s how fast Lumen works.",
+          "I created a workspace, invited my co-founder, and started assigning tasks in 45 seconds. That’s how fast MyFinishLine works.",
         className: cn(
           COMMON_CARDS_CLASSNAMES.big,
           "lg:[&_blockquote]:text-4xl lg:[&_blockquote]:leading-tight lg:shadow-lg"
@@ -437,96 +459,88 @@ const content = {
     ],
   },
   faq_section: {
-    // Faq accordion
     title: "Frequently asked questions:",
     questions: [
       {
-        id: "lumen-who-is-it-for",
-        question: "What is Lumen and who is it for?",
+        id: "myfinishline-who-is-it-for",
+        question: "What is MyFinishLine and how does the gamification work?",
         answer:
-          "Lumen is a task and workflow management platform designed for product teams, developers, and creatives who want to move faster with clarity and control.",
+          "MyFinishLine turns running into an epic RPG adventure. You earn achievements for every milestone, level up your character, collect rare loot, and compete on leaderboards. It's designed for anyone who wants to make fitness fun and addictive.",
       },
       {
-        id: "technical-knowledge",
-        question: "Can I use Lumen without technical knowledge?",
+        id: "game-mechanics",
+        question: "What kind of game elements can I expect?",
         answer:
-          "Absolutely! Lumen is designed with simplicity in mind. You can start organizing tasks, creating workflows, and collaborating with your team without any technical background. The intuitive interface makes it easy for anyone to get started.",
+          "You'll experience challenges, achievement badges, daily quests, seasonal events, loot boxes with virtual rewards, character progression, team challenges, and competitive leaderboards. Every run feels like leveling up in your favorite video game.",
       },
       {
-        id: "integrations",
-        question: "Does Lumen integrate with tools like Slack or Figma?",
+        id: "multiplayer-features",
+        question: "Can I play with friends?",
         answer:
-          "Yes, Lumen integrates seamlessly with popular tools including Slack, Figma, GitHub, Jira, and many more. You can connect your existing workflow tools to create a unified workspace that fits your team's needs.",
+          "Absolutely! Form running guilds with friends, challenge each other to head-to-head races, complete cooperative quests together, and climb the team leaderboards. The social features make running a multiplayer experience.",
       },
       {
-        id: "task-automation",
-        question: "How does task automation work in Lumen?",
+        id: "rewards-system",
+        question: "What kind of rewards can I earn?",
         answer:
-          "Lumen offers intelligent task automation that helps streamline repetitive processes. You can set up custom rules, triggers, and workflows that automatically assign tasks, update statuses, send notifications, and move projects through different stages based on your defined criteria.",
-      },
-      {
-        id: "security-compliance",
-        question: "Is Lumen secure and compliant?",
-        answer:
-          "Security is our top priority. Lumen is built with enterprise-grade security features including end-to-end encryption, SOC 2 Type II compliance, GDPR compliance, and regular security audits. Your data is protected with industry-standard security protocols.",
+          "You'll unlock character customization options, special titles, achievement badges, virtual gear, seasonal rewards, and exclusive content. Higher levels unlock legendary items and special abilities for your running avatar.",
       },
     ],
     contact_block: {
-      title: "Still have questions?",
+      title: "Ready to level up your running?",
       description:
-        "Let's talk. Our team is here to help you make the most of Lumen. Whether it's onboarding, integration, or support.",
-      button_label: "Contact us",
+        "Join the adventure! Our team of gaming and fitness experts is here to help you start your quest. Whether you're a casual jogger or aspiring running legend.",
+      button_label: "Start Your Quest",
     },
   },
   pricing_block: {
-    // Pricing block with two cards
-    title: "Power your progress with Pro Access",
+    title: "Level Up Your Running Experience",
     description:
-      "Increase feature adoption and customer satisfaction with the right Lumen plan.",
+      "Unlock premium features, exclusive rewards, and enhanced gameplay with MyFinishLine Pro.",
     discount_label: "Save 25% on annual plan",
     plans: {
       individual: {
-        title: "Individual Plan",
-        subtitle: "Best option for solo",
-        description: "Designers or Freelancers",
-        monthlyPrice: 25,
-        annualPrice: 19,
+        title: "Adventurer Plan",
+        subtitle: "Adventure",
+        description: "Casual gamers & fitness explorers",
+        monthlyPrice: 12,
+        annualPrice: 9,
         popular: true,
         features: [
-          { name: "Real-time task syncing", included: true },
-          { name: "Basic project analytics", included: true },
-          { name: "Custom workflows & automation", included: true },
-          { name: "Cross-platform integrations", included: true },
-          { name: "Unlimited boards & views", included: false },
-          { name: "Priority support for teams", included: false },
-          { name: "API access (Limited)", included: false },
-          { name: "Community support", included: false },
+          { name: "Basic XP system & level progression", included: true },
+          { name: "Daily quests & achievements", included: true },
+          { name: "Standard loot boxes", included: true },
+          { name: "Basic character customization", included: true },
+          { name: "Advanced power-ups & boosts", included: false },
+          { name: "Guild creation & management", included: false },
+          { name: "Legendary loot drops", included: false },
+          { name: "Priority seasonal events", included: false },
         ],
         cta: {
-          text: "Contact us for Custom CRM Integration",
-          button: "Contact With Us",
+          text: "Start your adventure today",
+          button: "Begin Quest",
         },
       },
       team: {
-        title: "Power Users & Teams",
-        subtitle: "Best option for team",
-        description: "Agencies or Corporates",
-        monthlyPrice: 59,
-        annualPrice: 44,
+        title: "Guild Master Plan",
+        subtitle: "Competitive",
+        description: "A lot of challenges and achievements",
+        monthlyPrice: 29,
+        annualPrice: 22,
         popular: false,
         features: [
-          { name: "Advanced task syncing with dependencies", included: true },
-          { name: "Smart automations & conditional triggers", included: true },
-          { name: "In-depth usage insights & analytics", included: true },
-          { name: "Priority team collaboration tools", included: true },
-          { name: "CRM integrations", included: true },
-          { name: "Developer toolkit", included: true },
-          { name: "API access (Full)", included: true },
-          { name: "Premium support & onboarding", included: true },
+          { name: "Advanced XP multipliers & bonus systems", included: true },
+          { name: "Epic weekly raids & team challenges", included: true },
+          { name: "Premium loot boxes with rare drops", included: true },
+          { name: "Full character customization & skins", included: true },
+          { name: "Guild management tools & analytics", included: true },
+          { name: "Legendary achievement hunting", included: true },
+          { name: "Early access to new game modes", included: true },
+          { name: "Priority support & game master access", included: true },
         ],
         cta: {
-          text: "Connect us for Custom CRM Integration",
-          button: "Contact With Us",
+          text: "Unlock legendary status",
+          button: "Go Legendary",
         },
       },
     },

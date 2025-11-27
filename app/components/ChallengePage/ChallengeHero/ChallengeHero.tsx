@@ -100,6 +100,14 @@ const ChallengeHero = ({
     },
   };
 
+  const handlePressSignUp = () => {
+    const block = document.getElementById("challenge-pricing");
+    block?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
+
   return (
     <>
       <motion.div
@@ -133,6 +141,7 @@ const ChallengeHero = ({
           <Button
             size="lg"
             className="mt-2 rounded-full pl-5.5! before:rounded-full"
+            onClick={handlePressSignUp}
           >
             Sign up now
             <div className="bg-background/15 border-background/10 grid size-5.5 place-items-center rounded-full border">
