@@ -5,10 +5,10 @@ import {
   Geist_Mono,
   Montserrat,
 } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "./components/theme-provider";
-import Navbar from "./components/ChallengeContent/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
+import "../globals.css";
+import { ThemeProvider } from "../components/theme-provider";
+import Navbar from "../components/ChallengeContent/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   description: "Combine sports and pleasure",
 };
 
-export default function RootLayout({
+export default function WithHeaderLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

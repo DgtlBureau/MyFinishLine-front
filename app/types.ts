@@ -1,17 +1,47 @@
 export interface IActivity {
-  id: number;
-  name: string;
+  achievement_count: number;
+  athlete: { id: number; resource_state: number };
+  athlete_count: number;
+  average_speed: number;
+  comment_count: number;
+  commute: boolean;
+  display_hide_heartrate_option: boolean;
   distance: number;
-  moving_time: number;
   elapsed_time: number;
-  total_elevation_gain: number;
-  type: string;
+  end_latlng: any[];
+  external_id: null | number;
+  flagged: boolean;
+  from_accepted_tag: boolean;
+  gear_id: null;
+  has_heartrate: boolean;
+  has_kudoed: boolean;
+  heartrate_opt_out: boolean;
+  id: number;
+  kudos_count: number;
+  location_city: null | string;
+  location_country: null | string;
+  location_state: null | string;
+  manual: boolean;
+  map: { id: string; summary_polyline: string; resource_state: number };
+  max_speed: number;
+  moving_time: number;
+  name: string;
+  photo_count: number;
+  pr_count: number;
+  private: boolean;
+  resource_state: number;
   sport_type: string;
   start_date: string;
-  average_speed: number;
-  max_speed: number;
-  average_heartrate?: number;
-  max_heartrate?: number;
+  start_date_local: string;
+  start_latlng: number[];
+  timezone: string;
+  total_elevation_gain: number;
+  total_photo_count: number;
+  trainer: boolean;
+  type: string;
+  upload_id: null | number;
+  utc_offset: number;
+  visibility: string;
 }
 
 export interface IAthlete {

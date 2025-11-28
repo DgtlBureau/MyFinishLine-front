@@ -9,14 +9,14 @@ import FeaturesShowcase from "@/app/components/ChallengeContent/FeaturesShowcase
 import Testimonials from "@/app/components/ChallengeContent/Testimonials/Testimonials";
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
 import Pricing from "@/app/components/ChallengeContent/Pricing/Pricing";
-import { Feature102 } from "./components/ui/feature102";
+import { Feature102 } from "../components/ui/feature102";
 
 export default async function Home() {
   const cookieStore = await cookies();
   const athleteCookie = cookieStore.get("strava_athlete");
 
   if (athleteCookie) {
-    redirect("/homepage");
+    redirect("/myfinishline");
   }
 
   return (

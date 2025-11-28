@@ -3,10 +3,10 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
-import PaymentForm from "../components/CheckoutForm/CheckoutForm";
-import ChallengesPayment from "../components/ChallengesPayment/ChallengesPayment";
 import Image from "next/image";
-import Logo from "../components/Shared/Logo/Logo";
+import PaymentForm from "@/app/components/CheckoutForm/CheckoutForm";
+import ChallengesPayment from "@/app/components/ChallengesPayment/ChallengesPayment";
+import Logo from "@/app/components/Shared/Logo/Logo";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,

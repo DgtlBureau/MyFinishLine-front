@@ -65,7 +65,7 @@ const APP_STORE_BUTTONS = [
 const Footer = () => {
   const pathname = usePathname();
 
-  const hideFooter = ["/login", "/signup", "/verify", "/not-found"].some(
+  const hideFooter = ["/loginadasd", "/signup", "/verify", "/not-found"].some(
     (route) => pathname.includes(route)
   );
 
