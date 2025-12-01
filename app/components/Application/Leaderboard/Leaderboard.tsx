@@ -101,9 +101,9 @@ const championships = [
 const Leaderboard = () => {
   const [stravaData, setStravaData] = useState<{
     isConnected: boolean;
-    athlete?: IAthlete;
+    athlete?: IAthlete | null;
   }>({
-    athlete: {} as IAthlete,
+    athlete: null as IAthlete | null,
     isConnected: false,
   });
   const [clickedUserInfo, setClickedUserInfo] = useState<IUser | null>(null);
