@@ -16,8 +16,8 @@ const navLinks = [
   {
     id: 2,
     name: "Store",
-    href: "/myfinishline/challenges",
-    parent: "challenges",
+    href: "/myfinishline/store",
+    parent: "store",
     Icon: Store,
   },
   {

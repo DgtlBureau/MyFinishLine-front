@@ -35,7 +35,7 @@ const page = () => {
 
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className="absolute w-full h-full top-0 flex justify-center items-center">
+          <div className="absolute w-full h-full top-0 left-0 flex justify-center items-center">
             <Loader2 width={48} height={48} className="animate-spin" />
           </div>
         ) : activities?.length > 0 ? (
