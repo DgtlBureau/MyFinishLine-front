@@ -1,9 +1,5 @@
-"use client";
-
-import { Button } from "@/app/components/ui/button";
 import useGetStravaUser from "@/app/hooks/useGetStravaUser";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Button } from "../../ui/button";
 
 enum STRAVA_RESPONSE_STATUSES {
   AUTH_FAILED = "auth_failed",
@@ -17,10 +13,8 @@ const handleParseStravaStatus = (status: STRAVA_RESPONSE_STATUSES) => {
   }
 };
 
-function StravaIntegrationButton() {
+const Integrations = ({ status }: { status: string | null }) => {
   const { isConnected, handleResetUser } = useGetStravaUser();
-  const params = useSearchParams();
-  const status = params.get("status");
 
   const handleLogout = async () => {
     try {
@@ -52,11 +46,15 @@ function StravaIntegrationButton() {
       handleConnectStrava();
     }
   };
-
   return (
-    <>
+    <main className="p-4">
+      <h3 className="text-left text-2xl font-semibold">Integrations</h3>
+      <p className="text-sm text-muted-foreground mt-1">
+        Integrate your Strava and Garmin accounts to track your progression
+      </p>
       <Button
-        className={`mt-4 h-fit w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-start gap-3`}
+        className={`mt-4 h-fit w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-start gap-3
+          `}
         variant="outline"
         onClick={handleClickStrava}
       >
@@ -73,22 +71,9 @@ function StravaIntegrationButton() {
       <span className="text-red-400 text-sm">
         {handleParseStravaStatus(status as STRAVA_RESPONSE_STATUSES)}
       </span>
-    </>
-  );
-}
-
-const page = () => {
-  return (
-    <main className="p-4">
-      <h3 className="text-left text-2xl font-semibold">Integrations</h3>
-      <p className="text-sm text-muted-foreground mt-1">
-        Integrate your Strava and Garmin accounts to track your progression
-      </p>
-      <Suspense fallback={null}>
-        <StravaIntegrationButton />
-      </Suspense>
       <Button
-        className={`mt-4 h-fit w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-start gap-3`}
+        className={`mt-4 h-fit w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-start gap-3
+          `}
         variant="outline"
         onClick={() => {}}
       >
@@ -106,4 +91,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Integrations;
