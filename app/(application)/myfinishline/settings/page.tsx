@@ -1,14 +1,10 @@
-import { ChevronRight } from "lucide-react";
+import Settings from "@/app/components/Application/Settings/Settings";
 
 const page = () => {
   return (
-    <ul>
-      <li className="flex items-center justify-between">
-        FAQ <ChevronRight />
-      </li>
-      <li></li>
-      <li></li>
-    </ul>
+    <main className="max-w-4xl mx-auto pt-4 mb-20">
+      <Settings />
+    </main>
   );
 };
 

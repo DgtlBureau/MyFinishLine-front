@@ -64,7 +64,7 @@ const FAQ = () => {
       </motion.div>
 
       <div className="px-6">
-        <Accordion type="single" collapsible className="space-y-2">
+        <Accordion type="single" collapsible className="flex flex-col gap-4">
           {faqs.map((faq, index) => (
             <motion.div
               key={faq.id}

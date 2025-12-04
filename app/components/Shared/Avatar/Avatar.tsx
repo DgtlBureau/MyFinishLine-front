@@ -4,6 +4,7 @@ import Image from "next/image";
 interface IAvatarProps {
   imageSrc?: string;
   fullName?: string;
+  size?: number;
 }
 
 const handleMakeInitials = (name: string) => {
@@ -15,28 +16,32 @@ const handleMakeInitials = (name: string) => {
   return firstInitial + lastInitial;
 };
 
-const Avatar = ({ imageSrc, fullName }: IAvatarProps) => {
+const Avatar = ({ size = 48, imageSrc, fullName }: IAvatarProps) => {
   if (imageSrc) {
     return (
       <Image
         src={imageSrc}
-        width={48}
-        height={48}
+        width={size}
+        height={size}
         alt={fullName || ""}
-        className="object-cover rounded-full h-12 w-12"
+        className={`object-cover rounded-full w-[${size}px] h-[${size}px]`}
       />
     );
   }
   if (!imageSrc && fullName) {
     return (
-      <div className="w-12 h-12 flex items-center justify-center text-sm border border-border rounded-full font-bold">
+      <div
+        className={`w-[${size}px] h-[${size}px] flex items-center justify-center text-sm border border-border rounded-full font-bold`}
+      >
         {handleMakeInitials(fullName)}
       </div>
     );
   }
   if (!imageSrc && fullName) {
     return (
-      <div className="w-12 h-12 flex items-center justify-center">
+      <div
+        className={`w-[${size}px] h-[${size}px] flex items-center justify-center`}
+      >
         <User />
       </div>
     );

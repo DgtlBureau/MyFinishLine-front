@@ -1,6 +1,4 @@
 import { STRAVA_CONFIG } from "@/app/lib/strava";
-import { IActivity } from "@/app/types";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { cookies } from "next/headers";
 
 // Temporary debug version - replace your current GET function with this:

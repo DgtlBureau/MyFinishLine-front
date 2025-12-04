@@ -57,7 +57,7 @@ const SettingItem = ({
           <span className="text-sm text-muted-foreground">{value}</span>
         )}
         {type === "link" && (
-          <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
         )}
       </div>
     </motion.div>
