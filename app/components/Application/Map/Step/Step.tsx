@@ -1,5 +1,7 @@
 import { CheckIcon } from "lucide-react";
 import Xarrow from "react-xarrows";
+import { useLottie } from "lottie-react";
+import crown from "./crown.json";
 
 interface StepProps {
   id: number;
@@ -16,6 +18,14 @@ const Step = ({
   completed,
   isActive = false,
 }: StepProps) => {
+  const isLast = id === stepsAmount;
+
+  const options = {
+    animationData: crown,
+    loop: true,
+  };
+  const { View } = useLottie(options);
+
   const getStepColor = () => {
     if (isActive) {
       return "bg-gradient-to-br from-blue-500 to-purple-600 ring-4 ring-blue-300/50";
@@ -27,7 +37,13 @@ const Step = ({
   };
 
   return (
-    <div id={`step-${id}`} className="relative">
+    <div
+      id={`step-${id}`}
+      className="relative flex items-center justify-center"
+    >
+      {isLast && (
+        <div className="absolute bottom-[25%] w-22 h-22 z-100">{View}</div>
+      )}
       {isActive && (
         <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-30" />
       )}
@@ -38,7 +54,7 @@ const Step = ({
           rounded-full flex w-12 h-12 text-sm items-center justify-center
           text-white font-bold shadow-xl
           transition-all duration-300
-          ${completed ? "cursor-pointer hover:scale-110" : "cursor-default"}
+          ${completed ? "cursor-pointer" : "cursor-default"}
         `}
       >
         {id}

@@ -283,3 +283,9 @@ html.theme-transition::view-transition-new(root) {
     display: none !important;
   }
 }
+
+.Toastify__toast-container--top-center .Toastify__toast {
+  width: 100% !important;
+  margin: 0 20px !important;
+  max-width: 500px;
+}

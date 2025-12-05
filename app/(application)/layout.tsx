@@ -1,24 +1,9 @@
 import type { Metadata } from "next";
-import {
-  Allerta_Stencil,
-  Geist,
-  Geist_Mono,
-  Montserrat,
-} from "next/font/google";
-import "../globals.css";
-import { ThemeProvider } from "../components/theme-provider";
+import { Allerta_Stencil, Montserrat } from "next/font/google";
 import Navbar from "../components/Application/Navbar/Navbar";
 import AppHeader from "../components/Application/AppHeader/AppHeader";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Slide, ToastContainer } from "react-toastify";
+import "../globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-montserrant",
@@ -46,17 +31,23 @@ export default function ApplicationLayout({
       <body
         className={`${montserrat.variable} ${allerta_stencil.variable} h-full`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          disableTransitionOnChange
-        >
-          <div className="h-full flex flex-col">
-            <AppHeader />
-            <div className="flex-1">{children}</div>
-            <Navbar />
-          </div>
-        </ThemeProvider>
+        {/* <ThemeProvider
+        attribute="data-theme" // Use data-theme instead of class
+        defaultTheme="light"
+        disableTransitionOnChange
+      > */}
+        <div className="h-full flex flex-col">
+          <AppHeader />
+          <div className="flex-1">{children}</div>
+          <Navbar />
+        </div>
+        {/* </ThemeProvider> */}
+        <ToastContainer
+          position="top-center"
+          draggable
+          transition={Slide}
+          closeButton={false}
+        />
       </body>
     </html>
   );

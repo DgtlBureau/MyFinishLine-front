@@ -9,18 +9,20 @@ interface IActivitiesListProps {
 }
 
 const ActivitiesList = ({ activities = [] }: IActivitiesListProps) => {
+  if (activities.length === 0) {
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        <p>No activities yet</p>
+      </div>
+    );
+  }
+
   return (
-    <motion.ul
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col gap-2"
-    >
+    <ul className="flex flex-col gap-2">
       {activities.map((activity) => (
         <Activity key={activity.id} {...activity} />
       ))}
-    </motion.ul>
+    </ul>
   );
 };
-
 export default ActivitiesList;

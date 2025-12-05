@@ -16,6 +16,8 @@ const ProfileUserline = () => {
             src={athlete.profile}
             width={80}
             height={80}
+            quality={75}
+            loading="eager"
             alt="Profile image"
           />
         ) : (

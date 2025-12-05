@@ -3,18 +3,43 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
-    domains: [
-      "images.unsplash.com",
-      "logo.clearbit.com",
-      "static.wikia.nocookie.net",
-      "lh3.googleusercontent.com",
-      "cdn.cloudflare.steamstatic.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.cloudflare.steamstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "static.wikia.nocookie.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "logo.clearbit.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {
     return [
       {
-        source: "/myfinishline/",
+        source: "/myfinishline",
         destination: "/myfinishline/homepage",
         permanent: true,
       },

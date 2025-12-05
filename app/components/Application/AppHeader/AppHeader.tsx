@@ -27,15 +27,11 @@ const AppHeader = () => {
           <ChevronLeft />
           Back
         </button>
-        {isConnected && (
-          <button onClick={handleGoToEdit}>
-            <Avatar
-              size={36}
-              imageSrc={athlete.profile}
-              fullName={athlete.firstname}
-            />
-          </button>
-        )}
+        {/* {isConnected && ( */}
+        <button onClick={handleGoToEdit}>
+          <Avatar size={36} imageSrc={athlete.profile} fullName={"NA"} />
+        </button>
+        {/* )} */}
       </div>
     </header>
   );

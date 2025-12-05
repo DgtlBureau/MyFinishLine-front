@@ -3,6 +3,7 @@
 import { Medal, Target, Trophy } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "../../ui/button";
+import Link from "next/link";
 
 interface Award {
   id: number;
@@ -61,18 +62,16 @@ const AwardsList = () => {
             </p>
           </div>
 
-          <Button
-            size="sm"
-            variant={award.claimed ? "outline" : "default"}
-            className={`shrink-0 text-xs ${
+          <Link
+            href="redeem"
+            className={`shrink-0 text-xs p-2 px-4 rounded ${
               award.claimed
                 ? "border-border text-muted-foreground"
                 : "bg-foreground text-background hover:bg-foreground/90"
             }`}
-            disabled={award.claimed}
           >
             {award.claimed ? "Claimed" : "Claim"}
-          </Button>
+          </Link>
         </motion.div>
       ))}
     </div>
