@@ -7,8 +7,6 @@ import { motion } from "motion/react";
 const page = () => {
   const { athlete } = useGetStravaUser();
 
-  console.log(athlete);
-
   return (
     <div>
       <motion.h3
