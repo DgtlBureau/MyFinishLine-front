@@ -30,7 +30,7 @@ const page = () => {
   }, []);
 
   return (
-    <main className="relative">
+    <main className="relative px-4">
       <AnimatePresence mode="wait">
         {isLoading ? (
           <div className="flex justify-center items-center">

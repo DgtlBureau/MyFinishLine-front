@@ -11,7 +11,7 @@ const useGetStravaUser = () => {
   }>({
     athlete: null,
     isConnected: false,
-    isLoading: true, // Start as loading
+    isLoading: true,
   });
 
   const fetchStravaUser = async () => {

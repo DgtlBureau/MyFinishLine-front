@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ProgressLine from "../Shared/ProgressLine/ProgressLine";
+import { Button } from "../ui/button";
 
 type Props = {};
 
@@ -22,7 +23,7 @@ const ChallengeCard = (props: Props) => {
           <div className="w-full flex items-center justify-between">
             <span className="text-[10px] text-muted-foreground">649 km</span>
             <Link
-              href="homepage"
+              href="/myfinishline/homepage"
               className="underline font-semibold text-[10px] text-black"
             >
               Go to map
@@ -55,6 +56,15 @@ const ChallengeCard = (props: Props) => {
           41.7 hrs
         </span>
       </div>
+      <button className="bg-transparent w-full mt-8 border-white py-2 px-4 border text-white text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer">
+        Сlaim medal
+      </button>
+      <Link
+        href="#"
+        className="underline mt-4 font-semibold text-[10px] text-black block text-center"
+      >
+        Look at the medal
+      </Link>
     </div>
   );
 };

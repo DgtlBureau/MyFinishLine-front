@@ -1,0 +1,95 @@
+import { useRef, useState } from "react";
+import { Swiper as SwiperType } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import Reward from "../Application/Reward/Reward";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import "swiper/css";
+
+const rewards = [
+  {
+    id: 1,
+    title: "It's Raining Man",
+    description: "Run 45 km under the rain.",
+  },
+  {
+    id: 2,
+    title: "Marathoner",
+    description: "Complete a full marathon distance of 42.195 km.",
+  },
+  {
+    id: 3,
+    title: "Great Wall Runner",
+    description: "Conquer a run along the Great Wall of China.",
+  },
+  {
+    id: 4,
+    title: "Mountain Conqueror",
+    description: "Reach the summit of a mountain over 2000m.",
+  },
+];
+
+const RewardsSwiper = () => {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const [isFirstSlide, setIsFirstSlide] = useState(true);
+  const [isLastSlide, setIsLastSlide] = useState(false);
+
+  const handleGoNext = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slideNext();
+    }
+  };
+
+  const handleGoPrev = () => {
+    console.log("asdasdad");
+    if (swiperRef.current) {
+      swiperRef.current.slidePrev();
+    }
+  };
+
+  return (
+    <section className="bg-[#F4F4F5] py-10 mt-14">
+      <div className="flex items-center justify-between">
+        <h4 className="font-medium text-3xl leading-9 text-[#09090B] px-4">
+          My Rewards
+        </h4>
+        <div>
+          <button
+            className="px-4 cursor-pointer"
+            onClick={handleGoPrev}
+            disabled={isFirstSlide}
+          >
+            <ArrowLeft color={isFirstSlide ? "#797979" : "black"} />
+          </button>
+          <button
+            className="px-4 cursor-pointer"
+            onClick={handleGoNext}
+            disabled={isLastSlide}
+          >
+            <ArrowRight color={isLastSlide ? "#797979" : "black"} />
+          </button>
+        </div>
+      </div>
+
+      <Swiper
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+        }}
+        className="mt-8 pb-4"
+        spaceBetween={16}
+        slidesPerView={2}
+        onSlideChange={(swiper) => {
+          setIsFirstSlide(swiper.isBeginning);
+          setIsLastSlide(swiper.isEnd);
+        }}
+      >
+        {rewards.map((reward) => (
+          <SwiperSlide key={reward.id} className="px-4">
+            <Reward title={reward.title} description={reward.description} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </section>
+  );
+};
+
+export default RewardsSwiper;

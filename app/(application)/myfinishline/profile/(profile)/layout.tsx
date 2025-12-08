@@ -25,7 +25,7 @@ const page = ({
   return (
     <main className="w-full min-h-screen h-full bg-background max-w-4xl mx-auto">
       <ProfileUserline />
-      <div className="mt-4">
+      <div className="mt-4 px-4">
         <ProfileTabs links={profileLinks} layoutId="profile-tab-navigation" />
       </div>
       <div className="mt-4">{children}</div>

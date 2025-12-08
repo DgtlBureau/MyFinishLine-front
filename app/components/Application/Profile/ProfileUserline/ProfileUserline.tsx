@@ -10,7 +10,7 @@ const ProfileUserline = () => {
   const { athlete, isLoading } = useGetStravaUser();
 
   return (
-    <section className="flex justify-between">
+    <section className="flex justify-between px-4">
       <div className="flex gap-4">
         {athlete?.profile ? (
           <Image

@@ -54,8 +54,6 @@ const AppHeader = () => {
   const currentLink = links.find((link) => pathname?.includes(link.link));
   const isCurrentLinkNested = !!currentLink;
 
-  console.log(isCurrentLinkNested);
-
   return (
     <header className="sticky top-0 z-40 bg-foreground">
       <div className="flex items-center justify-between max-w-4xl mx-auto px-4">

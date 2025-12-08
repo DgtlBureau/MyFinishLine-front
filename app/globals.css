@@ -303,3 +303,15 @@ html.theme-transition::view-transition-new(root) {
   margin: 0 20px !important;
   max-width: 500px;
 }
+
+.challenges-swiper .swiper-slide {
+  opacity: 0.7;
+  scale: 0.9;
+  /* transform: scale(0.9); */
+  transition: opacity 0.7s ease, scale 0.7s ease;
+}
+
+.challenges-swiper .swiper-slide-active {
+  opacity: 1;
+  scale: 1;
+}

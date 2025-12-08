@@ -30,7 +30,7 @@ const navLinks = [
   {
     id: 4,
     name: "Profile",
-    href: "/myfinishline/profile/account",
+    href: "/myfinishline/profile",
     parent: "profile",
     Icon: User,
   },

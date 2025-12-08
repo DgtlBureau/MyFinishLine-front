@@ -1,15 +1,154 @@
-import AwardsList from "@/app/components/Application/AwardsList/AwardsList";
+"use client";
+
 import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
+import {
+  ArrowRight,
+  ChevronRight,
+  Cloud,
+  Compass,
+  Gift,
+  Shield,
+  Star,
+  Zap,
+} from "lucide-react";
+
+import FeatureList from "@/app/components/Application/FeatureList/FeatureList";
+import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
+import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
+import Link from "next/link";
+import Image from "next/image";
+import useGetStravaUser from "@/app/hooks/useGetStravaUser";
+
+const features = [
+  {
+    id: 1,
+    title: "Run 10 km",
+    description: "Complete a 10 km run to unlock this goal.",
+    icon: <Star width={20} height={20} />,
+  },
+  {
+    id: 2,
+    title: "Cycle 50 km",
+    description: "Cycle a total of 50 km to achieve this milestone.",
+    icon: <Zap width={20} height={20} />,
+  },
+  {
+    id: 3,
+    title: "Swim 5 km",
+    description: "Swim a total of 5 km to unlock this achievement.",
+    icon: <Shield width={20} height={20} />,
+  },
+  {
+    id: 4,
+    title: "Hike 20 km",
+    description: "Hike a total of 20 km to reach this goal.",
+    icon: <Compass width={20} height={20} />,
+  },
+  {
+    id: 5,
+    title: "Complete a Triathlon",
+    description: "Finish a triathlon event to earn this badge.",
+    icon: <Cloud width={20} height={20} />,
+  },
+  {
+    id: 6,
+    title: "Climb 1000 m",
+    description: "Accumulate a total elevation gain of 1000 m.",
+    icon: <Gift width={20} height={20} />,
+  },
+];
 
 const page = () => {
+  const { isConnected } = useGetStravaUser();
+
+  const handleStravaLogin = () => {
+    const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
+    const redirectUri = `${window.location.origin}/api/strava/callback`;
+    const scope = "activity:read_all,profile:read_all";
+    const authUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&approval_prompt=force`;
+    window.location.href = authUrl;
+  };
+
   return (
     <section>
-      <h2 className="mt-10 font-medium text-3xl leading-9 text-[#09090B] text-center">
+      <h2 className="mt-10 font-medium text-3xl leading-9 text-[#09090B] text-center px-4">
         My Journey
       </h2>
-      <div className="mt-8">
+      <section className="mt-8 px-4">
         <ChallengeCard />
-      </div>
+      </section>
+      <RewardsSwiper />
+      <section className="py-10 mx-8">
+        <h4 className="font-bold text-2xl leading-8">Next Goals</h4>
+        <p className="mt-4 text-muted-foreground text-base">
+          Here you can see the next route points that await you ahead!
+        </p>
+        <div className="mt-8">
+          <FeatureList features={features} />
+        </div>
+      </section>
+
+      <section>
+        <h4 className="font-medium text-3xl text-center leading-9">
+          Explore Challenges
+        </h4>
+        <div className="mt-8">
+          <ChallengesSwiper />
+        </div>
+        <Link
+          href="#"
+          className="block mt-7 underline font-semibold text-[10px] text-center"
+        >
+          See All Challenges
+        </Link>
+      </section>
+      <section className="px-4 w-full mt-20 border-t border-[#DADADA] pt-11">
+        <h4 className="font-medium leading-7 text-xl text-center text-[#71717A]">
+          Authorize your accounts to connect to MyFinishLine
+        </h4>
+        <div className="mt-5 max-w-25 w-full bg-[#dadada] h-px mx-auto" />
+        <button
+          style={
+            isConnected
+              ? {
+                  cursor: "default",
+                  backgroundColor: "#FC4C02",
+                  color: "#FFF",
+                }
+              : {}
+          }
+          className="mt-5 w-full h-15 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
+          disabled={isConnected}
+          onClick={handleStravaLogin}
+        >
+          {isConnected ? (
+            <div className="text-center mx-auto">Connected to Strava</div>
+          ) : (
+            <>
+              <Image
+                className="rounded-2xl"
+                src="/icons/strava.svg"
+                width={56}
+                height={56}
+                alt="Strava"
+              />
+              Connect Strava
+              <ChevronRight />
+            </>
+          )}
+        </button>
+        <button className="w-full h-15 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden">
+          <Image
+            className="rounded-2xl"
+            src="/icons/garmin.svg"
+            width={56}
+            height={56}
+            alt="Garmin"
+          />
+          Connect Garmin
+          <ChevronRight />
+        </button>
+      </section>
     </section>
   );
 };

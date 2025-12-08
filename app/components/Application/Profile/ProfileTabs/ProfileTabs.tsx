@@ -19,8 +19,6 @@ interface IProfileTabsProps {
 const ProfileTabs = ({ links, layoutId }: IProfileTabsProps) => {
   const pathname = usePathname();
 
-  console.log(links);
-
   return (
     <nav className="flex items-center gap-1 p-1.5 overflow-hidden bg-[#F2F2F7] rounded-xl">
       {links.map((link) => {
