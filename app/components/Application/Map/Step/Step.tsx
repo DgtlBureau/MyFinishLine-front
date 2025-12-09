@@ -1,7 +1,10 @@
 import { CheckIcon } from "lucide-react";
-import Xarrow from "react-xarrows";
+import Xarrow, { Xwrapper } from "react-xarrows";
 import { useLottie } from "lottie-react";
 import crown from "./crown.json";
+import ConnectorLine from "@/app/components/Shared/ProgressArrow/ProgressArrow";
+import ProgressLineApp from "@/app/components/Shared/ProgressArrow/ProgressArrow";
+import ProgressArrow from "@/app/components/Shared/ProgressArrow/ProgressArrow";
 
 interface StepProps {
   id: number;
@@ -9,6 +12,7 @@ interface StepProps {
   stepsAmount: number;
   completed: boolean;
   isActive?: boolean;
+  progress: number;
 }
 
 const Step = ({
@@ -16,6 +20,7 @@ const Step = ({
   title,
   stepsAmount,
   completed,
+  progress,
   isActive = false,
 }: StepProps) => {
   const isLast = id === stepsAmount;
@@ -84,13 +89,29 @@ const Step = ({
         </div>
       )}
       {id + 1 <= stepsAmount && (
-        <Xarrow
-          dashness
-          color="white"
-          start={"step-" + id}
-          end={"step-" + (id + 1)}
-          showHead={false}
-        />
+        <>
+          <div className="relative z-10">
+            <Xarrow
+              dashness
+              color="gray"
+              start={"step-" + id}
+              end={"step-" + (id + 1)}
+              showHead={false}
+              strokeWidth={4}
+            />
+          </div>
+          <div className="relative z-20">
+            <ProgressArrow
+              dashness
+              color="oklch(72.3% 0.219 149.579)"
+              start={"step-" + id}
+              end={"step-" + (id + 1)}
+              showHead={false}
+              progress={progress}
+              strokeWidth={4}
+            />
+          </div>
+        </>
       )}
     </div>
   );

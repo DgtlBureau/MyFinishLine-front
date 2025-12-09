@@ -266,7 +266,6 @@ export default function FeaturesCarousel() {
             })}
           </motion.div>
 
-          {/* Dots Indicator */}
           <motion.div
             className="flex flex-1 items-end justify-center gap-1 lg:hidden"
             initial={prefersReducedMotion ? "visible" : "hidden"}

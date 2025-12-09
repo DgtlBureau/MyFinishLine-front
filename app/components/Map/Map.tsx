@@ -6,6 +6,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import MapStats from "./MapStats/MapStats";
+import { Xwrapper } from "react-xarrows";
 
 const challenge = {
   steps: [
@@ -14,8 +15,8 @@ const challenge = {
       title: "🏁 The Starting Line",
       description: "Begin your journey",
       index: 1,
-      completed: true,
-      progress: 1,
+      completed: false,
+      progress: 20,
       x: 50,
       y: 115,
     },
@@ -252,7 +253,7 @@ const Map = () => {
           updatedSteps[nextStepIndex] = {
             ...updatedSteps[nextStepIndex],
             completed: true,
-            progress: 1,
+            progress: 100,
           };
         }
         return { ...prev, steps: updatedSteps };
@@ -262,7 +263,7 @@ const Map = () => {
     }
 
     setTimeout(() => setIsAnimating(false), 1000);
-    setisAwardOpen(true);
+    // setisAwardOpen(true);
   };
 
   const handleStepClick = (stepId: number) => {
@@ -312,53 +313,56 @@ const Map = () => {
               style={{ minHeight: `${mapHeight}px` }}
             >
               <div className="relative w-full">
-                {currentChallenge.steps.map((step) => {
-                  const topPosition = step.y * 60;
+                <Xwrapper>
+                  {currentChallenge.steps.map((step) => {
+                    const topPosition = step.y * 60;
 
-                  return (
-                    <div
-                      key={step.id}
-                      className="absolute transform -translate-x-1/2 -translate-y-1/2"
-                      style={{
-                        left: `${step.x}%`,
-                        top: `${topPosition}px`,
-                      }}
-                    >
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
-                        <div className="bg-gray-900/90 backdrop-blur-sm text-white text-sm px-4 py-3 rounded-xl whitespace-nowrap shadow-2xl border border-white/10">
-                          <div className="font-bold flex items-center gap-2">
-                            {step.title}
-                            {step.completed && (
-                              <span className="text-xs px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-full">
-                                ✓ Completed
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-gray-300 text-xs mt-1 max-w-xs">
-                            {step.description}
-                          </div>
-                          <div className="text-cyan-400 text-xs font-medium mt-2">
-                            Step {step.id} of {stepsAmount}
-                          </div>
-                        </div>
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900/90 rotate-45 border-r border-b border-white/10" />
-                      </div>
-
+                    return (
                       <div
-                        className="group cursor-pointer relative z-20"
-                        onClick={() => handleStepClick(step.id)}
+                        key={step.id}
+                        className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                        style={{
+                          left: `${step.x}%`,
+                          top: `${topPosition}px`,
+                        }}
                       >
-                        <Step
-                          id={step.id}
-                          title={step.title}
-                          stepsAmount={stepsAmount}
-                          completed={step.completed}
-                          isActive={selectedStep === step.id}
-                        />
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
+                          <div className="bg-gray-900/90 backdrop-blur-sm text-white text-sm px-4 py-3 rounded-xl whitespace-nowrap shadow-2xl border border-white/10">
+                            <div className="font-bold flex items-center gap-2">
+                              {step.title}
+                              {step.completed && (
+                                <span className="text-xs px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-full">
+                                  ✓ Completed
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-gray-300 text-xs mt-1 max-w-xs">
+                              {step.description}
+                            </div>
+                            <div className="text-cyan-400 text-xs font-medium mt-2">
+                              Step {step.id} of {stepsAmount}
+                            </div>
+                          </div>
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900/90 rotate-45 border-r border-b border-white/10" />
+                        </div>
+
+                        <div
+                          className="group cursor-pointer relative z-20"
+                          onClick={() => handleStepClick(step.id)}
+                        >
+                          <Step
+                            id={step.id}
+                            title={step.title}
+                            stepsAmount={stepsAmount}
+                            completed={step.completed}
+                            isActive={selectedStep === step.id}
+                            progress={step.progress}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </Xwrapper>
               </div>
             </div>
           </div>

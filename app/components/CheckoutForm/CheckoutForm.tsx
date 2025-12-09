@@ -110,7 +110,6 @@ const PaymentForm = ({ total }: { total: number }) => {
   const cardElementOptions = {
     style: {
       base: {
-        fontFamily: '"Montserrat", sans-serif',
         fontSize: "16px",
         color: "#aab7c4",
         "::placeholder": {

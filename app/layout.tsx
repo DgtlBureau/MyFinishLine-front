@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Allerta_Stencil, Inter, Montserrat } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-
-const montserrat = Montserrat({
-  variable: "--font-montserrant",
-  display: "swap",
-  subsets: ["latin"],
-});
 
 const inter = Inter({
   variable: "--font-inter",

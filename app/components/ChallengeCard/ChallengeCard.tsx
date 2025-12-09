@@ -1,11 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import ProgressLine from "../Shared/ProgressLine/ProgressLine";
-import { Button } from "../ui/button";
+import CustomModal from "../Shared/CustomModal/CustomModal";
+import { useState } from "react";
+import { motion } from "motion/react";
 
-type Props = {};
+const ChallengeCard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const ChallengeCard = (props: Props) => {
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
       <div className="flex gap-3">
@@ -59,12 +69,33 @@ const ChallengeCard = (props: Props) => {
       <button className="bg-transparent w-full mt-8 border-white py-2 px-4 border text-white text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer">
         Сlaim medal
       </button>
-      <Link
-        href="#"
-        className="underline mt-4 font-semibold text-[10px] text-black block text-center"
+      <button
+        onClick={handleOpenModal}
+        className="underline mt-4 font-semibold text-[10px] text-black block mx-auto cursor-pointer"
       >
         Look at the medal
-      </Link>
+      </button>
+
+      <CustomModal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <motion.div
+          animate={{ rotateY: [20, -20, 20] }} // Animate x position from 0 to 100 and back to 0
+          transition={{
+            duration: 10, // Duration of one full cycle (forward and backward)
+            repeat: Infinity, // Repeat indefinitely
+            repeatType: "reverse", // Reverse direction on each repeat
+            ease: "easeInOut", // Easing function for a smooth transition
+          }}
+        >
+          <Image
+            className="px-4 pb-3 h-[50%] max-h-[calc(100vh-80px)] object-contain"
+            src="/images/application/medal.png"
+            width={1080}
+            height={1080}
+            quality={100}
+            alt="Medal"
+          />
+        </motion.div>
+      </CustomModal>
     </div>
   );
 };

@@ -3,9 +3,9 @@ import { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 
 import "swiper/css";
-import { ArrowUpRight } from "lucide-react";
 
 const challenges = [
   {
@@ -51,8 +51,10 @@ const ChallengesSwiper = () => {
               className="object-cover w-full h-130 rounded-4xl"
               src={challenge.image}
               alt={challenge.title}
-              width={275}
-              height={374}
+              width={400}
+              height={700}
+              loading="eager"
+              quality={80}
             />
             <span className="block text-center mt-6 font-medium text-xl tracking-[-4%]">
               {challenge.title}

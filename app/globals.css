@@ -60,7 +60,7 @@
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 
   --animate-pulse-shimmer: pulse 2s ease-in-out infinite;
-  @keyframes pulse {
+  --animate-sheen-sweep: @keyframes pulse {
     0% {
       background-color: #666;
     }

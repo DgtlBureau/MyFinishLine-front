@@ -78,7 +78,7 @@ const page = () => {
         <ChallengeCard />
       </section>
       <RewardsSwiper />
-      <section className="py-10 mx-8">
+      <section className="py-10 px-4">
         <h4 className="font-bold text-2xl leading-8">Next Goals</h4>
         <p className="mt-4 text-muted-foreground text-base">
           Here you can see the next route points that await you ahead!
@@ -117,7 +117,7 @@ const page = () => {
                 }
               : {}
           }
-          className="mt-5 w-full h-15 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
+          className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
           disabled={isConnected}
           onClick={handleStravaLogin}
         >
@@ -137,7 +137,7 @@ const page = () => {
             </>
           )}
         </button>
-        <button className="w-full h-15 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden">
+        <button className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden">
           <Image
             className="rounded-2xl"
             src="/icons/garmin.svg"

@@ -2,7 +2,7 @@
 
 import ActivitiesList from "@/app/components/Application/Stats/ActivitiesList/ActivitiesList";
 import { IActivity } from "@/app/types";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
