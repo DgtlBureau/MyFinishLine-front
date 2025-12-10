@@ -102,9 +102,9 @@ export async function GET(request: Request) {
     });
 
     console.log("Cookies set, redirecting to dashboard");
-    redirect("/myfinishline/integrations");
+    redirect("/myfinishline/profile/journey");
   } catch (error) {
     console.error("Callback error:", error);
-    redirect("/myfinishline/integrations");
+    redirect("/myfinishline/profile/journey");
   }
 }

@@ -9,21 +9,25 @@ const rewards = [
   {
     id: 1,
     title: "It's Raining Man",
+    image: "/images/application/medal.png",
     description: "Run 45 km under the rain.",
   },
   {
     id: 2,
     title: "Marathoner",
+    image: "/images/application/medal.png",
     description: "Complete a full marathon distance of 42.195 km.",
   },
   {
     id: 3,
     title: "Great Wall Runner",
+    image: "/images/application/medal.png",
     description: "Conquer a run along the Great Wall of China.",
   },
   {
     id: 4,
     title: "Mountain Conqueror",
+    image: "/images/application/medal.png",
     description: "Reach the summit of a mountain over 2000m.",
   },
 ];
@@ -84,7 +88,11 @@ const RewardsSwiper = () => {
       >
         {rewards.map((reward) => (
           <SwiperSlide key={reward.id} className="px-4">
-            <Reward title={reward.title} description={reward.description} />
+            <Reward
+              title={reward.title}
+              description={reward.description}
+              image={reward.image}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

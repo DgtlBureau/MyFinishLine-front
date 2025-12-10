@@ -1,9 +1,6 @@
-import { CheckIcon } from "lucide-react";
 import Xarrow, { Xwrapper } from "react-xarrows";
 import { useLottie } from "lottie-react";
 import crown from "./crown.json";
-import ConnectorLine from "@/app/components/Shared/ProgressArrow/ProgressArrow";
-import ProgressLineApp from "@/app/components/Shared/ProgressArrow/ProgressArrow";
 import ProgressArrow from "@/app/components/Shared/ProgressArrow/ProgressArrow";
 
 interface StepProps {
@@ -32,11 +29,11 @@ const Step = ({
   const { View } = useLottie(options);
 
   const getStepColor = () => {
-    if (isActive) {
-      return "bg-gradient-to-br from-blue-500 to-purple-600 ring-4 ring-blue-300/50";
-    }
     if (completed) {
       return "bg-gradient-to-br from-green-500 to-emerald-600 ring-2 ring-green-300/30";
+    }
+    if (isActive) {
+      return "bg-gradient-to-br from-blue-500 to-purple-600 ring-4 ring-blue-300/50";
     }
     return "bg-gradient-to-br from-gray-300 to-gray-400 ring-2 ring-gray-200/20";
   };
@@ -49,7 +46,7 @@ const Step = ({
       {isLast && (
         <div className="absolute bottom-[25%] w-22 h-22 z-100">{View}</div>
       )}
-      {isActive && (
+      {!completed && isActive && (
         <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-30" />
       )}
 
@@ -70,10 +67,10 @@ const Step = ({
           className={`
           text-xs font-medium whitespace-nowrap px-2 py-1 rounded
           ${
-            isActive
+            completed
+              ? "bg-green-100 text-green-400"
+              : isActive
               ? "bg-blue-100 text-blue-800"
-              : completed
-              ? "bg-green-100 text-green-800"
               : "bg-gray-100 text-gray-600"
           }
           transition-all duration-300
@@ -83,11 +80,6 @@ const Step = ({
         </div>
       </div>
 
-      {completed && !isActive && (
-        <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow">
-          <CheckIcon className="w-3 h-3 text-white" />
-        </div>
-      )}
       {id + 1 <= stepsAmount && (
         <>
           <div className="relative z-10">
@@ -103,7 +95,7 @@ const Step = ({
           <div className="relative z-20">
             <ProgressArrow
               dashness
-              color="oklch(72.3% 0.219 149.579)"
+              color={completed ? "oklch(72.3% 0.219 149.579)" : "#6d63ff"}
               start={"step-" + id}
               end={"step-" + (id + 1)}
               showHead={false}

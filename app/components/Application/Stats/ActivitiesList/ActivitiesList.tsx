@@ -18,7 +18,7 @@ const ActivitiesList = ({ activities = [] }: IActivitiesListProps) => {
   }
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-5">
       {activities.map((activity, index) => (
         <Activity key={activity.id} delay={index * 0.05} {...activity} />
       ))}

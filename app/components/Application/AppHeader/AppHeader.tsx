@@ -3,19 +3,6 @@
 import { ChevronLeft, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-const rootLayouts = [
-  "/myfinishline",
-  "/myfinishline/homepage",
-  "/myfinishline/store/booster",
-  "/myfinishline/store/my-challenges",
-  "/myfinishline/store/contracts",
-  "/myfinishline/stats",
-  "/myfinishline/more",
-  "/myfinishline/profile/account",
-  "/myfinishline/profile/awards",
-  "/myfinishline/profile/activities",
-];
-
 const links = [
   {
     id: 1,

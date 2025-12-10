@@ -2,21 +2,58 @@
 
 import Step from "@/app/components/Application/Map/Step/Step";
 import Image from "next/image";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import MapStats from "./MapStats/MapStats";
 import { Xwrapper } from "react-xarrows";
+import StoryModal, { IStory } from "../Shared/StoryList/StoryList";
 
-const challenge = {
+interface IStep {
+  id: number;
+  title: string;
+  description: string;
+  index: number;
+  completed: boolean;
+  progress: number;
+  active: boolean;
+  stories?: IStory[];
+  x: number;
+  y: number;
+}
+
+const challenge: { steps: IStep[] } = {
   steps: [
     {
       id: 1,
       title: "🏁 The Starting Line",
       description: "Begin your journey",
       index: 1,
+      active: true,
       completed: false,
       progress: 20,
+      stories: [
+        {
+          id: 1,
+          description: "So you decided to travel here? Good.",
+          image: "/images/application/stories/1.jpg",
+        },
+        {
+          id: 2,
+          description: "You'll encounter many interesting things along the way",
+          image: "/images/application/stories/2.jpg",
+        },
+        {
+          id: 3,
+          description: "Don't be scared.",
+          image: "/images/application/stories/3.jpg",
+        },
+        {
+          id: 4,
+          description: "They will help you on your way to the top",
+          image: "/images/application/stories/4.jpg",
+        },
+      ] as IStory[],
       x: 50,
       y: 115,
     },
@@ -25,8 +62,27 @@ const challenge = {
       title: "🔥 First Spark",
       description: "Complete 3 workouts",
       index: 1,
+      active: false,
       completed: false,
       progress: 0,
+      stories: [
+        {
+          id: 1,
+          description: "Finally! You are here!",
+          image: "/images/application/stories/8.jpg",
+        },
+        {
+          id: 2,
+          description: "I don't want to ask right away but... I need your help",
+          image: "/images/application/stories/6.jpg",
+        },
+        {
+          id: 3,
+          description:
+            "Do you see that castle? I need you to get on top of it. I'll meet you there",
+          image: "/images/application/stories/5.jpg",
+        },
+      ] as IStory[],
       x: 30,
       y: 110,
     },
@@ -35,6 +91,7 @@ const challenge = {
       title: "📈 Building Rhythm",
       description: "5 consecutive days",
       index: 1,
+      active: false,
       completed: false,
       progress: 0,
       x: 70,
@@ -45,6 +102,7 @@ const challenge = {
       title: "🏃‍♂️ Runner's High",
       description: "First 10km run",
       index: 1,
+      active: false,
       completed: false,
       progress: 0,
       x: 40,
@@ -55,6 +113,7 @@ const challenge = {
       title: "⛰️ Hill Conqueror",
       description: "100m elevation gain",
       index: 1,
+      active: false,
       completed: false,
       progress: 0,
       x: 60,
@@ -65,6 +124,7 @@ const challenge = {
       title: "⚡ Speed Surge",
       description: "Set a new 5k PR",
       index: 2,
+      active: false,
       completed: false,
       progress: 0,
       x: 35,
@@ -75,6 +135,7 @@ const challenge = {
       title: "🌅 Morning Warrior",
       description: "7 AM runs for a week",
       index: 2,
+      active: false,
       completed: false,
       progress: 0,
       x: 65,
@@ -85,6 +146,7 @@ const challenge = {
       title: "🛤️ Trail Explorer",
       description: "Complete trail run",
       index: 2,
+      active: false,
       completed: false,
       progress: 0,
       x: 25,
@@ -95,6 +157,7 @@ const challenge = {
       title: "💪 Endurance Test",
       description: "First half marathon",
       index: 2,
+      active: false,
       completed: false,
       progress: 0,
       x: 75,
@@ -105,6 +168,7 @@ const challenge = {
       title: "🌧️ Rain Runner",
       description: "Run in any weather",
       index: 2,
+      active: false,
       completed: false,
       progress: 0,
       x: 45,
@@ -115,6 +179,7 @@ const challenge = {
       title: "🎯 Consistency King",
       description: "30-day streak",
       index: 3,
+      active: false,
       completed: false,
       progress: 0,
       x: 55,
@@ -125,6 +190,7 @@ const challenge = {
       title: "🏃‍♀️ Distance Master",
       description: "100km total distance",
       index: 3,
+      active: false,
       completed: false,
       progress: 0,
       x: 20,
@@ -135,6 +201,7 @@ const challenge = {
       title: "⏱️ Pace Setter",
       description: "Sub 5:00/km average",
       index: 3,
+      active: false,
       completed: false,
       progress: 0,
       x: 80,
@@ -145,6 +212,7 @@ const challenge = {
       title: "🌙 Night Owl",
       description: "Complete night run",
       index: 3,
+      active: false,
       completed: false,
       progress: 0,
       x: 40,
@@ -155,6 +223,7 @@ const challenge = {
       title: "🧗 Mountain Goat",
       description: "500m total elevation",
       index: 3,
+      active: false,
       completed: false,
       progress: 0,
       x: 60,
@@ -165,6 +234,7 @@ const challenge = {
       title: "🏆 Marathon Ready",
       description: "Complete 30km run",
       index: 4,
+      active: false,
       completed: false,
       progress: 0,
       x: 50,
@@ -175,6 +245,7 @@ const challenge = {
       title: "💨 Speed Demon",
       description: "Sub 4:30/km pace",
       index: 4,
+      active: false,
       completed: false,
       progress: 0,
       x: 30,
@@ -185,6 +256,7 @@ const challenge = {
       title: "🏔️ Summit Seeker",
       description: "1000m elevation gain",
       index: 4,
+      active: false,
       completed: false,
       progress: 0,
       x: 70,
@@ -195,6 +267,7 @@ const challenge = {
       title: "🏃 Ultra Mindset",
       description: "50km milestone",
       index: 4,
+      active: false,
       completed: false,
       progress: 0,
       x: 45,
@@ -205,6 +278,7 @@ const challenge = {
       title: "⭐ Legend Forged",
       description: "100 days of running",
       index: 4,
+      active: false,
       completed: false,
       progress: 0,
       x: 55,
@@ -215,15 +289,54 @@ const challenge = {
 
 const Map = () => {
   const [currentChallenge, setCurrentChallenge] = useState(challenge);
-  const [selectedStep, setSelectedStep] = useState<number | null>(null);
+  const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isAwardOpen, setisAwardOpen] = useState(false);
+  const [isAwardOpen, setIsAwardOpen] = useState(false);
+  const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const steps = currentChallenge.steps;
   const stepsAmount = steps.length;
 
+  useEffect(() => {
+    setIsMounted(true);
+
+    // Load saved challenge from localStorage
+    try {
+      const savedChallenge = localStorage.getItem("challengeProgress");
+      if (savedChallenge) {
+        const parsed = JSON.parse(savedChallenge);
+        setCurrentChallenge(parsed);
+      }
+    } catch (error) {
+      console.error("Error loading challenge from localStorage:", error);
+    }
+  }, []);
+
+  const handleResetProgress = () => {
+    setCurrentChallenge(challenge);
+    localStorage.removeItem("challengeProgress");
+  };
+
   useLayoutEffect(() => {
+    if (!isMounted) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+
+    const scrollToActiveStep = () => {
+      const activeStep = currentChallenge.steps.find(
+        (step) => step.active && !step.completed
+      );
+      if (activeStep) {
+        const element = document.getElementById("step-" + activeStep.id);
+        element?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    };
+
     const scrollToBottom = () => {
       if (containerRef.current) {
         containerRef.current.scrollTo({
@@ -233,48 +346,98 @@ const Map = () => {
       }
     };
 
-    const timer = setTimeout(scrollToBottom, 100);
+    // Check if there's an active step
+    const hasActiveStep = currentChallenge.steps.some(
+      (step) => step.active && !step.completed
+    );
+
+    if (hasActiveStep) {
+      timer = setTimeout(scrollToActiveStep, 100);
+    } else {
+      timer = setTimeout(scrollToBottom, 100);
+    }
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [isMounted, currentChallenge]);
 
   const handleGoToNextStep = () => {
     if (isAnimating) return;
     setIsAnimating(true);
 
+    const currentStepIndex = currentChallenge.steps.findIndex(
+      (step) => step.active && !step.completed
+    );
     const nextStepIndex = currentChallenge.steps.findIndex(
-      (step) => !step.completed
+      (step) => !step.active && !step.completed
     );
 
     if (nextStepIndex !== -1) {
       setCurrentChallenge((prev) => {
         const updatedSteps = [...prev.steps];
+        updatedSteps[currentStepIndex] = {
+          ...updatedSteps[currentStepIndex],
+          completed: true,
+          progress: 100,
+        };
         if (updatedSteps[nextStepIndex]) {
           updatedSteps[nextStepIndex] = {
             ...updatedSteps[nextStepIndex],
-            completed: true,
-            progress: 100,
+            active: true,
           };
         }
         return { ...prev, steps: updatedSteps };
       });
 
-      setSelectedStep(currentChallenge.steps[nextStepIndex].id);
+      const nextStep = document.getElementById("step-" + (nextStepIndex + 1));
+      nextStep?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      setActiveStep(currentChallenge.steps[nextStepIndex]);
     }
 
     setTimeout(() => setIsAnimating(false), 1000);
-    setisAwardOpen(true);
+    setIsAwardOpen(true);
   };
 
-  const handleStepClick = (stepId: number) => {
-    const step = steps.find((s) => s.id === stepId);
-    if (step && step.completed) {
-      setSelectedStep(selectedStep === stepId ? null : stepId);
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem(
+        "challengeProgress",
+        JSON.stringify(currentChallenge)
+      );
+    }
+  }, [currentChallenge, isMounted]);
+
+  const handleStepClick = (clickedStep: IStep) => {
+    if (!clickedStep.completed && !clickedStep.active) return;
+    setActiveStep(clickedStep);
+
+    if (clickedStep.stories?.length) {
+      setIsStoriesOpen(true);
     }
   };
 
   const maxY = Math.max(...steps.map((step) => step.y));
   const mapHeight = maxY * 60;
+
+  const handleContinueAwards = () => {
+    setIsAwardOpen(false);
+    if (activeStep?.stories?.length) {
+      setIsStoriesOpen(true);
+    }
+  };
+
+  const handleCloseStories = () => {
+    setActiveStep(null);
+    setIsStoriesOpen(false);
+  };
+
+  if (!isMounted) {
+    return (
+      <div className="fixed inset-0 bg-linear-to-br from-slate-950 via-blue-950/30 to-purple-950/20" />
+    );
+  }
 
   return (
     <>
@@ -301,7 +464,7 @@ const Map = () => {
                     alt="Map background"
                     className="object-cover"
                     priority={index === 0}
-                    sizes="100vw"
+                    sizes="100%"
                   />
                   <div className="absolute inset-0 bg-linear-to-b from-transparent via-slate-900/10 to-transparent" />
                 </div>
@@ -348,14 +511,14 @@ const Map = () => {
 
                         <div
                           className="group cursor-pointer relative z-20"
-                          onClick={() => handleStepClick(step.id)}
+                          onClick={() => handleStepClick(step)}
                         >
                           <Step
                             id={step.id}
                             title={step.title}
                             stepsAmount={stepsAmount}
                             completed={step.completed}
-                            isActive={selectedStep === step.id}
+                            isActive={step.active}
                             progress={step.progress}
                           />
                         </div>
@@ -373,13 +536,20 @@ const Map = () => {
             steps={currentChallenge.steps}
             isAnimating={isAnimating}
             onCompleteNextStep={handleGoToNextStep}
+            onResetClick={handleResetProgress}
           />
         </div>
       </div>
 
       <AnimatePresence>
-        {isAwardOpen && (
-          <AwardModal onCloseClick={() => setisAwardOpen(false)} />
+        {isAwardOpen && <AwardModal onCloseClick={handleContinueAwards} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isStoriesOpen && (
+          <StoryModal
+            stories={activeStep?.stories || []}
+            onClose={handleCloseStories}
+          />
         )}
       </AnimatePresence>
     </>

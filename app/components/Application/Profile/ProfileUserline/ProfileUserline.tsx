@@ -5,9 +5,42 @@ import { Camera } from "lucide-react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  handleConvertDistance,
+  handleConvertTime,
+} from "@/app/lib/utils/convertData";
+
+interface IStats {
+  all_run_totals: {
+    count: number;
+    distance: number;
+    moving_time: number;
+    elapsed_time: number;
+    elevation_gain: number;
+  };
+}
 
 const ProfileUserline = () => {
   const { athlete, isLoading } = useGetStravaUser();
+  const [stats, setStats] = useState<IStats>({} as IStats);
+
+  const handleGetAthlete = async () => {
+    try {
+      console.log("adsadadas", athlete.id);
+      const { data } = await axios.get("/api/strava/athletes/" + athlete.id);
+      setStats(data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (athlete.id) {
+      handleGetAthlete();
+    }
+  }, [athlete.id]);
 
   return (
     <section className="flex justify-between px-4">
@@ -47,9 +80,25 @@ const ProfileUserline = () => {
             </motion.span>
           </div>
           <div className="flex items-center gap-4">
-            <StatBlock label="Total distance" value="134.09 km" />
-            <StatBlock label="Total hours" value="45.36 hrs" />
-            <StatBlock label="Total runs" value="17" />
+            <StatBlock
+              label="Total distance"
+              value={
+                handleConvertDistance(stats.all_run_totals?.distance) || "0"
+              }
+            />
+            <StatBlock
+              label="Total hours"
+              value={
+                handleConvertTime(
+                  stats.all_run_totals?.moving_time,
+                  "hoursOnly"
+                ) || "0"
+              }
+            />
+            <StatBlock
+              label="Total runs"
+              value={stats.all_run_totals?.count?.toString() || "0"}
+            />
           </div>
         </div>
       </div>

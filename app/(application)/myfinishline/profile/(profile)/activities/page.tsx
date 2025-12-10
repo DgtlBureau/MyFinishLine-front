@@ -31,13 +31,16 @@ const page = () => {
 
   return (
     <main className="relative px-4">
+      <h4 className="mt-10 text-3xl text-center font-medium leading-9 text-[#09090B]">
+        Recent Activities
+      </h4>
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mt-8">
             <Loader2 width={48} height={48} className="animate-spin" />
           </div>
         ) : activities?.length > 0 ? (
-          <div className="mt-2">
+          <div className="mt-8">
             <ActivitiesList activities={activities} />
           </div>
         ) : (

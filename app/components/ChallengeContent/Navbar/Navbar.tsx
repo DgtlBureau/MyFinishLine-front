@@ -215,21 +215,21 @@ const Navbar = ({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute block h-0.25 w-full rounded-full bg-current transition duration-500 ease-in-out",
+                    "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
                     isMenuOpen ? "rotate-45" : "-translate-y-1.5"
                   )}
                 ></span>
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute block h-0.25 w-full rounded-full bg-current transition duration-500 ease-in-out",
+                    "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
                     isMenuOpen ? "opacity-0" : ""
                   )}
                 ></span>
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute block h-0.25 w-full rounded-full bg-current transition duration-500 ease-in-out",
+                    "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
                     isMenuOpen ? "-rotate-45" : "translate-y-1.5"
                   )}
                 ></span>
@@ -243,7 +243,7 @@ const Navbar = ({
             "bg-background/95 text-accent-foreground fixed inset-0 -z-10 flex flex-col justify-between tracking-normal backdrop-blur-md transition-all duration-500 ease-out lg:hidden",
             isBannerVisible
               ? "pt-[calc(var(--header-height)+3rem)]"
-              : "pt-[var(--header-height)]",
+              : "pt-(--header-height)",
             isMenuOpen
               ? "translate-x-0 opacity-100"
               : "pointer-events-none translate-x-full opacity-0"

@@ -5,8 +5,8 @@ import { Activity, Award } from "lucide-react";
 const profileLinks = [
   {
     id: 1,
-    name: "Awards",
-    href: "/myfinishline/profile/awards",
+    name: "Journey",
+    href: "/myfinishline/profile/journey",
     icon: <Award width={16} height={16} />,
   },
   {

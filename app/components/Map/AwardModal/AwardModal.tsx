@@ -24,15 +24,6 @@ const AwardModal = ({ onCloseClick }: { onCloseClick: () => void }) => {
       >
         <CelebrationComponent />
         <div className="relative">
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 5 }}
-            className="absolute top-0 right-0 z-10 p-2"
-            onClick={onCloseClick}
-          >
-            <X color="white" />
-          </motion.button>
           {View}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -49,6 +40,15 @@ const AwardModal = ({ onCloseClick }: { onCloseClick: () => void }) => {
               Congratulations! You finished the step!
             </motion.span>
           </motion.div>
+          <motion.button
+            className="block bg-black px-8 py-2 rounded-lg text-white mt-2 mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 4, ease: "easeInOut" }}
+            onClick={onCloseClick}
+          >
+            Continue
+          </motion.button>
         </div>
       </motion.div>
     </>,

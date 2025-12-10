@@ -9,6 +9,7 @@ interface StatsBlockProps {
   steps: Array<{ completed: boolean }>;
   isAnimating: boolean;
   onCompleteNextStep: () => void;
+  onResetClick: () => void;
 }
 
 const animationVariants = {
@@ -48,6 +49,7 @@ const MapStats = ({
   steps,
   isAnimating,
   onCompleteNextStep,
+  onResetClick,
 }: StatsBlockProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -67,7 +69,13 @@ const MapStats = ({
         className="bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl p-3 border border-gray-200/50 overflow-hidden"
       >
         <motion.div variants={contentVariants}>
-          <motion.div className="mb-3">
+          <button
+            className="w-full text-center text-xs underline"
+            onClick={onResetClick}
+          >
+            Reset progress
+          </button>
+          <motion.div className="mb-3 mt-2">
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs font-medium text-gray-600">
                 Distance

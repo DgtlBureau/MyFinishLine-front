@@ -55,7 +55,7 @@ const Redeem = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     toast.success("Medal claimed! Your medal is on its way.");
-    router.push("/myfinishline/profile/awards");
+    router.push("/myfinishline/profile/journey");
 
     setIsSubmitting(false);
   };

@@ -1,0 +1,254 @@
+import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion, useAnimation } from "motion/react";
+import Image from "next/image";
+import StoryShadow from "./StoryShadow/StoryShadow";
+
+export interface IStory {
+  id: number;
+  image: string;
+  foregroundImage?: string;
+  description: string;
+}
+
+const StoryList = ({
+  stories,
+  onClose,
+}: {
+  stories: IStory[];
+  onClose: () => void;
+}) => {
+  const [activeStoryIndex, setActiveStoryIndex] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showShadow, setShowShadow] = useState(false);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const controls = useAnimation();
+  const animationDuration = 10;
+  const HOLD_DELAY = 150;
+
+  const handleGoToNextStory = () => {
+    setActiveStoryIndex((prevIndex) => {
+      if (stories[prevIndex + 1]) {
+        return prevIndex + 1;
+      } else {
+        onClose();
+        return prevIndex;
+      }
+    });
+  };
+
+  const handleGoToPrevStory = () => {
+    if (stories[activeStoryIndex - 1]) {
+      setActiveStoryIndex((prevState) => prevState - 1);
+    }
+  };
+
+  useEffect(() => {
+    document.body.classList.add("overflow-y-hidden");
+    return () => {
+      document.body.classList.remove("overflow-y-hidden");
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    controls.stop();
+
+    controls.set({ width: "0%" });
+
+    setTimeout(() => {
+      controls.start({
+        width: "100%",
+        transition: {
+          duration: animationDuration,
+          ease: "linear",
+        },
+      });
+    }, 50);
+  }, [activeStoryIndex, controls]);
+
+  const currentStory =
+    typeof activeStoryIndex === "number" ? stories[activeStoryIndex] : null;
+
+  const handlePauseAnimation = () => {
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsPaused(true);
+      setShowShadow(true);
+      controls.stop();
+    }, HOLD_DELAY);
+  };
+
+  const handleResumeAnimation = () => {
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+      pauseTimeoutRef.current = null;
+    }
+
+    if (isPaused) {
+      setIsPaused(false);
+      setShowShadow(false);
+
+      const progressBars = document.querySelectorAll("[data-story-progress]");
+      const activeBar = progressBars[activeStoryIndex];
+
+      if (activeBar) {
+        const progressFill = activeBar.querySelector(
+          ".progress-fill"
+        ) as HTMLElement;
+        if (progressFill) {
+          const parentWidth = activeBar.clientWidth;
+          const currentWidth = progressFill.clientWidth;
+          const currentPercent = (currentWidth / parentWidth) * 100;
+
+          const remainingPercent = 100 - currentPercent;
+          const remainingDuration =
+            (animationDuration * remainingPercent) / 100;
+
+          controls.start({
+            width: "100%",
+            transition: {
+              duration: remainingDuration,
+              ease: "linear",
+            },
+          });
+        }
+      }
+    }
+  };
+
+  const handlePointerLeave = () => {
+    handleResumeAnimation();
+  };
+
+  useEffect(() => {
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+      pauseTimeoutRef.current = null;
+    }
+    setShowShadow(false);
+    setIsPaused(false);
+  }, [activeStoryIndex]);
+
+  return (
+    <div
+      onPointerDown={handlePauseAnimation}
+      onPointerUp={handleResumeAnimation}
+      onPointerLeave={handlePointerLeave}
+      onContextMenu={(e) => e.preventDefault()}
+      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-black select-none"
+    >
+      <AnimatePresence>{showShadow && <StoryShadow />}</AnimatePresence>
+      {currentStory && (
+        <Image
+          className="fixed object-cover z-50 w-full h-full blur-xl opacity-50"
+          src={currentStory?.image}
+          fill
+          alt="Story background"
+          priority
+        />
+      )}
+
+      <div className="top-0 h-screen z-100 max-w-[1080px] w-full mx-auto relative">
+        <div className="absolute top-0 left-0 w-full z-50 flex gap-1">
+          {stories.map((story, index) => {
+            const isActive = index === activeStoryIndex;
+            const isCompleted = index < activeStoryIndex;
+
+            return (
+              <div
+                key={story.id}
+                data-story-progress
+                className="h-0.5 bg-gray-500/70 w-full z-50 overflow-hidden backdrop-blur-sm"
+              >
+                {isCompleted && (
+                  <div className="h-full w-full bg-white transition-all duration-300" />
+                )}
+                {isActive && (
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={controls}
+                    onAnimationComplete={handleGoToNextStory}
+                    className="h-full bg-white progress-fill"
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="absolute top-0 left-0 w-full h-full z-30 flex">
+          <button
+            className="w-1/3 h-full flex-1"
+            onClick={handleGoToPrevStory}
+            aria-label="Previous story"
+          />
+          <div className="w-1/3" />
+          <button
+            className="w-1/3 h-full flex-1"
+            onClick={handleGoToNextStory}
+            aria-label="Next story"
+          />
+        </div>
+
+        <AnimatePresence mode="wait">
+          {currentStory && (
+            <motion.div
+              key={currentStory.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="relative w-full h-full"
+            >
+              <Image
+                className="w-full h-full object-contain"
+                src={currentStory?.image}
+                fill
+                quality={75}
+                alt="Story"
+                priority
+                sizes="(max-width: 1080px) 100vw, 1080px"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {currentStory && currentStory.description && (
+        <div className="absolute bottom-0 z-100 left-0 right-0 bg-black/75 backdrop-blur-md">
+          <div className="relative block h-full max-w-[1080px] mx-auto pt-2 px-2 pb-9">
+            <div className="absolute bottom-1 right-2 w-fit z-100 flex gap-1 bg-black/50 px-3 py-1.5 rounded-full text-white text-xs">
+              {activeStoryIndex + 1} / {stories.length}
+            </div>
+            <p className="text-white text-lg text-center font-medium">
+              {currentStory.description}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const StoryModal = ({
+  stories,
+  onClose,
+}: {
+  stories: IStory[];
+  onClose: () => void;
+}) => {
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <StoryList stories={stories} onClose={onClose} />
+    </motion.div>,
+    document.body
+  );
+};
+
+export default StoryModal;
