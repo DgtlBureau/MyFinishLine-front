@@ -8,8 +8,9 @@ import AwardModal from "./AwardModal/AwardModal";
 import MapStats from "./MapStats/MapStats";
 import { Xwrapper } from "react-xarrows";
 import StoryModal, { IStory } from "../Shared/StoryList/StoryList";
+import { challenge } from "@/app/data/challenges";
 
-interface IStep {
+export interface IStep {
   id: number;
   title: string;
   description: string;
@@ -21,271 +22,6 @@ interface IStep {
   x: number;
   y: number;
 }
-
-const challenge: { steps: IStep[] } = {
-  steps: [
-    {
-      id: 1,
-      title: "🏁 The Starting Line",
-      description: "Begin your journey",
-      index: 1,
-      active: true,
-      completed: false,
-      progress: 20,
-      stories: [
-        {
-          id: 1,
-          description: "So you decided to travel here? Good.",
-          image: "/images/application/stories/1.jpg",
-        },
-        {
-          id: 2,
-          description: "You'll encounter many interesting things along the way",
-          image: "/images/application/stories/2.jpg",
-        },
-        {
-          id: 3,
-          description: "Don't be scared.",
-          image: "/images/application/stories/3.jpg",
-        },
-        {
-          id: 4,
-          description: "They will help you on your way to the top",
-          image: "/images/application/stories/4.jpg",
-        },
-      ] as IStory[],
-      x: 50,
-      y: 115,
-    },
-    {
-      id: 2,
-      title: "🔥 First Spark",
-      description: "Complete 3 workouts",
-      index: 1,
-      active: false,
-      completed: false,
-      progress: 0,
-      stories: [
-        {
-          id: 1,
-          description: "Finally! You are here!",
-          image: "/images/application/stories/8.jpg",
-        },
-        {
-          id: 2,
-          description: "I don't want to ask right away but... I need your help",
-          image: "/images/application/stories/6.jpg",
-        },
-        {
-          id: 3,
-          description:
-            "Do you see that castle? I need you to get on top of it. I'll meet you there",
-          image: "/images/application/stories/5.jpg",
-        },
-      ] as IStory[],
-      x: 30,
-      y: 110,
-    },
-    {
-      id: 3,
-      title: "📈 Building Rhythm",
-      description: "5 consecutive days",
-      index: 1,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 70,
-      y: 105,
-    },
-    {
-      id: 4,
-      title: "🏃‍♂️ Runner's High",
-      description: "First 10km run",
-      index: 1,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 40,
-      y: 95,
-    },
-    {
-      id: 5,
-      title: "⛰️ Hill Conqueror",
-      description: "100m elevation gain",
-      index: 1,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 60,
-      y: 90,
-    },
-    {
-      id: 6,
-      title: "⚡ Speed Surge",
-      description: "Set a new 5k PR",
-      index: 2,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 35,
-      y: 85,
-    },
-    {
-      id: 7,
-      title: "🌅 Morning Warrior",
-      description: "7 AM runs for a week",
-      index: 2,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 65,
-      y: 80,
-    },
-    {
-      id: 8,
-      title: "🛤️ Trail Explorer",
-      description: "Complete trail run",
-      index: 2,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 25,
-      y: 70,
-    },
-    {
-      id: 9,
-      title: "💪 Endurance Test",
-      description: "First half marathon",
-      index: 2,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 75,
-      y: 65,
-    },
-    {
-      id: 10,
-      title: "🌧️ Rain Runner",
-      description: "Run in any weather",
-      index: 2,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 45,
-      y: 60,
-    },
-    {
-      id: 11,
-      title: "🎯 Consistency King",
-      description: "30-day streak",
-      index: 3,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 55,
-      y: 50,
-    },
-    {
-      id: 12,
-      title: "🏃‍♀️ Distance Master",
-      description: "100km total distance",
-      index: 3,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 20,
-      y: 40,
-    },
-    {
-      id: 13,
-      title: "⏱️ Pace Setter",
-      description: "Sub 5:00/km average",
-      index: 3,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 80,
-      y: 35,
-    },
-    {
-      id: 14,
-      title: "🌙 Night Owl",
-      description: "Complete night run",
-      index: 3,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 40,
-      y: 30,
-    },
-    {
-      id: 15,
-      title: "🧗 Mountain Goat",
-      description: "500m total elevation",
-      index: 3,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 60,
-      y: 25,
-    },
-    {
-      id: 16,
-      title: "🏆 Marathon Ready",
-      description: "Complete 30km run",
-      index: 4,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 50,
-      y: 20,
-    },
-    {
-      id: 17,
-      title: "💨 Speed Demon",
-      description: "Sub 4:30/km pace",
-      index: 4,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 30,
-      y: 15,
-    },
-    {
-      id: 18,
-      title: "🏔️ Summit Seeker",
-      description: "1000m elevation gain",
-      index: 4,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 70,
-      y: 12,
-    },
-    {
-      id: 19,
-      title: "🏃 Ultra Mindset",
-      description: "50km milestone",
-      index: 4,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 45,
-      y: 10,
-    },
-    {
-      id: 20,
-      title: "⭐ Legend Forged",
-      description: "100 days of running",
-      index: 4,
-      active: false,
-      completed: false,
-      progress: 0,
-      x: 55,
-      y: 2,
-    },
-  ],
-};
 
 const Map = () => {
   const [currentChallenge, setCurrentChallenge] = useState(challenge);
@@ -299,10 +35,17 @@ const Map = () => {
   const steps = currentChallenge.steps;
   const stepsAmount = steps.length;
 
+  // Находим минимальную и максимальную координату Y
+  const maxY = Math.max(...steps.map((step) => step.y));
+  const minY = Math.min(...steps.map((step) => step.y));
+
+  // Высота карты = разница между максимальной и минимальной Y * множитель
+  const multiplier = 60; // Множитель для преобразования координат в пиксели
+  const mapHeight = (maxY - minY) * multiplier + 300; // 200 сверху + 100 снизу
+
   useEffect(() => {
     setIsMounted(true);
 
-    // Load saved challenge from localStorage
     try {
       const savedChallenge = localStorage.getItem("challengeProgress");
       if (savedChallenge) {
@@ -346,7 +89,6 @@ const Map = () => {
       }
     };
 
-    // Check if there's an active step
     const hasActiveStep = currentChallenge.steps.some(
       (step) => step.active && !step.completed
     );
@@ -418,9 +160,6 @@ const Map = () => {
     }
   };
 
-  const maxY = Math.max(...steps.map((step) => step.y));
-  const mapHeight = maxY * 60;
-
   const handleContinueAwards = () => {
     setIsAwardOpen(false);
     if (activeStep?.stories?.length) {
@@ -443,10 +182,12 @@ const Map = () => {
     <>
       <div className="fixed inset-0 bg-linear-to-br from-slate-950 via-blue-950/30 to-purple-950/20">
         <div ref={containerRef} className="h-full overflow-y-auto">
+          {/* Контейнер для карты с рассчитанной высотой */}
           <div
-            className="relative max-w-5xl mx-auto pt-4 pb-20"
-            style={{ minHeight: `${mapHeight + 200}px` }}
+            className="relative max-w-5xl mx-auto pt-20"
+            style={{ minHeight: `${mapHeight}px` }}
           >
+            {/* Создаем повторяющиеся фоновые изображения на всю высоту карты */}
             {Array.from({ length: Math.ceil(mapHeight / 800) }).map(
               (_, index) => (
                 <div
@@ -471,18 +212,22 @@ const Map = () => {
               )
             )}
 
-            <div
-              className="relative z-30 w-full px-4 sm:px-8"
-              style={{ minHeight: `${mapHeight}px` }}
-            >
-              <div className="relative w-full">
+            {/* Контейнер для точек с относительным позиционированием */}
+            <div className="relative z-30 w-full px-4 sm:px-8">
+              <div
+                className="relative w-full"
+                style={{ height: `${mapHeight}px` }}
+              >
                 <Xwrapper>
-                  {currentChallenge.steps.map((step) => {
-                    const topPosition = step.y * 60;
+                  {steps.map((step) => {
+                    // Рассчитываем позицию точки относительно минимальной Y
+                    // Добавляем 200px отступа сверху для первого шага
+                    const topPosition = (step.y - minY) * multiplier + 200;
 
                     return (
                       <div
                         key={step.id}
+                        id={`step-${step.id}`}
                         className="absolute transform -translate-x-1/2 -translate-y-1/2"
                         style={{
                           left: `${step.x}%`,
