@@ -287,7 +287,12 @@ const Map = () => {
       </div>
 
       <AnimatePresence>
-        {isAwardOpen && <AwardModal onCloseClick={handleContinueAwards} />}
+        {isAwardOpen && (
+          <AwardModal
+            stepName={activeStep?.title || ""}
+            onCloseClick={handleContinueAwards}
+          />
+        )}
       </AnimatePresence>
       <AnimatePresence>
         {isStoriesOpen && (

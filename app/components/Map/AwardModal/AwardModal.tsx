@@ -1,11 +1,16 @@
-import { X } from "lucide-react";
 import { motion } from "motion/react";
 import { createPortal } from "react-dom";
 import CelebrationComponent from "../../Shared/CelebrateComponent/CelebrateComponent";
 import { useLottie } from "lottie-react";
 import award from "./trophy.json";
 
-const AwardModal = ({ onCloseClick }: { onCloseClick: () => void }) => {
+const AwardModal = ({
+  stepName,
+  onCloseClick,
+}: {
+  stepName: string;
+  onCloseClick: () => void;
+}) => {
   const options = {
     animationData: award,
     loop: false,
@@ -37,7 +42,7 @@ const AwardModal = ({ onCloseClick }: { onCloseClick: () => void }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 3, ease: "easeInOut" }}
             >
-              Congratulations! You finished the step!
+              Congratulations! You finished the {stepName} step!
             </motion.span>
           </motion.div>
           <motion.button
