@@ -35,7 +35,7 @@ const AppHeader = () => {
   };
 
   const handleGoToEdit = () => {
-    router.push("/app/settings");
+    router.push("/app/profile/settings");
   };
 
   const currentLink = links.find((link) => pathname?.includes(link.link));
