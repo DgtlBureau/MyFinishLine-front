@@ -9,12 +9,12 @@ jobs:
     runs-on: self-hosted
     
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Set up environment variables
       run: |
         echo "${{ secrets.ENV }}" >> .env
-
-    - name: Checkout code
-      uses: actions/checkout@v3
     
     - name: Deploy with compose
       run: |
