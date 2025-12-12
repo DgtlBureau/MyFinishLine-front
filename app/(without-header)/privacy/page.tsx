@@ -16,9 +16,12 @@ const page = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-black mb-4">1. Introduction</h2>
         <p className="mb-4">
-          MyFinishLine ("we", "our", "us") is an entertainment app designed to
+          MyFinishLine (“we”, “our”, “us”) is an entertainment app designed to
           motivate users to stay active, track workouts, and participate in
-          virtual challenges.
+          virtual challenges. Main website address is{" "}
+          <a href="http://myfinishline.io" className="font-bold">
+            myfinishline.io
+          </a>
         </p>
         <p className="mb-4">This Privacy Policy explains:</p>
         <ul className="list-disc pl-8 mb-4 space-y-2">
@@ -163,18 +166,18 @@ const page = () => {
           of users to other users by default.
         </p>
         <p className="mb-4">
-          If a user optionally chooses to share a limited portion of activity
+          {`If a user optionally chooses to share a limited portion of activity
           details in social contexts within the app, only non-sensitive elements
           (such as achievement badges or challenge position) may be visible, and{" "}
           <span className="font-bold">never sensitive private data</span>.
           Provider terms (like Strava's) prohibit any exposure of private
-          fitness data to other users without consent.
+          fitness data to other users without consent.`}
         </p>
       </div>
 
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-black mb-4">
-          6. Children's Privacy
+          6. {`Children's Privacy`}
         </h2>
         <p className="mb-4">
           We do not knowingly collect or process personal data from children
@@ -185,8 +188,8 @@ const page = () => {
           restrictive and no data is used for marketing.
         </p>
         <p className="mb-4">
-          A parent/guardian may review their child's data or request deletion by
-          contacting support.
+          {`A parent/guardian may review their child's data or request deletion by
+          contacting support.`}
         </p>
       </div>
 
@@ -251,7 +254,7 @@ const page = () => {
           </li>
         </ul>
         <p className="mb-4">
-          To exercise your rights, contact us at support@myfinishline.io.
+          To exercise your rights, contact us at access@myfinishline.io.
         </p>
       </div>
 
@@ -283,8 +286,8 @@ const page = () => {
           12. Marketing Communications
         </h2>
         <p className="mb-4">
-          We may send you newsletters or promotional messages if you've opted
-          in. You can unsubscribe at any time.
+          {`We may send you newsletters or promotional messages if you've opted
+          in. You can unsubscribe at any time.`}
         </p>
       </div>
 
@@ -305,7 +308,7 @@ const page = () => {
         </h2>
         <p className="mb-4">If you have questions, concerns, or requests:</p>
         <div className="ml-4">
-          <p className="font-semibold mb-2">Email: support@myfinishline.io</p>
+          <p className="font-semibold mb-2">Email: access@myfinishline.io</p>
           <p className="font-semibold">Operator: Fortem Group Limited</p>
         </div>
       </div>
