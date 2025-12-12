@@ -147,6 +147,8 @@ const StoryList = ({
           fill
           alt="Story background"
           priority
+          placeholder="blur"
+          blurDataURL={currentStory?.image}
         />
       )}
 
@@ -203,6 +205,8 @@ const StoryList = ({
               className="relative w-full h-full"
             >
               <Image
+                placeholder="blur"
+                blurDataURL={currentStory?.image}
                 className="w-full h-full object-contain"
                 src={currentStory?.image}
                 fill
