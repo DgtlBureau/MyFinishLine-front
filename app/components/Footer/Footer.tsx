@@ -31,7 +31,7 @@ const FOOTER_SECTIONS = [
     title: "Resources",
     links: [
       { name: "Terms & Conditions", href: "/terms-and-conditions" },
-      { name: "Privacy Policy", href: "/privacy-policy" },
+      { name: "Privacy Policy", href: "/privacy" },
     ],
   },
 ];
