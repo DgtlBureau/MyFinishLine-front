@@ -33,7 +33,7 @@ const ChallengeCard = () => {
           <div className="w-full flex items-center justify-between">
             <span className="text-[10px] text-muted-foreground">649 km</span>
             <Link
-              href="/myfinishline/homepage"
+              href="/app/homepage"
               className="underline font-semibold text-[10px] text-black"
             >
               Go to map
@@ -66,9 +66,12 @@ const ChallengeCard = () => {
           41.7 hrs
         </span>
       </div>
-      <button className="bg-transparent w-full mt-8 border-white py-2 px-4 border text-white text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer">
+      <Link
+        href="/app/profile/redeem"
+        className="block text-center bg-transparent w-full mt-8 border-black py-2 px-4 border text-black text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer"
+      >
         Сlaim medal
-      </button>
+      </Link>
       <button
         onClick={handleOpenModal}
         className="underline mt-4 font-semibold text-[10px] text-black block mx-auto cursor-pointer"

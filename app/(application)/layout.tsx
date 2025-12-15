@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "../components/Application/Navbar/Navbar";
 import AppHeader from "../components/Application/AppHeader/AppHeader";
 import { Slide, ToastContainer } from "react-toastify";
+import { NextIntlClientProvider } from "next-intl";
 
 export const metadata: Metadata = {
   title: "MyFinishLine",

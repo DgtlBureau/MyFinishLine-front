@@ -39,18 +39,18 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/myfinishline",
-        destination: "/myfinishline/homepage",
+        source: "/app",
+        destination: "/app/homepage",
         permanent: true,
       },
       {
-        source: "/myfinishline/profile",
-        destination: "/myfinishline/profile/journey",
+        source: "/app/profile",
+        destination: "/app/profile/journey",
         permanent: true,
       },
       {
-        source: "/myfinishline/store",
-        destination: "/myfinishline/store/booster",
+        source: "/app/store",
+        destination: "/app/store/booster",
         permanent: true,
       },
     ];

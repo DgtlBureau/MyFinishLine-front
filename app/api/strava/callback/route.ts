@@ -10,12 +10,12 @@ export async function GET(request: Request) {
 
   if (error) {
     console.log("Auth error:", error);
-    redirect("/myfinishline/integrations?status=auth_denied");
+    redirect("/app/integrations?status=auth_denied");
   }
 
   if (!code) {
     console.log("No code received");
-    redirect("/myfinishline/integrations?status=no_code");
+    redirect("/app/integrations?status=no_code");
   }
 
   try {
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
       console.error("Strava returned HTML error page");
       // Log the full HTML for debugging
       console.error("Full HTML response:", responseText);
-      redirect("/myfinishline/integrations?status=strava_html_error");
+      redirect("/app/integrations?status=strava_html_error");
     }
 
     let tokenData;
@@ -65,18 +65,18 @@ export async function GET(request: Request) {
     } catch (parseError) {
       console.error("JSON parse error:", parseError);
       console.error("Response that failed to parse:", responseText);
-      redirect("/myfinishline/integrations?status=invalid_json");
+      redirect("/app/integrations?status=invalid_json");
     }
 
     // Check for Strava API errors
     if (tokenData.errors || !tokenResponse.ok) {
       console.error("Strava API error:", tokenData);
-      redirect("/myfinishline/integrations?status=strava_api_error");
+      redirect("/app/integrations?status=strava_api_error");
     }
 
     if (!tokenData.access_token) {
       console.error("No access token in response:", tokenData);
-      redirect("/myfinishline/integrations?status=no_access_token");
+      redirect("/app/integrations?status=no_access_token");
     }
 
     console.log(
@@ -102,9 +102,9 @@ export async function GET(request: Request) {
     });
 
     console.log("Cookies set, redirecting to dashboard");
-    redirect("/myfinishline/profile/journey");
+    redirect("/app/profile/journey");
   } catch (error) {
     console.error("Callback error:", error);
-    redirect("/myfinishline/profile/journey");
+    redirect("/app/profile/journey");
   }
 }

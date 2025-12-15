@@ -5,12 +5,12 @@ const links = [
   {
     id: 1,
     label: "FAQ",
-    href: "/myfinishline/more/faq",
+    href: "/app/more/faq",
   },
   {
     id: 2,
     label: "Contact us",
-    href: "/myfinishline/more/contact-us",
+    href: "/app/more/contact-us",
   },
 ];
 

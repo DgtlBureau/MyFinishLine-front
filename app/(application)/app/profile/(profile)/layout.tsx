@@ -6,13 +6,13 @@ const profileLinks = [
   {
     id: 1,
     name: "Journey",
-    href: "/myfinishline/profile/journey",
+    href: "/app/profile/journey",
     icon: <Award width={16} height={16} />,
   },
   {
     id: 2,
     name: "Activities",
-    href: "/myfinishline/profile/activities",
+    href: "/app/profile/activities",
     icon: <Activity width={16} height={16} />,
   },
 ];

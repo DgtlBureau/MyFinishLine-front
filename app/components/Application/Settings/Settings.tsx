@@ -22,9 +22,9 @@ const Settings = () => {
       <SettingSection title="Account" delay={1}>
         <SettingItem
           icon={<User className="w-4 h-4" />}
-          label="Account"
+          label="Edit account"
           description="Edit your account information"
-          onClick={() => handleGoTo("/myfinishline/settings/edit-account")}
+          onClick={() => handleGoTo("/app/profile/settings/edit-account")}
           delay={1}
         />
         <div className="px-2">

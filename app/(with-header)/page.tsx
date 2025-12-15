@@ -16,7 +16,7 @@ export default async function Home() {
   const athleteCookie = cookieStore.get("strava_athlete");
 
   if (athleteCookie) {
-    redirect("/myfinishline");
+    redirect("/app");
   }
 
   return (

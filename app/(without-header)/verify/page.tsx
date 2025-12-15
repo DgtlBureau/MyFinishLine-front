@@ -95,7 +95,7 @@ export default function VerifyPage() {
       if (response.ok && data.success) {
         setSuccess("Code confirmed");
         setTimeout(() => {
-          router.push("/myfinishline");
+          router.push("/app");
         }, 2000);
       } else {
         setError(data.message || "Wrong code");

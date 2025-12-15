@@ -4,17 +4,17 @@ const storeLinks = [
   {
     id: 1,
     name: "Booster",
-    href: "/myfinishline/store/booster",
+    href: "/app/store/booster",
   },
   {
     id: 2,
     name: "My Challenges",
-    href: "/myfinishline/store/my-challenges",
+    href: "/app/store/my-challenges",
   },
   {
     id: 3,
     name: "Contracts",
-    href: "/myfinishline/store/contracts",
+    href: "/app/store/contracts",
   },
 ];
 
