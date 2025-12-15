@@ -1,16 +1,16 @@
-import QuestionIcon from '@/assets/images/svg/question.svg?react'
+import { CircleQuestionMark } from "lucide-react";
 
 export const FaqCard = ({
   question,
   answer,
 }: {
-  question: string
-  answer: string
+  question: string;
+  answer: string;
 }) => {
   return (
     <div className="flex items-start gap-2">
       <div className="mt-[5px]">
-        <QuestionIcon
+        <CircleQuestionMark
           width={16}
           height={16}
           fill="var(--color-secondary)"
@@ -24,5 +24,5 @@ export const FaqCard = ({
         <p className="text-sm">{answer}</p>
       </div>
     </div>
-  )
-}
+  );
+};

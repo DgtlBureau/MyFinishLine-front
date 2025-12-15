@@ -1,5 +1,6 @@
 import SearchIcon from "@/public/icons/faq/search.svg";
 import Image from "next/image";
+import banner from "@/public/images/faq/header.webp";
 
 export const FaqBanner = ({
   search,
@@ -10,7 +11,7 @@ export const FaqBanner = ({
 }) => {
   return (
     <div className="relative flex h-[300px] w-full items-center justify-center">
-      <div className="absolute " />
+      <div className="absolute inset-0 bg-[url('@/public/images/faq/header.webp')] bg-cover bg-center" />
       <div className="z-10 flex flex-col items-center justify-center gap-3">
         <h1 className="z-10 text-xl font-semibold text-gray-700 md:text-2xl">
           How can we help

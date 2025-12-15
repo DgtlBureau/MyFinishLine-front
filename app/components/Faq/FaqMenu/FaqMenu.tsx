@@ -1,11 +1,5 @@
-import Image from "next/image";
 import type { JSX } from "react";
 import type { ComponentType, SVGProps } from "react";
-// import { useTranslation } from 'react-i18next'
-
-import { HomeIcon } from "lucide-react";
-
-console.log("typeof HomeIcon", typeof HomeIcon);
 
 interface FaqMenuProps {
   options: {
@@ -31,7 +25,6 @@ export const FaqMenu = ({
   selectedCategory,
   onClick,
 }: FaqMenuProps): JSX.Element => {
-  // const { t } = useTranslation()
   const handleClick = (category: {
     id: number;
     name: string;

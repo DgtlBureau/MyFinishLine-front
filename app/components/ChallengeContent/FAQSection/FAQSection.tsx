@@ -18,8 +18,12 @@ import {
   CardHeader,
 } from "@/app/components/ui/card";
 import content from "@/app/lib/content/landing/content";
+import { FaqAccordion } from "../../Faq/FaqAccordion/Accordion";
+import { faqData } from "@/app/data/faqData";
 
-const faqData = content.faq_section.questions;
+// const faqData = content.faq_section.questions;
+
+const filteredData = faqData.find((item) => item.category === "authorization");
 
 export default function FAQSection() {
   return (
@@ -35,7 +39,7 @@ export default function FAQSection() {
         <div className="mt-8 grid gap-6 lg:mt-12 lg:grid-cols-2">
           {/* FAQ Accordion - Left Side */}
           <div className="lg:col-span-2">
-            <Accordion type="single" collapsible className="space-y-4">
+            {/* <Accordion type="single" collapsible className="space-y-4">
               {faqData.map((faq) => (
                 <AccordionItem
                   key={faq.id}
@@ -50,7 +54,10 @@ export default function FAQSection() {
                   </AccordionContent>
                 </AccordionItem>
               ))}
-            </Accordion>
+            </Accordion> */}
+            {filteredData && (
+              <FaqAccordion items={filteredData?.variants} search="" />
+            )}
           </div>
 
           {/* <Card className="hover:shadow-primary/5 h-full gap-6 transition-all duration-300 hover:shadow-lg">

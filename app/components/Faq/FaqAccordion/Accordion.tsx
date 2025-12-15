@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import ArrowDownIcon from "@/public/icons/faq/cheveron-down.svg";
 import Image from "next/image";
-// import { useTranslation } from 'react-i18next'
 
 interface FaqAccordionProps {
   items: {
@@ -16,13 +15,6 @@ interface FaqAccordionProps {
 
 export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
   const [openItems, setOpenItems] = useState<number[]>([]);
-  // const { t } = useTranslation()
-
-  // const filteredItems = () => {
-  //   return items.filter((item) =>
-  //     item.question.toLowerCase().includes(search.toLowerCase())
-  //   );
-  // };
 
   const filteredItems = useMemo(() => {
     return items.filter((item) =>
