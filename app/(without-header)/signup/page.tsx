@@ -5,14 +5,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { setUser } from "@/app/lib/features/user/userSlice";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
+  const [isCodeRevealed, setIsCodeRevealed] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
+    code: "",
+    error: "",
   });
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -21,32 +30,56 @@ export default function Register() {
     });
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    setFormData((prevState) => {
+      return { ...prevState, error: "" };
+    });
+
     e.preventDefault();
     setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      setFormData((prevState) => {
+        return { ...prevState, error: "Passwords do not match" };
+      });
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      alert("Password should contain at least 6 characters");
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          error: "Password should contain at least 6 characters",
+        };
+      });
       setLoading(false);
       return;
     }
 
     try {
-      console.log("Registration data:", formData);
-
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      window.location.href = "/verify";
-    } catch (error) {
+      const { data } = await axios.post("/api/auth/register", formData);
+      dispatch(setUser(data.user));
+      router.replace("/app");
+    } catch (error: any) {
       console.error("Registration error:", error);
+      setFormData((prevState) => {
+        return { ...prevState, error: error.response?.data.message };
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendCode = async () => {
+    try {
+      const { data } = await axios.post("/api/auth/send-code", {
+        email: formData.email,
+      });
+      setIsCodeRevealed(true);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -61,7 +94,7 @@ export default function Register() {
             Sign up to get started
           </p>
 
-          <form onSubmit={handleRegister} className="mt-6 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-6">
             <Input
               id="email"
               name="email"
@@ -78,7 +111,7 @@ export default function Register() {
               name="password"
               type="password"
               required
-              className="w-full py-3 px-4"
+              className="w-full py-3 px-4 mt-2"
               placeholder="Create a password"
               value={formData.password}
               onChange={handleChange}
@@ -88,28 +121,72 @@ export default function Register() {
               name="confirmPassword"
               type="password"
               required
-              className="w-full py-3 px-4"
+              className="w-full py-3 px-4 mt-2"
               placeholder="Repeat your password"
               value={formData.confirmPassword}
               onChange={handleChange}
             />
+            {isCodeRevealed && (
+              <label className="block mt-2" htmlFor="code">
+                <Input
+                  id="code"
+                  name="code"
+                  required
+                  className="w-full py-3 px-4"
+                  placeholder="123456"
+                  value={formData.code}
+                  onChange={handleChange}
+                />
+                <span className="block leading-4 text-xs">
+                  Enter code that was send to your email
+                </span>
+              </label>
+            )}
+            {formData.error && (
+              <span className="block text-center w-fit text-red-400 pl-4 mt-2">
+                {formData.error}
+              </span>
+            )}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className={`w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
+            {isCodeRevealed && (
+              <Button
+                type="submit"
+                disabled={loading}
+                className={`mt-2 w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
               ${loading && "opacity-70 cursor-not-allowed"}
             `}
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Creating Account...
-                </>
-              ) : (
-                "Create Account"
-              )}
-            </Button>
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+            )}
+
+            {!isCodeRevealed && (
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleSendCode}
+                disabled={loading}
+                className={`mt-2 w-full py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
+              ${loading && "opacity-70 cursor-not-allowed"}
+            `}
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Sending code...
+                  </>
+                ) : (
+                  "Send code"
+                )}
+              </Button>
+            )}
           </form>
 
           <div className="relative flex items-center my-6">

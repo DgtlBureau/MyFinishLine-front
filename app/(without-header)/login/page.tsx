@@ -5,13 +5,21 @@ import Link from "next/link";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Image from "next/image";
+import axios, { AxiosError } from "axios";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { setUser } from "@/app/lib/features/user/userSlice";
+import { IUser } from "@/app/types/user";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    error: "",
+    isLoading: false,
   });
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -20,20 +28,43 @@ export default function Login() {
     });
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    window.location.href = "/app";
-    cookieStore.set({
-      name: "user_authenticated",
-      value: "true", // or "1" or user ID
-      path: "/",
-      sameSite: "strict",
+  const handleLogin = async (e: React.FormEvent) => {
+    setFormData((prevState) => {
+      return { ...prevState, error: "", isLoading: true };
     });
+
+    e.preventDefault();
+    try {
+      const { data } = await axios.post("/api/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log(data);
+      dispatch(setUser(data.user));
+      router.replace("/app");
+    } catch (error: any) {
+      setFormData((prevState) => {
+        return { ...prevState, error: error.response?.data.message };
+      });
+    } finally {
+      setFormData((prevState) => {
+        return { ...prevState, isLoading: false };
+      });
+    }
+
+    // window.location.href = "/app";
+    // cookieStore.set({
+    //   name: "user_authenticated",
+    //   value: "true", // or "1" or user ID
+    //   path: "/",
+    //   sameSite: "strict",
+    // });
   };
 
   const handleStravaLogin = () => {
-    setLoading(true);
+    setFormData((prevState) => {
+      return { ...prevState, isLoading: true };
+    });
     const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
     const redirectUri = `${window.location.origin}/api/strava/callback`;
     const scope = "activity:read_all,profile:read_all";
@@ -52,7 +83,7 @@ export default function Login() {
             Sign in to your account
           </p>
 
-          <form onSubmit={handleLogin} className="mt-6 space-y-4">
+          <form onSubmit={handleLogin} className="mt-6">
             <Input
               id="email"
               name="email"
@@ -68,20 +99,25 @@ export default function Login() {
               name="password"
               type="password"
               required
-              className="w-full py-3 px-4"
+              className="w-full py-3 px-4 mt-2"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
             />
+            {formData.error && (
+              <span className="block text-center text-red-400 mt-2">
+                {formData.error}
+              </span>
+            )}
 
             <Button
               type="submit"
-              disabled={loading}
-              className={`w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
-              ${loading && "opacity-70 cursor-not-allowed"}
+              disabled={formData.isLoading}
+              className={`mt-2 w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
+              ${formData.isLoading && "opacity-70 cursor-not-allowed"}
             `}
             >
-              {loading ? (
+              {formData.isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
                   Signing In...
@@ -101,9 +137,9 @@ export default function Login() {
           <Button
             variant="outline"
             onClick={handleStravaLogin}
-            disabled={loading}
+            disabled={formData.isLoading}
             className={`w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
-            ${loading && "opacity-70 cursor-not-allowed"}
+            ${formData.isLoading && "opacity-70 cursor-not-allowed"}
           `}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -114,7 +150,7 @@ export default function Login() {
 
           <Button
             variant="outline"
-            disabled={loading}
+            disabled={formData.isLoading}
             className="w-full mt-2 py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3"
           >
             <Image

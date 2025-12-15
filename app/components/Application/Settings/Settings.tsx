@@ -8,13 +8,28 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Integrations from "../Integrations/Integrations";
+import axios from "axios";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { clearUser } from "@/app/lib/features/user/userSlice";
 
 const Settings = () => {
   const [emailUpdates, setEmailUpdates] = useState(false);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleGoTo = (link: string) => {
     router.push(link);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout");
+      dispatch(clearUser());
+      router.replace("/");
+      dispatch;
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
   };
 
   return (
@@ -80,7 +95,7 @@ const Settings = () => {
         <SettingItem
           icon={<LogOut className="w-4 h-4" />}
           label="Sign out"
-          onClick={() => {}}
+          onClick={handleLogout}
           delay={5}
         />
         <motion.p

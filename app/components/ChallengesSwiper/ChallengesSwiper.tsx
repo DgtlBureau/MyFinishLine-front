@@ -54,7 +54,7 @@ const ChallengesSwiper = () => {
               width={400}
               height={700}
               loading="eager"
-              quality={80}
+              quality={75}
             />
             <span className="block text-center mt-6 font-medium text-xl tracking-[-4%]">
               {challenge.title}

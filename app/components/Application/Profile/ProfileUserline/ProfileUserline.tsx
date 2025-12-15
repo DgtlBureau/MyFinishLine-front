@@ -1,16 +1,15 @@
 "use client";
 
-import useGetStravaUser from "@/app/hooks/useGetStravaUser";
 import { Camera } from "lucide-react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   handleConvertDistance,
   handleConvertTime,
 } from "@/app/lib/utils/convertData";
+import { useAppSelector } from "@/app/lib/hooks";
 
 interface IStats {
   all_run_totals: {
@@ -23,40 +22,24 @@ interface IStats {
 }
 
 const ProfileUserline = () => {
-  const { athlete, isLoading } = useGetStravaUser();
   const [stats, setStats] = useState<IStats>({} as IStats);
+  const user = useAppSelector((state) => state.user);
 
-  const handleGetAthlete = async () => {
-    try {
-      console.log("adsadadas", athlete.id);
-      const { data } = await axios.get("/api/strava/athletes/" + athlete.id);
-      setStats(data?.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (athlete.id) {
-      handleGetAthlete();
-    }
-  }, [athlete.id]);
+  console.log(user);
 
   return (
     <section className="flex justify-between px-4">
       <div className="flex gap-4">
-        {athlete?.profile ? (
+        {user?.full_avatar_url ? (
           <Image
             className="rounded-[20px]"
-            src={athlete.profile}
+            src={user.full_avatar_url}
             width={80}
             height={80}
             quality={75}
             loading="eager"
             alt="Profile image"
           />
-        ) : isLoading ? (
-          <div className="w-20 h-20 rounded-[20px] animate-pulse-shimmer"></div>
         ) : (
           <div className="border-border shrink-0 border-2 rounded-[20px] w-20 h-20 flex items-center justify-center shadow-inner shadow-accent">
             <Camera />
@@ -69,14 +52,14 @@ const ProfileUserline = () => {
               animate={{ opacity: 1 }}
               className="font-medium"
             >
-              {athlete.firstname} {athlete.lastname}
+              {user.first_name} {user.last_name}
             </motion.span>
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="block font-medium text-muted-foreground text-sm"
             >
-              @{athlete.username}
+              @{user.username}
             </motion.span>
           </div>
           <div className="flex items-center gap-4">
