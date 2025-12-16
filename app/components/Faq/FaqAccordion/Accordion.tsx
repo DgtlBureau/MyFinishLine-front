@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import ArrowDownIcon from "@/public/icons/faq/cheveron-down.svg";
-import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 
 interface FaqAccordionProps {
   items: {
@@ -47,18 +46,9 @@ export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
                   {item.question}
                 </h2>
                 <div>
-                  {/* <ArrowDownIcon
+                  <ChevronDown
                     width={16}
                     height={16}
-                    className={`transition-all transition-transform duration-300 ${
-                      isOpen ? "-rotate-180" : ""
-                    }`}
-                  /> */}
-                  <Image
-                    src={ArrowDownIcon}
-                    width={16}
-                    height={16}
-                    alt="arrow"
                     className={`transition-all transition-transform duration-300 ${
                       isOpen ? "-rotate-180" : ""
                     }`}
@@ -80,7 +70,7 @@ export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
           );
         })
       ) : (
-        <div className="text-center text-gray-500">not found</div>
+        <div className="text-center text-gray-500">Not found</div>
       )}
     </div>
   );

@@ -35,6 +35,7 @@ export const Faq = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [value] = useDebounce(search, 500);
+  const [sendingData, setSendingdData] = useState<ISendFeedbackProps>();
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     name: string;
@@ -48,8 +49,7 @@ export const Faq = () => {
   const visibleFaqData = faqData.filter((item) => item.isVisible);
 
   const handleSendFeedback = (data: ISendFeedbackProps) => {
-    console.log("data", data);
-
+    setSendingdData(data);
     setIsSuccess(true);
   };
 
@@ -149,11 +149,6 @@ export const Faq = () => {
               selectedCategory={selectedCategory}
               onClick={handleChangeCategory}
             />
-            <div className="hidden w-fit items-center justify-center md:flex">
-              <a href="./" className="w-[65%]">
-                {/* <Logo className="w-full" /> */}
-              </a>
-            </div>
           </div>
           {filteredData && (
             <div className="flex w-full flex-col gap-4 md:w-[75%]">
@@ -184,10 +179,7 @@ export const Faq = () => {
         {isModalOpen && (
           <Modal onClose={handleCloseModal}>
             {!true ? (
-              <div className="flex items-center justify-center">
-                {/* <Spinner /> */}
-                Loading...
-              </div>
+              <div className="flex items-center justify-center">Loading...</div>
             ) : isSuccess ? (
               <div className="relative flex flex-col items-center justify-center gap-2">
                 <button
@@ -196,14 +188,18 @@ export const Faq = () => {
                 >
                   <XIcon />
                 </button>
-                <h3 className="bg-primary text-white rounded-md px-4 py-8 text-xl font-medium">
+                <h3 className="flex flex-col bg-primary text-white rounded-md px-4 py-8 text-xl font-medium">
                   The question has been successfully sent.
+                  <span>
+                    A response will be sent to{" "}
+                    {sendingData?.email || "your email"}
+                  </span>
                 </h3>
               </div>
             ) : isError ? (
               <div className="flex flex-col items-center justify-center gap-2">
                 <h3 className="rounded-md bg-red-500 px-4 py-8 text-xl font-medium">
-                  request_received_error
+                  Error sending data
                 </h3>
               </div>
             ) : (
