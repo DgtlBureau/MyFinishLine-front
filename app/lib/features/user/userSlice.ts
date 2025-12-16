@@ -18,6 +18,7 @@ const initialState: IUser = {
   total_moving_time_hours: 0,
   updated_at: "",
   username: "",
+  has_strava_connect: false,
 };
 
 const userSlice = createSlice({

@@ -63,13 +63,13 @@ const features = [
   },
 ];
 
-const page = () => {
+import { Suspense } from "react";
+
+const Journey = () => {
   const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
   const dataParam = searchParams.get("data");
   const dispatch = useAppDispatch();
-
-  console.log(user);
 
   useEffect(() => {
     if (!dataParam) return;
@@ -165,6 +165,14 @@ const page = () => {
         </button>
       </section>
     </section>
+  );
+};
+
+const page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Journey />
+    </Suspense>
   );
 };
 
