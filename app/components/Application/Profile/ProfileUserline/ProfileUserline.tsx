@@ -4,28 +4,14 @@ import { Camera } from "lucide-react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
-import { useState } from "react";
 import {
   handleConvertDistance,
   handleConvertTime,
 } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 
-interface IStats {
-  all_run_totals: {
-    count: number;
-    distance: number;
-    moving_time: number;
-    elapsed_time: number;
-    elevation_gain: number;
-  };
-}
-
 const ProfileUserline = () => {
-  const [stats, setStats] = useState<IStats>({} as IStats);
   const user = useAppSelector((state) => state.user);
-
-  console.log(user);
 
   return (
     <section className="flex justify-between px-4">

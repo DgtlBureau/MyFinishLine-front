@@ -66,7 +66,6 @@ const page = () => {
       );
       toast.success("Profile successfully updated");
     } catch (error: any) {
-      console.log("SIDHADISD", error.response?.data.message);
       toast.error(error.response?.data.message);
       console.log(error);
     } finally {

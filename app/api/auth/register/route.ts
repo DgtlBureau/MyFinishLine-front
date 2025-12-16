@@ -7,8 +7,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password, confirmPassword, code } = body;
 
-    console.log(body);
-
     if (!email || !password || !confirmPassword || !code) {
       return NextResponse.json(
         { message: "All fields are required" },
@@ -35,8 +33,6 @@ export async function POST(request: NextRequest) {
       password,
       code,
     });
-
-    console.log("response", response);
 
     if (response.data.bearer_token) {
       const cookieStore = await cookies();

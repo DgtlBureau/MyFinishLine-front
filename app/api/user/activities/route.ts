@@ -20,11 +20,9 @@ export async function GET() {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(data);
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.log(error.response.data);
     return NextResponse.json(
       {
         message:

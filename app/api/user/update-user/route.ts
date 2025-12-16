@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
-    console.log(token);
 
     if (!token) {
       return NextResponse.json(
@@ -24,11 +23,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(data);
-
     return NextResponse.json(data);
   } catch (error: any) {
-    console.log(error.response.data);
     return NextResponse.json(
       { message: error.response?.data.message || "Error updating user" },
       { status: 500 }

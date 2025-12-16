@@ -27,7 +27,6 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.log(error.response.data);
     return NextResponse.json(
       {
         message:

@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const error = searchParams.get("error");
-  console.log(request, "request");
 
   console.log("Callback received - code:", code, "error:", error);
 
