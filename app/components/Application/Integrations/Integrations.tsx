@@ -1,5 +1,6 @@
 import useGetStravaUser from "@/app/hooks/useGetStravaUser";
 import { Button } from "../../ui/button";
+import { useAppSelector } from "@/app/lib/hooks";
 
 enum STRAVA_RESPONSE_STATUSES {
   AUTH_FAILED = "auth_failed",
@@ -14,7 +15,7 @@ const handleParseStravaStatus = (status: STRAVA_RESPONSE_STATUSES) => {
 };
 
 const Integrations = () => {
-  const { isConnected, handleResetUser } = useGetStravaUser();
+  const user = useAppSelector((state) => state.user);
 
   const handleLogout = async () => {
     try {
@@ -22,7 +23,7 @@ const Integrations = () => {
         method: "POST",
       });
       if (response.status === 200) {
-        handleResetUser();
+        // handleResetUser();
       }
     } catch (error) {
       console.error("Error logging out from Strava:", error);
@@ -38,7 +39,7 @@ const Integrations = () => {
   };
 
   const handleClickStrava = () => {
-    if (isConnected) {
+    if (user.has_strava_connect) {
       handleLogout();
     } else {
       handleConnectStrava();
@@ -56,8 +57,8 @@ const Integrations = () => {
           <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
         </svg>
         <div className="flex items-center w-full justify-between">
-          {isConnected ? "Disconnect Strava" : "Connect Strava"}
-          {isConnected && (
+          {user.has_strava_connect ? "Disconnect Strava" : "Connect Strava"}
+          {user.has_strava_connect && (
             <span className="text-success-dark font-light">connected</span>
           )}
         </div>

@@ -1,3 +1,4 @@
+import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -18,8 +19,9 @@ export async function GET(request: Request) {
     redirect("/app/integrations?status=no_code");
   }
 
+  let redirectUrl: string | null = null;
+
   try {
-    console.log("Exchanging code for token...");
     console.log("Client ID exists:", !!process.env.STRAVA_CLIENT_ID);
     console.log("Client Secret exists:", !!process.env.STRAVA_CLIENT_SECRET);
 
@@ -39,7 +41,6 @@ export async function GET(request: Request) {
       body: params,
     });
 
-    // Get the raw response text
     const responseText = await tokenResponse.text();
     console.log("=== STRAVA RESPONSE ===");
     console.log("Status:", tokenResponse.status);
@@ -48,15 +49,13 @@ export async function GET(request: Request) {
     console.log("First 500 chars:", responseText.substring(0, 500));
     console.log("=== END RESPONSE ===");
 
-    // Check if response is HTML (error page)
     if (
       responseText.trim().startsWith("<!DOCTYPE") ||
       responseText.trim().startsWith("<html")
     ) {
       console.error("Strava returned HTML error page");
-      // Log the full HTML for debugging
       console.error("Full HTML response:", responseText);
-      redirect("/app/integrations?status=strava_html_error");
+      return redirect("/login?status=strava_html_error");
     }
 
     let tokenData;
@@ -65,46 +64,50 @@ export async function GET(request: Request) {
     } catch (parseError) {
       console.error("JSON parse error:", parseError);
       console.error("Response that failed to parse:", responseText);
-      redirect("/app/integrations?status=invalid_json");
+      return redirect("/login?status=invalid_json");
     }
 
-    // Check for Strava API errors
     if (tokenData.errors || !tokenResponse.ok) {
       console.error("Strava API error:", tokenData);
-      redirect("/app/integrations?status=strava_api_error");
+      return redirect("/login?status=strava_api_error");
     }
 
     if (!tokenData.access_token) {
       console.error("No access token in response:", tokenData);
-      redirect("/app/integrations?status=no_access_token");
+      return redirect("/login?status=no_access_token");
     }
 
-    console.log(
-      "Token exchange successful for athlete:",
-      tokenData.athlete?.firstname,
-      tokenData.athlete?.lastname
-    );
+    const { data } = await instance.post("/social-login", {
+      provider: "strava",
+      access_token: tokenData.access_token,
+      refresh_token: tokenData.refresh_token,
+    });
 
     const cookieStore = await cookies();
 
-    cookieStore.set("strava_access_token", tokenData.access_token, {
+    cookieStore.set("strava_token", tokenData.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 6 * 60 * 60, // 6 hours
+      maxAge: 6 * 60 * 60,
       path: "/",
     });
 
-    cookieStore.set("strava_athlete", JSON.stringify(tokenData.athlete), {
+    cookieStore.set("auth_token", data.bearer_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 6 * 60 * 60,
       path: "/",
     });
 
-    console.log("Cookies set, redirecting to dashboard");
-    redirect("/app/profile/journey");
+    redirectUrl = `/app/profile/journey?data=${encodeURIComponent(
+      JSON.stringify(data.user)
+    )}`;
   } catch (error) {
     console.error("Callback error:", error);
-    redirect("/app/profile/journey");
+    return redirect("/login?error=strava_callback_failed");
+  }
+
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
 }

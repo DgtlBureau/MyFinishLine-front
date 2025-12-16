@@ -18,6 +18,11 @@ import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper
 import Link from "next/link";
 import Image from "next/image";
 import useGetStravaUser from "@/app/hooks/useGetStravaUser";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import authWithStrava from "@/app/lib/utils/authWithStrava";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { setUser } from "@/app/lib/features/user/userSlice";
 
 const features = [
   {
@@ -58,16 +63,26 @@ const features = [
   },
 ];
 
-const page = () => {
-  const { isConnected } = useGetStravaUser();
+import { Suspense } from "react";
 
-  const handleStravaLogin = () => {
-    const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/api/strava/callback`;
-    const scope = "activity:read_all,profile:read_all";
-    const authUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&approval_prompt=force`;
-    window.location.href = authUrl;
-  };
+const Journey = () => {
+  const user = useAppSelector((state) => state.user);
+  const searchParams = useSearchParams();
+  const dataParam = searchParams.get("data");
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!dataParam) return;
+
+    let parsedData = null;
+    try {
+      parsedData = JSON.parse(decodeURIComponent(dataParam));
+      dispatch(setUser(parsedData));
+    } catch (e) {
+      console.error("Failed to parse data param", e);
+      return;
+    }
+  }, []);
 
   return (
     <section>
@@ -109,7 +124,7 @@ const page = () => {
         <div className="mt-5 max-w-25 w-full bg-[#dadada] h-px mx-auto" />
         <button
           style={
-            isConnected
+            user.has_strava_connect
               ? {
                   cursor: "default",
                   backgroundColor: "#FC4C02",
@@ -118,10 +133,10 @@ const page = () => {
               : {}
           }
           className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
-          disabled={isConnected}
-          onClick={handleStravaLogin}
+          disabled={user.has_strava_connect}
+          onClick={authWithStrava}
         >
-          {isConnected ? (
+          {user.has_strava_connect ? (
             <div className="text-center mx-auto">Connected to Strava</div>
           ) : (
             <>
@@ -150,6 +165,14 @@ const page = () => {
         </button>
       </section>
     </section>
+  );
+};
+
+const page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Journey />
+    </Suspense>
   );
 };
 

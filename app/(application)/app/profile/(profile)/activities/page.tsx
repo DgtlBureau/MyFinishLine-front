@@ -1,32 +1,46 @@
 "use client";
 
 import ActivitiesList from "@/app/components/Application/Stats/ActivitiesList/ActivitiesList";
-import { IActivity } from "@/app/types";
+import { setActivities } from "@/app/lib/features/activities/activitiesSlice";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
 const page = () => {
-  const [activities, setActivities] = useState<IActivity[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isLoaded, activities } = useAppSelector((state) => state.activities);
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleGetRunHistory = async () => {
+  const handleGetActivitiesFromStrava = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/strava/activities");
-      const data = await response.json();
-      if (data.activities) {
-        setActivities(data.activities);
-      }
+      await axios.get("/api/user/refresh-activities");
     } catch (error) {
-      console.error("Error fetching run history:", error);
+      console.error("Error fetching activities:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadActivities = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get("/api/user/activities");
+      dispatch(setActivities(data?.data || []));
+    } catch (error) {
+      console.error("Error fetching activities:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    handleGetRunHistory();
+    if (!isLoaded) {
+      handleGetActivitiesFromStrava();
+    }
+    handleLoadActivities();
   }, []);
 
   return (

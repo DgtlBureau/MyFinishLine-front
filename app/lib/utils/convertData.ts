@@ -24,6 +24,18 @@ export const handleConvertTime = (
     .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 };
 
+export const handleConvertTimeShort = (elapsedTimeInSeconds: number) => {
+  if (!elapsedTimeInSeconds) return "0m";
+  const hours = Math.floor(elapsedTimeInSeconds / 3600);
+  const minutes = (elapsedTimeInSeconds % 3600) / 60;
+  const parts = [];
+  if (hours > 0)
+    parts.push(`${hours}${minutes > 0 ? `.${Math.floor(minutes * 10)}` : ""}h`);
+  else if (minutes > 0) parts.push(`${minutes.toFixed(1)}m`);
+  else parts.push(`${elapsedTimeInSeconds}s`);
+  return parts.join(" ");
+};
+
 export const handleConvertDate = (dateString: string) => {
   const date = new Date(dateString);
   const now = new Date();

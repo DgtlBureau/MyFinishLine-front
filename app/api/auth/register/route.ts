@@ -1,42 +1,66 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { generateVerificationCode } from "@/app/lib/auth";
-import { sendVerificationEmail, users } from "@/app/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import instance from "@/app/lib/utils/instance";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
+    const { email, password, confirmPassword, code } = body;
 
-    const existingUser = users.find((user) => user.email === email);
-    if (existingUser) {
+    if (!email || !password || !confirmPassword || !code) {
       return NextResponse.json(
-        { message: "Email is already exists" },
+        { message: "All fields are required" },
         { status: 400 }
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    if (password !== confirmPassword) {
+      return NextResponse.json(
+        { message: "Passwords do not match" },
+        { status: 400 }
+      );
+    }
 
-    const verificationCode = generateVerificationCode();
-    const user = {
-      id: Date.now().toString(),
+    if (password.length < 6) {
+      return NextResponse.json(
+        { message: "Password must be at least 6 characters" },
+        { status: 400 }
+      );
+    }
+
+    const response = await instance.post("/registration", {
       email,
-      password: hashedPassword,
-      isVerified: false,
-      verificationCode,
-      verificationCodeExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 часа
-      createdAt: new Date(),
-    };
+      password,
+      code,
+    });
 
-    users.push(user);
+    if (response.data.bearer_token) {
+      const cookieStore = await cookies();
+      cookieStore.set("auth_token", response.data.bearer_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+    }
 
-    await sendVerificationEmail(email, verificationCode);
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    console.log(error);
+    if (error.response) {
+      return NextResponse.json(error.response.data, {
+        status: error.response.status,
+      });
+    }
 
     return NextResponse.json(
-      { message: "Code was sent to your email" },
-      { status: 201 }
+      { message: "Service unavailable" },
+      { status: 503 }
     );
-  } catch (error) {
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
+}
+
+export async function GET() {
+  return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
 }

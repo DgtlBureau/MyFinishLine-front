@@ -2,7 +2,6 @@
 
 import { IActivity } from "@/app/types";
 import Activity from "./Activity/Activity";
-import { motion } from "motion/react";
 
 interface IActivitiesListProps {
   activities: IActivity[];

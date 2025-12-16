@@ -8,11 +8,6 @@ export async function GET(request: Request) {
     const pathParts = url.pathname.split("/");
     const id = pathParts[pathParts.length - 1];
 
-    console.log("+-+", id);
-
-    console.log("Extracted ID from URL:", id);
-    console.log("Full URL:", request.url);
-
     if (!id || id === "athletes" || id === "api") {
       return NextResponse.json(
         {

@@ -44,7 +44,6 @@ const RewardsSwiper = () => {
   };
 
   const handleGoPrev = () => {
-    console.log("asdasdad");
     if (swiperRef.current) {
       swiperRef.current.slidePrev();
     }

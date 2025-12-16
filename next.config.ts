@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "dev.myfinishline.io",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {

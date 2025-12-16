@@ -1,7 +1,6 @@
 import { STRAVA_CONFIG } from "@/app/lib/strava";
 import { cookies } from "next/headers";
 
-// Temporary debug version - replace your current GET function with this:
 export async function GET() {
   try {
     const cookieStore = await cookies();
