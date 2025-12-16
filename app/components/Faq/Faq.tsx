@@ -10,6 +10,7 @@ import { AccordionHeader } from "./FaqAccordion/AccordionHeader";
 import { faqData } from "@/app/data/faqData";
 import { Modal } from "../ui/modal/Modal";
 import { FormikState, useFormik } from "formik";
+import { XIcon } from "lucide-react";
 
 interface ISendFeedbackProps {
   category_id: number;
@@ -46,6 +47,12 @@ export const Faq = () => {
 
   const visibleFaqData = faqData.filter((item) => item.isVisible);
 
+  const handleSendFeedback = (data: ISendFeedbackProps) => {
+    console.log("data", data);
+
+    setIsSuccess(true);
+  };
+
   const initialValues = {
     user_id: 123,
     email: "",
@@ -78,8 +85,7 @@ export const Faq = () => {
 
         email: values.email,
       };
-      // sendFeedback(data);
-      console.log("data", data);
+      handleSendFeedback(data);
     },
   });
 
@@ -156,14 +162,14 @@ export const Faq = () => {
             </div>
           )}
         </div>
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="mt-[10px] flex flex-col items-center justify-center gap-2">
           <p className="text-primary bg-primary/20 rounded-md px-4 py-1 text-center text-sm font-semibold">
             Questions?
           </p>
           <p className="text-center text-2xl font-medium text-gray-600">
             Still have questions
           </p>
-          <span className="text-center text-sm text-gray-500">
+          <span className="text-center text-sm text-muted-foreground">
             If you were not able to find an answer to the question in the FAQ,
             contact us. We will answer you promptly!
           </span>
@@ -172,7 +178,7 @@ export const Faq = () => {
             onClick={() => setIsModalOpen(true)}
             className="p-[8px_16px] bg-primary/20 text-primary rounded-[10px] hover:bg-primary hover:text-white duration-300 font-bold cursor-pointer"
           >
-            feedback
+            Feedback
           </button>
         </div>
         {isModalOpen && (
@@ -183,9 +189,15 @@ export const Faq = () => {
                 Loading...
               </div>
             ) : isSuccess ? (
-              <div className="flex flex-col items-center justify-center gap-2">
-                <h3 className="bg-primary rounded-md px-4 py-8 text-xl font-medium">
-                  request_received_successfully
+              <div className="relative flex flex-col items-center justify-center gap-2">
+                <button
+                  className="absolute right-0 -top-[30px] -translateY-[50%] cursor-pointer"
+                  onClick={handleCloseModal}
+                >
+                  <XIcon />
+                </button>
+                <h3 className="bg-primary text-white rounded-md px-4 py-8 text-xl font-medium">
+                  The question has been successfully sent.
                 </h3>
               </div>
             ) : isError ? (

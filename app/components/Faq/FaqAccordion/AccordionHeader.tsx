@@ -22,7 +22,7 @@ export const AccordionHeader = ({
           {selectedCategory.name ? selectedCategory.name : "All categories"}
         </h2>
         <p className="font-publicSans text-sm text-gray-500">
-          {"get_help_with"}{" "}
+          Get help with{" "}
           <span className="lowercase">
             {selectedCategory.name ? selectedCategory.name : "All categories"}
           </span>
