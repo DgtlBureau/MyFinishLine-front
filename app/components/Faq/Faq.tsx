@@ -54,7 +54,7 @@ export const Faq = () => {
   };
 
   const initialValues = {
-    user_id: 123,
+    user_id: null,
     email: "",
     question: "",
     category: {
