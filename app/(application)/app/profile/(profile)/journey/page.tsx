@@ -120,7 +120,7 @@ const Journey = () => {
           <FeatureList features={features} />
         </div>
       </section>
-      <section>
+      <section className="px-4">
         <LeaderboardSwiper />
       </section>
 

@@ -69,7 +69,9 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
             >
               <div className="flex items-center gap-2">
                 <div className="w-4">
-                  <span className="block text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]">
+                  <span
+                    className={`text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]`}
+                  >
                     {user.id}
                   </span>
                 </div>
@@ -108,7 +110,10 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
       <div className="flex items-center justify-between p-4 border-b border-[#DADADA]">
         <div className="flex items-center gap-2">
           <div className="w-4">
-            <span className="block text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]">
+            <span
+              style={currentUser.id > 10 ? { fontSize: 10 } : {}}
+              className="block text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]"
+            >
               {currentUser.id}
             </span>
           </div>
