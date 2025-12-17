@@ -9,7 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
-import authWithStrava from "@/app/lib/utils/authWithStrava";
+import { authWithStrava } from "@/app/lib/utils/authWithStrava";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);

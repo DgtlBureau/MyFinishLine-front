@@ -42,7 +42,7 @@ const AppHeader = () => {
   const isCurrentLinkNested = !!currentLink;
 
   return (
-    <header className="sticky top-0 z-40 bg-foreground">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-foreground">
       <div className="flex items-center justify-between max-w-4xl mx-auto px-4">
         {isCurrentLinkNested ? (
           <button

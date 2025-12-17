@@ -107,6 +107,8 @@
 }
 
 :root {
+  --header-height: 56px;
+  --navbar-height: 63px;
   --foreground: oklch(0.041 0.002 314);
   --background: oklch(1 0 0);
   --card-foreground: oklch(0.132 0.024 254);

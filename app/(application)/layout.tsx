@@ -15,11 +15,11 @@ export default function ApplicationLayout({
 }>) {
   return (
     <div className="min-h-screen h-full">
-      <div className="h-full flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <AppHeader />
-        <div className="h-full flex-1 bg-white rounded-tl-2xl rounded-tr-2xl">
-          {children}
-        </div>
+        <main className="min-h-screen pt-14 pb-[63px] bg-white rounded-tl-2xl rounded-tr-2xl">
+          <div className="min-h-full ">{children}</div>
+        </main>
         <Navbar />
       </div>
       <ToastContainer
@@ -27,6 +27,7 @@ export default function ApplicationLayout({
         draggable
         transition={Slide}
         closeButton={false}
+        className="z-110"
       />
     </div>
   );

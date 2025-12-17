@@ -54,7 +54,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="sticky bottom-0 z-50">
+    <div className="fixed bottom-0 left-0 right-0 z-40">
       <div className="bg-background border-t border-navbar-border">
         <nav className="flex items-stretch max-w-4xl mx-auto py-1 px-2">
           {navLinks.map((link) => {

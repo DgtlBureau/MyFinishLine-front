@@ -1,56 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUp } from "lucide-react";
-import { useState } from "react";
 
 interface StatsBlockProps {
   distance: string;
   steps: Array<{ completed: boolean }>;
 }
 
-const animationVariants = {
-  expanded: {
-    padding: 8,
-  },
-  collapsed: {
-    padding: 0,
-  },
-};
-
-const contentVariants = {
-  expanded: {
-    opacity: 1,
-    width: "auto",
-    height: "auto",
-    scale: 1,
-  },
-  collapsed: {
-    opacity: 0,
-    width: 0,
-    height: 0,
-    scale: 0,
-  },
-};
-
-const buttonVariants = {
-  expanded: {
-    transform: "rotate(180deg)",
-  },
-  collapsed: {
-    transform: "rotate(0deg)",
-  },
-};
-
 const MapStats = ({ steps, distance }: StatsBlockProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const completedSteps = steps.filter((s) => s.completed).length;
   const progressPercentage = (completedSteps / steps.length) * 100;
-
-  const handleToggleIsExpanded = () => {
-    setIsExpanded((prevState) => !prevState);
-  };
 
   return (
     <motion.div className="sticky w-40 bottom-4 right-4 z-30 float-right">

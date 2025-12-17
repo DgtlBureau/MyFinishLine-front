@@ -1,43 +1,26 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import useGetStravaUser from "@/app/hooks/useGetStravaUser";
-import { useSearchParams } from "next/navigation";
+import { updateUser } from "@/app/lib/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import axios from "axios";
 import { Suspense } from "react";
 
-enum STRAVA_RESPONSE_STATUSES {
-  AUTH_FAILED = "auth_failed",
-}
-
-const handleParseStravaStatus = (status: STRAVA_RESPONSE_STATUSES) => {
-  switch (status) {
-    case STRAVA_RESPONSE_STATUSES.AUTH_FAILED: {
-      return "Error authenticating. Status: " + status;
-    }
-  }
-};
-
 function StravaIntegrationButton() {
-  const { isConnected, handleResetUser } = useGetStravaUser();
-  const params = useSearchParams();
-  const status = params.get("status");
+  const user = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/strava/logout", {
-        method: "POST",
-      });
-      if (response.status === 200) {
-        handleResetUser();
-      }
+      const response = await axios.get("/api/user/disconnect-strava");
+      dispatch(updateUser({ has_strava_connect: false }));
+      console.log(response);
     } catch (error) {
       console.error("Error logging out from Strava:", error);
     }
   };
 
   const handleConnectStrava = () => {
-    if (isConnected) {
-    }
     const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
     const redirectUri = `${window.location.origin}/api/strava/callback`;
     const scope = "activity:read_all,profile:read_all";
@@ -46,7 +29,7 @@ function StravaIntegrationButton() {
   };
 
   const handleClickStrava = () => {
-    if (isConnected) {
+    if (user.has_strava_connect) {
       handleLogout();
     } else {
       handleConnectStrava();
@@ -64,15 +47,12 @@ function StravaIntegrationButton() {
           <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
         </svg>
         <div className="flex items-center w-full justify-between">
-          {isConnected ? "Disconnect Strava" : "Connect Strava"}
-          {isConnected && (
+          {user.has_strava_connect ? "Disconnect Strava" : "Connect Strava"}
+          {user.has_strava_connect && (
             <span className="text-success-dark font-light">connected</span>
           )}
         </div>
       </Button>
-      <span className="text-red-400 text-sm">
-        {handleParseStravaStatus(status as STRAVA_RESPONSE_STATUSES)}
-      </span>
     </>
   );
 }

@@ -1,38 +1,40 @@
-import useGetStravaUser from "@/app/hooks/useGetStravaUser";
 import { Button } from "../../ui/button";
-import { useAppSelector } from "@/app/lib/hooks";
-
-enum STRAVA_RESPONSE_STATUSES {
-  AUTH_FAILED = "auth_failed",
-}
-
-const handleParseStravaStatus = (status: STRAVA_RESPONSE_STATUSES) => {
-  switch (status) {
-    case STRAVA_RESPONSE_STATUSES.AUTH_FAILED: {
-      return "Error authenticating. Status: " + status;
-    }
-  }
-};
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { updateUser } from "@/app/lib/features/user/userSlice";
+import axios from "axios";
+import CustomModal from "../../Shared/CustomModal/CustomModal";
+import { useState } from "react";
 
 const Integrations = () => {
   const user = useAppSelector((state) => state.user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch("/api/strava/logout", {
-        method: "POST",
-      });
-      if (response.status === 200) {
-        // handleResetUser();
-      }
+      const { data } = await axios.get("/api/user/disconnect-strava");
+      dispatch(updateUser(data));
+      handleCloseModal();
     } catch (error) {
       console.error("Error logging out from Strava:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleConnectStrava = () => {
     const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/api/strava/callback`;
+    const redirectUri = `${window.location.origin}/api/strava/link`;
     const scope = "activity:read_all,profile:read_all";
     const authUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&approval_prompt=force`;
     window.location.href = authUrl;
@@ -40,7 +42,7 @@ const Integrations = () => {
 
   const handleClickStrava = () => {
     if (user.has_strava_connect) {
-      handleLogout();
+      handleOpenModal();
     } else {
       handleConnectStrava();
     }
@@ -78,6 +80,26 @@ const Integrations = () => {
           <span>WIP</span>
         </div>
       </Button>
+      <CustomModal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <span className="block text-2xl text-center">
+          Are you sure you want to disconnect Strava?
+        </span>
+        <div className="mt-4 flex flex-col gap-2">
+          <Button onClick={handleLogout} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
+                Disconnecting...
+              </>
+            ) : (
+              "Disconnect"
+            )}
+          </Button>
+          <Button variant="outline" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+        </div>
+      </CustomModal>
     </>
   );
 };

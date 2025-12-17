@@ -80,7 +80,7 @@ const page = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-4">
+    <form onSubmit={handleSubmit} className="p-4 max-w-4xl mx-auto">
       <div className="group relative w-20 h-20 flex items-center justify-center border rounded-lg overflow-hidden">
         {file ? (
           <Image

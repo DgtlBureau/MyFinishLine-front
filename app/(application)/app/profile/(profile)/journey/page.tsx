@@ -2,7 +2,6 @@
 
 import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
 import {
-  ArrowRight,
   ChevronRight,
   Cloud,
   Compass,
@@ -17,10 +16,9 @@ import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
 import Link from "next/link";
 import Image from "next/image";
-import useGetStravaUser from "@/app/hooks/useGetStravaUser";
-import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import authWithStrava from "@/app/lib/utils/authWithStrava";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { linkStrava } from "@/app/lib/utils/authWithStrava";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 
@@ -63,24 +61,33 @@ const features = [
   },
 ];
 
+import LeaderboardSwiper from "@/app/components/LeaderboardSwiper/LeaderboardSwiper";
 import { Suspense } from "react";
+import { toast } from "react-toastify";
 
 const Journey = () => {
   const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
   const dataParam = searchParams.get("data");
+  const errorParam = searchParams.get("error");
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!dataParam) return;
+    if (errorParam) {
+      toast.error("Error linking Strava account " + errorParam);
+    }
+  }, []);
 
-    let parsedData = null;
-    try {
-      parsedData = JSON.parse(decodeURIComponent(dataParam));
-      dispatch(setUser(parsedData));
-    } catch (e) {
-      console.error("Failed to parse data param", e);
-      return;
+  useEffect(() => {
+    if (dataParam) {
+      let parsedData = null;
+      try {
+        parsedData = JSON.parse(decodeURIComponent(dataParam));
+        dispatch(setUser(parsedData));
+      } catch (e) {
+        console.error("Failed to parse data param", e);
+        return;
+      }
     }
   }, []);
 
@@ -101,6 +108,9 @@ const Journey = () => {
         <div className="mt-8">
           <FeatureList features={features} />
         </div>
+      </section>
+      <section>
+        <LeaderboardSwiper />
       </section>
 
       <section>
@@ -134,7 +144,7 @@ const Journey = () => {
           }
           className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
           disabled={user.has_strava_connect}
-          onClick={authWithStrava}
+          onClick={linkStrava}
         >
           {user.has_strava_connect ? (
             <div className="text-center mx-auto">Connected to Strava</div>
