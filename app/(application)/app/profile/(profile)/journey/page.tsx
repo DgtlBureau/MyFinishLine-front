@@ -64,6 +64,7 @@ const features = [
 import LeaderboardSwiper from "@/app/components/LeaderboardSwiper/LeaderboardSwiper";
 import { Suspense } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Journey = () => {
   const user = useAppSelector((state) => state.user);
@@ -72,7 +73,17 @@ const Journey = () => {
   const errorParam = searchParams.get("error");
   const dispatch = useAppDispatch();
 
+  const handleLoadUser = async () => {
+    try {
+      const { data } = await axios.get("/api/user/get-current-user");
+      dispatch(setUser(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    handleLoadUser();
     if (errorParam) {
       toast.error("Error linking Strava account " + errorParam);
     }
