@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import { IUser } from "@/app/types/user";
 import { useRouter } from "next/navigation";
+import instance from "@/app/lib/utils/instance";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function Login() {
 
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/auth/login", {
+      const { data } = await instance.post("/api/auth/login", {
         email: formData.email,
         password: formData.password,
       });
