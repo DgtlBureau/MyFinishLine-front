@@ -65,9 +65,11 @@ import LeaderboardSwiper from "@/app/components/LeaderboardSwiper/LeaderboardSwi
 import { Suspense } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { setRewards } from "@/app/lib/features/rewards/rewardsSlice";
 
 const Journey = () => {
   const user = useAppSelector((state) => state.user);
+  const { rewards } = useAppSelector((state) => state.rewards);
   const searchParams = useSearchParams();
   const dataParam = searchParams.get("data");
   const errorParam = searchParams.get("error");
@@ -102,6 +104,21 @@ const Journey = () => {
     }
   }, []);
 
+  const handleLoadRewards = async () => {
+    try {
+      const { data } = await axios.get("/api/user/rewards");
+      if (data?.data.length) {
+        dispatch(setRewards(data?.data));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadRewards();
+  }, []);
+
   return (
     <section>
       <h2 className="mt-10 font-medium text-3xl leading-9 text-[#09090B] text-center px-4">
@@ -110,7 +127,7 @@ const Journey = () => {
       <section className="mt-8 px-4">
         <ChallengeCard />
       </section>
-      <RewardsSwiper />
+      {!!rewards.length && <RewardsSwiper />}
       <section className="py-10 px-4">
         <h4 className="font-bold text-2xl leading-8">Next Goals</h4>
         <p className="mt-4 text-muted-foreground text-base">

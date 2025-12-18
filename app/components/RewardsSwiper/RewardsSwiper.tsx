@@ -43,7 +43,6 @@ const RewardsSwiper = () => {
   );
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
-  const dispatch = useAppDispatch();
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -56,21 +55,6 @@ const RewardsSwiper = () => {
       swiperRef.current.slidePrev();
     }
   };
-
-  const handleLoadRewards = async () => {
-    try {
-      const { data } = await axios.get("/api/user/rewards");
-      if (data?.length) {
-        dispatch(setRewards(data));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    handleLoadRewards();
-  }, []);
 
   return (
     <section className="bg-[#F4F4F5] py-10 mt-14">

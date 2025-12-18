@@ -14,7 +14,7 @@ export const GET = async () => {
       );
     }
 
-    const response = await instance.get("/user/awards", {
+    const response = await instance.get("/user/rewards", {
       headers: {
         Authorization: "Bearer " + token,
       },
