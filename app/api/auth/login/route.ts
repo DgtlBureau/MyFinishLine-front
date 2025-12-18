@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import axios from "axios";
 import instance from "@/app/lib/utils/instance";
 
 export async function POST(request: NextRequest) {
