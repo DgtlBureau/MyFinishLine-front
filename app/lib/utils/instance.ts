@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const baseURL = "https://dev.myfinishline.io/api";
-
-const isServer = typeof window === "undefined";
+const baseURL = "https://dev.myfinishline.io/back/api";
 
 const instance = axios.create({
-  baseURL: isServer ? baseURL : "/",
+  baseURL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
