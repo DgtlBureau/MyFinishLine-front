@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import { authWithStrava } from "@/app/lib/utils/authWithStrava";
+import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -189,6 +190,9 @@ export default function Register() {
               </Button>
             )}
           </form>
+          <div className="mt-2">
+            <TermsLine />
+          </div>
 
           <div className="relative flex items-center my-6">
             <div className="grow border-t border-gray-600"></div>

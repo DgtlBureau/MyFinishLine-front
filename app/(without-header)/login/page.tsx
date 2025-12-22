@@ -11,6 +11,7 @@ import { setUser } from "@/app/lib/features/user/userSlice";
 import { IUser } from "@/app/types/user";
 import { useRouter } from "next/navigation";
 import instance from "@/app/lib/utils/instance";
+import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -75,7 +76,7 @@ export default function Login() {
   return (
     <section className="grid min-h-svh lg:grid-cols-2">
       <div className="flex items-center justify-center px-2">
-        <div className="max-w-[500px] w-full flex flex-col mx-auto">
+        <div className="max-w-125 w-full flex flex-col mx-auto">
           <h1 className="text-2xl sm:text-3xl font-semibold text-center">
             Welcome back
           </h1>
@@ -127,6 +128,9 @@ export default function Login() {
               )}
             </Button>
           </form>
+          <div className="mt-2">
+            <TermsLine />
+          </div>
 
           <div className="relative flex items-center my-6">
             <div className="grow border-t border-gray-600"></div>

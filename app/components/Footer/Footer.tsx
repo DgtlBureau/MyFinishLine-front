@@ -30,8 +30,9 @@ const FOOTER_SECTIONS = [
   {
     title: "Resources",
     links: [
-      { name: "Terms & Conditions", href: "/terms-and-conditions" },
+      { name: "Terms & Conditions", href: "/terms-of-service" },
       { name: "Privacy Policy", href: "/privacy" },
+      { name: "Refund Policy", href: "/refund-policy" },
     ],
   },
 ];
@@ -120,48 +121,6 @@ const Footer = () => {
         </div>
 
         <div className="mt-15 flex flex-col items-center justify-between gap-4 md:mt-20 md:flex-row">
-          <div className="flex gap-4">
-            {APP_STORE_BUTTONS.map((button, index) => (
-              <Link key={index} href={button.href}>
-                {button.icon === "apple" ? (
-                  <div className="relative">
-                    <Image
-                      src="/images/apple-button.png"
-                      alt="Apple App Store"
-                      width={124}
-                      height={42.6}
-                      className="dark:hidden"
-                    />
-                    <Image
-                      src="/images/apple-button-dark-mode.png"
-                      alt="Apple App Store"
-                      width={124}
-                      height={42.6}
-                      className="hidden dark:block"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <Image
-                      src="/images/google-button.png"
-                      alt="Google Play Store"
-                      width={124}
-                      height={42.6}
-                      className="dark:hidden"
-                    />
-                    <Image
-                      src="/images/google-button-dark-mode.png"
-                      alt="Google Play Store"
-                      width={124}
-                      height={42.6}
-                      className="hidden dark:block"
-                    />
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
-
           <div className="flex gap-6">
             <Link
               href="https://www.shadcnblocks.com"
@@ -170,16 +129,22 @@ const Footer = () => {
               © {new Date().getFullYear()} Shadcnblocks.com
             </Link>
             <Link
-              href="/privacy-policy"
+              href="/privacy"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               Privacy
             </Link>
             <Link
-              href="/terms-and-conditions"
+              href="/terms-of-service"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               Terms
+            </Link>
+            <Link
+              href="/refund-policy"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              Refund Policy
             </Link>
           </div>
         </div>

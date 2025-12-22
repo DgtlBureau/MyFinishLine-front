@@ -308,7 +308,10 @@ const page = () => {
         </h2>
         <p className="mb-4">If you have questions, concerns, or requests:</p>
         <div className="ml-4">
-          <p className="font-semibold mb-2">Email: access@myfinishline.io</p>
+          <p className="font-semibold mb-2">
+            Email:{" "}
+            <a href="mailto:access@myfinishline.io">access@myfinishline.io</a>
+          </p>
           <p className="font-semibold">Operator: Fortem Group Limited</p>
         </div>
       </div>
