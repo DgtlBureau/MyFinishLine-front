@@ -17,7 +17,7 @@ import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { linkStrava } from "@/app/lib/utils/authWithStrava";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
@@ -69,6 +69,7 @@ import { setRewards } from "@/app/lib/features/rewards/rewardsSlice";
 
 const Journey = () => {
   const user = useAppSelector((state) => state.user);
+  const [contracts, setContracts] = useState([]);
   const { rewards } = useAppSelector((state) => state.rewards);
   const searchParams = useSearchParams();
   const dataParam = searchParams.get("data");
@@ -84,8 +85,19 @@ const Journey = () => {
     }
   };
 
+  const handleLoadContracts = async () => {
+    try {
+      const { data } = await axios.get("/api/user/contracts");
+      setContracts(data.data);
+    } catch (error: any) {
+      toast.error("Error loading contracts: ", error.response.data.message);
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleLoadUser();
+    handleLoadContracts();
     if (errorParam) {
       toast.error("Error linking Strava account " + errorParam);
     }
@@ -134,7 +146,7 @@ const Journey = () => {
           Here you can see the next route points that await you ahead!
         </p>
         <div className="mt-8">
-          <FeatureList features={features} />
+          <FeatureList features={contracts} />
         </div>
       </section>
       <section className="px-4">
