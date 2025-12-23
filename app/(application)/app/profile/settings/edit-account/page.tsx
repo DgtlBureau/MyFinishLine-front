@@ -25,6 +25,7 @@ const page = () => {
   const [data, setData] = useState<IUser>(user);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => {
@@ -91,7 +92,7 @@ const page = () => {
             width={80}
             height={80}
           />
-        ) : data.full_avatar_url ? (
+        ) : !imageError && data.full_avatar_url ? (
           <Image
             className="object-cover rounded-lg"
             src={data.full_avatar_url}
@@ -99,6 +100,9 @@ const page = () => {
             loading="eager"
             width={80}
             height={80}
+            onError={() => {
+              setImageError(true);
+            }}
           />
         ) : (
           <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">

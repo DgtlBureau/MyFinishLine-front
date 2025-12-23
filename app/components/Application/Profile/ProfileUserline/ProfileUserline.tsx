@@ -8,11 +8,12 @@ import {
   handleConvertTime,
 } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
+import { useState } from "react";
+import { Camera } from "lucide-react";
 
 const ProfileUserline = () => {
+  const [imageError, setImageError] = useState(false);
   const user = useAppSelector((state) => state.user);
-
-  console.log(user);
 
   return (
     <section
@@ -27,7 +28,7 @@ const ProfileUserline = () => {
       className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl"
     >
       <div className="flex gap-4">
-        {user?.full_avatar_url ? (
+        {!imageError && user?.full_avatar_url ? (
           <Image
             className="rounded-[20px]"
             src={user.full_avatar_url}
@@ -36,13 +37,16 @@ const ProfileUserline = () => {
             quality={75}
             loading="eager"
             alt="Profile image"
+            onError={() => {
+              setImageError(true);
+            }}
           />
         ) : (
           <div
             style={{ backgroundColor: user.avatar_color }}
             className="border-border shrink-0 border-2 rounded-[20px] w-20 h-20 flex items-center justify-center text-3xl font-bold"
           >
-            {user.avatar_symbol}
+            {user.avatar_symbol || <Camera />}
           </div>
         )}
         <div>
