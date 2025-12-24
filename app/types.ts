@@ -44,6 +44,7 @@ export interface IActiveChallenge {
   total_distance: string;
   activate_date: string;
   user_distance: number;
+  is_completed: boolean;
 }
 
 export interface IActivity {

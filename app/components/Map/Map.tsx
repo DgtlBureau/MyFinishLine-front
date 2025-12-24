@@ -15,6 +15,7 @@ const Map = ({
   total_distance,
   activate_date,
   user_distance,
+  is_completed,
 }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
@@ -29,7 +30,14 @@ const Map = ({
     const scrollToActiveStep = () => {
       const activeStep = steps.find((step) => step.active && !step.completed);
       if (activeStep) {
-        const element = document.getElementById("step-" + activeStep.id);
+        const element = document.getElementById("step-" + activeStep.index);
+        element?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      } else {
+        const element = document.getElementById("step-" + steps.length);
         element?.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -46,8 +54,9 @@ const Map = ({
     };
 
     const hasActiveStep = steps.some((step) => step.active && !step.completed);
+    const isAllCompleted = is_completed;
 
-    if (hasActiveStep) {
+    if (hasActiveStep || isAllCompleted) {
       timer = setTimeout(scrollToActiveStep, 100);
     } else {
       timer = setTimeout(scrollToBottom, 100);
