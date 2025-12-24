@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { StoreProvider } from "./StoreProvider";
 import { GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
+import { buildSeo } from "./lib/utils/buildSeo";
+import { pageMetadata } from "./data/pagesMetadata";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -10,10 +11,13 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "MyFinishLine",
-  description: "Combine sports and pleasure",
-};
+export const metadata = buildSeo({
+  title: pageMetadata.main.title,
+  description: pageMetadata.main.description,
+  robotsFollow: true,
+  robotsIndex: true,
+  keywords: pageMetadata.main.keywords,
+});
 
 export default function RootLayout({
   children,
