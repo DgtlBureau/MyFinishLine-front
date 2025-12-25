@@ -2,12 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { AnswerComponent } from "./AnswerComponent";
 
 interface FaqAccordionProps {
   items: {
     id: number;
     question: string;
-    answer: string;
+    sub_answer?: string;
+    answer: {
+      id: number;
+      variant: string;
+    }[];
   }[];
   search: string;
 }
@@ -61,10 +66,12 @@ export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
                   isOpen ? "mt-2 max-h-40 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <div
-                  className="text-md text-gray-500 [&_a]:text-blue-600 [&_a]:hover:text-blue-700"
-                  dangerouslySetInnerHTML={{ __html: item.answer }}
-                />
+                <div className="text-md text-gray-500 [&_a]:text-blue-600 [&_a]:hover:text-blue-700">
+                  <AnswerComponent
+                    answer={item.answer}
+                    sub_answer={item.sub_answer}
+                  />
+                </div>
               </div>
             </div>
           );

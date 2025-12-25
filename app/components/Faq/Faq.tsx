@@ -2,11 +2,9 @@
 
 import { useMemo, useState, type ComponentType, type SVGProps } from "react";
 import { useDebounce } from "use-debounce";
-import { FaqMenu } from "./FaqMenu/FaqMenu";
 import { FaqAccordion } from "./FaqAccordion/Accordion";
 import { FaqForm } from "./FaqForm/FaqForm";
 import { FaqBanner } from "./FaqBanner/FaqBanner";
-import { AccordionHeader } from "./FaqAccordion/AccordionHeader";
 import { faqData } from "@/app/data/faqData";
 import { Modal } from "../ui/modal/Modal";
 import { FormikState, useFormik } from "formik";
@@ -103,6 +101,7 @@ export const Faq = () => {
         id: el.id * index,
         question: el.question,
         answer: el.answer,
+        sub_answer: el.sub_answer,
       }));
   }, [selectedCategory, faqData, visibleFaqData]);
 
@@ -138,21 +137,13 @@ export const Faq = () => {
   };
 
   return (
-    <div className="bg-primary/10 flex min-h-screen items-center justify-center">
+    <div className="bg-primary/10 flex min-h-screen items-start justify-center">
       <div className="flex w-full max-w-[1440px] flex-col items-center justify-start gap-4 p-[20px_10px] pb-[40px] md:p-[20px_40px] md:pb-[80px]">
         <FaqBanner search={search} setSearch={(e) => handleSearch(e)} />
 
-        <div className="flex w-full flex-col gap-4 md:flex-row">
-          <div className="flex w-full flex-col gap-4 md:w-[25%]">
-            <FaqMenu
-              options={options}
-              selectedCategory={selectedCategory}
-              onClick={handleChangeCategory}
-            />
-          </div>
+        <div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row">
           {filteredData && (
             <div className="flex w-full flex-col gap-4 md:w-[75%]">
-              <AccordionHeader selectedCategory={selectedCategory} />
               <FaqAccordion items={filteredData} search={value} />
             </div>
           )}
