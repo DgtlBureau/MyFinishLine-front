@@ -31,7 +31,7 @@ export const AnswerComponent = ({ sub_answer, answer }: IAnswerProps) => {
         }`}
       >
         {answer.map((item) => (
-          <li>{renderBoldText(item.variant)}</li>
+          <li key={item.id}>{renderBoldText(item.variant)}</li>
         ))}
       </ol>
     </div>

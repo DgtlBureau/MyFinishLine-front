@@ -7,10 +7,7 @@ interface IFormikValues {
   user_id: number | null;
   email: string;
   question: string;
-  category: {
-    id: number;
-    name: string;
-  };
+  category: number;
 }
 
 interface IFaqFormProps {
@@ -19,10 +16,7 @@ interface IFaqFormProps {
     user_id: number | null;
     email: string;
     question: string;
-    category: {
-      id: number;
-      name: string;
-    };
+    category: number;
   };
   errors: FormikErrors<IFormikValues>;
   touched: FormikTouched<IFormikValues>;
@@ -86,7 +80,7 @@ export const FaqForm = ({
           onSubmit={handleSubmit}
           name="faq-form"
         >
-          <div className="flex w-full flex-col gap-1">
+          {/* <div className="flex w-full flex-col gap-1">
             <span className="text-sm md:text-base">{"Feedback type"}</span>
             <CustomSelect
               value={values.category.name}
@@ -103,7 +97,7 @@ export const FaqForm = ({
             {errors.category && touched.category && (
               <ErrorInfo error={errors.category.name as string} />
             )}
-          </div>
+          </div> */}
 
           <div className="flex w-full flex-col gap-1">
             <span className="text-sm md:text-base">{"Message"}</span>
@@ -167,7 +161,7 @@ export const FaqForm = ({
               }`}
             >
               <SendIcon className="h-5 w-5" />
-              {"send_feedback"}
+              {"Send feedback"}
             </button>
           </div>
         </form>
