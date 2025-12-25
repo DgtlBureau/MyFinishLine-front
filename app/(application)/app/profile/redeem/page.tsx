@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, Suspense, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ import RedeemStep3 from "@/app/components/Application/RedeemSteps/RedeemStep3/Re
 
 import "flag-icons/css/flag-icons.min.css";
 
-const Redeem = () => {
+const Content = () => {
   const { user } = useAppSelector((state) => state.user);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepIndex, setStepIndex] = useState(1);
@@ -148,6 +148,14 @@ const Redeem = () => {
         </form>
       </motion.div>
     </div>
+  );
+};
+
+const Redeem = () => {
+  return (
+    <Suspense fallback={null}>
+      <Content />
+    </Suspense>
   );
 };
 

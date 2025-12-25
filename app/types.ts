@@ -45,8 +45,8 @@ export interface IActiveChallenge {
   activate_date: string;
   user_distance: number;
   is_completed: boolean;
-  reward: IReward;
-  reward_ticket: IRewardTicket;
+  reward?: IReward;
+  reward_ticket?: IRewardTicket;
 }
 
 export interface IActivity {

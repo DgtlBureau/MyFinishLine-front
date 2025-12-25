@@ -78,22 +78,24 @@ const ChallengeCard = () => {
         <span className="mt-2.5 text-sm font-semibold leading-5 text-[#09090B]">
           {challenge.user_distance} km
         </span>
-        <div className="relative flex items-center justify-center rounded-full max-w-30 max-h-30 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
-          <div className="bg-white w-full h-full rounded-full">
-            <Image
-              className="px-4 pb-3 w-full object-contain h-full"
-              src="/images/application/medal.png"
-              width={1080}
-              height={1080}
-              alt="Medal"
-            />
+        {challenge.reward?.image_url && (
+          <div className="relative flex items-center justify-center rounded-full max-w-30 max-h-30 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
+            <div className="bg-white w-full h-full rounded-full">
+              <Image
+                className="p-2  w-full object-contain h-full"
+                src={challenge.reward?.image_url}
+                width={1080}
+                height={1080}
+                alt="Medal"
+              />
+            </div>
           </div>
-        </div>
+        )}
         <span className="mt-2.5 text-sm font-semibold leading-5 text-[#09090B]">
           41.7 hrs
         </span>
       </div>
-      {challenge.reward_ticket.id ? (
+      {challenge.reward_ticket?.id ? (
         <div className="mt-8 text-sm grid grid-cols-2 max-w-60">
           <span className="text-[#90909B]">Shipment status:</span>
           <div className="text-end">{challenge.reward_ticket.status.name}</div>
@@ -102,7 +104,7 @@ const ChallengeCard = () => {
         </div>
       ) : challenge.is_completed ? (
         <Link
-          href={`/app/profile/redeem?reward_id=${challenge.reward.id}`}
+          href={`/app/profile/redeem?reward_id=${challenge.reward?.id}`}
           className="block text-center bg-transparent w-full mt-8 border-black py-2 px-4 border text-black text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer"
         >
           Claim medal
@@ -127,14 +129,16 @@ const ChallengeCard = () => {
             ease: "easeInOut",
           }}
         >
-          <Image
-            className="px-4 pb-3 h-[50%] max-h-[calc(100vh-80px)] object-contain"
-            src="/images/application/medal.png"
-            width={1080}
-            height={1080}
-            quality={100}
-            alt="Medal"
-          />
+          {challenge.reward?.image_url && (
+            <Image
+              className="px-4 pb-3 h-[50%] max-h-[calc(100vh-80px)] object-contain"
+              src={challenge.reward?.image_url}
+              width={1080}
+              height={1080}
+              quality={100}
+              alt="Medal"
+            />
+          )}
         </motion.div>
       </CustomModal>
     </div>
