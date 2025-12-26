@@ -44,6 +44,9 @@ export interface IActiveChallenge {
   total_distance: string;
   activate_date: string;
   user_distance: number;
+  is_completed: boolean;
+  reward?: IReward;
+  reward_ticket?: IRewardTicket;
 }
 
 export interface IActivity {
@@ -135,4 +138,20 @@ export interface IContract {
   badges: any[];
   banners: any[];
   frames: any[];
+  end_date: null | string;
+}
+
+export interface IRewardTicket {
+  address: string;
+  country: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  phone: string;
+  reward_id: number;
+  status: IStatus;
+  status_id: number;
+  user_id: number;
+  zip_code: string;
 }

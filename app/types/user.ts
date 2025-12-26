@@ -7,8 +7,8 @@ export interface IUser {
   full_avatar_url: string | null;
   has_activated_code: boolean | null;
   id: number | null;
-  last_name: string | null;
-  phone: string | null;
+  last_name: string;
+  phone: string;
   strava_id: string | null;
   total_activities_count: number;
   total_distance: number;

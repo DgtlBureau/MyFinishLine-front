@@ -13,7 +13,7 @@ import { Camera } from "lucide-react";
 
 const ProfileUserline = () => {
   const [imageError, setImageError] = useState(false);
-  const { user } = useAppSelector((state) => state.user);
+  const { user, personalization } = useAppSelector((state) => state.user);
 
   return (
     <section
@@ -23,32 +23,52 @@ const ProfileUserline = () => {
               background:
                 "linear-gradient(180deg, rgba(0, 124, 194, 0.4) 0%, rgba(136, 227, 255, 0.4) 49.62%, rgba(255, 255, 255, 0.4) 100%)",
             }
+          : personalization
+          ? {
+              background: personalization.banner?.color,
+            }
           : undefined
       }
       className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl"
     >
       <div className="flex gap-4">
-        {!imageError && user?.full_avatar_url ? (
-          <Image
-            className="rounded-[20px]"
-            src={user.full_avatar_url}
-            width={80}
-            height={80}
-            quality={75}
-            loading="eager"
-            alt="Profile image"
-            onError={() => {
-              setImageError(true);
-            }}
-          />
-        ) : (
-          <div
-            style={{ backgroundColor: user.avatar_color }}
-            className="border-border shrink-0 border-2 rounded-[20px] w-20 h-20 flex items-center justify-center text-3xl font-bold"
-          >
-            {user.avatar_symbol || <Camera />}
-          </div>
-        )}
+        <div
+          style={
+            personalization.frame
+              ? {
+                  width: 88,
+                  height: 88,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: personalization.frame.color,
+                  borderRadius: "50%",
+                }
+              : {}
+          }
+        >
+          {!imageError && user?.full_avatar_url ? (
+            <Image
+              className="rounded-full max-h-20 max-w-20 object-cover"
+              src={user.full_avatar_url}
+              width={80}
+              height={80}
+              quality={75}
+              loading="eager"
+              alt="Profile image"
+              onError={() => {
+                setImageError(true);
+              }}
+            />
+          ) : (
+            <div
+              style={{ backgroundColor: user.avatar_color }}
+              className="border-border shrink-0 border-2 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold"
+            >
+              {user.avatar_symbol || <Camera />}
+            </div>
+          )}
+        </div>
         <div>
           <div>
             <motion.span

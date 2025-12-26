@@ -53,7 +53,7 @@ const Journey = () => {
       </section>
       {!!completedContracts.length && <RewardsSwiper />}
       <section className="py-10 px-4">
-        <h4 className="font-bold text-2xl leading-8">Next Goals</h4>
+        <h4 className="font-bold text-2xl leading-8">Contracts</h4>
         <p className="mt-4 text-muted-foreground text-base">
           Here you can see the next route points that await you ahead!
         </p>

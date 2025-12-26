@@ -52,9 +52,10 @@ const Activity = ({
           {average_speed} m/s
         </div>
       </div>
-      <div className="pt-2 px-6 pb-6">
+      <div className="pt-2 px-2 sm:px-6 pb-6">
         <div className="flex gap-4 h-full items-stretch">
           <Image
+            className="shrink-0 h-20 w-20"
             src="/images/application/challenge1.png"
             width={78}
             height={78}
@@ -76,7 +77,7 @@ const Activity = ({
                 </span>
                 {from === "strava" ? (
                   <Image
-                    className="rounded-lg"
+                    className="rounded-lg shrink-0"
                     src="/icons/strava.svg"
                     height={32}
                     width={32}

@@ -24,7 +24,7 @@ export const GET = async () => {
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json(
-      { message: error.response?.data.message || "Error updating user" },
+      { message: error.response?.data.message || "Error loading current user" },
       { status: 500 }
     );
   }
