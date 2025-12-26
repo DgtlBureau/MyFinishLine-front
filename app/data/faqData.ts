@@ -1,366 +1,204 @@
-// import authorizationIcon from "@/public/icons/faq/profile.svg";
-// import ticketsIcon from "@/public/icons/faq/ticket.svg";
-// import subscriptionsIcon from "@/public/icons/faq/subscription.svg";
-// import otherIcon from "@/public/icons/faq/question-circle.svg";
-// import bonusesIcon from "@/public/icons/faq/question.svg";
+import { CircleQuestionMarkIcon, type LucideIcon } from "lucide-react";
 
-import {
-  UserRoundIcon,
-  TicketIcon,
-  TicketsIcon,
-  CircleQuestionMarkIcon,
-} from "lucide-react";
+interface IVariantsProps {
+  id: number;
+  question: string;
+  sub_answer?: string;
+  answer: {
+    id: number;
+    variant: string;
+  }[];
+}
 
-export const faqData = [
+interface IDataPrpps {
+  id: number;
+  isVisible: boolean;
+  icon: LucideIcon;
+  category: string;
+  variants: IVariantsProps[];
+}
+
+export const faqData: IDataPrpps[] = [
   {
     id: 1,
     isVisible: true,
-    icon: UserRoundIcon,
-    category: "authorization",
+    icon: CircleQuestionMarkIcon,
+    category: "all",
     variants: [
       {
         id: 1,
-        question:
-          "Не могу войти в приложение или на сайт. Ввожу номер, пароль — пишет «неверные данные».",
-        answer:
-          "Необходимо войти с тем же номером телефона, который использовался при покупке билета. Если проблема остаётся — возможна ошибка авторизации.",
+        question: "How do I join a challenge?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "**Pick your journey:** Purchase a challenge from our store.",
+          },
+          {
+            id: 2,
+            variant:
+              "**Check your email:** After purchase, we’ll automatically send you a 6-digit access code.",
+          },
+          {
+            id: 3,
+            variant:
+              "**Open the App:** Go through link to the MyFinishLine to our website.",
+          },
+          {
+            id: 4,
+            variant:
+              "**Activate:** Enter your code to unlock the challenge and start your adventure.",
+          },
+        ],
       },
       {
         id: 2,
-        question: "Не приходит код подтверждения при регистрации.",
-        answer:
-          "Причина может быть в нестабильном интернете или неверно указанном телефоне. Проверьте правильность введеных данных",
+        question: "Can I participate from any country?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Absolutely! MyFinishLine is a global community without location restrictions. We welcome participants from all over the world and ship our physical medals internationally upon completion.",
+          },
+        ],
       },
       {
         id: 3,
-        question: "Как сменить привязанный email или номер телефона?",
-        answer:
-          "Email изменяется через поддержку — данные о продажах берутся из истории ваших покупок.",
+        question: "Do I need to be a professional athlete?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Not at all! Our challenges are designed for everyone. You can complete the distance at your own pace—whether you run, walk, hike, or cycle. It's about your personal progress.",
+          },
+        ],
       },
       {
         id: 4,
-        question: "Как привязать аккаунт Яндекс Афиши?",
-        answer:
-          "Авторизация в приложении происходит только через аккаунт клуба — данные с Яндекс.Афиши не привязываются.",
-      },
-    ],
-  },
-  {
-    id: 2,
-    isVisible: true,
-    icon: TicketsIcon,
-    category: "tickets",
-    variants: [
-      {
-        id: 1,
-        question: "Купил(а) билеты, но они не пришли на почту.",
-        answer:
-          'Иногда билеты приходят с задержкой. Важно убедиться, что вход выполнен под тем же номером, что использовался при покупке/покупка билета была совершена с официального сайта hcadmiral.pro в разделе «купить билеты» или в сервисе Яндекс Афиша.Если возникли проблемы с покупкой или не пришел билет, напишите в техническую поддержку Яндекс - <a href="https://yandex.ru/support/afisha/ru/tickets-notarrived" target="_blank" rel="noopener noreferrer">https://yandex.ru/support/afisha/ru/tickets-notarrived</a> или по телефону <a href="tel:8-800-600-90-90">8-800-600-90-90</a>',
-      },
-      {
-        id: 2,
-        question: "Как вернуть билет/абонемент?",
-        answer:
-          'Возврат билетов осуществляется через Яндекс.Афишу согласно правилам возврата. Для возврата денежных средств за билеты/абонементы, приобретенные на сайте hcadmiral.pro или на Яндекс Афише, необходимо перейти на страницу возврата: <a href="https://widget.afisha.yandex.ru/refund" target="_blank" rel="noopener noreferrer">https://widget.afisha.yandex.ru/refund</a>',
-      },
-      {
-        id: 3,
-        question: "Нужно ли покупать билет ребёнку?",
-        answer:
-          "Дети до 6 лет включительно проходят на стадион бесплатно, при условии, что они не занимают отдельного места. Детям от 7 до 17 лет включительно нужен детский билет",
-      },
-      {
-        id: 4,
-        question:
-          "Я могу купить несколько билетов через один личный кабинет/в кассах арены?",
-        answer:
-          "Каждый Покупатель имеет право приобрести не более 5 (пяти) билетов на один «Домашний» матч. Организатор вправе аннулировать Билеты, приобретенные с нарушением данного требования",
+        question: "How do I track my distance?",
+        sub_answer: "You have two options to log your miles:",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "**Automatic Sync:** Connect your fitness app or wearable. We support integration with **Strava, Garmin, Fitbit**. Your workouts will automatically sync to the challenge.",
+          },
+          {
+            id: 2,
+            variant:
+              "**Manual Entry:** If you don't use a tracker or prefer to log it yourself (e.g., treadmill workouts), you can manually enter your distance and time directly in the app.",
+          },
+        ],
       },
       {
         id: 5,
-        question:
-          "Когда начинается продажа билетов на следующую домашнюю серию?",
-        answer:
-          "Информация о старте продаж публикуется на официальном сайте и соцсетях клуба, пожалуйсте следите за информацией.",
+        question: "What types of exercise count?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Any distance-based activity counts! This includes running, walking (even walking the dog), cycling, swimming, and more. You choose how you want to move toward the finish line.",
+          },
+        ],
       },
       {
         id: 6,
-        question: "Где я могу купить билет?",
-        answer:
-          "Билеты на домашние матчи ХК «Адмирал» можно приобрести <strong>ТОЛЬКО</strong> в личном кабинете на официальном сайте клуба hcadmiral.pro в разделе «купить билеты» и в сервисе Яндекс Афиша, а также в кассах Фетисов Арены. Также не делитесь фотографиями своих билетов в сети интернет.",
+        question: "Can I do multiple challenges at once?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Yes. If you bought a bundle or multiple challenges, you can participate in them simultaneously or one by one. In the app, you simply select which challenge is 'Active' to ensure your miles count toward the specific route you are currently focusing on.",
+          },
+        ],
       },
       {
         id: 7,
-        question: "Для каких категорий граждан есть скидки?",
-        answer:
-          'Скидка предоставляются: <br> детям в возрасте от 7 до 17 лет включительно (Тариф "Детский") <br> участникам и ветеранам боевых действий, участникам СВО, ветеранам труда, пенсионерам по возрасту, студентам очных отделений учебных заведений, инвалидам 2 и 3 групп. (Тариф "Льготный") <br> Все скидки при покупке билетов вы увидите на билетном сайте. Другие скидки появляются в разделе новостей. Иные скидки не предусмотрены. <br> Владельцам «Льготных» и «Детских» билетов/абонементов Доступ на стадион возможен только при наличии документа, подтверждающего право на скидку. Проход на стадион будет организован через отдельную входную группу «Западный» вход, 1-ый этаж. Без предъявления документа (копии документа/фото документа), подтверждающего право на скидку, в доступе на стадион может быть отказано',
+        question: "Is there a time limit to finish?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Yes, you have **1 year (365 days)** from the date you purchase/activate the challenge to complete the distance. This is plenty of time to finish the route at a comfortable pace. If the challenge isn't completed within this timeframe, the progress may expire",
+          },
+        ],
       },
       {
         id: 8,
-        question: "Можно купить билеты по Пушкинской карте?",
-        answer: "Нет, по Пушкинской карте приобрести билет невозможно.",
+        question: "When can I register?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Registration is open year-round. You can start your journey whenever you are ready. Our global goal is to circle the Earth by the end of 2026, but your personal start date is up to you.",
+          },
+        ],
       },
       {
         id: 9,
-        question: "Нужно ли распечатывать билеты?",
-        answer:
-          "Распечатывать электронный билет не обязательно. Откройте файл с билетом в формате PDF на вашем смартфоне и приложите QR/штрих-код к сканеру турникета.",
+        question: "What do I get for finishing?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Your main reward is a premium **physical medal** shipped to your door. Each medal represents a specific region. Inside the app, you also earn digital rewards like avatar skins, badges, and story chapters as you progress.",
+          },
+        ],
       },
       {
         id: 10,
-        question:
-          "Могу ли я передать свои билеты другому человеку, если на них указаны мои данные ФИО?",
-        answer:
-          "Вход на арену осуществляется посредством системы сканирования штрих-кода на билете или абонементе, дополнительная информация не требуется. В случае, если приобретались билеты по тарифу «детский» или «льготный»-они могут переданы только людям с соответствующими правами на скидку",
-      },
-    ],
-  },
-  {
-    id: 3,
-    isVisible: true,
-    icon: TicketIcon,
-    category: "subscriptions",
-    variants: [
-      {
-        id: 1,
-        question: "Потерял(а) абонемент, купленный в кассе. Как восстановить?",
-        answer: "Восстановление возможно в кассе при наличии чека.",
-      },
-      {
-        id: 2,
-        question: "Почему не начисляются бонусы за покупку билета/абонемента?",
-        answer:
-          "Бонусы начисляются после активации 1-го уровня программы лояльности.",
-      },
-      {
-        id: 3,
-        question: "Не отображаются посещенные матчи.",
-        answer:
-          "Информация в программе лояльности может появлятся не сразу. Если по истечению 3 дней вы заметили, что данные не появились - пожалуйста обратитесь в поддержку.",
-      },
-      {
-        id: 4,
-        question: "Как потратить бонусные баллы?",
-        answer:
-          "Бонусные баллы можно потратить при покупке товаров в интернет-магазине, при покупке билетов или на товары витрины впечатлений.",
-      },
-      {
-        id: 5,
-        question: "Есть бонусы, но не могу их списать.",
-        answer:
-          "Списание доступно при достижении определенных условий программы лояльности, пожалуйста убедитесь в том, что условий вашей программы лояльности позваляют вам списывать бонусные баллы.",
-      },
-      {
-        id: 6,
-        question:
-          "Я купил 3 билета — сколько проходов начислят в рамках программы лояльности?",
-        answer:
-          "Всегда на 1 аккаунт начисляется 1 уникальный проход на аккаунт вне зависимости от кол-ва купленных билетов на учетную запись.",
-      },
-      {
-        id: 7,
-        question:
-          "Я прошел на матч, но он не засчитался в программе лояльности",
-        answer:
-          "Данные по проходам могут появляться с задержкой, если спустя 3 дня проход не засчитался, пожалуйста обратитесь в поддержку.",
-      },
-      {
-        id: 8,
-        question: "Что будет с баллами 1 июня?",
-        answer: "Баллы и статус обнуляются — начинается новый сезон.",
-      },
-      {
-        id: 9,
-        question: "Переносится ли статус на следующий сезон?",
-        answer:
-          "Нет — каждый сезон начинается с нулевого уровня программы лояльности.",
-      },
-      {
-        id: 10,
-        question: "Купил билет — кэшбэк не начислился.",
-        answer:
-          "Кэшбэк начисляется в рамках правил программы лояльности. В данном случае только при статусе выше «Начального». Абонемент — исключение (5%).",
+        question: "How do I claim my medal?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Once you reach 100% of the distance for a specific challenge, the **'Claim Medal'** button will unlock in your profile. Simply click it, enter your current shipping address, and we will dispatch your reward.",
+          },
+        ],
       },
       {
         id: 11,
-        question:
-          "Мерч и билеты были приобретены в одном заказе — как начислят кэшбэк?",
-        answer:
-          "Кэшбэк начисляется на каждый товар в заказе в соответствии с текущим статусом.",
+        question: "How much does it cost?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Pricing depends on the package you choose. Check the store page for current pricing.",
+          },
+        ],
       },
       {
         id: 12,
-        question:
-          "Начисляется ли кешбек при покупке билетов на выездные матчи?",
-        answer:
-          "При покупке билетов на выездные встречи вы покупаете билеты на стадион соперника, поэтому в рамках программы лояльности такие покупки не учитываются.",
-      },
-      {
-        id: 13,
-        question:
-          "У меня не получается списать все бонусы при покупке билета или мерчендайза.",
-        answer:
-          "При покупке вы можете списать баллы равные вашему проценту кешбека в соответствии с условиями программы лояльности. Данный процент всегда соответствует вашему статусу программы лояльности.",
-      },
-      {
-        id: 14,
-        question:
-          "Я пытаюсь применить промокод или списать бонусы на товары интернет магазина со скидкой и не получается, что делать?",
-        answer:
-          "Бонусы не суммируются с акциями — это правило программы лояльности.",
-      },
-      {
-        id: 15,
-        question: "Можно ли бонусами оплатить весь заказ?",
-        answer:
-          "Нет — списание бонусных баллов ограничено вашим статусом программы лояльности и как правило не превышает 20%.",
-      },
-      {
-        id: 16,
-        question: "Почему по моему абонементу 0 проходов?",
-        answer:
-          "По абонементу статус начисляется сразу при покупке, проходы, однако, начисляются по факту прохода.",
-      },
-      {
-        id: 17,
-        question: "Купил 2 абонемента — бонусы начислены только за один.",
-        answer:
-          "При покупке нескольких абонементов бонусные баллы начисляются только за первый абонемент в заказе.",
-      },
-    ],
-  },
-  {
-    id: 4,
-    isVisible: false,
-    category: "bonuses",
-    icon: CircleQuestionMarkIcon,
-    variants: [
-      {
-        id: 1,
-        question: "Почему не начисляются бонусы за покупку билета/абонемента?",
-        answer:
-          "Бонусы начисляются после активации 1-го уровня программы лояльности.",
-      },
-      {
-        id: 2,
-        question: "Не отображаются посещенные матчи.",
-        answer:
-          "Информация в программе лояльности может появлятся не сразу. Если по истечению 3 дней вы заметили, что данные не появились - пожалуйста обратитесь в поддержку.",
-      },
-      {
-        id: 3,
-        question: "Как потратить бонусные баллы?",
-        answer:
-          "Бонусные баллы можно потратить при покупке товаров в интернет-магазине, при покупке билетов или на товары витрины впечатлений.",
-      },
-      {
-        id: 4,
-        question: "Есть бонусы, но не могу их списать.",
-        answer:
-          "Списание доступно при достижении определенных условий программы лояльности, пожалуйста убедитесь в том, что условий вашей программы лояльности позваляют вам списывать бонусные баллы.",
-      },
-      {
-        id: 5,
-        question:
-          "Я купил 3 билета — сколько проходов начислят в рамках программы лояльности?",
-        answer:
-          "Всегда на 1 аккаунт начисляется 1 уникальный проход на аккаунт вне зависимости от кол-ва купленных билетов на учетную запись.",
-      },
-      {
-        id: 6,
-        question:
-          "Я прошел на матч, но он не засчитался в программе лояльности",
-        answer:
-          "Данные по проходам могут появляться с задержкой, если спустя 3 дня проход не засчитался, пожалуйста обратитесь в поддержку.",
-      },
-      {
-        id: 7,
-        question: "Что будет с баллами 1 июня?",
-        answer: "Баллы и статус обнуляются — начинается новый сезон.",
-      },
-      {
-        id: 8,
-        question: "Переносится ли статус на следующий сезон?",
-        answer:
-          "Нет — каждый сезон начинается с нулевого уровня программы лояльности.",
-      },
-      {
-        id: 9,
-        question: "Купил билет — кэшбэк не начислился.",
-        answer:
-          "Кэшбэк начисляется в рамках правил программы лояльности. В данном случае только при статусе выше «Начального». Абонемент — исключение (5%).",
-      },
-      {
-        id: 10,
-        question:
-          "Мерч и билеты были приобретены в одном заказе — как начислят кэшбэк?",
-        answer:
-          "Кэшбэк начисляется на каждый товар в заказе в соответствии с текущим статусом.",
-      },
-      {
-        id: 11,
-        question:
-          "Начисляется ли кешбек при покупке билетов на выездные матчи?",
-        answer:
-          "При покупке билетов на выездные встречи вы покупаете билеты на стадион соперника, поэтому в рамках программы лояльности такие покупки не учитываются.",
+        question: "My activation code isn't working. What should I do?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Your code is linked to the email address you used at checkout. If you are having trouble, try activating it via your Profile settings inside the app. If it still doesn't work, please contact our support team.",
+          },
+        ],
       },
       {
         id: 12,
-        question:
-          "У меня не получается списать все бонусы при покупке билета или мерчендайза.",
-        answer:
-          "При покупке вы можете списать баллы равные вашему проценту кешбека в соответствии с условиями программы лояльности. Данный процент всегда соответствует вашему статусу программы лояльности.",
+        question: "My activation code isn't working. What should I do?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Your code is linked to the email address you used at checkout. If you are having trouble, try activating it via your Profile settings inside the app. If it still doesn't work, please contact our support team.",
+          },
+        ],
       },
       {
         id: 13,
-        question:
-          "Я пытаюсь применить промокод или списать бонусы на товары интернет магазина со скидкой и не получается, что делать?",
-        answer:
-          "Бонусы не суммируются с акциями — это правило программы лояльности.",
-      },
-      {
-        id: 14,
-        question: "Можно ли бонусами оплатить весь заказ?",
-        answer:
-          "Нет — списание бонусных баллов ограничено вашим статусом программы лояльности и как правило не превышает 20%.",
-      },
-      {
-        id: 15,
-        question: "Почему по моему абонементу 0 проходов?",
-        answer:
-          "По абонементу статус начисляется сразу при покупке, проходы, однако, начисляются по факту прохода.",
-      },
-      {
-        id: 16,
-        question: "Купил 2 абонемента — бонусы начислены только за один.",
-        answer:
-          "При покупке нескольких абонементов бонусные баллы начисляются только за первый абонемент в заказе.",
-      },
-    ],
-  },
-  {
-    id: 5,
-    isVisible: true,
-    icon: CircleQuestionMarkIcon,
-    category: "other",
-    variants: [
-      {
-        id: 1,
-        question: "Как сделать поздравление на медиакубе?",
-        answer:
-          "Услуга платная — оформление и оплата через кассы Фетисов Арены. Количество мест ограничено",
-      },
-      {
-        id: 2,
-        question: "Где находятся камеры хранения?",
-        answer:
-          "Камеры расположены за ареной, за подробностями обратитесь к сотруднику безопасности арены.",
-      },
-      {
-        id: 3,
-        question:
-          "С какого возраста можно посещать хоккейные матчи без сопровождения взрослых?",
-        answer: "с 14 лет",
+        question: "Is my data safe?",
+        answer: [
+          {
+            id: 1,
+            variant:
+              "Yes, your privacy is our priority. We comply with strict privacy laws and API agreements (like Strava's). We do **not** share your private location maps or personal data with other users unless you explicitly choose to share specific non-sensitive achievements. We only use the distance data needed to move your avatar on the map.",
+          },
+        ],
       },
     ],
   },

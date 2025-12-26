@@ -6,29 +6,15 @@ import { FormEvent, useState } from "react";
 import AccordionContent from "@/app/components/Application/More/AccordionContent/AccordionContent";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
+import { faqData } from "@/app/data/faqData";
+import { Textarea } from "@/app/components/ui/textarea";
 
 const links = [
   {
     id: 1,
     label: "FAQ",
     title: "Frequently Asked Questions",
-    content: [
-      {
-        id: 1,
-        label: "What is a FAQ?",
-        text: "A list of questions and answers relating to a particular subject, especially one giving basic information for users of a website.",
-      },
-      {
-        id: 2,
-        label: "What is the purpose of a FAQ?",
-        text: "The purpose of a FAQ is to provide answers to common questions and help users find the information they need quickly and easily.",
-      },
-      {
-        id: 3,
-        label: "How do I create a FAQ?",
-        text: "Gather common customer questions from support tickets, emails, and search queries, then write clear, concise answers from the customer's perspective, using simple language and avoiding jargon.",
-      },
-    ],
+    content: faqData,
   },
   {
     id: 2,
@@ -129,6 +115,8 @@ const contentInnerVariants = {
 
 const Page = () => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
+  const [email, setEmail] = useState("");
+  const [question, setQuestio] = useState("");
 
   const handleClickBlock = (id: number) => {
     setExpandedBlockId(expandedBlockId === id ? null : id);
@@ -136,6 +124,10 @@ const Page = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    console.log("submit", {
+      email,
+      question,
+    });
   };
 
   return (
@@ -160,9 +152,17 @@ const Page = () => {
                     </p>
                     <Input
                       required
+                      value={email}
                       placeholder="Email"
                       type="email"
                       className=""
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Textarea
+                      required
+                      value={question}
+                      onChange={(e) => setQuestio(e.target.value)}
+                      className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                     />
                     <Button className="w-full">Subscribe</Button>
                   </div>
