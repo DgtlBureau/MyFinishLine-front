@@ -75,9 +75,7 @@ const page = () => {
   };
 
   useEffect(() => {
-    if (user.id === null) {
-      handleLoadUser();
-    }
+    handleLoadUser();
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {

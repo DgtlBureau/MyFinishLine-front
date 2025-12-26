@@ -47,7 +47,7 @@ const ProfileUserline = () => {
               : {}
           }
         >
-          {!imageError && user?.full_avatar_url ? (
+          {user?.full_avatar_url && !imageError ? (
             <Image
               className="rounded-full max-h-20 max-w-20 object-cover"
               src={user.full_avatar_url}

@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
 import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
-import { IUser } from "@/app/types/user";
+import CurrentUserLine from "./CurrentUserLine/CurrentUserLine";
+import LeaderboardUser from "./LeaderboardUser/LeaderboardUser";
 
 interface ILeaderboardItemProps {
   challengeId: number;
-  currentUser: IUser;
 }
 
 const containerVariants = {
@@ -18,37 +18,18 @@ const containerVariants = {
   collapsed: {},
 };
 
-const contentVariants = {
-  expanded: {
-    height: "auto",
-  },
-  collapsed: {
-    height: 220,
-  },
+const positionColors = {
+  1: "#fef3c6",
+  2: "#e2e8f0",
+  3: "#ffedd4",
 };
 
-const buttonVariants = {
-  expanded: {
-    transform: "rotate(180deg)",
-  },
-  collapsed: {
-    transform: "rotate(0deg)",
-  },
-};
-
-const LeaderboardItem = ({
-  challengeId,
-  currentUser,
-}: ILeaderboardItemProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const { leaderboard } = useAppSelector((state) => state.leaderboard);
-  const { user } = useAppSelector((state) => state.user);
+const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
+  const { leaderboards, current_user } = useAppSelector(
+    (state) => state.leaderboard
+  );
   const dispatch = useAppDispatch();
-  console.log("leaderboard", leaderboard);
-
-  const handleToggleExpanded = () => {
-    setIsExpanded((prevState) => !prevState);
-  };
+  console.log("leaderboard", leaderboards);
 
   const handleLoadLeaderboard = async () => {
     try {
@@ -67,105 +48,38 @@ const LeaderboardItem = ({
     <motion.div
       initial="collapsed"
       variants={containerVariants}
-      animate={isExpanded ? "expanded" : "collapsed"}
-      className="bg-linear-to-b from-[#F4E8FD] via-[#FFFFFF] to-[#F4E8FD] border border-[#E4E4E7] rounded-xl"
+      className="bg-linear-to-b from-[#F4E8FD] via-[#FFFFFF] to-[#F4E8FD] border border-[#E4E4E7] rounded-xl overflow-hidden"
     >
-      <motion.ul
-        initial="collapsed"
-        variants={contentVariants}
-        animate={isExpanded ? "expanded" : "collapsed"}
-        className="overflow-hidden"
-      >
+      <motion.ul initial="collapsed" className="overflow-hidden">
         <AnimatePresence>
-          {leaderboard.map((item, index) => (
-            <li
-              key={item.id}
-              className="flex items-center justify-between p-4 border-b border-[#DADADA]"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-4">
-                  <span
-                    className={`text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]`}
-                  >
-                    {index + 1}
-                  </span>
-                </div>
-                {item.user.full_avatar_url ? (
-                  <Image
-                    className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
-                    src={item.user.full_avatar_url}
-                    width={40}
-                    height={40}
-                    alt="User image"
-                  />
-                ) : (
-                  <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
-                    <Star />
-                  </div>
-                )}
-                <span className="font-medium text-xs leading-4 text-[#09090B]">
-                  {item.user.username}
-                </span>
-              </div>
-              <div>
-                <span className="text-[8px] font-medium text-[#71717A] block">
-                  {item.user.total_distance} km
-                </span>
-                <span className="text-[8px] font-medium text-[#71717A] block text-end">
-                  {handleConvertTimeShort(item.user.total_moving_time_hours)}
-                </span>
-              </div>
-            </li>
-          ))}
+          {leaderboards?.map((item, index) => {
+            const color =
+              item.user_id === current_user.user.id &&
+              current_user.position <= 4
+                ? positionColors[item.position as 1 | 2 | 3]
+                : "";
+            return (
+              <LeaderboardUser
+                {...item.user}
+                position={item.position}
+                color={color}
+                isCurrentUser={item.user_id === current_user.user.id}
+              />
+            );
+          })}
         </AnimatePresence>
-        {/* <div className="mt-2 mx-auto w-full flex justify-center">
-          <EllipsisVertical />
-        </div> */}
       </motion.ul>
-      <div className="flex items-center justify-between p-4 border-b border-[#DADADA]">
-        <div className="flex items-center gap-2">
-          <div className="w-4">
-            <span
-              style={currentUser.id > 10 ? { fontSize: 10 } : {}}
-              className="block text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]"
-            >
-              {currentUser.id}
-            </span>
-          </div>
-          {user.full_avatar_url ? (
-            <Image
-              className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
-              src={user.full_avatar_url}
-              width={40}
-              height={40}
-              alt="User image"
-            />
-          ) : (
-            <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
-              <Star />
-            </div>
-          )}
-          <span className="font-medium text-xs leading-4 text-[#09090B]">
-            {user.first_name} {user.last_name}
-          </span>
+      {current_user?.position > 10 && (
+        <div className="mt-2 mx-auto w-full flex justify-center">
+          <EllipsisVertical color="#71717A" />
         </div>
-        <div>
-          <span className="text-[8px] font-medium text-[#71717A] block">
-            {currentUser.total_distance} km
-          </span>
-          <span className="text-[8px] font-medium text-[#71717A] block text-end">
-            {handleConvertTimeShort(currentUser.total_moving_time_hours)}
-          </span>
-        </div>
-      </div>
-      <button
-        className="w-full flex justify-center py-2 cursor-pointer"
-        onClick={handleToggleExpanded}
-      >
-        <motion.div variants={buttonVariants}>
-          <ChevronDown />
-        </motion.div>
-      </button>
+      )}
+      {current_user?.position > 10 && (
+        <CurrentUserLine
+          {...current_user.user}
+          position={current_user.position}
+        />
+      )}
     </motion.div>
   );
 };

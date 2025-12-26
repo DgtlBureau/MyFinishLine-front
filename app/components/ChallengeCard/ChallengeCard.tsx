@@ -7,6 +7,8 @@ import { motion } from "motion/react";
 import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUserChallenges } from "@/app/lib/features/user/userSlice";
+import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
+import { ShipmentStatuses } from "@/app/types";
 
 const ChallengeCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,10 +106,12 @@ const ChallengeCard = () => {
         </span>
       </div>
       {challenge.reward_ticket?.id ? (
-        <div className="mt-8 mx-auto text-sm grid grid-cols-2 max-w-full lg:max-w-60">
+        <div className="mt-8 mx-auto text-sm grid grid-cols-2 max-w-full lg:max-w-80 items-center">
           <span className="text-[#90909B]">Shipment status:</span>
-          <div className="text-end">{challenge.reward_ticket.status.name}</div>
-          <span className="text-[#90909B]">Shipment id:</span>
+          <div className="ml-auto mr-0">
+            <ShipmentStatusBadge {...challenge.reward_ticket.status} />
+          </div>
+          <span className="text-[#90909B]">Shipment ID:</span>
           <div className="text-end">{challenge.reward_ticket.id}</div>
         </div>
       ) : challenge.is_completed ? (
