@@ -165,7 +165,7 @@ export default function Login() {
             />
             Sign in with Google
           </Button> */}
-          <GoogleLogin />
+          <GoogleLogin type="login" />
           <div className="mt-6 space-y-3 text-sm">
             <Link
               href="/signup"

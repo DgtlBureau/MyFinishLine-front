@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import axios from "axios";
 import instance from "@/app/lib/utils/instance";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -21,6 +21,7 @@ export async function POST(req: Request) {
     });
 
     const tokenData = await tokenRes.json();
+    console.log("tokenRes", tokenRes);
 
     if (!tokenData.access_token) {
       return NextResponse.json(
@@ -35,10 +36,20 @@ export async function POST(req: Request) {
       refresh_token: tokenData.refresh_token ?? null,
     };
 
-    // Send to your backend
+    console.log("payload", payload);
+
     try {
-      const backendRes = await instance.post("/social-login", payload);
-      return NextResponse.json({ success: true, ...backendRes.data });
+      const { data } = await instance.post("/social-login", payload);
+
+      const cookieStore = await cookies();
+      cookieStore.set("auth_token", data.bearer_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+      return NextResponse.json({ success: true, from_auth: true, ...data });
     } catch (axiosErr: any) {
       console.error(
         "Backend /social-login error:",

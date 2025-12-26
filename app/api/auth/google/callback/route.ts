@@ -1,5 +1,5 @@
-// app/api/auth/google/route.ts
 import instance from "@/app/lib/utils/instance";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -33,6 +33,8 @@ export async function POST(req: Request) {
 
     const tokenData = await tokenRes.json();
 
+    console.log("tokenData", tokenData);
+
     // Prepare payload for your backend
     const payload = {
       provider: "google",
@@ -40,18 +42,14 @@ export async function POST(req: Request) {
       refresh_token: tokenData.refresh_token ?? null,
     };
 
-    // Send to your backend
-    const backendRes = await instance.post("/social-login", payload);
+    const { data } = await instance.post("/social-login", payload);
 
-    if (!backendRes.ok) {
-      const text = await backendRes.text();
-      return NextResponse.json(
-        { error: "Backend login failed", details: text },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, ...payload });
+    return NextResponse.json({
+      success: true,
+      from_callback: true,
+      ...payload,
+      ...data,
+    });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Server error" },
