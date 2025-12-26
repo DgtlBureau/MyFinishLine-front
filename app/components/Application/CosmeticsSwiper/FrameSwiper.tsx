@@ -53,7 +53,7 @@ const FrameSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization.frame) {
+    if (personalization?.frame) {
       const index = frames.findIndex(
         (frame) => frame.id === personalization.frame?.id
       );

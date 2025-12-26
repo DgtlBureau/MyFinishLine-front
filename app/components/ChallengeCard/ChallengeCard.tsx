@@ -12,7 +12,7 @@ const ChallengeCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { challenges } = useAppSelector((state) => state.user);
-  const challenge = challenges[0] || {
+  const challenge = challenges?.[0] || {
     user_distance: 0,
     total_distance: 0,
     image_url: "",

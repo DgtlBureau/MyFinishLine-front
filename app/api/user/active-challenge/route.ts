@@ -23,10 +23,44 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error: any) {
+    console.error("API error:", error);
+
+    if (error.response) {
+      return NextResponse.json(
+        {
+          message:
+            error.response.data?.message || "Error getting active challenge",
+          error: error.response.data?.error || "api_error",
+          ...error.response.data,
+        },
+        { status: error.response.status }
+      );
+    }
+
+    if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND") {
+      return NextResponse.json(
+        {
+          message: "Cannot connect to backend service",
+          error: "service_unavailable",
+        },
+        { status: 503 }
+      );
+    }
+
+    if (error.code === "ECONNABORTED") {
+      return NextResponse.json(
+        {
+          message: "Request timeout. Please try again.",
+          error: "timeout_error",
+        },
+        { status: 408 }
+      );
+    }
+
     return NextResponse.json(
       {
-        message:
-          error.response?.data.message || "Error getting user activities",
+        message: "Internal server error",
+        error: "internal_error",
       },
       { status: 500 }
     );
