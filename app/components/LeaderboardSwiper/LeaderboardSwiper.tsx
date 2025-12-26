@@ -105,9 +105,7 @@ const LeaderboardSwiper = () => {
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
   const dispatch = useAppDispatch();
-  const { user, challenges } = useAppSelector((state) => state.user);
-
-  console.log("challenges", challenges);
+  const { challenges } = useAppSelector((state) => state.user);
 
   const handleLoadChallenges = async () => {
     try {

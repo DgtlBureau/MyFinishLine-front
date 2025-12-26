@@ -56,7 +56,7 @@ const ProgressArrow: React.FC<ProgressArrowProps> = ({
 
   return (
     <div ref={wrapperRef}>
-      <Xarrow dashness {...xarrowProps} />
+      <Xarrow {...xarrowProps} />
     </div>
   );
 };
