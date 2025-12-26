@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 
-export default function GoogleCallbackPage() {
+const Content = () => {
   const router = useRouter();
   const params = useSearchParams();
   const code = params.get("code");
@@ -54,4 +54,14 @@ export default function GoogleCallbackPage() {
       {status}
     </div>
   );
-}
+};
+
+const page = () => {
+  return (
+    <Suspense fallback={null}>
+      <Content />
+    </Suspense>
+  );
+};
+
+export default page;
