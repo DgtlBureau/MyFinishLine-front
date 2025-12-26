@@ -46,8 +46,6 @@ export const Faq = () => {
   const handleSendFeedback = async (data: ISendFeedbackProps) => {
     try {
       const res = await axios.post("/api/faq/send-feedback", data);
-
-      // setSendingdData(data);
       setIsSuccess(true);
       return res.data;
     } catch (error) {
