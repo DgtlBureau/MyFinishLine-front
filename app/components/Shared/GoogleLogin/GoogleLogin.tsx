@@ -5,7 +5,7 @@ import Image from "next/image";
 const GoogleLogin = ({ type = "login" }: { type: "login" | "sign-up" }) => {
   return (
     <Button
-      className="mt-2 flex items-center"
+      className="mt-2 flex items-center font-semibold"
       variant="outline"
       onClick={() => (window.location.href = googleAuthUrl())}
     >

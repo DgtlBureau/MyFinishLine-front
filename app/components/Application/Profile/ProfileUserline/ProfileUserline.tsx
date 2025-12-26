@@ -34,7 +34,7 @@ const ProfileUserline = () => {
       <div className="flex gap-4">
         <div
           style={
-            personalization.frame
+            personalization?.frame
               ? {
                   width: 88,
                   height: 88,
