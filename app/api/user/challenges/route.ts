@@ -1,26 +1,17 @@
 import instance from "@/app/lib/utils/instance";
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+export const GET = async () => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
 
-    if (!token) {
-      return NextResponse.json(
-        { message: "Not authenticated" },
-        { status: 401 }
-      );
-    }
-
-    const { data } = await instance.get("/challenges/active", {
+    const { data } = await instance.get("/challenges", {
       headers: {
         Authorization: "Bearer " + token,
-        "Content-Type": "multipart/form-data",
       },
     });
-
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("API error:", error);
@@ -28,9 +19,8 @@ export async function GET() {
     if (error.response) {
       return NextResponse.json(
         {
-          message:
-            error.response.data?.message || "Error getting active challenge",
-          error: error.response.data?.error || "api_error",
+          message: error.response.data?.message || "Failed getting contracts",
+          error: error.response.data?.error || "authentication_error",
           ...error.response.data,
         },
         { status: error.response.status }
@@ -47,6 +37,7 @@ export async function GET() {
       );
     }
 
+    // Handle timeout
     if (error.code === "ECONNABORTED") {
       return NextResponse.json(
         {
@@ -57,6 +48,7 @@ export async function GET() {
       );
     }
 
+    // Default error
     return NextResponse.json(
       {
         message: "Internal server error",
@@ -65,4 +57,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+};

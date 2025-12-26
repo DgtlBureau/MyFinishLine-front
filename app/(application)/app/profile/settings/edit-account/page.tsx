@@ -1,5 +1,9 @@
 "use client";
 
+import BannerSwiper from "@/app/components/Application/CosmeticsSwiper/BannerSwiper";
+import FrameSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
+import CosmeticsSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
+import MascotSwiper from "@/app/components/Application/CosmeticsSwiper/MaskotSkin";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import {
@@ -10,12 +14,16 @@ import {
   SelectValue,
 } from "@/app/components/ui/select";
 import { countries } from "@/app/data/countries";
-import { setUser, updateUser } from "@/app/lib/features/user/userSlice";
+import {
+  setUser,
+  updatePersonalization,
+  updateUser,
+} from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getCurrentUser } from "@/app/lib/utils/userService";
 import { IUser } from "@/app/types/user";
 import axios from "axios";
-import { Camera, Edit } from "lucide-react";
+import { Upload } from "lucide-react";
 import Image from "next/image";
 import {
   ChangeEvent,
@@ -33,6 +41,22 @@ const page = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [personalizationData, setPersonalizationData] = useState<{
+    frame: { id: number; color: string } | null;
+    banner: { id: number; color: string } | null;
+    mascot: { id: number; image_src: string } | null;
+  }>({
+    frame: null,
+    banner: null,
+    mascot: null,
+  });
+
+  const handleChangePersonalization = (
+    type: "frame" | "banner" | "mascot",
+    value: any
+  ) => {
+    setPersonalizationData((prevState) => ({ ...prevState, [type]: value }));
+  };
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => {
@@ -88,6 +112,7 @@ const page = () => {
             : {}),
         })
       );
+      dispatch(updatePersonalization(personalizationData));
       toast.success("Profile successfully updated");
     } catch (error: any) {
       toast.error(error.response?.data.message);
@@ -104,51 +129,14 @@ const page = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-4xl mx-auto">
-      <div className="flex gap-2">
-        <div className="group relative w-35 h-35 flex items-center justify-center border rounded-lg overflow-hidden shrink-0">
-          {file ? (
-            <Image
-              className="object-cover rounded-lg"
-              src={URL.createObjectURL(file)}
-              alt="Profile Picture"
-              loading="eager"
-              width={140}
-              height={140}
-            />
-          ) : !imageError && data.full_avatar_url ? (
-            <Image
-              className="object-cover w-full h-full rounded-lg"
-              src={data.full_avatar_url}
-              alt="Profile Picture"
-              loading="eager"
-              width={140}
-              height={140}
-              onError={() => {
-                setImageError(true);
-              }}
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-              <Camera />
-            </div>
-          )}
-
-          <Edit
-            width={32}
-            height={32}
-            className="absolute text-white bg-gray-700/80 rounded-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-
-          <input
-            className="absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
-            type="file"
-            onChange={handleChangeFile}
-          />
-        </div>
-        <div className="w-full leading-0">
+    <form onSubmit={handleSubmit} className="max-w-4xl py-4 mx-auto">
+      <div className="px-4">
+        <span className="text-base leading-6 font-semibold text-[#09090B]">
+          Edit profile
+        </span>
+        <div className="mt-8 w-full leading-0">
           <label className="block w-full">
-            <span className="text-xs">First Name</span>
+            <span className="text-sm">First Name</span>
             <Input
               name="first_name"
               className="mt-px"
@@ -158,7 +146,7 @@ const page = () => {
             />
           </label>
           <label className="block w-full mt-2">
-            <span className="text-xs">Last Name</span>
+            <span className="text-sm">Last Name</span>
             <Input
               name="last_name"
               className="mt-px"
@@ -167,79 +155,141 @@ const page = () => {
               onChange={handleChange}
             />
           </label>
+          <label className="block mt-2">
+            <span className="text-sm">Username</span>
+            <div className="relative flex items-center">
+              <Input
+                name="username"
+                className="mt-px pl-7"
+                placeholder="John.doe"
+                value={data.username}
+                onChange={handleChange}
+              />
+              <span className="absolute left-3 text-neutral-400">@</span>
+            </div>
+          </label>
+        </div>
+
+        <div className="mt-2">
+          <span className="font-medium text-sm text-[#09090B]">
+            Upload photo
+          </span>
+          <div className="mt-1 group relative w-15 h-15 flex items-center justify-center border rounded-xl overflow-hidden shrink-0">
+            {file ? (
+              <Image
+                className="object-cover rounded-lg"
+                src={URL.createObjectURL(file)}
+                alt="Profile Picture"
+                loading="eager"
+                width={60}
+                height={60}
+              />
+            ) : !imageError && data.full_avatar_url ? (
+              <Image
+                className="object-cover w-full h-full rounded-lg"
+                src={data.full_avatar_url}
+                alt="Profile Picture"
+                loading="eager"
+                width={60}
+                height={60}
+                onError={() => {
+                  setImageError(true);
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                <Upload />
+              </div>
+            )}
+
+            <Upload
+              width={32}
+              height={32}
+              className="absolute text-white bg-gray-700/80 rounded-lg p-1"
+            />
+
+            <input
+              className="absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
+              type="file"
+              onChange={handleChangeFile}
+            />
+          </div>
         </div>
       </div>
 
-      <label className="block mt-2">
-        <span className="text-xs">Email</span>
-        <Input
-          name="email"
-          className="mt-px"
-          placeholder="Email Address"
-          value={data.email}
-          onChange={handleChange}
+      <section className="bg-[#F4F4F5] mt-5">
+        <span className="block font-bold text-2xl leading-8 pt-10 px-8">
+          Personalization
+        </span>
+        <FrameSwiper
+          onChange={(value) => handleChangePersonalization("frame", value)}
         />
-      </label>
-      <label className="block mt-2">
-        <span className="text-xs">Username</span>
-        <div className="relative flex items-center">
+        <BannerSwiper
+          onChange={(value) => handleChangePersonalization("banner", value)}
+        />
+        <MascotSwiper
+          onChange={(value) => handleChangePersonalization("mascot", value)}
+        />
+      </section>
+
+      <div className="px-4">
+        <label className="block mt-2">
+          <span className="text-sm">Phone</span>
           <Input
-            name="username"
-            className="mt-px pl-7"
-            placeholder="John.doe"
-            value={data.username}
+            name="phone"
+            className="mt-px"
+            value={data.phone}
+            onChange={handleChange}
+            placeholder="+1 234 567 8901"
+            defaultValue="+1 234 567 8901"
+          />
+        </label>
+        <label className="block mt-2">
+          <span className="text-sm">Email</span>
+          <Input
+            name="email"
+            className="mt-px"
+            placeholder="Email Address"
+            value={data.email}
             onChange={handleChange}
           />
-          <span className="absolute left-3 text-neutral-400">@</span>
-        </div>
-      </label>
+        </label>
 
-      <label className="block mt-2">
-        <span className="text-xs">Phone</span>
-        <Input
-          name="phone"
-          className="mt-px"
-          value={data.phone}
-          onChange={handleChange}
-          placeholder="+1 234 567 8901"
-          defaultValue="+1 234 567 8901"
-        />
-      </label>
+        <label htmlFor="country" className="block mt-2">
+          <span className="text-sm">Country</span>
+          <Select
+            name="country"
+            value={data.country || ""}
+            onValueChange={(value) => {
+              setData({ ...data, country: value });
+            }}
+            required
+          >
+            <SelectTrigger className="w-full mt-1">
+              <SelectValue placeholder="Select country" />
+            </SelectTrigger>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.id} value={country.name}>
+                  {country.flag}
+                  {country.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </label>
 
-      <label htmlFor="country" className="block mt-2">
-        <span className="text-xs">Country</span>
-        <Select
-          name="country"
-          value={data.country || ""}
-          onValueChange={(value) => {
-            setData({ ...data, country: value });
-          }}
-          required
-        >
-          <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder="Select country" />
-          </SelectTrigger>
-          <SelectContent>
-            {countries.map((country) => (
-              <SelectItem key={country.id} value={country.name}>
-                {country.flag}
-                {country.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </label>
-
-      <Button className="mt-6 w-full" disabled={isLoading}>
-        {isLoading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
-            Saving updates...
-          </>
-        ) : (
-          "Save updates"
-        )}
-      </Button>
+        <Button className="mt-6 w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
+              Saving updates...
+            </>
+          ) : (
+            "Save updates"
+          )}
+        </Button>
+      </div>
     </form>
   );
 };

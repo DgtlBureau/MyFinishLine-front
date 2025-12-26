@@ -30,6 +30,11 @@ export const getUserActivities = async () => {
   return data;
 };
 
+export const getUserChallenges = async () => {
+  const { data } = await axios.get("/api/user/challenges");
+  return data;
+};
+
 export const updateUserStravaActivities = async () => {
   await axios.get("/api/user/refresh-activities");
 };

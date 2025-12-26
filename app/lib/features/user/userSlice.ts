@@ -1,21 +1,27 @@
-import { IContract } from "@/app/types";
+import { IActiveChallenge, IContract } from "@/app/types";
 import { IUser } from "@/app/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
   user: IUser;
   contracts: IContract[];
+  challenges: IActiveChallenge[];
   completedContracts: IContract[];
+  personalization: {
+    frame: { id: number; color: string } | null;
+    banner: { id: number; color: string } | null;
+    mascot: { id: number; image_src: string } | null;
+  };
 } = {
   user: {
-    avatar_url: null,
-    country: null,
+    id: null,
+    avatar_url: "",
+    country: "",
     created_at: "",
     email: "",
     first_name: "",
-    full_avatar_url: null,
-    has_activated_code: null,
-    id: null,
+    full_avatar_url: "",
+    has_activated_code: false,
     last_name: "",
     phone: "",
     strava_id: null,
@@ -29,7 +35,13 @@ const initialState: {
     avatar_color: "#fff",
   },
   contracts: [],
+  challenges: [],
   completedContracts: [],
+  personalization: {
+    frame: null,
+    banner: null,
+    mascot: null,
+  },
 };
 
 const userSlice = createSlice({
@@ -48,6 +60,19 @@ const userSlice = createSlice({
     setUserCompletedContracts: (state, action: PayloadAction<IContract[]>) => {
       state.completedContracts = action.payload;
     },
+    setUserChallenges: (state, action: PayloadAction<IActiveChallenge[]>) => {
+      state.challenges = action.payload;
+    },
+    updatePersonalization: (
+      state,
+      action: PayloadAction<{
+        frame: { id: number; color: string } | null;
+        banner: { id: number; color: string } | null;
+        mascot: { id: number; image_src: string } | null;
+      }>
+    ) => {
+      state.personalization = action.payload;
+    },
     clearUser: () => {
       return initialState;
     },
@@ -59,6 +84,8 @@ export const {
   updateUser,
   setUserContracts,
   setUserCompletedContracts,
+  updatePersonalization,
+  setUserChallenges,
   clearUser,
 } = userSlice.actions;
 export default userSlice.reducer;

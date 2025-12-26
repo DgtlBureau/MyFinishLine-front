@@ -1,13 +1,15 @@
-import type { Metadata } from "next";
 import Navbar from "../components/Application/Navbar/Navbar";
 import AppHeader from "../components/Application/AppHeader/AppHeader";
 import { Slide, ToastContainer } from "react-toastify";
 import RedirectComponent from "../components/RedirectComponent/RedirectComponent";
+import { buildSeo } from "../lib/utils/buildSeo";
 
-export const metadata: Metadata = {
+export const metadata = buildSeo({
   title: "MyFinishLine",
   description: "Combine sports and pleasure",
-};
+  robotsFollow: false,
+  robotsIndex: false,
+});
 
 export default function ApplicationLayout({
   children,
