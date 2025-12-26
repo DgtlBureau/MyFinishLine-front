@@ -1,19 +1,16 @@
-import { useAppSelector } from "@/app/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { handleConvertTimeShort } from "@/app/lib/utils/convertData";
 import { ChevronDown, EllipsisVertical, Star } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
+import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
+import { IUser } from "@/app/types/user";
 
 interface ILeaderboardItemProps {
-  users: {
-    id: number;
-    image_url: string;
-    name: string;
-    total_distance: number;
-    total_hours: number;
-  }[];
-  currentUser: { id: number; total_distance: number; total_hours: number };
+  challengeId: number;
+  currentUser: IUser;
 }
 
 const containerVariants = {
@@ -39,14 +36,32 @@ const buttonVariants = {
   },
 };
 
-const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
+const LeaderboardItem = ({
+  challengeId,
+  currentUser,
+}: ILeaderboardItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { leaderboard } = useAppSelector((state) => state.leaderboard);
+  const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  console.log("leaderboard", leaderboard);
 
   const handleToggleExpanded = () => {
     setIsExpanded((prevState) => !prevState);
   };
 
-  const { user } = useAppSelector((state) => state.user);
+  const handleLoadLeaderboard = async () => {
+    try {
+      const data = await getLeaderboard(challengeId);
+      dispatch(setLeaderboard(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadLeaderboard();
+  }, []);
 
   return (
     <motion.div
@@ -62,9 +77,9 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
         className="overflow-hidden"
       >
         <AnimatePresence>
-          {users.map((user) => (
+          {leaderboard.map((item, index) => (
             <li
-              key={user.id}
+              key={item.id}
               className="flex items-center justify-between p-4 border-b border-[#DADADA]"
             >
               <div className="flex items-center gap-2">
@@ -72,13 +87,13 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
                   <span
                     className={`text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]`}
                   >
-                    {user.id}
+                    {index + 1}
                   </span>
                 </div>
-                {user.image_url ? (
+                {item.user.full_avatar_url ? (
                   <Image
-                    className="rounded-lg shrink-0"
-                    src={user.image_url}
+                    className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
+                    src={item.user.full_avatar_url}
                     width={40}
                     height={40}
                     alt="User image"
@@ -89,15 +104,15 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
                   </div>
                 )}
                 <span className="font-medium text-xs leading-4 text-[#09090B]">
-                  {user.name}
+                  {item.user.username}
                 </span>
               </div>
               <div>
                 <span className="text-[8px] font-medium text-[#71717A] block">
-                  {user.total_distance}
+                  {item.user.total_distance} km
                 </span>
-                <span className="text-[8px] font-medium text-[#71717A] block">
-                  {handleConvertTimeShort(user.total_hours)}
+                <span className="text-[8px] font-medium text-[#71717A] block text-end">
+                  {handleConvertTimeShort(item.user.total_moving_time_hours)}
                 </span>
               </div>
             </li>
@@ -119,7 +134,7 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
           </div>
           {user.full_avatar_url ? (
             <Image
-              className="rounded-lg shrink-0"
+              className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
               src={user.full_avatar_url}
               width={40}
               height={40}
@@ -138,8 +153,8 @@ const LeaderboardItem = ({ users, currentUser }: ILeaderboardItemProps) => {
           <span className="text-[8px] font-medium text-[#71717A] block">
             {currentUser.total_distance} km
           </span>
-          <span className="text-[8px] font-medium text-[#71717A] block">
-            {handleConvertTimeShort(currentUser.total_hours)}
+          <span className="text-[8px] font-medium text-[#71717A] block text-end">
+            {handleConvertTimeShort(currentUser.total_moving_time_hours)}
           </span>
         </div>
       </div>

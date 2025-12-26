@@ -9,8 +9,8 @@ const navLinks = [
   {
     id: 1,
     name: "Rating",
-    href: "/app/stats",
-    parent: "stats",
+    href: "/app/leaderboard",
+    parent: "leaderboard",
     Icon: Trophy,
   },
   {

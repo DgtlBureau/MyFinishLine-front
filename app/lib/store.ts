@@ -6,12 +6,14 @@ import activitiesSlice from "./features/activities/activitiesSlice";
 import userReducer from "./features/user/userSlice";
 import challengeSlice from "./features/challenge/challengeSlice";
 import productsSlice from "./features/products/productsSlice";
+import leaderboardSlice from "./features/leaderboard/leaderboardSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
   activities: activitiesSlice,
   challenge: challengeSlice,
   products: productsSlice,
+  leaderboard: leaderboardSlice,
 });
 
 const persistConfig = {

@@ -1,3 +1,5 @@
+import { IUser } from "./types/user";
+
 export interface IBackgroundImage {
   id: number;
   image_url: string;
@@ -154,4 +156,12 @@ export interface IRewardTicket {
   status_id: number;
   user_id: number;
   zip_code: string;
+}
+
+export interface ILeaderboard {
+  challenge_id: number;
+  id: number;
+  total_progress: string;
+  user_id: number;
+  user: IUser;
 }
