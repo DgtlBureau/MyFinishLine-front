@@ -4,7 +4,7 @@ export const googleAuthUrl = () => {
     redirect_uri: "http://localhost:3000/auth/google/callback",
     response_type: "code",
     scope: "openid email profile",
-    access_type: "offline", // important for refresh_token
+    access_type: "offline",
     prompt: "consent",
   });
 

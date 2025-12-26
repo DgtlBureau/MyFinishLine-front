@@ -21,8 +21,6 @@ export async function GET() {
       },
     });
 
-    console.log("active-challenge", data);
-
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("API error:", error);
@@ -49,7 +47,6 @@ export async function GET() {
       );
     }
 
-    // Handle timeout
     if (error.code === "ECONNABORTED") {
       return NextResponse.json(
         {
@@ -60,7 +57,6 @@ export async function GET() {
       );
     }
 
-    // Default error
     return NextResponse.json(
       {
         message: "Internal server error",

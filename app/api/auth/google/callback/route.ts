@@ -10,7 +10,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No code provided" }, { status: 400 });
     }
 
-    // Exchange code for access_token
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -33,9 +32,6 @@ export async function POST(req: Request) {
 
     const tokenData = await tokenRes.json();
 
-    console.log("tokenData", tokenData);
-
-    // Prepare payload for your backend
     const payload = {
       provider: "google",
       access_token: tokenData.access_token,

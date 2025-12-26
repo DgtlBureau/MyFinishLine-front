@@ -35,7 +35,7 @@ export const Faq = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [value] = useDebounce(search, 500);
-  const [sendingData, setSendingdData] = useState<ISendFeedbackProps>();
+  const [sendingData, setSendingData] = useState<ISendFeedbackProps>();
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     name: string;
@@ -49,7 +49,7 @@ export const Faq = () => {
   const visibleFaqData = faqData.filter((item) => item.isVisible);
 
   const handleSendFeedback = (data: ISendFeedbackProps) => {
-    setSendingdData(data);
+    setSendingData(data);
     setIsSuccess(true);
   };
 

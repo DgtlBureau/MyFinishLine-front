@@ -7,7 +7,6 @@ export async function POST(req: Request) {
     const { code } = await req.json();
     if (!code) throw new Error("No code provided");
 
-    // Exchange code for Google token
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -21,7 +20,6 @@ export async function POST(req: Request) {
     });
 
     const tokenData = await tokenRes.json();
-    console.log("tokenRes", tokenRes);
 
     if (!tokenData.access_token) {
       return NextResponse.json(
@@ -35,8 +33,6 @@ export async function POST(req: Request) {
       access_token: tokenData.access_token,
       refresh_token: tokenData.refresh_token ?? null,
     };
-
-    console.log("payload", payload);
 
     try {
       const { data } = await instance.post("/social-login", payload);

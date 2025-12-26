@@ -151,20 +151,6 @@ export default function Login() {
             </svg>
             Sign in with Strava
           </Button>
-
-          {/* <Button
-            variant="outline"
-            disabled={formData.isLoading}
-            className="w-full mt-2 py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3"
-          >
-            <Image
-              src="/icons/google.svg"
-              width={12}
-              height={12}
-              alt="Google"
-            />
-            Sign in with Google
-          </Button> */}
           <GoogleLogin type="login" />
           <div className="mt-6 space-y-3 text-sm">
             <Link
