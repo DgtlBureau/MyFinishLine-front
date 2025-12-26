@@ -1,10 +1,22 @@
 import { ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, easeInOut } from "motion/react";
 import { ReactNode, useState } from "react";
+import { type LucideIcon } from "lucide-react";
 
 interface IAccordionContentProps {
   title: string;
-  list?: { id: number; label: string; text?: string }[];
+  list?: {
+    id: number;
+    isVisible: boolean;
+    icon: LucideIcon;
+    category: string;
+    variants: {
+      id: number;
+      question: string;
+      sub_question?: string;
+      answer: { id: number; variant: string }[];
+    }[];
+  }[];
   content: () => ReactNode;
 }
 
@@ -84,7 +96,7 @@ const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
       )}
       <ul className="mt-4">
         {list
-          ? list?.map((item) => {
+          ? [...list[0].variants.slice(0, 5)]?.map((item) => {
               const isExpanded = expandedBlockId === item.id;
 
               return (
@@ -96,7 +108,7 @@ const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
                     onClick={() => handleClickBlock(item.id)}
                     className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
                   >
-                    {item.label}
+                    {item.question}
                     <motion.div
                       variants={arrowVariants}
                       initial="collapsed"
@@ -108,23 +120,30 @@ const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
 
                   <AnimatePresence>
                     {isExpanded && (
-                      <motion.div
+                      <motion.ol
                         variants={contentContainerVariants}
                         initial="collapsed"
                         animate="expanded"
                         exit="collapsed"
-                        className="overflow-hidden"
+                        className={`overflow-hidden ${
+                          item.answer.length > 1
+                            ? "list-decimal list-inside marker:font-semibold"
+                            : ""
+                        }`}
                       >
-                        <motion.p
-                          variants={contentTextVariants}
-                          initial="collapsed"
-                          animate="expanded"
-                          exit="collapsed"
-                          className="pb-4 text-sm leading-5 text-[#09090B]"
-                        >
-                          {item.text}
-                        </motion.p>
-                      </motion.div>
+                        {item.answer.map((el) => (
+                          <motion.li
+                            key={el.id}
+                            variants={contentTextVariants}
+                            initial="collapsed"
+                            animate="expanded"
+                            exit="collapsed"
+                            className="pb-4 text-sm leading-5 text-[#09090B]"
+                          >
+                            {el.variant}
+                          </motion.li>
+                        ))}
+                      </motion.ol>
                     )}
                   </AnimatePresence>
                 </li>
