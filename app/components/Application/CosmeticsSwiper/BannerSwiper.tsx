@@ -30,8 +30,10 @@ const bannerColors = [
 ];
 
 const BannerSwiper = ({
+  items,
   onChange,
 }: {
+  items: { id: number; contract_id: number; image_url: string }[];
   onChange: (value: { id: number; color: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -90,8 +92,7 @@ const BannerSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={3.8}
-        spaceBetween={10}
+        slidesPerView={1.5}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
@@ -104,12 +105,9 @@ const BannerSwiper = ({
         <div className="absolute top-0 left-0 w-full flex items-center justify-center pointer-events-none">
           <div className="relative z-10 w-16 h-16 border-4 border-[#007CC2] rounded-xl"></div>
         </div>
-        {bannerColors.map((banner) => (
+        {items.map((banner) => (
           <SwiperSlide tag="li" key={banner.id}>
-            <div
-              style={{ background: banner.color }}
-              className="w-16 h-16 mx-auto relative rounded-xl"
-            ></div>
+            <div className="w-16 h-16 mx-auto relative rounded-xl"></div>
           </SwiperSlide>
         ))}
       </Swiper>

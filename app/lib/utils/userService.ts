@@ -35,6 +35,28 @@ export const getUserChallenges = async () => {
   return data;
 };
 
+export const getUserBanners = async () => {
+  const { data } = await axios.get("/api/user/cosmetics/banners");
+  return data;
+};
+
+export const getUserFrames = async () => {
+  const { data } = await axios.get("/api/user/cosmetics/frames");
+  return data;
+};
+
+export const getUserSkins = async () => {
+  const { data } = await axios.get("/api/user/cosmetics/skins");
+  return data;
+};
+
+export const getUserCosmetics = async () => {
+  const { data: frames } = await getUserFrames();
+  const { data: banners } = await getUserBanners();
+  const { data: skins } = await getUserSkins();
+  return { frames, banners, skins };
+};
+
 export const updateUserStravaActivities = async () => {
   await axios.get("/api/user/refresh-activities");
 };

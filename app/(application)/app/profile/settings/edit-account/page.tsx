@@ -2,7 +2,6 @@
 
 import BannerSwiper from "@/app/components/Application/CosmeticsSwiper/BannerSwiper";
 import FrameSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
-import CosmeticsSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
 import MascotSwiper from "@/app/components/Application/CosmeticsSwiper/MaskotSkin";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -20,7 +19,11 @@ import {
   updateUser,
 } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { getCurrentUser } from "@/app/lib/utils/userService";
+import {
+  getCurrentUser,
+  getUserBanners,
+  getUserCosmetics,
+} from "@/app/lib/utils/userService";
 import { IUser } from "@/app/types/user";
 import axios from "axios";
 import { Upload } from "lucide-react";
@@ -40,6 +43,11 @@ const page = () => {
   const [data, setData] = useState<IUser>(user);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userAvailableCosmetics, setUserAvailableCosmetics] = useState({
+    frames: [],
+    banners: [],
+    skins: [],
+  });
   const [imageError, setImageError] = useState(false);
   const [personalizationData, setPersonalizationData] = useState<{
     frame: { id: number; color: string } | null;
@@ -64,6 +72,16 @@ const page = () => {
     });
   }, []);
 
+  const handleLoadCosmetics = async () => {
+    try {
+      const data = await getUserCosmetics();
+      console.log("cosmetics", data);
+      setUserAvailableCosmetics(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleLoadUser = async () => {
     try {
       const data = await getCurrentUser();
@@ -76,6 +94,7 @@ const page = () => {
 
   useEffect(() => {
     handleLoadUser();
+    handleLoadCosmetics();
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -220,12 +239,15 @@ const page = () => {
           Personalization
         </span>
         <FrameSwiper
+          items={userAvailableCosmetics.frames}
           onChange={(value) => handleChangePersonalization("frame", value)}
         />
         <BannerSwiper
+          items={userAvailableCosmetics.banners}
           onChange={(value) => handleChangePersonalization("banner", value)}
         />
         <MascotSwiper
+          items={userAvailableCosmetics.skins}
           onChange={(value) => handleChangePersonalization("mascot", value)}
         />
       </section>

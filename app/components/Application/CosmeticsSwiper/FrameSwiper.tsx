@@ -31,8 +31,10 @@ const frames = [
 ];
 
 const FrameSwiper = ({
+  items,
   onChange,
 }: {
+  items: { id: number; contract_id: number; image_url: string }[];
   onChange: (value: { id: number; color: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -91,8 +93,7 @@ const FrameSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={3.8}
-        spaceBetween={10}
+        slidesPerView={1.5}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
@@ -117,13 +118,15 @@ const FrameSwiper = ({
             </div>
           )}
         </div>
-        {frames.map((frame) => (
+        {items.map((frame) => (
           <SwiperSlide key={frame.id} tag="li">
-            <div
-              style={{ background: frame.color }}
-              className="w-16 h-16 mx-auto relative rounded-full flex items-center justify-center"
-            >
-              <div className="w-14 h-14 bg-[#F4F4F5] rounded-full"></div>
+            <div className="w-16 h-16 mx-auto relative rounded-full flex items-center justify-center">
+              <Image
+                src={"https://i.postimg.cc/cHcsmybt/enot1-1.png"}
+                width={64}
+                height={64}
+                alt="Frame"
+              />
             </div>
           </SwiperSlide>
         ))}

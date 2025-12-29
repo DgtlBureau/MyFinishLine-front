@@ -23,8 +23,10 @@ const mascots = [
 ];
 
 const MascotSwiper = ({
+  items,
   onChange,
 }: {
+  items: { id: number; contract_id: number; image_url: string }[];
   onChange: (value: { id: number; image_src: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -83,7 +85,7 @@ const MascotSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={2.3}
+        slidesPerView={1.5}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
@@ -96,11 +98,11 @@ const MascotSwiper = ({
         <div className="absolute top-0 left-0 w-full flex items-center justify-center pointer-events-none">
           <div className="relative z-10 w-32 h-32 border-4 border-[#CBD5E1] rounded-xl"></div>
         </div>
-        {mascots.map((mascot) => (
+        {items.map((mascot) => (
           <SwiperSlide key={mascot.id} tag="li">
             <div className="w-32 h-32 mx-auto bg-white relative rounded-xl">
               <Image
-                src={mascot.image_src}
+                src={mascot.image_url}
                 alt="Mascot"
                 width={120}
                 height={120}
