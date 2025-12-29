@@ -20,6 +20,10 @@ const links = [
     id: 5,
     link: "/integrations",
   },
+  {
+    id: 6,
+    link: "/contracts",
+  },
 ];
 
 const AppHeader = () => {

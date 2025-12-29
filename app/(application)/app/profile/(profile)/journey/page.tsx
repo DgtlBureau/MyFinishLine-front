@@ -58,8 +58,14 @@ const Journey = () => {
           Here you can see the next route points that await you ahead!
         </p>
         <div className="mt-8">
-          <FeatureList features={contracts || []} />
+          <FeatureList features={contracts.slice(0, 5) || []} />
         </div>
+        <Link
+          className="ml-auto mr-0 w-fit block font-semibold text-sm underline py-4"
+          href="/app/profile/contracts"
+        >
+          See All
+        </Link>
       </section>
 
       <section>
