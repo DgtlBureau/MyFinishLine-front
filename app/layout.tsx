@@ -26,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <GoogleTagManager gtmId="G-LYKSZRTMBX" />
+      <head>
+        <script src="https://accounts.google.com/gsi/client" async defer />
+        <GoogleTagManager gtmId="G-LYKSZRTMBX" />
+      </head>
       <body
         className={`${inter.variable} [--header-height:calc(var(--spacing)*14)] lg:[--header-height:calc(var(--spacing)*23)] antialiased bg-black`}
       >

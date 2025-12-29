@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import { authWithStrava } from "@/app/lib/utils/authWithStrava";
 import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
+import GoogleLogin from "@/app/components/Shared/GoogleLogin/GoogleLogin";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -216,19 +217,7 @@ export default function Register() {
             </svg>
             Sign up with Strava
           </Button>
-          <Button
-            variant="outline"
-            disabled={loading}
-            className="w-full mt-2 py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3"
-          >
-            <Image
-              src="/icons/google.svg"
-              width={12}
-              height={12}
-              alt="Google"
-            />
-            Sign up with Google
-          </Button>
+          <GoogleLogin type="sign-up" />
 
           <div className="mt-6 space-y-3 text-sm">
             <Link

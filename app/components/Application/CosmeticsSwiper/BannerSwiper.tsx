@@ -52,7 +52,7 @@ const BannerSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization.frame) {
+    if (personalization?.frame) {
       const index = bannerColors.findIndex(
         (banner) => banner.id === personalization.banner?.id
       );

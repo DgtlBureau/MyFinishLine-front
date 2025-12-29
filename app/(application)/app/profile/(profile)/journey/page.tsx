@@ -61,9 +61,6 @@ const Journey = () => {
           <FeatureList features={contracts || []} />
         </div>
       </section>
-      <section className="px-4">
-        <LeaderboardSwiper />
-      </section>
 
       <section>
         <h4 className="font-medium text-3xl text-center leading-9">

@@ -1,9 +1,16 @@
+"use client";
+
 import LeaderboardItem from "./LeaderboardItem/LeaderboardItem";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperType } from "swiper";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "swiper/css";
+import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
+import { getUserChallenges } from "@/app/lib/utils/userService";
+import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 
 const leaderboard = [
   {
@@ -97,6 +104,17 @@ const LeaderboardSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+  const dispatch = useAppDispatch();
+  const { challenges } = useAppSelector((state) => state.user);
+
+  const handleLoadChallenges = async () => {
+    try {
+      const data = await getUserChallenges();
+      dispatch(setUserChallenges(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -110,54 +128,59 @@ const LeaderboardSwiper = () => {
     }
   };
 
+  useEffect(() => {
+    handleLoadChallenges();
+  }, []);
+
   return (
-    <section className="py-10 mt-14">
+    <section className="">
       <h4 className="font-bold text-2xl leading-8 text-[#09090B]">
         Leaderboard
       </h4>
-      <div className="flex items-center justify-between mt-4">
-        <h4 className="font-medium text-xl leading-9 text-[#09090B] px-4">
-          Amazonia route
-        </h4>
-        <div>
-          <button
-            className="px-4 cursor-pointer"
-            onClick={handleGoPrev}
-            disabled={isFirstSlide}
-          >
-            <ArrowLeft color={isFirstSlide ? "#797979" : "black"} />
-          </button>
-          <button
-            className="px-4 cursor-pointer"
-            onClick={handleGoNext}
-            disabled={isLastSlide}
-          >
-            <ArrowRight color={isLastSlide ? "#797979" : "black"} />
-          </button>
-        </div>
-      </div>
+      <div className="relative mt-4">
+        {challenges.length > 1 && (
+          <div className="absolute top-0 right-0 bg-white">
+            <button
+              className="px-4 cursor-pointer"
+              onClick={handleGoPrev}
+              disabled={isFirstSlide}
+            >
+              <ArrowLeft color={isFirstSlide ? "#797979" : "black"} />
+            </button>
+            <button
+              className="px-4 cursor-pointer"
+              onClick={handleGoNext}
+              disabled={isLastSlide}
+            >
+              <ArrowRight color={isLastSlide ? "#797979" : "black"} />
+            </button>
+          </div>
+        )}
 
-      <Swiper
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        className="mt-4 pb-4"
-        spaceBetween={16}
-        slidesPerView={1}
-        onSlideChange={(swiper) => {
-          setIsFirstSlide(swiper.isBeginning);
-          setIsLastSlide(swiper.isEnd);
-        }}
-      >
-        {leaderboard.map((item) => (
-          <SwiperSlide key={item.id}>
-            <LeaderboardItem
-              users={item.users}
-              currentUser={item.currentUser}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+        {!!challenges.length && (
+          <Swiper
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            className="mt-4 pb-4"
+            spaceBetween={16}
+            slidesPerView={1}
+            onSlideChange={(swiper) => {
+              setIsFirstSlide(swiper.isBeginning);
+              setIsLastSlide(swiper.isEnd);
+            }}
+          >
+            {challenges.map((item) => (
+              <SwiperSlide key={item.id}>
+                <h4 className="block font-medium text-xl leading-9 text-[#09090B] px-4 mb-4">
+                  {item.name}
+                </h4>
+                <LeaderboardItem challengeId={item.id} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+      </div>
     </section>
   );
 };

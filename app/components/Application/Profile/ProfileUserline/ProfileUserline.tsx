@@ -34,7 +34,7 @@ const ProfileUserline = () => {
       <div className="flex gap-4">
         <div
           style={
-            personalization.frame
+            personalization?.frame
               ? {
                   width: 88,
                   height: 88,
@@ -47,7 +47,7 @@ const ProfileUserline = () => {
               : {}
           }
         >
-          {!imageError && user?.full_avatar_url ? (
+          {user?.full_avatar_url && !imageError ? (
             <Image
               className="rounded-full max-h-20 max-w-20 object-cover"
               src={user.full_avatar_url}

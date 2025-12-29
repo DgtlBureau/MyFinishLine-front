@@ -45,7 +45,7 @@ const MascotSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization.frame) {
+    if (personalization?.frame) {
       const index = mascots.findIndex(
         (mascot) => mascot.id === personalization.mascot?.id
       );

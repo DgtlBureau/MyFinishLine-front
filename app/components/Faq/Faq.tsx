@@ -2,15 +2,14 @@
 
 import { useMemo, useState, type ComponentType, type SVGProps } from "react";
 import { useDebounce } from "use-debounce";
-import { FaqMenu } from "./FaqMenu/FaqMenu";
 import { FaqAccordion } from "./FaqAccordion/Accordion";
 import { FaqForm } from "./FaqForm/FaqForm";
 import { FaqBanner } from "./FaqBanner/FaqBanner";
-import { AccordionHeader } from "./FaqAccordion/AccordionHeader";
 import { faqData } from "@/app/data/faqData";
 import { Modal } from "../ui/modal/Modal";
 import { FormikState, useFormik } from "formik";
 import { XIcon } from "lucide-react";
+import axios from "axios";
 
 interface ISendFeedbackProps {
   category_id: number;
@@ -23,10 +22,7 @@ interface IFormikValues {
   user_id: number | null;
   email: string;
   question: string;
-  category: {
-    id: number;
-    name: string;
-  };
+  category: number;
 }
 
 export const Faq = () => {
@@ -35,7 +31,6 @@ export const Faq = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [value] = useDebounce(search, 500);
-  const [sendingData, setSendingdData] = useState<ISendFeedbackProps>();
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     name: string;
@@ -48,19 +43,23 @@ export const Faq = () => {
 
   const visibleFaqData = faqData.filter((item) => item.isVisible);
 
-  const handleSendFeedback = (data: ISendFeedbackProps) => {
-    setSendingdData(data);
-    setIsSuccess(true);
+  const handleSendFeedback = async (data: ISendFeedbackProps) => {
+    try {
+      const res = await axios.post("/api/faq/send-feedback", data);
+      setIsSuccess(true);
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      setIsSuccess(false);
+      throw error;
+    }
   };
 
   const initialValues = {
     user_id: null,
     email: "",
     question: "",
-    category: {
-      id: 0,
-      name: "",
-    },
+    category: 1,
   };
 
   const {
@@ -76,16 +75,16 @@ export const Faq = () => {
   } = useFormik<IFormikValues>({
     enableReinitialize: true,
     initialValues,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const data: ISendFeedbackProps = {
-        category_id: values.category.id,
+        category_id: values.category,
         text: values.question,
 
         user_id: values.user_id ?? undefined,
 
         email: values.email,
       };
-      handleSendFeedback(data);
+      await handleSendFeedback(data);
     },
   });
 
@@ -103,6 +102,7 @@ export const Faq = () => {
         id: el.id * index,
         question: el.question,
         answer: el.answer,
+        sub_answer: el.sub_answer,
       }));
   }, [selectedCategory, faqData, visibleFaqData]);
 
@@ -138,21 +138,13 @@ export const Faq = () => {
   };
 
   return (
-    <div className="bg-primary/10 flex min-h-screen items-center justify-center">
+    <div className="bg-primary/10 flex min-h-screen items-start justify-center">
       <div className="flex w-full max-w-[1440px] flex-col items-center justify-start gap-4 p-[20px_10px] pb-[40px] md:p-[20px_40px] md:pb-[80px]">
         <FaqBanner search={search} setSearch={(e) => handleSearch(e)} />
 
-        <div className="flex w-full flex-col gap-4 md:flex-row">
-          <div className="flex w-full flex-col gap-4 md:w-[25%]">
-            <FaqMenu
-              options={options}
-              selectedCategory={selectedCategory}
-              onClick={handleChangeCategory}
-            />
-          </div>
+        <div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row">
           {filteredData && (
             <div className="flex w-full flex-col gap-4 md:w-[75%]">
-              <AccordionHeader selectedCategory={selectedCategory} />
               <FaqAccordion items={filteredData} search={value} />
             </div>
           )}
@@ -190,10 +182,6 @@ export const Faq = () => {
                 </button>
                 <h3 className="flex flex-col bg-primary text-white rounded-md px-4 py-8 text-xl font-medium">
                   The question has been successfully sent.
-                  <span>
-                    A response will be sent to{" "}
-                    {sendingData?.email || "your email"}
-                  </span>
                 </h3>
               </div>
             ) : isError ? (

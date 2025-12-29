@@ -45,7 +45,7 @@ export const FaqShortComponent = ({ category }: IFaqComponentProps) => {
   const data =
     category && faqCategories.includes(category)
       ? faqData.find((item) => item.category === category)?.variants.slice(0, 4)
-      : faqData[1].variants.slice(0, 4);
+      : faqData[0].variants.slice(0, 5);
 
   return (
     <div className="flex w-full flex-col gap-12">

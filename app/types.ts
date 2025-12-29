@@ -1,3 +1,5 @@
+import { IUser } from "./types/user";
+
 export interface IBackgroundImage {
   id: number;
   image_url: string;
@@ -150,8 +152,29 @@ export interface IRewardTicket {
   last_name: string;
   phone: string;
   reward_id: number;
-  status: IStatus;
+  status: IShipmentStatus;
   status_id: number;
   user_id: number;
   zip_code: string;
+}
+
+export interface ILeaderboard {
+  challenge_id: number;
+  id: number;
+  total_progress: string;
+  user_id: number;
+  user: IUser;
+  position: number;
+}
+
+export interface IShipmentStatus extends Omit<IStatus, "type"> {
+  type: ShipmentStatuses;
+}
+
+export enum ShipmentStatuses {
+  created = "created",
+  in_progress = "in_progress",
+  on_the_way = "on_the_way",
+  at_pickup_point = "at_pickup_point",
+  received = "received",
 }
