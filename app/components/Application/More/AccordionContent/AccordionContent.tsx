@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, easeInOut } from "motion/react";
 import { ReactNode, useState } from "react";
 import { type LucideIcon } from "lucide-react";
+import { RenderBoldText } from "@/app/components/ui/renderBoldText";
 
 interface IAccordionContentProps {
   title: string;
@@ -140,7 +141,7 @@ const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
                             exit="collapsed"
                             className="pb-4 text-sm leading-5 text-[#09090B]"
                           >
-                            {el.variant}
+                            <RenderBoldText text={el.variant} />
                           </motion.li>
                         ))}
                       </motion.ol>

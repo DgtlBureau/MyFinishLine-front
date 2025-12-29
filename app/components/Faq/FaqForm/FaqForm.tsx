@@ -1,5 +1,4 @@
 import type { FormikErrors, FormikTouched } from "formik";
-import { CustomSelect } from "../../ui/customSect/CustomSelect";
 import { ErrorInfo } from "../../ui/errorInfo/ErrorInfo";
 import { XIcon, SendIcon, MessageCircleIcon } from "lucide-react";
 
@@ -11,7 +10,6 @@ interface IFormikValues {
 }
 
 interface IFaqFormProps {
-  options: { id: number; name: string }[];
   values: {
     user_id: number | null;
     email: string;
@@ -40,7 +38,6 @@ export const FaqForm = ({
   errors,
   touched,
   setValues,
-  options,
   onClose,
   onClick,
   isValid,
@@ -80,25 +77,6 @@ export const FaqForm = ({
           onSubmit={handleSubmit}
           name="faq-form"
         >
-          {/* <div className="flex w-full flex-col gap-1">
-            <span className="text-sm md:text-base">{"Feedback type"}</span>
-            <CustomSelect
-              value={values.category.name}
-              options={options}
-              onChange={(value) => {
-                setValues("category", value);
-              }}
-              onBlur={() => setFieldTouched("category", true)}
-              placeholder="Select category"
-              className={`${
-                touched.category && errors.category ? "border-red-500" : ""
-              }`}
-            />
-            {errors.category && touched.category && (
-              <ErrorInfo error={errors.category.name as string} />
-            )}
-          </div> */}
-
           <div className="flex w-full flex-col gap-1">
             <span className="text-sm md:text-base">{"Message"}</span>
             <textarea

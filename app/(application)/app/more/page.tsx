@@ -2,12 +2,26 @@
 
 import { ChevronRight } from "lucide-react";
 import { AnimatePresence, easeInOut, motion } from "motion/react";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import AccordionContent from "@/app/components/Application/More/AccordionContent/AccordionContent";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { faqData } from "@/app/data/faqData";
 import { Textarea } from "@/app/components/ui/textarea";
+import { useFormik } from "formik";
+import { validate } from "@/app/lib/utils/validate/feedbackValidate";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Loader from "@/app/components/Shared/Loader/Loader";
+import { getCurrentUser } from "@/app/lib/utils/userService";
+import { useAppSelector } from "@/app/lib/hooks";
+
+interface IFormik {
+  email: string;
+  question: string;
+  type_id: number;
+  user_id: number | null;
+}
 
 const links = [
   {
@@ -115,19 +129,52 @@ const contentInnerVariants = {
 
 const Page = () => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
-  const [email, setEmail] = useState("");
-  const [question, setQuestio] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const { user } = useAppSelector((state) => state.user);
+
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    handleBlur,
+    setFieldValue,
+    resetForm,
+  } = useFormik<IFormik>({
+    initialValues: {
+      email: "",
+      question: "",
+      type_id: 2,
+      user_id: user.id,
+    },
+    validate,
+    onSubmit: (values) => {
+      sendFeedback(values);
+    },
+  });
+
+  const sendFeedback = async (values: IFormik) => {
+    setIsSending(true);
+    const payload = {
+      email: values.email,
+      text: values.question,
+      category: values.type_id,
+      ...(values.user_id !== null ? { user_id: values.user_id } : {}),
+    };
+    try {
+      const { data } = await axios.post("/api/faq/send-feedback", payload);
+      toast.success("Feedback sent successfully");
+      return data;
+    } catch (error: any) {
+      toast.error("Error feedback sending: ", error.response.data.message);
+    } finally {
+      setIsSending(false);
+      resetForm();
+    }
+  };
 
   const handleClickBlock = (id: number) => {
     setExpandedBlockId(expandedBlockId === id ? null : id);
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log("submit", {
-      email,
-      question,
-    });
   };
 
   return (
@@ -150,21 +197,44 @@ const Page = () => {
                     <p className="text-sm leading-5 text-[#71717A]">
                       Opt-in to receive updates and news about the sidebar.
                     </p>
-                    <Input
-                      required
-                      value={email}
-                      placeholder="Email"
-                      type="email"
-                      className=""
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <Textarea
-                      required
-                      value={question}
-                      onChange={(e) => setQuestio(e.target.value)}
-                      className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                    />
-                    <Button className="w-full">Subscribe</Button>
+                    <div className="flex flex-col gap-[2px]">
+                      <Input
+                        required
+                        name="email"
+                        value={values.email}
+                        placeholder="Email"
+                        type="email"
+                        className=""
+                        onChange={(e) => setFieldValue("email", e.target.value)}
+                        onBlur={handleBlur}
+                      />
+                      {errors.email && touched.email && (
+                        <span className="text-[12px] text-destructive">
+                          {errors.email}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-[2px]">
+                      <Textarea
+                        name="question"
+                        required
+                        placeholder="Question"
+                        value={values.question}
+                        onChange={(e) =>
+                          setFieldValue("question", e.target.value)
+                        }
+                        onBlur={handleBlur}
+                        className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      />
+                      {errors.question && touched.question && (
+                        <span className="text-[12px] text-destructive">
+                          {errors.question}
+                        </span>
+                      )}
+                    </div>
+                    <Button className="w-full" type="submit">
+                      {isSending ? <Loader /> : "Subscribe"}
+                    </Button>
                   </div>
                 </form>
               );

@@ -10,10 +10,11 @@ import { Modal } from "../ui/modal/Modal";
 import { FormikState, useFormik } from "formik";
 import { XIcon } from "lucide-react";
 import axios from "axios";
+import { validate } from "@/app/lib/utils/validate/feedbackValidate";
 
 interface ISendFeedbackProps {
   category_id: number;
-  text: string;
+  question: string;
   user_id?: number;
   email?: string;
 }
@@ -75,10 +76,11 @@ export const Faq = () => {
   } = useFormik<IFormikValues>({
     enableReinitialize: true,
     initialValues,
+    validate,
     onSubmit: async (values) => {
       const data: ISendFeedbackProps = {
         category_id: values.category,
-        text: values.question,
+        question: values.question,
 
         user_id: values.user_id ?? undefined,
 
@@ -114,21 +116,6 @@ export const Faq = () => {
     });
     setSearch(e.target.value);
   };
-
-  const handleChangeCategory = (category: {
-    id: number;
-    name: string;
-    icon: ComponentType<SVGProps<SVGSVGElement>> | null;
-  }) => {
-    setSearch("");
-    setSelectedCategory(category);
-  };
-
-  const options = visibleFaqData.map((item) => ({
-    id: item.id,
-    name: item.category,
-    icon: item.icon,
-  }));
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -197,7 +184,6 @@ export const Faq = () => {
                 handleBlur={handleBlur}
                 touched={touched}
                 setFieldTouched={setFieldTouched}
-                options={options}
                 values={values}
                 setValues={setFieldValue}
                 setFieldValue={setFieldValue}

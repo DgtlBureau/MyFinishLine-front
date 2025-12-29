@@ -3,12 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   try {
-    const { email, text, category } = await req.json();
+    const { email, question, category, user_id, phone } = await req.json();
     const { data } = await instance.post("/feedback", {
       email,
       type_id: category,
-      question: text,
+      question,
+      ...(user_id ? { user_id } : {}),
+      ...(phone ? { phone } : {}),
     });
+
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({

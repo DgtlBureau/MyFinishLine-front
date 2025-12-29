@@ -1,3 +1,5 @@
+import { RenderBoldText } from "../../ui/renderBoldText";
+
 interface IAnswerProps {
   answer: {
     id: number;
@@ -5,19 +7,6 @@ interface IAnswerProps {
   }[];
   sub_answer?: string;
 }
-
-const renderBoldText = (text: string) => {
-  return text.split(/(\*\*.*?\*\*)/g).map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={i} className="font-semibold text-primary/90">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
-};
 
 export const AnswerComponent = ({ sub_answer, answer }: IAnswerProps) => {
   return (
@@ -31,7 +20,7 @@ export const AnswerComponent = ({ sub_answer, answer }: IAnswerProps) => {
         }`}
       >
         {answer.map((item) => (
-          <li key={item.id}>{renderBoldText(item.variant)}</li>
+          <li key={item.id}>{<RenderBoldText text={item.variant} />}</li>
         ))}
       </ol>
     </div>
