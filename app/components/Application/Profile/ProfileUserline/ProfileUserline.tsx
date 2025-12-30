@@ -13,7 +13,7 @@ import { Camera } from "lucide-react";
 
 const ProfileUserline = () => {
   const [imageError, setImageError] = useState(false);
-  const { user, personalization } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
 
   return (
     <section className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl relative">
@@ -29,7 +29,7 @@ const ProfileUserline = () => {
               <Image src={user.selected_frame?.image_url} alt="Frame" fill />
             </div>
           )}
-          <div className="relative z-100 flex items-center justify-center">
+          <div className="relative z-10 flex items-center justify-center">
             {user?.full_avatar_url && !imageError ? (
               <Image
                 className="rounded-full h-16 w-16 object-cover p-0.5 shrink-0"
