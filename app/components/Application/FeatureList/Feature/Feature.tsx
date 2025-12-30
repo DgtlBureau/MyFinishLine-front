@@ -124,25 +124,30 @@ const Feature = memo(
               animate="expanded"
               exit="collapsed"
             >
-              {/* 👇 padding moved here */}
               <div className="p-4">
                 <span>Rewards</span>
 
                 {rewards.length ? (
-                  <ul className="flex items-center flex-wrap gap-1">
-                    {rewards.map((reward) => (
-                      <li key={reward.id}>
-                        {reward.image_src && (
-                          <Image
-                            src={reward.image_src}
-                            width={80}
-                            height={80}
-                            alt="Reward"
-                          />
-                        )}
-                        <span className="block text-center">{reward.name}</span>
-                      </li>
-                    ))}
+                  <ul className="flex items-center flex-wrap gap-2 mt-2">
+                    {rewards.map((reward, index) => {
+                      console.log(reward);
+                      return (
+                        <li key={index}>
+                          {reward.image_url && (
+                            <Image
+                              className="w-18 h-18 object-cover rounded-lg"
+                              src={reward.image_url}
+                              width={72}
+                              height={72}
+                              alt="Reward"
+                            />
+                          )}
+                          <span className="block text-center text-xs text-[#09090B]">
+                            {reward.title}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <span className="block text-sm text-[#71717A]">
