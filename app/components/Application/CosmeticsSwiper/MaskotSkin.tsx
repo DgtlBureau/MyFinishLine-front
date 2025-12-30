@@ -7,30 +7,17 @@ import Image from "next/image";
 
 import "swiper/css";
 
-const mascots = [
-  {
-    id: 1,
-    image_src: "/images/application/racoon.png",
-  },
-  {
-    id: 2,
-    image_src: "/images/application/racoon.png",
-  },
-  {
-    id: 3,
-    image_src: "/images/application/racoon.png",
-  },
-];
-
 const MascotSwiper = ({
+  items,
   onChange,
 }: {
-  onChange: (value: { id: number; image_src: string }) => void;
+  items: { id: number; contract_id: number; image_url: string }[];
+  onChange: (value: { id: number; image_url: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
-  const { personalization } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -45,13 +32,13 @@ const MascotSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization?.frame) {
-      const index = mascots.findIndex(
-        (mascot) => mascot.id === personalization.mascot?.id
+    if (items.length > 0 && user.selected_skin) {
+      const index = items.findIndex(
+        (mascot) => mascot.id === user.selected_skin?.id
       );
       swiperRef.current?.slideTo(index);
     }
-  }, []);
+  }, [items.length]);
 
   return (
     <section className="mt-8 pb-4">
@@ -83,12 +70,12 @@ const MascotSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={2.3}
+        slidesPerView={1.5}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
         onSlideChange={(swiper) => {
-          onChange(mascots[swiper.activeIndex]);
+          onChange(items[swiper.activeIndex as number]);
           setIsFirstSlide(swiper.isBeginning);
           setIsLastSlide(swiper.isEnd);
         }}
@@ -96,11 +83,11 @@ const MascotSwiper = ({
         <div className="absolute top-0 left-0 w-full flex items-center justify-center pointer-events-none">
           <div className="relative z-10 w-32 h-32 border-4 border-[#CBD5E1] rounded-xl"></div>
         </div>
-        {mascots.map((mascot) => (
+        {items.map((mascot) => (
           <SwiperSlide key={mascot.id} tag="li">
             <div className="w-32 h-32 mx-auto bg-white relative rounded-xl">
               <Image
-                src={mascot.image_src}
+                src={mascot.image_url}
                 alt="Mascot"
                 width={120}
                 height={120}

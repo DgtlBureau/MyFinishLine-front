@@ -2,7 +2,6 @@
 
 import BannerSwiper from "@/app/components/Application/CosmeticsSwiper/BannerSwiper";
 import FrameSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
-import CosmeticsSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
 import MascotSwiper from "@/app/components/Application/CosmeticsSwiper/MaskotSkin";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -20,7 +19,7 @@ import {
   updateUser,
 } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { getCurrentUser } from "@/app/lib/utils/userService";
+import { getCurrentUser, getUserCosmetics } from "@/app/lib/utils/userService";
 import { IUser } from "@/app/types/user";
 import axios from "axios";
 import { Upload } from "lucide-react";
@@ -40,11 +39,16 @@ const page = () => {
   const [data, setData] = useState<IUser>(user);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userAvailableCosmetics, setUserAvailableCosmetics] = useState({
+    frames: [],
+    banners: [],
+    skins: [],
+  });
   const [imageError, setImageError] = useState(false);
   const [personalizationData, setPersonalizationData] = useState<{
-    frame: { id: number; color: string } | null;
-    banner: { id: number; color: string } | null;
-    mascot: { id: number; image_src: string } | null;
+    frame: { id: number; image_url: string } | null;
+    banner: { id: number; image_url: string } | null;
+    mascot: { id: number; image_url: string } | null;
   }>({
     frame: null,
     banner: null,
@@ -64,6 +68,15 @@ const page = () => {
     });
   }, []);
 
+  const handleLoadCosmetics = async () => {
+    try {
+      const data = await getUserCosmetics();
+      setUserAvailableCosmetics(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleLoadUser = async () => {
     try {
       const data = await getCurrentUser();
@@ -76,6 +89,7 @@ const page = () => {
 
   useEffect(() => {
     handleLoadUser();
+    handleLoadCosmetics();
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -91,6 +105,11 @@ const page = () => {
     }
     try {
       const { data } = await axios.post("/api/user/update-user", formData);
+      await axios.post("/api/user/update-cosmetics", {
+        contracts_frame_id: personalizationData.frame?.id,
+        contracts_banner_id: personalizationData.banner?.id,
+        contracts_skin_id: personalizationData.mascot?.id,
+      });
       dispatch(
         updateUser({
           ...(user.first_name !== data.first_name
@@ -113,7 +132,7 @@ const page = () => {
       dispatch(updatePersonalization(personalizationData));
       toast.success("Profile successfully updated");
     } catch (error: any) {
-      toast.error(error.response?.data.message);
+      toast.error(error.response?.data.message || error.response.data.error);
       console.log(error);
     } finally {
       setIsLoading(false);
@@ -219,15 +238,22 @@ const page = () => {
         <span className="block font-bold text-2xl leading-8 pt-10 px-8">
           Personalization
         </span>
-        <FrameSwiper
-          onChange={(value) => handleChangePersonalization("frame", value)}
-        />
-        <BannerSwiper
-          onChange={(value) => handleChangePersonalization("banner", value)}
-        />
-        <MascotSwiper
-          onChange={(value) => handleChangePersonalization("mascot", value)}
-        />
+        {userAvailableCosmetics.frames && (
+          <>
+            <FrameSwiper
+              items={userAvailableCosmetics.frames}
+              onChange={(value) => handleChangePersonalization("frame", value)}
+            />
+            <BannerSwiper
+              items={userAvailableCosmetics.banners}
+              onChange={(value) => handleChangePersonalization("banner", value)}
+            />
+            <MascotSwiper
+              items={userAvailableCosmetics.skins}
+              onChange={(value) => handleChangePersonalization("mascot", value)}
+            />
+          </>
+        )}
       </section>
 
       <div className="px-4">

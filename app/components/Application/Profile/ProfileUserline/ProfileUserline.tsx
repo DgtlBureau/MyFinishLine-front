@@ -16,58 +16,42 @@ const ProfileUserline = () => {
   const { user, personalization } = useAppSelector((state) => state.user);
 
   return (
-    <section
-      style={
-        user.has_strava_connect
-          ? {
-              background:
-                "linear-gradient(180deg, rgba(0, 124, 194, 0.4) 0%, rgba(136, 227, 255, 0.4) 49.62%, rgba(255, 255, 255, 0.4) 100%)",
-            }
-          : personalization
-          ? {
-              background: personalization.banner?.color,
-            }
-          : undefined
-      }
-      className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl"
-    >
-      <div className="flex gap-4">
-        <div
-          style={
-            personalization?.frame
-              ? {
-                  width: 88,
-                  height: 88,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: personalization.frame.color,
-                  borderRadius: "50%",
-                }
-              : {}
-          }
-        >
-          {user?.full_avatar_url && !imageError ? (
-            <Image
-              className="rounded-full max-h-20 max-w-20 object-cover"
-              src={user.full_avatar_url}
-              width={80}
-              height={80}
-              quality={75}
-              loading="eager"
-              alt="Profile image"
-              onError={() => {
-                setImageError(true);
-              }}
-            />
-          ) : (
-            <div
-              style={{ backgroundColor: user.avatar_color }}
-              className="border-border shrink-0 border-2 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold"
-            >
-              {user.avatar_symbol || <Camera />}
+    <section className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl relative">
+      {user.selected_banner && (
+        <div className="absolute top-0 left-0 w-full h-full">
+          <Image src={user.selected_banner?.image_url} alt="Banner" fill />
+        </div>
+      )}
+      <div className="flex gap-4 relative">
+        <div className="relative w-16 h-16">
+          {user.selected_frame && (
+            <div className="absolute left-0 top-0 h-full w-full">
+              <Image src={user.selected_frame?.image_url} alt="Frame" fill />
             </div>
           )}
+          <div className="relative z-100 flex items-center justify-center">
+            {user?.full_avatar_url && !imageError ? (
+              <Image
+                className="rounded-full h-16 w-16 object-cover p-0.5 shrink-0"
+                src={user.full_avatar_url}
+                width={80}
+                height={80}
+                quality={75}
+                loading="eager"
+                alt="Profile image"
+                onError={() => {
+                  setImageError(true);
+                }}
+              />
+            ) : (
+              <div
+                style={{ backgroundColor: user.avatar_color }}
+                className="border-border shrink-0 border-2 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold"
+              >
+                {user.avatar_symbol || <Camera />}
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <div>
