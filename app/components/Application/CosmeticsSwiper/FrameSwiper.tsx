@@ -7,35 +7,12 @@ import { useAppSelector } from "@/app/lib/hooks";
 
 import "swiper/css";
 
-const frames = [
-  {
-    id: 1,
-    color: "linear-gradient(180deg, #54E9D3 0%, #00766E 100%)",
-  },
-  {
-    id: 2,
-    color: "linear-gradient(180deg, #CBD5E1 0%, #47566C 100%)",
-  },
-  {
-    id: 3,
-    color: "linear-gradient(180deg, #88E3FF 0%, #007CC2 100%)",
-  },
-  {
-    id: 4,
-    color: "linear-gradient(180deg, #FBA7A6 0%, #DF2225 100%)",
-  },
-  {
-    id: 5,
-    color: "linear-gradient(180deg, #FFBA72 0%, #EA5B19 100%)",
-  },
-];
-
 const FrameSwiper = ({
   items,
   onChange,
 }: {
   items: { id: number; contract_id: number; image_url: string }[];
-  onChange: (value: { id: number; color: string }) => void;
+  onChange: (value: { id: number; image_url: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
@@ -55,13 +32,15 @@ const FrameSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization?.frame) {
-      const index = frames.findIndex(
-        (frame) => frame.id === personalization.frame?.id
+    if (items.length > 0 && user.selected_frame) {
+      const index = items.findIndex(
+        (frame) => frame.id === user.selected_frame?.id
       );
       swiperRef.current?.slideTo(index);
     }
-  }, []);
+  }, [items.length]);
+
+  console.log("personalization", personalization);
 
   return (
     <section className="mt-8 pb-4">
@@ -93,12 +72,12 @@ const FrameSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={1.5}
+        slidesPerView={2.6}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
         onSlideChange={(swiper) => {
-          onChange(frames[swiper.activeIndex]);
+          onChange(items[swiper.activeIndex]);
           setIsFirstSlide(swiper.isBeginning);
           setIsLastSlide(swiper.isEnd);
         }}
@@ -106,10 +85,10 @@ const FrameSwiper = ({
         <div className="absolute top-0.5 left-0 w-full flex items-center justify-center z-100 pointer-events-none">
           {user.full_avatar_url ? (
             <Image
-              className="p-0.5 rounded-full max-h-15 max-w-15 object-cover"
+              className="p-0.5 shrink-0 rounded-full h-15 15 object-cover"
               src={user.full_avatar_url}
-              width={60}
-              height={60}
+              width={62}
+              height={62}
               alt="User image"
             />
           ) : (
@@ -122,7 +101,8 @@ const FrameSwiper = ({
           <SwiperSlide key={frame.id} tag="li">
             <div className="w-16 h-16 mx-auto relative rounded-full flex items-center justify-center">
               <Image
-                src={"https://i.postimg.cc/cHcsmybt/enot1-1.png"}
+                className="object-contain"
+                src={frame.image_url}
                 width={64}
                 height={64}
                 alt="Frame"

@@ -8,9 +8,9 @@ const initialState: {
   challenges: IActiveChallenge[];
   completedContracts: IContract[];
   personalization: {
-    frame: { id: number; color: string } | null;
-    banner: { id: number; color: string } | null;
-    mascot: { id: number; image_src: string } | null;
+    frame: { id: number; image_url: string } | null;
+    banner: { id: number; image_url: string } | null;
+    mascot: { id: number; image_url: string } | null;
   };
 } = {
   user: {
@@ -66,9 +66,9 @@ const userSlice = createSlice({
     updatePersonalization: (
       state,
       action: PayloadAction<{
-        frame: { id: number; color: string } | null;
-        banner: { id: number; color: string } | null;
-        mascot: { id: number; image_src: string } | null;
+        frame: { id: number; image_url: string } | null;
+        banner: { id: number; image_url: string } | null;
+        mascot: { id: number; image_url: string } | null;
       }>
     ) => {
       state.personalization = action.payload;

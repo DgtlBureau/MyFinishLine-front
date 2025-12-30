@@ -7,32 +7,17 @@ import Image from "next/image";
 
 import "swiper/css";
 
-const mascots = [
-  {
-    id: 1,
-    image_src: "/images/application/racoon.png",
-  },
-  {
-    id: 2,
-    image_src: "/images/application/racoon.png",
-  },
-  {
-    id: 3,
-    image_src: "/images/application/racoon.png",
-  },
-];
-
 const MascotSwiper = ({
   items,
   onChange,
 }: {
   items: { id: number; contract_id: number; image_url: string }[];
-  onChange: (value: { id: number; image_src: string }) => void;
+  onChange: (value: { id: number; image_url: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
-  const { personalization } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -47,13 +32,13 @@ const MascotSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization?.frame) {
-      const index = mascots.findIndex(
-        (mascot) => mascot.id === personalization.mascot?.id
+    if (items.length > 0 && user.selected_skin) {
+      const index = items.findIndex(
+        (mascot) => mascot.id === user.selected_skin?.id
       );
       swiperRef.current?.slideTo(index);
     }
-  }, []);
+  }, [items.length]);
 
   return (
     <section className="mt-8 pb-4">
@@ -90,7 +75,7 @@ const MascotSwiper = ({
         centeredSlides={true}
         wrapperTag="ul"
         onSlideChange={(swiper) => {
-          onChange(mascots[swiper.activeIndex]);
+          onChange(items[swiper.activeIndex as number]);
           setIsFirstSlide(swiper.isBeginning);
           setIsLastSlide(swiper.isEnd);
         }}

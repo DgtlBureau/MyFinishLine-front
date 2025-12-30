@@ -18,4 +18,7 @@ export interface IUser {
   has_strava_connect: boolean;
   avatar_symbol: string | null;
   avatar_color: string;
+  selected_skin?: { id: number; image_url: string } | null;
+  selected_frame?: { id: number; image_url: string } | null;
+  selected_banner?: { id: number; image_url: string } | null;
 }

@@ -3,43 +3,21 @@ import { Swiper as SwiperType } from "swiper";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useAppSelector } from "@/app/lib/hooks";
+import Image from "next/image";
 
 import "swiper/css";
-
-const bannerColors = [
-  {
-    id: 1,
-    color: "linear-gradient(180deg, #52E7D1 0%, #FFFFFF 100%)",
-  },
-  {
-    id: 2,
-    color: "linear-gradient(180deg, #C9D3DF 0%, #FFFFFF 100%)",
-  },
-  {
-    id: 3,
-    color: "linear-gradient(180deg, #007CC2, #88E3FF, #FFFFFF)",
-  },
-  {
-    id: 4,
-    color: "linear-gradient(180deg, #FBA7A6 0%, #FFFFFF 100%)",
-  },
-  {
-    id: 5,
-    color: "linear-gradient(180deg, #FFB971 0%, #FFFFFF 100%)",
-  },
-];
 
 const BannerSwiper = ({
   items,
   onChange,
 }: {
   items: { id: number; contract_id: number; image_url: string }[];
-  onChange: (value: { id: number; color: string }) => void;
+  onChange: (value: { id: number; image_url: string }) => void;
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
-  const { personalization } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -54,13 +32,14 @@ const BannerSwiper = ({
   };
 
   useEffect(() => {
-    if (personalization?.frame) {
-      const index = bannerColors.findIndex(
-        (banner) => banner.id === personalization.banner?.id
+    if (items.length > 0 && user.selected_banner) {
+      console.log("update");
+      const index = items.findIndex(
+        (banner) => banner.id === user.selected_banner?.id
       );
       swiperRef.current?.slideTo(index);
     }
-  }, []);
+  }, [items.length]);
 
   return (
     <section className="mt-8 pb-4">
@@ -92,12 +71,12 @@ const BannerSwiper = ({
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        slidesPerView={1.5}
+        slidesPerView={2.6}
         centerInsufficientSlides
         centeredSlides={true}
         wrapperTag="ul"
         onSlideChange={(swiper) => {
-          onChange(bannerColors[swiper.activeIndex]);
+          onChange(items[swiper.activeIndex]);
           setIsFirstSlide(swiper.isBeginning);
           setIsLastSlide(swiper.isEnd);
         }}
@@ -107,7 +86,15 @@ const BannerSwiper = ({
         </div>
         {items.map((banner) => (
           <SwiperSlide tag="li" key={banner.id}>
-            <div className="w-16 h-16 mx-auto relative rounded-xl"></div>
+            <div className="w-16 h-16 mx-auto relative rounded-xl">
+              <Image
+                className="object-contain"
+                src={banner.image_url}
+                width={64}
+                height={64}
+                alt="Frame"
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
