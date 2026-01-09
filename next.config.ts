@@ -95,6 +95,11 @@ const nextConfig: NextConfig = {
         destination: "/app/profile/journey",
         permanent: true,
       },
+      {
+        source: "/app/profile/settings/personalization",
+        destination: "/app/profile/settings/personalization/frames",
+        permanent: true,
+      },
     ];
   },
 };

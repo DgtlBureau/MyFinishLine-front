@@ -2,7 +2,7 @@
 
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
-import { Shield, Globe, LogOut, Mail, User } from "lucide-react";
+import { Shield, Globe, LogOut, Mail, User, UserCog } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -41,6 +41,13 @@ const Settings = () => {
           label="Edit account"
           description="Edit your account information"
           onClick={() => handleGoTo("/app/profile/settings/edit-account")}
+          delay={1}
+        />
+        <SettingItem
+          icon={<UserCog className="w-4 h-4" />}
+          label="Customize profile"
+          description="Customize your profile visuals"
+          onClick={() => handleGoTo("/app/profile/settings/personalization")}
           delay={1}
         />
         <div className="px-2">

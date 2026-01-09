@@ -186,7 +186,9 @@ const PaymentForm = ({ total }: { total: number }) => {
         </div>
 
         {error && (
-          <div className="text-red-600 mt-4 p-3 bg-red-50 rounded">{error}</div>
+          <div className="text-red-600 mt-4 p-3 bg-red-50 rounded text-xs">
+            {error}
+          </div>
         )}
 
         <button

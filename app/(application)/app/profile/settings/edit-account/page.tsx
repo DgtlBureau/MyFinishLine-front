@@ -39,43 +39,13 @@ const page = () => {
   const [data, setData] = useState<IUser>(user);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [userAvailableCosmetics, setUserAvailableCosmetics] = useState({
-    frames: [],
-    banners: [],
-    skins: [],
-  });
   const [imageError, setImageError] = useState(false);
-  const [personalizationData, setPersonalizationData] = useState<{
-    frame: { id: number; image_url: string } | null;
-    banner: { id: number; image_url: string } | null;
-    mascot: { id: number; image_url: string } | null;
-  }>({
-    frame: null,
-    banner: null,
-    mascot: null,
-  });
-
-  const handleChangePersonalization = (
-    type: "frame" | "banner" | "mascot",
-    value: any
-  ) => {
-    setPersonalizationData((prevState) => ({ ...prevState, [type]: value }));
-  };
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => {
       return { ...prevState, [event.target.name]: event.target.value };
     });
   }, []);
-
-  const handleLoadCosmetics = async () => {
-    try {
-      const data = await getUserCosmetics();
-      setUserAvailableCosmetics(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleLoadUser = async () => {
     try {
@@ -89,7 +59,6 @@ const page = () => {
 
   useEffect(() => {
     handleLoadUser();
-    handleLoadCosmetics();
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -105,11 +74,6 @@ const page = () => {
     }
     try {
       const { data } = await axios.post("/api/user/update-user", formData);
-      await axios.post("/api/user/update-cosmetics", {
-        contracts_frame_id: personalizationData.frame?.id,
-        contracts_banner_id: personalizationData.banner?.id,
-        contracts_skin_id: personalizationData.mascot?.id,
-      });
       dispatch(
         updateUser({
           ...(user.first_name !== data.first_name
@@ -129,7 +93,6 @@ const page = () => {
             : {}),
         })
       );
-      dispatch(updatePersonalization(personalizationData));
       toast.success("Profile successfully updated");
     } catch (error: any) {
       toast.error(error.response?.data.message || error.response.data.error);
@@ -233,28 +196,6 @@ const page = () => {
           </div>
         </div>
       </div>
-
-      <section className="bg-[#F4F4F5] mt-5">
-        <span className="block font-bold text-2xl leading-8 pt-10 px-8">
-          Personalization
-        </span>
-        {userAvailableCosmetics.frames && (
-          <>
-            <FrameSwiper
-              items={userAvailableCosmetics.frames}
-              onChange={(value) => handleChangePersonalization("frame", value)}
-            />
-            <BannerSwiper
-              items={userAvailableCosmetics.banners}
-              onChange={(value) => handleChangePersonalization("banner", value)}
-            />
-            <MascotSwiper
-              items={userAvailableCosmetics.skins}
-              onChange={(value) => handleChangePersonalization("mascot", value)}
-            />
-          </>
-        )}
-      </section>
 
       <div className="px-4">
         <label className="block mt-2">

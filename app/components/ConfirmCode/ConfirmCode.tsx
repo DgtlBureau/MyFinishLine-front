@@ -183,7 +183,7 @@ const ConfirmCode = () => {
           })}
         </div>
 
-        <span className="mt-2 block text-red-500 text-sm text-center">
+        <span className="mt-2 block text-red-500 text-xs text-center">
           {error}
         </span>
 

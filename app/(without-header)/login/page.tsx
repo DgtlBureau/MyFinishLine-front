@@ -108,7 +108,7 @@ export default function Login() {
               onChange={handleChange}
             />
             {formData.error && (
-              <span className="block text-center text-red-400 mt-2">
+              <span className="block text-xs text-center text-red-400 mt-2">
                 {formData.error}
               </span>
             )}

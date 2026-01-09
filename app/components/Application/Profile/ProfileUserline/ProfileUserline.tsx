@@ -89,13 +89,13 @@ const ProfileUserline = () => {
           </div>
         </div>
       </div>
-      {user.has_strava_connect && (
+      {user.selected_skin?.image_url && (
         <button className="self-start cursor-pointer relative">
           <Image
-            src="/images/application/talisman.png"
+            src={user.selected_skin?.image_url || ""}
             alt="Talisman"
-            height={36}
-            width={36}
+            height={80}
+            width={80}
           />
           <div className="z-10 absolute right-0 top-0 w-3 h-3 rounded-full bg-[red] text-[8px] font-medium text-white">
             2

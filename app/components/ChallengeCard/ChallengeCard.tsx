@@ -40,6 +40,10 @@ const ChallengeCard = () => {
     }
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -47,6 +51,8 @@ const ChallengeCard = () => {
   useEffect(() => {
     handleLoadChallenges();
   }, []);
+
+  console.log(challenge);
 
   if (!challenges?.[0]) {
     return (
@@ -79,7 +85,7 @@ const ChallengeCard = () => {
           </h5>
           <div className="w-full flex items-center justify-between">
             <span className="text-[13px] text-muted-foreground">
-              {challenge.total_distance} km
+              Total Distance {challenge.total_distance} km
             </span>
           </div>
         </div>
@@ -95,7 +101,10 @@ const ChallengeCard = () => {
           {challenge.user_distance} km
         </span>
         {challenge.reward?.image_url && (
-          <div className="relative flex items-center justify-center rounded-full max-w-30 max-h-30 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
+          <div
+            onClick={handleOpenModal}
+            className="relative flex flex-1 items-center justify-center rounded-full max-w-60 max-h-60 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1"
+          >
             <div className="bg-white w-full h-full rounded-full">
               <Image
                 className="p-2  w-full object-contain h-full"
