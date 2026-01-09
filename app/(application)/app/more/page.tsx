@@ -10,10 +10,12 @@ import { validate } from "@/app/lib/utils/validate/feedbackValidate";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "@/app/components/Shared/Loader/Loader";
-import { useAppSelector } from "@/app/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
 import { Modal } from "@/app/components/ui/modal/Modal";
 import { FaqForm } from "@/app/components/Faq/FaqForm/FaqForm";
+import { clearUser } from "@/app/lib/features/user/userSlice";
+import { useRouter } from "next/navigation";
 
 interface IFormik {
   email: string;
@@ -142,6 +144,8 @@ const Page = () => {
   const [isSending, setIsSending] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const {
     values,
@@ -196,9 +200,20 @@ const Page = () => {
     setExpandedBlockId(expandedBlockId === id ? null : id);
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout");
+      dispatch(clearUser());
+      localStorage.removeItem("persist:root");
+      router.replace("/");
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  };
+
   return (
-    <main className="max-w-4xl mx-auto">
-      <ul>
+    <div className="flex flex-col gap-4 justify-between max-w-4xl mx-auto min-h-[80vh]">
+      <ul className="h-full">
         {links.map((link) => {
           const isExpanded = expandedBlockId === link.id;
 
@@ -287,7 +302,16 @@ const Page = () => {
           </Modal>
         )}
       </ul>
-    </main>
+      <div className="px-4">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="p-[4px_8px] w-full rounded-[8px] bg-black text-white font-semibold cursor-pointer hover:scale-[101%] duration-300"
+        >
+          Log out
+        </button>
+      </div>
+    </div>
   );
 };
 
