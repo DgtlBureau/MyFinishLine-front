@@ -4,21 +4,21 @@ import { ChevronRight } from "lucide-react";
 import { AnimatePresence, easeInOut, motion } from "motion/react";
 import { useState } from "react";
 import AccordionContent from "@/app/components/Application/More/AccordionContent/AccordionContent";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
 import { faqData } from "@/app/data/faqData";
-import { Textarea } from "@/app/components/ui/textarea";
 import { useFormik } from "formik";
 import { validate } from "@/app/lib/utils/validate/feedbackValidate";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "@/app/components/Shared/Loader/Loader";
 import { useAppSelector } from "@/app/lib/hooks";
+import Link from "next/link";
+import { Modal } from "@/app/components/ui/modal/Modal";
+import { FaqForm } from "@/app/components/Faq/FaqForm/FaqForm";
 
 interface IFormik {
   email: string;
   question: string;
-  type_id: number;
+  category: number;
   user_id: number | null;
 }
 
@@ -26,12 +26,23 @@ const links = [
   {
     id: 1,
     label: "FAQ",
-    title: "Frequently Asked Questions",
+    title: "",
     content: faqData,
+    additional_content: () => (
+      <div className="flex flex-col justify-center items-center gap-2 py-[20px]">
+        <p className="text-center text-gray-500">Still have questions?</p>
+        <Link
+          href="/faq"
+          className="p-[4px_8px] text-[16px] w-fit bg-primary/20 text-primary rounded-[10px] hover:bg-primary hover:text-white duration-300 font-bold cursor-pointer"
+        >
+          See more
+        </Link>
+      </div>
+    ),
   },
   {
     id: 2,
-    label: "Contact us",
+    label: "Feedback",
     block: (form: any) => (
       <div>
         <ul>
@@ -130,21 +141,24 @@ const Page = () => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
   const [isSending, setIsSending] = useState(false);
   const { user } = useAppSelector((state) => state.user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     values,
+    isValid,
     errors,
     touched,
+    setFieldTouched,
     handleSubmit,
     handleBlur,
     setFieldValue,
     resetForm,
   } = useFormik<IFormik>({
     initialValues: {
+      user_id: user.id,
       email: "",
       question: "",
-      type_id: 2,
-      user_id: user.id,
+      category: 2,
     },
     validate,
     onSubmit: (values) => {
@@ -152,12 +166,17 @@ const Page = () => {
     },
   });
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    resetForm();
+  };
+
   const sendFeedback = async (values: IFormik) => {
     setIsSending(true);
     const payload = {
       email: values.email,
       text: values.question,
-      category: values.type_id,
+      category: values.category,
       ...(values.user_id !== null ? { user_id: values.user_id } : {}),
     };
     try {
@@ -168,6 +187,7 @@ const Page = () => {
       toast.error("Error feedback sending: ", error.response.data.message);
     } finally {
       setIsSending(false);
+      handleCloseModal();
       resetForm();
     }
   };
@@ -185,57 +205,15 @@ const Page = () => {
           const handleCallContent = () => {
             if (link.block) {
               return link.block(
-                <form
-                  onSubmit={handleSubmit}
-                  className="py-8 px-4 bg-[#F4F4F5]"
-                >
-                  <div className="border border-[#E4E4E7] rounded-lg p-4 space-y-2 bg-white">
-                    <span className="font-semibold text-sm text-[#09090B]">
-                      Subscribe to our newsletter
-                    </span>
-                    <p className="text-sm leading-5 text-[#71717A]">
-                      Opt-in to receive updates and news about the sidebar.
-                    </p>
-                    <div className="flex flex-col gap-0.5">
-                      <Input
-                        required
-                        name="email"
-                        value={values.email}
-                        placeholder="Email"
-                        type="email"
-                        className=""
-                        onChange={(e) => setFieldValue("email", e.target.value)}
-                        onBlur={handleBlur}
-                      />
-                      {errors.email && touched.email && (
-                        <span className="text-[12px] text-destructive">
-                          {errors.email}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <Textarea
-                        name="question"
-                        required
-                        placeholder="Question"
-                        value={values.question}
-                        onChange={(e) =>
-                          setFieldValue("question", e.target.value)
-                        }
-                        onBlur={handleBlur}
-                        className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                      />
-                      {errors.question && touched.question && (
-                        <span className="text-[12px] text-destructive">
-                          {errors.question}
-                        </span>
-                      )}
-                    </div>
-                    <Button className="w-full" type="submit">
-                      {isSending ? <Loader /> : "Subscribe"}
-                    </Button>
-                  </div>
-                </form>
+                <div className="flex items-enter justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className="p-[4px_8px] text-[16px] w-fit bg-primary/20 text-primary rounded-[10px] hover:bg-primary hover:text-white duration-300 font-bold cursor-pointer"
+                  >
+                    Feedback
+                  </button>
+                </div>
               );
             } else {
               return <></>;
@@ -260,7 +238,6 @@ const Page = () => {
                   <ChevronRight />
                 </motion.div>
               </button>
-
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -280,6 +257,7 @@ const Page = () => {
                         title={link.title || ""}
                         list={link.content}
                         content={handleCallContent}
+                        additional_content={link?.additional_content}
                       />
                     </motion.div>
                   </motion.div>
@@ -288,6 +266,26 @@ const Page = () => {
             </li>
           );
         })}
+        {isModalOpen && (
+          <Modal onClose={handleCloseModal}>
+            {isSending ? (
+              <Loader />
+            ) : (
+              <FaqForm
+                isValid={isValid}
+                errors={errors}
+                handleBlur={handleBlur}
+                touched={touched}
+                setFieldTouched={setFieldTouched}
+                values={values}
+                setValues={setFieldValue}
+                setFieldValue={setFieldValue}
+                onClick={handleSubmit}
+                onClose={handleCloseModal}
+              />
+            )}
+          </Modal>
+        )}
       </ul>
     </main>
   );

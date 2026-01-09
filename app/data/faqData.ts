@@ -179,17 +179,6 @@ export const faqData: IDataPrpps[] = [
         ],
       },
       {
-        id: 12,
-        question: "My activation code isn't working. What should I do?",
-        answer: [
-          {
-            id: 1,
-            variant:
-              "Your code is linked to the email address you used at checkout. If you are having trouble, try activating it via your Profile settings inside the app. If it still doesn't work, please contact our support team.",
-          },
-        ],
-      },
-      {
         id: 13,
         question: "Is my data safe?",
         answer: [
