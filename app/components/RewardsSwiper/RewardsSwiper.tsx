@@ -57,7 +57,7 @@ const RewardsSwiper = () => {
         <h4 className="font-medium text-3xl leading-9 text-[#09090B] px-4">
           My Rewards
         </h4>
-        {rewards.length > 2 && (
+        {completedContracts.length > 2 && (
           <div>
             <button
               className="px-4 cursor-pointer"

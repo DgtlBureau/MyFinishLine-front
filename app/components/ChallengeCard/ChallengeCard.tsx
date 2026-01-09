@@ -48,6 +48,17 @@ const ChallengeCard = () => {
     handleLoadChallenges();
   }, []);
 
+  if (!challenges?.[0]) {
+    return (
+      <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
+        <span className="block text-center">No active challenge available</span>
+        <Link className="block text-center mt-2 underline" href="/payment">
+          Purchase one here
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
       <div className="flex gap-3">

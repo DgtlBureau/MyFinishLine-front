@@ -17,7 +17,7 @@ import { Suspense } from "react";
 import { toast } from "react-toastify";
 
 const Journey = () => {
-  const { user, contracts } = useAppSelector((state) => state.user);
+  const { user, challenges } = useAppSelector((state) => state.user);
   const { completedContracts } = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
   const dataParam = searchParams.get("data");

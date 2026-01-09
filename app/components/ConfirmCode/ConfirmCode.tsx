@@ -74,6 +74,7 @@ const ConfirmCode = () => {
     try {
       const { data } = await axios.get("/api/user/active-challenge");
       dispatch(setChallenge(data));
+      router.replace("/app");
     } catch (error) {
       console.log(error);
     }
@@ -112,8 +113,8 @@ const ConfirmCode = () => {
     try {
       await axios.post("/api/auth/logout");
       dispatch(clearUser());
+      localStorage.removeItem("persist:root");
       router.replace("/");
-      dispatch;
     } catch (error) {
       console.error("Error logging out: ", error);
     }
@@ -182,7 +183,9 @@ const ConfirmCode = () => {
           })}
         </div>
 
-        <span className="mt-2 text-red-500">{error}</span>
+        <span className="mt-2 block text-red-500 text-sm text-center">
+          {error}
+        </span>
 
         <Button
           type="submit"

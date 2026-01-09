@@ -72,7 +72,7 @@ export const calculateHoursBetweenDates = (
   completionDate: string
 ) => {
   const start = new Date(creationDate);
-  const end = new Date(completionDate);
+  const end = completionDate ? new Date(completionDate) : new Date();
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
     return "";

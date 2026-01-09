@@ -25,6 +25,7 @@ const Settings = () => {
     try {
       await axios.post("/api/auth/logout");
       dispatch(clearUser());
+      await localStorage.removeItem("persist:root");
       router.replace("/");
       dispatch;
     } catch (error) {

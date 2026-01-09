@@ -102,8 +102,8 @@ export async function GET(request: Request) {
     redirectUrl = `/app/profile/journey?data=${encodeURIComponent(
       JSON.stringify(data.user)
     )}`;
-  } catch (error) {
-    console.error("Callback error:", error);
+  } catch (error: any) {
+    console.error("Callback error:", error.response.data);
     return redirect("/login?error=strava_callback_failed");
   }
 

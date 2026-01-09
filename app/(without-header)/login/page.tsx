@@ -40,6 +40,10 @@ export default function Login() {
         password: formData.password,
       });
       dispatch(setUser(data.user));
+      if (data.user.has_activated_code === false) {
+        router.replace("/confirm-challenge");
+        return;
+      }
       router.replace("/app");
     } catch (error: any) {
       setFormData((prevState) => {

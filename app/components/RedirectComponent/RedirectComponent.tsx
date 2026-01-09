@@ -1,27 +1,19 @@
 "use client";
 
-import ConfirmCode from "../ConfirmCode/ConfirmCode";
 import { useAppSelector } from "@/app/lib/hooks";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect } from "react";
 
 const RedirectComponent = () => {
-  const [isMounted, setIsMounted] = useState(false);
   const { user } = useAppSelector((state) => state.user);
+  const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (user.has_activated_code === true) {
-    return;
-  }
-  if (user.has_activated_code === null) {
-    return;
-  }
-  if (!isMounted) {
-    return;
-  }
-  return <ConfirmCode />;
+    if (user.id && user.has_activated_code === false) {
+      router.replace("/confirm-challenge");
+    }
+  }, [user, router]);
+  return null;
 };
 
 export default RedirectComponent;

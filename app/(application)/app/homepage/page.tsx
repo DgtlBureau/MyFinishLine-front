@@ -41,12 +41,18 @@ const Page = () => {
     handleLoadChallenge();
   }, [dispatch]);
 
-  const isActive = challenge.status.type === "active";
+  const isActive = challenge?.status.type === "active";
 
   return (
     <>
       {shouldAnimate && <Clouds isVisible={isFetching} />}
-      {isActive && <Map {...challenge} />}
+      {isActive ? (
+        <Map {...challenge} />
+      ) : (
+        <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
+          No active challenge found
+        </div>
+      )}
     </>
   );
 };
