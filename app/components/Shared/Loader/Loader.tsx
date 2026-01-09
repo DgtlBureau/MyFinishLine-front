@@ -11,8 +11,8 @@ const Loader = ({ size = 24, color = "#F4E8FD" }: ILoaderProps) => {
         height: size,
         borderTopColor: color,
       }}
-      className={`animate-spin border-3 border-neutral-400 rounded-full`}
-    ></div>
+      className={`animate-spin border-3 border-neutral-400 rounded-full w-fit`}
+    />
   );
 };
 

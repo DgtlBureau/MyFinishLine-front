@@ -19,6 +19,7 @@ interface IAccordionContentProps {
     }[];
   }[];
   content: () => ReactNode;
+  additional_content?: () => ReactNode;
 }
 
 const arrowVariants = {
@@ -81,7 +82,12 @@ const contentTextVariants = {
   },
 };
 
-const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
+const AccordionContent = ({
+  list,
+  title,
+  content,
+  additional_content,
+}: IAccordionContentProps) => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
 
   const handleClickBlock = (id: number) => {
@@ -89,69 +95,72 @@ const AccordionContent = ({ list, title, content }: IAccordionContentProps) => {
   };
 
   return (
-    <section className="mx-4">
-      {title && (
-        <span className="block mt-7 text-3xl font-semibold leading-9 text-[#09090B]">
-          {title}
-        </span>
-      )}
-      <ul className="mt-4">
-        {list
-          ? [...list[0].variants.slice(0, 5)]?.map((item) => {
-              const isExpanded = expandedBlockId === item.id;
+    <section>
+      <div className="mx-4">
+        {title && (
+          <span className="block mt-7 text-3xl font-semibold leading-9 text-[#09090B]">
+            {title}
+          </span>
+        )}
+        <ul className="mt-4">
+          {list
+            ? [...list[0].variants.slice(0, 5)]?.map((item) => {
+                const isExpanded = expandedBlockId === item.id;
 
-              return (
-                <li
-                  key={item.id}
-                  className="border-b border-border overflow-hidden nth-last-[border-b-transparent]"
-                >
-                  <button
-                    onClick={() => handleClickBlock(item.id)}
-                    className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
+                return (
+                  <li
+                    key={item.id}
+                    className="border-b border-border overflow-hidden nth-last-[border-b-transparent]"
                   >
-                    {item.question}
-                    <motion.div
-                      variants={arrowVariants}
-                      initial="collapsed"
-                      animate={isExpanded ? "expanded" : "collapsed"}
+                    <button
+                      onClick={() => handleClickBlock(item.id)}
+                      className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
                     >
-                      <ChevronRight />
-                    </motion.div>
-                  </button>
-
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.ol
-                        variants={contentContainerVariants}
+                      {item.question}
+                      <motion.div
+                        variants={arrowVariants}
                         initial="collapsed"
-                        animate="expanded"
-                        exit="collapsed"
-                        className={`overflow-hidden ${
-                          item.answer.length > 1
-                            ? "list-decimal list-inside marker:font-semibold"
-                            : ""
-                        }`}
+                        animate={isExpanded ? "expanded" : "collapsed"}
                       >
-                        {item.answer.map((el) => (
-                          <motion.li
-                            key={el.id}
-                            variants={contentTextVariants}
-                            initial="collapsed"
-                            animate="expanded"
-                            exit="collapsed"
-                            className="pb-4 text-sm leading-5 text-[#09090B]"
-                          >
-                            <RenderBoldText text={el.variant} />
-                          </motion.li>
-                        ))}
-                      </motion.ol>
-                    )}
-                  </AnimatePresence>
-                </li>
-              );
-            })
-          : content()}
-      </ul>
+                        <ChevronRight />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.ol
+                          variants={contentContainerVariants}
+                          initial="collapsed"
+                          animate="expanded"
+                          exit="collapsed"
+                          className={`overflow-hidden ${
+                            item.answer.length > 1
+                              ? "list-decimal list-inside marker:font-semibold"
+                              : ""
+                          }`}
+                        >
+                          {item.answer.map((el) => (
+                            <motion.li
+                              key={el.id}
+                              variants={contentTextVariants}
+                              initial="collapsed"
+                              animate="expanded"
+                              exit="collapsed"
+                              className="pb-4 text-sm leading-5 text-[#09090B]"
+                            >
+                              <RenderBoldText text={el.variant} />
+                            </motion.li>
+                          ))}
+                        </motion.ol>
+                      )}
+                    </AnimatePresence>
+                  </li>
+                );
+              })
+            : content()}
+        </ul>
+        {additional_content && additional_content()}
+      </div>
     </section>
   );
 };

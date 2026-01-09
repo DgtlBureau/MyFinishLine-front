@@ -15,7 +15,7 @@ export const Modal = ({ children, onClose }: IModal) => {
         }
       }}
     >
-      <div className="relative w-full max-w-[500px] p-4">{children}</div>
+      <div className="relative w-fit max-w-[500px] p-4">{children}</div>
     </div>
   );
 };
