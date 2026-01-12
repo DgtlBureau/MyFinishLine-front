@@ -53,8 +53,7 @@ const Journey = () => {
       </section>
       {!!completedContracts.length && <RewardsSwiper />}
 
-      {!true && (
-        <section className="mt-10">
+      {/* <section className="mt-10">
           <h4 className="font-medium text-3xl text-center leading-9">
             Explore Challenges
           </h4>
@@ -67,8 +66,8 @@ const Journey = () => {
           >
             See All Challenges
           </Link>
-        </section>
-      )}
+        </section> */}
+
       <section className="px-4 w-full mt-20 border-t border-[#DADADA] pt-11">
         <h4 className="font-medium leading-7 text-xl text-center text-[#71717A]">
           Authorize your accounts to connect to MyFinishLine
