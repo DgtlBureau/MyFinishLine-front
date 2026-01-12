@@ -67,7 +67,7 @@ const Journey = () => {
           </Link>
         </section> */}
 
-      <section className="px-4 w-full mt-20 border-t border-[#DADADA] pt-11">
+      <section className="px-4 w-full border-t border-[#DADADA] pt-11">
         <div className="max-w-4xl mx-auto">
           <h4 className="font-medium leading-7 text-xl text-center text-[#71717A]">
             Authorize your accounts to connect to MyFinishLine
