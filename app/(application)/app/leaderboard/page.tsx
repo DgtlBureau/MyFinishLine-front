@@ -11,7 +11,7 @@ import { IActiveChallenge } from "@/app/types";
 
 const leaderboardDataInfo: IActiveChallenge = {
   id: 0,
-  name: "Leaderboard",
+  name: "General table",
   background_images: [],
   description: "",
   status: {
