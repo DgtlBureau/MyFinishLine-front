@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IActiveChallenge } from "@/app/types";
 
-const initialState: IActiveChallenge = {
+export const initialState: IActiveChallenge = {
   id: 0,
   name: "",
   description: "",

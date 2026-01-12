@@ -18,22 +18,18 @@ const LeaderboardSwiper = ({
   const [isLastSlide, setIsLastSlide] = useState(false);
 
   const handleGoNext = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slideNext();
-    }
+    swiperRef?.current?.slideNext();
   };
 
   const handleGoPrev = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slidePrev();
-    }
+    swiperRef?.current?.slidePrev();
   };
 
   return (
     <section className="">
       <div className="relative mt-4">
         {challenges.length > 1 && (
-          <div className="absolute top-0 right-0 bg-white">
+          <div className="absolute top-0 right-0 bg-white z-10">
             <button
               className="px-4 cursor-pointer"
               onClick={handleGoPrev}
@@ -55,6 +51,8 @@ const LeaderboardSwiper = ({
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
+              setIsFirstSlide(swiper.isBeginning);
+              setIsLastSlide(swiper.isEnd);
             }}
             className="mt-4 pb-4"
             spaceBetween={16}

@@ -7,9 +7,13 @@ import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Loader from "@/app/components/Shared/Loader/Loader";
+import { initialState } from "@/app/lib/features/challenge/challengeSlice";
+
+const generalChallengeInfo = { ...initialState, name: "General table" };
 
 const page = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const { challenges } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
@@ -17,7 +21,7 @@ const page = () => {
     setIsLoading(true);
     try {
       const data = await getUserChallenges();
-      dispatch(setUserChallenges(data.data));
+      dispatch(setUserChallenges([generalChallengeInfo, ...data.data]));
     } catch (error) {
       console.log(error);
     } finally {
@@ -27,7 +31,13 @@ const page = () => {
 
   useEffect(() => {
     handleLoadChallenges();
+    setMounted(true);
   }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <section className="max-w-4xl mx-auto p-4">
       <h2 className="font-bold text-2xl leading-8 text-[#09090B]">
