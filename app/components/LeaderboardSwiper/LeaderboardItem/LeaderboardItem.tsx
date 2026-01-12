@@ -46,7 +46,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
 
   useEffect(() => {
     handleLoadLeaderboard();
-  }, []);
+  }, [challengeId]);
 
   return (
     <motion.div
@@ -65,6 +65,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
                   : "";
               return (
                 <LeaderboardUser
+                  key={item.user_id}
                   {...item.user}
                   position={item.position}
                   color={color}
