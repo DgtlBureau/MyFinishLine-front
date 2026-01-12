@@ -7,34 +7,9 @@ import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Loader from "@/app/components/Shared/Loader/Loader";
-import { IActiveChallenge } from "@/app/types";
+import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 
-const leaderboardDataInfo: IActiveChallenge = {
-  id: 0,
-  name: "General table",
-  background_images: [],
-  description: "",
-  status: {
-    id: 1,
-    name: "Active",
-    type: "active",
-  },
-  status_id: 1,
-  steps: [],
-  total_distance: "",
-  activate_date: "",
-  user_distance: 0,
-  is_completed: true,
-  completed_at: "",
-  reward: {
-    id: 0,
-    challenge_id: 0,
-    name: "",
-    description: "",
-    image_url: "",
-  },
-  reward_ticket: undefined,
-};
+const generalChallengeInfo = { ...initialState, name: "General table" };
 
 const page = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +21,7 @@ const page = () => {
     setIsLoading(true);
     try {
       const data = await getUserChallenges();
-      dispatch(setUserChallenges([leaderboardDataInfo, ...data.data]));
+      dispatch(setUserChallenges([generalChallengeInfo, ...data.data]));
     } catch (error) {
       console.log(error);
     } finally {
