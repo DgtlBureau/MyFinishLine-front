@@ -52,8 +52,6 @@ const ChallengeCard = () => {
     handleLoadChallenges();
   }, []);
 
-  console.log(challenge);
-
   if (!challenges?.[0]) {
     return (
       <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
@@ -103,7 +101,7 @@ const ChallengeCard = () => {
         {challenge.reward?.image_url && (
           <div
             onClick={handleOpenModal}
-            className="relative flex flex-1 items-center justify-center rounded-full max-w-60 max-h-60 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1"
+            className="relative flex flex-1 items-center justify-center rounded-full max-w-60 max-h-60 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1 cursor-pointer"
           >
             <div className="bg-white w-full h-full rounded-full">
               <Image

@@ -27,7 +27,7 @@ const Map = ({
   const stepsAmount = steps.length;
 
   const handleScrollToActiveStep = () => {
-    const activeStep = steps.find((step) => step.active && !step.completed);
+    const activeStep = steps.find((step) => step.active);
     if (activeStep) {
       const element = document.getElementById("step-" + activeStep.index);
       element?.scrollIntoView({

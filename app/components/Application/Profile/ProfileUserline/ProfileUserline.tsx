@@ -3,10 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
-import {
-  handleConvertDistance,
-  handleConvertTime,
-} from "@/app/lib/utils/convertData";
+import { handleConvertDistance } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";
@@ -18,15 +15,25 @@ const ProfileUserline = () => {
   return (
     <section className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl relative">
       {user.selected_banner && (
-        <div className="absolute top-0 left-0 w-full h-full">
-          <Image src={user.selected_banner?.image_url} alt="Banner" fill />
+        <div className="absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden">
+          <Image
+            className="object-cover"
+            src={user.selected_banner?.image_url}
+            alt="Banner"
+            fill
+          />
         </div>
       )}
       <div className="flex gap-4 relative">
         <div className="relative w-16 h-16">
           {user.selected_frame && (
             <div className="absolute left-0 top-0 h-full w-full">
-              <Image src={user.selected_frame?.image_url} alt="Frame" fill />
+              <Image
+                className="z-20"
+                src={user.selected_frame?.image_url}
+                alt="Frame"
+                fill
+              />
             </div>
           )}
           <div className="relative z-10 flex items-center justify-center">
@@ -77,10 +84,7 @@ const ProfileUserline = () => {
             />
             <StatBlock
               label="Total hours"
-              value={
-                handleConvertTime(user.total_moving_time_hours, "hoursOnly") ||
-                "0"
-              }
+              value={user.total_moving_time_hours?.toFixed(1) + " h"}
             />
             <StatBlock
               label="Total runs"

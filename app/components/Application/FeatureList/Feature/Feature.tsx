@@ -53,7 +53,7 @@ const handleGetStyle = (
     style.background = "linear-gradient(180deg, #fff 20%, #9ef097 90%)";
   }
   if (rareness === "legendary") {
-    style.border = "1px solid #FFD700";
+    style.border = "2px solid #FFD700";
   }
   return style;
 };
@@ -129,13 +129,22 @@ const Feature = memo(
                 return (
                   <li className="shrink-0" key={index}>
                     {reward.image_url && (
-                      <Image
-                        className="w-32 h-32 object-cover shrink-0 rounded-lg"
-                        src={reward.image_url}
-                        width={128}
-                        height={128}
-                        alt="Reward"
-                      />
+                      <div className="relative flex items-center justify-center">
+                        <Image
+                          className="w-34 h-full absolute rounded-lg object-cover"
+                          src="/images/application/common.png"
+                          width={771}
+                          height={1280}
+                          alt="Cover"
+                        />
+                        <Image
+                          className="m-1 w-32 h-full object-cover shrink-0 rounded-lg relative z-10"
+                          src={reward.image_url}
+                          width={128}
+                          height={128}
+                          alt="Reward"
+                        />
+                      </div>
                     )}
                     <span className="block mt-1 text-center text-xs text-[#09090B]">
                       {reward.title}

@@ -1,27 +1,24 @@
 "use client";
 
-import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
-import { ChevronRight } from "lucide-react";
-import FeatureList from "@/app/components/Application/FeatureList/FeatureList";
-import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
-import Link from "next/link";
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { linkStrava } from "@/app/lib/utils/authWithStrava";
+import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
+import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
-import LeaderboardSwiper from "@/app/components/LeaderboardSwiper/LeaderboardSwiper";
-import { Suspense } from "react";
+import { linkStrava } from "@/app/lib/utils/authWithStrava";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { ChevronRight } from "lucide-react";
 import { toast } from "react-toastify";
+import Image from "next/image";
+import Link from "next/link";
 
 const Journey = () => {
-  const { user, challenges } = useAppSelector((state) => state.user);
   const { completedContracts } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
-  const dataParam = searchParams.get("data");
   const errorParam = searchParams.get("error");
+  const dataParam = searchParams.get("data");
   const dispatch = useAppDispatch();
 
   useEffect(() => {

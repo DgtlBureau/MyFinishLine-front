@@ -1,15 +1,14 @@
-import Image from "next/image";
 import { Button } from "../../ui/button";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { updateUser } from "@/app/lib/features/user/userSlice";
+import { motion } from "motion/react";
+import Image from "next/image";
 
 interface IPersonalizationItemProps {
+  index: number;
   id: number;
   image_url: string;
   title: string;
   description: string;
+  isSelected: boolean;
   handlePressSelect: (item: {
     id: number;
     title: string;
@@ -19,22 +18,25 @@ interface IPersonalizationItemProps {
 }
 
 const PersonalizationItem = ({
+  index,
   id,
+  isSelected,
   title,
   image_url,
   description,
   handlePressSelect,
 }: IPersonalizationItemProps) => {
-  const { user } = useAppSelector((state) => state.user);
-
-  console.log(user);
-
   const handleSelectSkin = () => {
     handlePressSelect({ id, title, image_url, description });
   };
 
   return (
-    <li className="border-border border rounded-2xl p-4">
+    <motion.li
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.05 }}
+      className="border-border border rounded-2xl p-4"
+    >
       <span className="text-xs">{title}</span>
       <Image
         className="w-full bg-[#d9d9d9] rounded-2xl mt-2"
@@ -46,7 +48,7 @@ const PersonalizationItem = ({
       <p className="block mt-4 font-medium text-sm text-[#09090b]">
         {description}
       </p>
-      {user.selected_skin?.id === id ? (
+      {isSelected ? (
         <Button className="w-full mt-2" disabled variant="outline">
           Selected
         </Button>
@@ -59,7 +61,7 @@ const PersonalizationItem = ({
           Select
         </Button>
       )}
-    </li>
+    </motion.li>
   );
 };
 

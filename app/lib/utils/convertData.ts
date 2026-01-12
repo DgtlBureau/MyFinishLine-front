@@ -12,7 +12,7 @@ export const handleConvertTime = (
 ) => {
   if (type === "hoursOnly") {
     if (!elapsedTimeInSeconds) return "0 h";
-    const hours = (elapsedTimeInSeconds / 3600).toFixed(1);
+    const hours = (elapsedTimeInSeconds / 60).toFixed(1);
     return `${hours} h`;
   }
   if (!elapsedTimeInSeconds) return "--:--";

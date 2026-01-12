@@ -1,5 +1,6 @@
 import Feature from "./Feature/Feature";
 import { IContract } from "@/app/types";
+import { AnimatePresence } from "motion/react";
 import { memo } from "react";
 
 interface IFeatureListProps {

@@ -5,20 +5,25 @@ import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserSkins } from "@/app/lib/utils/userService";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const page = () => {
   const [skins, setSkins] = useState([]);
   const { user } = useAppSelector((state) => state.user);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
   const handleLoadSkins = async () => {
+    setIsLoading(true);
     try {
       const data = await getUserSkins();
       setSkins(data.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,7 +52,19 @@ const page = () => {
 
   if (skins.length) {
     return (
-      <PersonalizationList items={skins} handleSelectItem={handleSetActive} />
+      <PersonalizationList
+        items={skins}
+        handleSelectItem={handleSetActive}
+        selectedId={user.selected_skin?.id}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center mt-8">
+        <Loader2 width={48} height={48} className="animate-spin" />
+      </div>
     );
   }
 

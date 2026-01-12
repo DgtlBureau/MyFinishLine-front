@@ -9,14 +9,18 @@ import { toast } from "react-toastify";
 
 const page = () => {
   const [contracts, setContracts] = useState<IContract[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLoadContracts = async () => {
+    setIsLoading(true);
     try {
       const data = await getUserContracts("not_completed");
       setContracts(data.data);
     } catch (error: any) {
       toast.error("Error loading contracts: ", error.response.data.message);
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -24,7 +28,7 @@ const page = () => {
     handleLoadContracts();
   }, []);
 
-  if (!contracts.length) {
+  if (!isLoading && !contracts.length) {
     return (
       <span className="mt-2 block text-center text-neutral-400 text-md">
         No contracts found

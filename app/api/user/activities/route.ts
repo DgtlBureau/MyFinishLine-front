@@ -1,9 +1,18 @@
 import instance from "@/app/lib/utils/instance";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const perPage = searchParams.get("perPage");
+    const page = searchParams.get("page");
+
+    const params = {
+      perPage: perPage || 10,
+      page,
+    };
+
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
 
@@ -18,6 +27,7 @@ export async function GET() {
       headers: {
         Authorization: "Bearer " + token,
       },
+      params,
     });
 
     return NextResponse.json(data);

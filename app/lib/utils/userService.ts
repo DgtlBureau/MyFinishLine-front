@@ -34,8 +34,13 @@ export const getUserActiveChallenge = async () => {
   return data;
 };
 
-export const getUserActivities = async () => {
-  const { data } = await axios.get("/api/user/activities");
+export const getUserActivities = async (options: {
+  perPage: number;
+  page: number;
+}) => {
+  const { data } = await axios.get("/api/user/activities", {
+    params: options,
+  });
   return data;
 };
 
