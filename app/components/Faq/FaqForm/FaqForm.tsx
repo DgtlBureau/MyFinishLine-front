@@ -31,6 +31,8 @@ interface IFaqFormProps {
   ) => void;
   onClick: () => void;
   onClose: () => void;
+  hasCloseIcon?: boolean;
+  hasCancelBtn?: boolean;
 }
 
 export const FaqForm = ({
@@ -42,6 +44,8 @@ export const FaqForm = ({
   onClick,
   isValid,
   setFieldTouched,
+  hasCloseIcon = true,
+  hasCancelBtn = true,
 }: IFaqFormProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,13 +55,15 @@ export const FaqForm = ({
 
   return (
     <div className="relative flex w-full max-w-[600px] flex-col gap-4 rounded-md bg-white p-4">
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute top-[10px] right-[10px] cursor-pointer md:top-[20px] md:right-[20px]"
-      >
-        <XIcon className="h-4 w-3 fill-gray-700 md:h-4 md:w-4" />
-      </button>
+      {hasCloseIcon && (
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-[10px] right-[10px] cursor-pointer md:top-[20px] md:right-[20px]"
+        >
+          <XIcon className="h-4 w-3 fill-gray-700 md:h-4 md:w-4" />
+        </button>
+      )}
       <div
         className="flex w-full flex-col gap-4 rounded-md bg-white"
         onClick={(e) => e.stopPropagation()}
@@ -122,13 +128,15 @@ export const FaqForm = ({
           </div>
 
           <div className="flex w-full flex-col-reverse items-center justify-center gap-4 md:flex-row">
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-text-foreground border-text-muted hover:bg-primary hover:text-white w-full cursor-pointer rounded-md border px-4 py-2 font-medium"
-            >
-              {"Cancel"}
-            </button>
+            {hasCancelBtn && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-text-foreground border-text-muted hover:bg-primary hover:text-white w-full cursor-pointer rounded-md border px-4 py-2 font-medium"
+              >
+                {"Cancel"}
+              </button>
+            )}
             <button
               disabled={!isValid}
               type="submit"

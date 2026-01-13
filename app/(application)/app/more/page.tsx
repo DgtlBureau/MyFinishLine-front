@@ -44,8 +44,8 @@ const links = [
   },
   {
     id: 2,
-    label: "Feedback",
-    block: (form: any) => (
+    label: "Contact info",
+    block: () => (
       <div>
         <ul>
           <li className="border-b border-border pb-6 px-6">
@@ -73,8 +73,14 @@ const links = [
             </span>
           </li>
         </ul>
-        {form}
       </div>
+    ),
+  },
+  {
+    id: 3,
+    label: "Feedback",
+    block: (form: any) => (
+      <div className="flex items-center justify-center py-8">{form}</div>
     ),
   },
 ];
@@ -142,6 +148,7 @@ const contentInnerVariants = {
 const Page = () => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
   const [isSending, setIsSending] = useState(false);
+  const [isSended, setIsSended] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -186,6 +193,7 @@ const Page = () => {
     try {
       const { data } = await axios.post("/api/faq/send-feedback", payload);
       toast.success("Feedback sent successfully");
+      setIsSended(true);
       return data;
     } catch (error: any) {
       toast.error("Error feedback sending: ", error.response.data.message);
@@ -220,15 +228,32 @@ const Page = () => {
           const handleCallContent = () => {
             if (link.block) {
               return link.block(
-                <div className="flex items-enter justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(true)}
-                    className="p-[4px_8px] text-[16px] w-fit bg-primary/20 text-primary rounded-[10px] hover:bg-primary hover:text-white duration-300 font-bold cursor-pointer"
-                  >
-                    Feedback
-                  </button>
-                </div>
+                <>
+                  {isSended ? (
+                    <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
+                      <p className="text-white">
+                        Thank you for sending your information!
+                      </p>
+                    </div>
+                  ) : isSending ? (
+                    <Loader />
+                  ) : (
+                    <FaqForm
+                      isValid={isValid}
+                      errors={errors}
+                      handleBlur={handleBlur}
+                      touched={touched}
+                      setFieldTouched={setFieldTouched}
+                      values={values}
+                      setValues={setFieldValue}
+                      setFieldValue={setFieldValue}
+                      onClick={handleSubmit}
+                      onClose={handleCloseModal}
+                      hasCloseIcon={false}
+                      hasCancelBtn={false}
+                    />
+                  )}
+                </>
               );
             } else {
               return <></>;
