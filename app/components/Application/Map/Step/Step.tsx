@@ -11,6 +11,12 @@ interface StepProps {
   completed: boolean;
   isActive?: boolean;
   progress: number;
+  distance: string;
+  isNext: boolean;
+  userDistance: number;
+  distanceLeft: number | null;
+  userDistanceReached: number;
+  x: string;
 }
 
 const Step = memo(
@@ -20,7 +26,12 @@ const Step = memo(
     stepsAmount,
     completed,
     progress,
+    distance,
+    userDistanceReached,
     isActive = false,
+    distanceLeft = 0,
+    isNext,
+    x,
   }: StepProps) => {
     const isLast = id === stepsAmount;
 
@@ -31,13 +42,16 @@ const Step = memo(
     const { View } = useLottie(options);
 
     const getStepColor = () => {
+      if (isNext) {
+        return "bg-white text-[#A88BFA] border-3 border-[#A88BFA]";
+      }
       if (completed) {
-        return "bg-gradient-to-br from-green-500 to-emerald-600 ring-2 ring-green-300/30";
+        return "bg-[#8D5DF8] text-white outline-2 outline-[#8D5DF8] outline-offset-2";
       }
       if (isActive) {
-        return "bg-gradient-to-br from-blue-500 to-purple-600 ring-4 ring-blue-300/50";
+        return "bg-gradient-to-br bg-[#8D5DF8] text-white outline-2 outline-white outline-offset-2";
       }
-      return "bg-gradient-to-br from-gray-300 to-gray-400 ring-2 ring-gray-200/20";
+      return "bg-[#F4F4F5] text-[#DADADA]";
     };
 
     return (
@@ -48,15 +62,11 @@ const Step = memo(
         {isLast && (
           <div className="absolute bottom-[25%] w-22 h-22 z-100">{View}</div>
         )}
-        {!completed && isActive && (
-          <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-30" />
-        )}
-
         <div
           className={`
           ${getStepColor()}
-          rounded-full flex w-12 h-12 text-sm items-center justify-center
-          text-white font-bold shadow-xl
+          rounded-full flex w-12 h-12 items-center justify-center
+          text-[#5B20B5] font-bold text-3xl
           transition-all duration-300
           ${completed ? "cursor-pointer" : "cursor-default"}
         `}
@@ -64,23 +74,58 @@ const Step = memo(
           {id}
         </div>
 
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2">
+        {(completed || isActive) && (
           <div
-            className={`
-          text-xs font-medium whitespace-nowrap px-2 py-1 rounded
+            style={
+              +x > 512
+                ? { right: "100%", transform: "translateX(-8px)" }
+                : { left: "100%", transform: "translateX(8px)" }
+            }
+            className="absolute"
+          >
+            <div
+              className={`
+          text-xs font-medium whitespace-nowrap px-4 py-2 rounded-full
           ${
             completed
-              ? "bg-green-100 text-green-400"
+              ? "bg-[#A88BFA] text-white"
               : isActive
-              ? "bg-blue-100 text-blue-800"
-              : "bg-gray-100 text-gray-600"
+              ? "bg-[#A88BFA] text-white"
+              : "bg-[#F4F4F5] text-[#DADADA]"
           }
           transition-all duration-300
         `}
-          >
-            {title}
+            >
+              {title}
+              {!!userDistanceReached && (
+                <div className="text-white/50 text-center">
+                  {userDistanceReached} km
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {isNext && (
+          <div
+            style={
+              +x > 512
+                ? { right: "100%", transform: "translateX(-8px)" }
+                : { left: "100%", transform: "translateX(8px)" }
+            }
+            className="absolute"
+          >
+            <div
+              className={`
+          text-xs font-medium whitespace-nowrap px-4 py-2 rounded-full bg-[#A88BFA]
+        `}
+            >
+              <div className="text-white">
+                {userDistanceReached} km to reach
+              </div>
+            </div>
+          </div>
+        )}
 
         {id + 1 <= stepsAmount && (
           <>
@@ -97,7 +142,7 @@ const Step = memo(
             <div className="relative z-20">
               <ProgressArrow
                 dashness
-                color={completed ? "oklch(72.3% 0.219 149.579)" : "#6d63ff"}
+                color={completed ? "#8D5DF8" : "#6d63ff"}
                 start={"step-" + id}
                 end={"step-" + (id + 1)}
                 showHead={false}
