@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import Loader from "@/app/components/Shared/Loader/Loader";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
-import { Modal } from "@/app/components/ui/modal/Modal";
 import { FaqForm } from "@/app/components/Faq/FaqForm/FaqForm";
 import { clearUser } from "@/app/lib/features/user/userSlice";
 import { useRouter } from "next/navigation";
@@ -80,7 +79,7 @@ const links = [
     id: 3,
     label: "Feedback",
     block: (form: any) => (
-      <div className="flex items-center justify-center py-8">{form}</div>
+      <div className="flex items-center justify-center pb-8">{form}</div>
     ),
   },
 ];
@@ -150,7 +149,6 @@ const Page = () => {
   const [isSending, setIsSending] = useState(false);
   const [isSended, setIsSended] = useState(false);
   const { user } = useAppSelector((state) => state.user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -178,7 +176,6 @@ const Page = () => {
   });
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
     resetForm();
   };
 
@@ -306,26 +303,6 @@ const Page = () => {
             </li>
           );
         })}
-        {isModalOpen && (
-          <Modal onClose={handleCloseModal}>
-            {isSending ? (
-              <Loader />
-            ) : (
-              <FaqForm
-                isValid={isValid}
-                errors={errors}
-                handleBlur={handleBlur}
-                touched={touched}
-                setFieldTouched={setFieldTouched}
-                values={values}
-                setValues={setFieldValue}
-                setFieldValue={setFieldValue}
-                onClick={handleSubmit}
-                onClose={handleCloseModal}
-              />
-            )}
-          </Modal>
-        )}
       </ul>
       <div className="px-4">
         <button
