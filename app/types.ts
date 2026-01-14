@@ -71,6 +71,7 @@ export interface IActivity {
   sport_type: string;
   updated_at: string;
   user_id: number;
+  pace: number;
 }
 
 export interface IAthlete {

@@ -6,7 +6,7 @@ import {
   handleConvertDistance,
   handleConvertTimeShort,
 } from "@/app/lib/utils/convertData";
-import { Clock, Route } from "lucide-react";
+import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
 
 const Activity = ({
   delay,
@@ -14,7 +14,7 @@ const Activity = ({
   progress,
   activity_time,
   activity_date,
-  average_speed,
+  pace,
   from,
 }: IActivity & { delay: number }) => {
   return (
@@ -48,7 +48,7 @@ const Activity = ({
             width={16}
             height={16}
           />
-          {average_speed} m/s
+          {pace} m/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">
@@ -71,9 +71,6 @@ const Activity = ({
                 </span>
               </div>
               <div className="flex items-end gap-2">
-                <span className="text-[10px] text-[#71717A]">
-                  via <span className="capitalize">{from}</span>
-                </span>
                 {from === "strava" ? (
                   <Image
                     className="rounded-lg shrink-0"
@@ -83,13 +80,9 @@ const Activity = ({
                     alt="Strava icon"
                   />
                 ) : (
-                  <Image
-                    className="rounded-lg"
-                    src="/icons/garmin.svg"
-                    height={32}
-                    width={32}
-                    alt="Garmin icon"
-                  />
+                  <div className="flex items-center justify-center h-8 w-8 bg-linear-to-b from-[#F4E8FD] to-[#C3B7E2] rounded-sm">
+                    <ActivityIcon width={16} height={16} />
+                  </div>
                 )}
               </div>
             </div>
