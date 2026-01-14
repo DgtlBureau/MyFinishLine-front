@@ -101,9 +101,6 @@ const ProfileUserline = () => {
             height={80}
             width={80}
           />
-          <div className="z-10 absolute right-0 top-0 w-3 h-3 rounded-full bg-[red] text-[8px] font-medium text-white">
-            2
-          </div>
         </button>
       )}
     </section>
