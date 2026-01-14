@@ -16,8 +16,6 @@ const ActivitiesList = ({ activities = [] }: IActivitiesListProps) => {
     );
   }
 
-  console.log("activities", activities);
-
   return (
     <ul className="flex flex-col gap-5 pb-2">
       {activities.map((activity, index) => (
