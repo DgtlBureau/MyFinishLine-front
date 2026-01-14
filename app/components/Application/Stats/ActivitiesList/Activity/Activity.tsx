@@ -14,7 +14,7 @@ const Activity = ({
   progress,
   activity_time,
   activity_date,
-  average_speed,
+  pace,
   from,
 }: IActivity & { delay: number }) => {
   return (
@@ -48,7 +48,7 @@ const Activity = ({
             width={16}
             height={16}
           />
-          {average_speed} m/min
+          {pace} m/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">
