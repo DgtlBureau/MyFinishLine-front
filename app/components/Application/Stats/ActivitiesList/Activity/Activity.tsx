@@ -71,7 +71,7 @@ const Activity = ({
                 </span>
               </div>
               <div className="flex items-end gap-2">
-                {from !== "strava" ? (
+                {from === "strava" ? (
                   <Image
                     className="rounded-lg shrink-0"
                     src="/icons/strava.svg"
