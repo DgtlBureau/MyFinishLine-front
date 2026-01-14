@@ -19,7 +19,7 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
             width={200}
             height={200}
             alt="product image"
-            className="object-cover"
+            className="object-cover object-center"
           />
         </div>
       </div>

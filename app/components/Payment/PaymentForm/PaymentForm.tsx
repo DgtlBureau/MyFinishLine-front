@@ -59,7 +59,7 @@ export const PaymentForm = () => {
             <Input
               name="lastName"
               value={values.lastName}
-              placeholder="LastName"
+              placeholder="Last Name"
               onChange={(e) => setFieldValue("lastName", e.target.value)}
               className="h-[40px] placeholder-[#71717A] text-primary"
               onBlur={handleBlur}
