@@ -1,4 +1,3 @@
-import { handleConvertTimeShort } from "@/app/lib/utils/convertData";
 import { IUser } from "@/app/types/user";
 import { motion } from "motion/react";
 import { Star } from "lucide-react";
@@ -81,7 +80,7 @@ const LeaderboardUser = ({
           {(total_distance / 1000)?.toFixed(2)} km
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
-          {handleConvertTimeShort(total_moving_time_hours)}
+          {Number(total_moving_time_hours).toFixed(1)} h
         </span>
       </div>
     </motion.li>
