@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
 import { calculateHoursBetweenDates } from "@/app/lib/utils/convertData";
+import { ShipmentStatuses } from "@/app/types";
 
 const ChallengeCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,9 +94,12 @@ const ChallengeCard = () => {
             <div className="ml-auto mr-0">
               <ShipmentStatusBadge {...challenge.reward_ticket.status} />
             </div>
-            <div className="text-[13px] text-muted-foreground mt-1">
-              Shipment ID {challenge.reward_ticket.id}
-            </div>
+            {challenge.reward_ticket.status.type !==
+              ShipmentStatuses.received && (
+              <div className="text-[13px] text-muted-foreground mt-1">
+                Shipment ID {challenge.reward_ticket.id}
+              </div>
+            )}
           </div>
         )}
       </div>

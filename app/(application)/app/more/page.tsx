@@ -212,7 +212,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 justify-between max-w-4xl mx-auto min-h-[80vh]">
+    <div className="pt-14 flex flex-col gap-4 justify-between max-w-4xl mx-auto min-h-[80vh]">
       <ul className="h-full">
         {links.map((link) => {
           const isExpanded = expandedBlockId === link.id;

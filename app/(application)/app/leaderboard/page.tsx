@@ -39,7 +39,7 @@ const page = () => {
   }
 
   return (
-    <section className="max-w-4xl mx-auto p-4">
+    <section className="pt-14 max-w-4xl mx-auto p-4">
       <h2 className="font-bold text-2xl leading-8 text-[#09090B]">
         Leaderboard
       </h2>

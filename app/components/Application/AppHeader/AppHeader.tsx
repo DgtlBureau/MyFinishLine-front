@@ -41,6 +41,10 @@ const AppHeader = () => {
   const currentLink = links.find((link) => pathname?.includes(link.link));
   const isCurrentLinkNested = !!currentLink;
 
+  if (pathname.includes("/homepage")) {
+    return null;
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-foreground">
       <div className="flex items-center justify-between max-w-4xl mx-auto px-4">

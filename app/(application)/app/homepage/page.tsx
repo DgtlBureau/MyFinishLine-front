@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Clouds from "@/app/components/Map/Clouds/Clouds";
 import { useEffect, useState } from "react";
 import Map from "@/app/components/Map/Map";
+import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -47,7 +48,10 @@ const Page = () => {
     <>
       {shouldAnimate && <Clouds isVisible={isFetching} />}
       {isActive ? (
-        <Map {...challenge} />
+        <>
+          <MapHeader challengeName={challenge.name} />
+          <Map {...challenge} />
+        </>
       ) : (
         <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
           No active challenge found

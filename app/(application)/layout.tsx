@@ -22,7 +22,7 @@ export default function ApplicationLayout({
       <div className="min-h-screen h-full">
         <div className="min-h-screen flex flex-col">
           <AppHeader />
-          <main className="min-h-screen pt-14 pb-15.75 bg-white rounded-tl-2xl rounded-tr-2xl">
+          <main className="min-h-screen pb-15.75 bg-white rounded-tl-2xl rounded-tr-2xl">
             <div className="min-h-full">{children}</div>
           </main>
           <Navbar />

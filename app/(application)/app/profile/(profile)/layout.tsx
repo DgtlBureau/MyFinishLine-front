@@ -77,7 +77,7 @@ const page = ({
   }, []);
 
   return (
-    <main className="mx-auto">
+    <main className="pt-14 mx-auto">
       <ProfileUserline />
       <div className="mt-4 px-4 max-w-4xl mx-auto">
         <ProfileTabs links={profileLinks} layoutId="profile-tab-navigation" />

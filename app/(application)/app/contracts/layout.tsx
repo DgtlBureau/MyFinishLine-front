@@ -26,7 +26,7 @@ const page = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="pt-14 p-4 max-w-4xl mx-auto">
       <h2 className="mt-2 font-medium text-3xl leading-9 text-[#09090B]">
         Contracts
       </h2>

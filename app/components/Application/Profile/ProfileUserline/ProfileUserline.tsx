@@ -25,7 +25,7 @@ const ProfileUserline = () => {
         </div>
       )}
       <div className="flex gap-4 relative">
-        <div className="relative w-34 h-34">
+        <div className="flex items-center justify-center relative w-34 h-34">
           {user.selected_frame && (
             <div className="absolute left-0 top-0 h-full w-full">
               <Image
@@ -39,7 +39,12 @@ const ProfileUserline = () => {
           <div className="relative z-10 flex items-center justify-center">
             {user?.full_avatar_url && !imageError ? (
               <Image
-                className="rounded-full h-34 w-34 object-cover p-0.75 shrink-0"
+                style={
+                  user.selected_frame?.image_url
+                    ? { height: 120, width: 120 }
+                    : { height: 136, width: 136 }
+                }
+                className="rounded-full object-cover p-0.75 shrink-0"
                 src={user.full_avatar_url}
                 width={136}
                 height={136}
