@@ -128,6 +128,8 @@ const Map = ({
     setIsStoriesOpen(false);
   };
 
+  console.log(steps);
+
   return (
     <>
       <div className="relative w-full min-h-screen bg-slate-900">
@@ -162,7 +164,7 @@ const Map = ({
           <div className="absolute inset-0 z-10 px-4 sm:px-8 w-5xl">
             <div className="relative w-full h-full">
               <Xwrapper>
-                {steps.map((step) => (
+                {steps.map((step, index) => (
                   <div
                     key={step.id}
                     id={`step-${step.id}`}
@@ -202,6 +204,15 @@ const Map = ({
                         completed={step.completed}
                         isActive={step.active}
                         progress={step.user_distance_percent}
+                        distance={step.distance_by_next_step}
+                        userDistance={step.user_distance}
+                        userDistanceReached={
+                          +step.distance_to_reach_step -
+                          +step.user_distance_reach
+                        }
+                        x={step.x_coordinate}
+                        distanceLeft={1}
+                        isNext={step.next}
                       />
                     </div>
                   </div>

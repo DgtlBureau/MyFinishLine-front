@@ -33,6 +33,9 @@ export interface IStep {
   y_coordinate: string;
   active: boolean;
   title: string;
+  next: boolean;
+  distance_to_reach_step: string;
+  user_distance_reach: string;
 }
 
 export interface IActiveChallenge {

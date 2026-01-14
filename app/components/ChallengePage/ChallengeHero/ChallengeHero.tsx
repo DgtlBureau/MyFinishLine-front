@@ -101,7 +101,7 @@ const ChallengeHero = ({
       block: "center",
     });
   };
-  console.log(image);
+
   return (
     <>
       <motion.div
