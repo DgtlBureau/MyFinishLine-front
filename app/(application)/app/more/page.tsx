@@ -147,7 +147,7 @@ const contentInnerVariants = {
 const Page = () => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
   const [isSending, setIsSending] = useState(false);
-  const [isSended, setIsSended] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -190,7 +190,7 @@ const Page = () => {
     try {
       const { data } = await axios.post("/api/faq/send-feedback", payload);
       toast.success("Feedback sent successfully");
-      setIsSended(true);
+      setIsSent(true);
       return data;
     } catch (error: any) {
       toast.error("Error feedback sending: ", error.response.data.message);
@@ -226,7 +226,7 @@ const Page = () => {
             if (link.block) {
               return link.block(
                 <>
-                  {isSended ? (
+                  {isSent ? (
                     <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
                       <p className="text-white">
                         Thank you for sending your information!
