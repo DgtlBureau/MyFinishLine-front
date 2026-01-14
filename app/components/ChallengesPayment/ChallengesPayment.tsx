@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "../ui/button";
 import axios from "axios";
 import ImageBadge from "./ImageBadge/ImageBadge";
+import { Payment } from "../Payment/Payment";
+import { redirect } from "next/navigation";
 
 interface IChallengesPaymentProps {
   products: IProduct[];
@@ -31,33 +33,33 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
   const [orderAmount, setOrderAmount] = useState<string>("1");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handlePressCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsAddonChecked(event.target.checked);
-  };
+  // const handlePressCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
+  //   setIsAddonChecked(event.target.checked);
+  // };
 
-  const handleIncrementOrder = () => {
-    if (orderAmount === "75") return;
-    setOrderAmount((prevState) => String(+prevState + 1));
-  };
+  // const handleIncrementOrder = () => {
+  //   if (orderAmount === "75") return;
+  //   setOrderAmount((prevState) => String(+prevState + 1));
+  // };
 
-  const handleDecrementOrder = () => {
-    if (orderAmount === "1") return;
-    setOrderAmount((prevState) => String(+prevState - 1));
-  };
+  // const handleDecrementOrder = () => {
+  //   if (orderAmount === "1") return;
+  //   setOrderAmount((prevState) => String(+prevState - 1));
+  // };
 
-  const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const sanitizedValue = value.replace(/[^0-9]/g, "");
-    if (sanitizedValue === "" || Number(sanitizedValue) < 1) {
-      setOrderAmount("1");
-      return;
-    }
-    let numericValue = Number(sanitizedValue);
-    if (numericValue > 75) {
-      numericValue = 75;
-    }
-    setOrderAmount(String(numericValue));
-  };
+  // const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const value = event.target.value;
+  //   const sanitizedValue = value.replace(/[^0-9]/g, "");
+  //   if (sanitizedValue === "" || Number(sanitizedValue) < 1) {
+  //     setOrderAmount("1");
+  //     return;
+  //   }
+  //   let numericValue = Number(sanitizedValue);
+  //   if (numericValue > 75) {
+  //     numericValue = 75;
+  //   }
+  //   setOrderAmount(String(numericValue));
+  // };
 
   const totalChallengeCost =
     selectedChallenge.prices?.[0].amount * Number(orderAmount);
@@ -66,35 +68,32 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
     [totalChallengeCost, isAddonChecked]
   );
 
-  const handleOrder = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post("/api/payment/order", {
-        stripe_price_id: selectedChallenge.prices?.[0].stripe_price_id,
-      });
-      window.location.href = data.payment_url;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleOrder = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const { data } = await axios.post("/api/payment/order", {
+  //       stripe_price_id: selectedChallenge.prices?.[0].stripe_price_id,
+  //     });
+  //     window.location.href = data.payment_url;
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     handleUpdateTotal(total);
   }, [total]);
 
+  if (!challengeId) {
+    redirect("/#features-carousel");
+  }
+
   return (
     <section className="w-full">
-      {/* <Image
-        className="mx-auto object-contain"
-        src="/images/payment/cover.png"
-        width={500}
-        height={408}
-        sizes="100%"
-        alt="Cover"
-      /> */}
-      <h4 className="text-2xl font-bold mt-4">Your challenges</h4>
+      <Payment product={selectedChallenge} />
+      {/* <h4 className="text-2xl font-bold mt-4">Your challenges</h4>
       <legend className="mt-2">Select one</legend>
       <fieldset className="flex gap-2 mt-2">
         {products?.map((product) => {
@@ -114,7 +113,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
             />
           );
         })}
-      </fieldset>
+      </fieldset> */}
       {/* <section>
         <h4 className="text-2xl font-bold mt-4">Addon</h4>
         <label
@@ -151,32 +150,13 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
           </div>
         </label>
       </section> */}
-      <section className="mt-2">
+      {/* <section className="mt-2">
         <h4 className="text-2xl font-bold mt-4">Order summary</h4>
         <section className="border border-neutral-300 rounded mt-4">
           <section className="flex items-center justify-between p-4">
             <span className="text-sm font-semibold md:text-base">
               {selectedChallenge.name}
             </span>
-            {/* <div className="border border-neutral-300 rounded">
-              <button
-                className="border-r border-neutral-300 p-2 cursos-pointer"
-                onClick={handleDecrementOrder}
-              >
-                -
-              </button>
-              <input
-                className="p-2 text-sm text-center w-10"
-                value={orderAmount}
-                onChange={handleChangeAmount}
-              />
-              <button
-                className="border-l border-neutral-300 p-2 cursos-pointer"
-                onClick={handleIncrementOrder}
-              >
-                +
-              </button>
-            </div> */}
             <span className="text-sm">
               {CurrencieSymbols[selectedChallenge.prices?.[0].currency]}
               {totalChallengeCost?.toFixed(2)}
@@ -200,8 +180,8 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
             </span>
           </section>
         </section>
-      </section>
-      <Button
+      </section> */}
+      {/* <Button
         className="w-full mt-4 uppercase text-2xl py-6"
         onClick={handleOrder}
       >
@@ -213,7 +193,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
         ) : (
           "Order"
         )}
-      </Button>
+      </Button> */}
       <section className="flex space-x-4 mx-auto w-fit mt-10">
         <ImageBadge
           imageSrc="/images/payment/badge1.png"

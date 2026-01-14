@@ -51,7 +51,7 @@ export const CustomSelect = ({
         />
       </button>
       <ul
-        className={`flex w-full flex-col items-start rounded-b-md border-gray-300 bg-white ${
+        className={`flex z-50 w-full flex-col items-start rounded-b-md border-gray-300 bg-white ${
           isOpen
             ? "h-fit border-r border-b border-l opacity-100"
             : "pointer-events-none h-0 opacity-0"
