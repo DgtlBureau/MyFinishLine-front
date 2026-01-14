@@ -7,8 +7,8 @@ import Link from "next/link";
 const links = [
   {
     id: 1,
-    name: "All",
-    href: "/app/contracts/all",
+    name: "Still to get",
+    href: "/app/contracts/still-to-get",
   },
   {
     id: 2,
@@ -17,8 +17,8 @@ const links = [
   },
   {
     id: 3,
-    name: "Still to get",
-    href: "/app/contracts/still-to-get",
+    name: "All",
+    href: "/app/contracts/all",
   },
 ];
 
