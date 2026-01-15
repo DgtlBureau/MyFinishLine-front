@@ -89,7 +89,11 @@ const AppHeader = () => {
         ) : (
           <div className="h-14" />
         )}
-        <p className="text-white text-xl font-semibold">{currentLink?.title}</p>
+        {currentLink?.title && (
+          <p className="text-white text-xl font-semibold">
+            {currentLink.title}
+          </p>
+        )}
         <button className="flex items-center gap-2" onClick={handleGoToEdit}>
           <Settings color="white" />
         </button>
