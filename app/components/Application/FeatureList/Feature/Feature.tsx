@@ -92,7 +92,7 @@ const Feature = memo(
         style={handleGetStyle(is_completed, rare.type)}
         className="bg-white mt-1 rounded-xl cursor-pointer overflow-hidden border border-border"
       >
-        <div className="flex flex-col gap-4 justify-between">
+        <div className="flex flex-col h-[284px] gap-4 justify-between">
           <div className="flex gap-4 px-4 pt-4">
             <div>
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-white shrink-0 border border-[#F4E8FD]">
