@@ -56,11 +56,6 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
 
     paddle.Checkout.open({
       items: [{ priceId: product.prices.paddle_price_id, quantity: 1 }],
-      settings: {
-        displayMode: "inline",
-        frameTarget: "checkout-container",
-        frameInitialHeight: 220,
-      },
     });
   };
 
