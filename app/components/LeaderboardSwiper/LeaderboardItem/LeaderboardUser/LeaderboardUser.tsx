@@ -8,6 +8,9 @@ interface ILeaderboardUserProps extends IUser {
   color: string;
   position: number;
   isCurrentUser: boolean;
+  challengeId: number;
+  total_progress: string;
+  total_hours: string;
 }
 
 const LeaderboardUser = ({
@@ -20,7 +23,10 @@ const LeaderboardUser = ({
   avatar_symbol,
   total_distance,
   total_moving_time_hours,
+  total_hours,
+  total_progress,
   isCurrentUser,
+  challengeId,
 }: ILeaderboardUserProps) => {
   const [imageError, setImageError] = useState(false);
 
@@ -77,10 +83,17 @@ const LeaderboardUser = ({
       </div>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {(total_distance / 1000)?.toFixed(2)} km
+          {(challengeId
+            ? Number(total_progress)
+            : Number(total_distance) / 1000
+          )?.toFixed(2)}{" "}
+          km
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
-          {Number(total_moving_time_hours).toFixed(1)} h
+          {challengeId
+            ? Number(total_hours).toFixed(1)
+            : Number(total_moving_time_hours).toFixed(1)}{" "}
+          h
         </span>
       </div>
     </motion.li>

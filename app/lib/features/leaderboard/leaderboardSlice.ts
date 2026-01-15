@@ -4,6 +4,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUserLeaderboard {
   position: number;
+  total_hours: string;
+  total_progress: string;
   user: IUser;
 }
 
@@ -13,6 +15,8 @@ const initialState: {
 } = {
   leaderboards: [],
   current_user: {
+    total_hours: "",
+    total_progress: "",
     position: 0,
     user: {
       id: null,

@@ -175,6 +175,7 @@ export interface ILeaderboard {
   challenge_id: number;
   id: number;
   total_progress: string;
+  total_hours: string;
   user_id: number;
   user: IUser;
   position: number;

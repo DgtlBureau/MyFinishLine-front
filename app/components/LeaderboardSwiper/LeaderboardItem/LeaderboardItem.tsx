@@ -70,6 +70,9 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
                   position={item.position}
                   color={color}
                   isCurrentUser={item.user_id === current_user.user.id}
+                  challengeId={challengeId}
+                  total_progress={item.total_progress}
+                  total_hours={item.total_hours}
                 />
               );
             })
