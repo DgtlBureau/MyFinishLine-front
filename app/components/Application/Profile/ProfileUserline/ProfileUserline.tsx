@@ -13,7 +13,7 @@ const ProfileUserline = () => {
   const { user } = useAppSelector((state) => state.user);
 
   return (
-    <section className="flex justify-between px-4 py-8 rounded-tl-xl rounded-tr-xl relative max-w-4xl mx-auto">
+    <section className="flex justify-between px-2 py-8 rounded-tl-xl rounded-tr-xl relative max-w-4xl mx-auto">
       {user.selected_banner && (
         <div className="absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden">
           <Image
@@ -25,7 +25,7 @@ const ProfileUserline = () => {
         </div>
       )}
       <div className="flex gap-4 relative">
-        <div className="flex items-center justify-center relative w-34 h-34">
+        <div className="flex items-center justify-center relative w-32 h-32">
           {user.selected_frame && (
             <div className="absolute left-0 top-0 h-full w-full">
               <Image
@@ -82,7 +82,7 @@ const ProfileUserline = () => {
               @{user.username}
             </motion.span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-start gap-3">
             <StatBlock
               label="Total distance"
               value={handleConvertDistance(user.total_distance) || "0"}
