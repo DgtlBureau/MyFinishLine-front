@@ -48,7 +48,7 @@ const Activity = ({
             width={16}
             height={16}
           />
-          {pace} m/min
+          {Number(pace.toFixed(2))} m/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">
