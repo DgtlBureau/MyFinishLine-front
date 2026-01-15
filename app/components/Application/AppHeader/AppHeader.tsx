@@ -24,6 +24,36 @@ const links = [
     id: 5,
     link: "/settings",
   },
+  {
+    id: 6,
+    link: "/leaderboard",
+    title: "Leaderboard",
+  },
+  {
+    id: 7,
+    link: "/more",
+    title: "More",
+  },
+  {
+    id: 8,
+    link: "/contracts",
+    title: "Contracts",
+  },
+  {
+    id: 9,
+    link: "/profile/journey",
+    title: "Profile",
+  },
+  {
+    id: 10,
+    link: "/profile/activities",
+    title: "Activities",
+  },
+  {
+    id: 11,
+    link: "/profile/redeem",
+    title: "Claim medal",
+  },
 ];
 
 const AppHeader = () => {
@@ -59,6 +89,7 @@ const AppHeader = () => {
         ) : (
           <div className="h-14" />
         )}
+        <p className="text-white text-xl font-semibold">{currentLink?.title}</p>
         <button className="flex items-center gap-2" onClick={handleGoToEdit}>
           <Settings color="white" />
         </button>
