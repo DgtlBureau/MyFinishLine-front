@@ -41,7 +41,7 @@ const IconType = ({
   }
 };
 
-const handleGetStyle = (
+export const handleGetStyle = (
   is_completed: boolean,
   rareness: "common" | "legendary"
 ) => {

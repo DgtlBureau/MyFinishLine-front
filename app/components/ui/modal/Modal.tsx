@@ -3,9 +3,10 @@
 interface IModal {
   children: React.ReactNode;
   onClose: () => void;
+  maxWidth?: number;
 }
 
-export const Modal = ({ children, onClose }: IModal) => {
+export const Modal = ({ children, onClose, maxWidth = 500 }: IModal) => {
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50`}
@@ -15,7 +16,9 @@ export const Modal = ({ children, onClose }: IModal) => {
         }
       }}
     >
-      <div className="relative w-fit max-w-[500px] p-4">{children}</div>
+      <div className="relative w-fit p-4" style={{ maxWidth: `${maxWidth}px` }}>
+        {children}
+      </div>
     </div>
   );
 };

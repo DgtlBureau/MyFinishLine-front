@@ -1,6 +1,6 @@
 "use client";
 
-import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
+import PersonalizationListWithPreview from "@/app/components/PersonalizationList/PersonalizationListWithPreview/PersonalizationListWithPreview";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserFrames } from "@/app/lib/utils/userService";
@@ -52,10 +52,10 @@ const page = () => {
 
   if (frames.length) {
     return (
-      <PersonalizationList
+      <PersonalizationListWithPreview
         items={frames}
         handleSelectItem={handleSetActive}
-        selectedId={user.selected_frame?.id}
+        selectedId={user.selected_banner?.id}
       />
     );
   }
