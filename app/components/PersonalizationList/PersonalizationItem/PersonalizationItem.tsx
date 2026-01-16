@@ -41,7 +41,7 @@ const PersonalizationItem = ({
     >
       <div className="w-full h-fulloverflow-hidden">
         <span className="text-xs">{title}</span>
-        <div className="w-full h-full aspect-square overflow-hidden rounded-[8px]">
+        <div className="w-full h-full aspect-square overflow-hidden rounded-md">
           <Image
             className="w-full h-full object-cover"
             src={image_url}
@@ -54,7 +54,7 @@ const PersonalizationItem = ({
           />
         </div>
       </div>
-      <div className="flex flex-col mt-[10px]">
+      <div className="flex flex-col mt-2.5">
         <p className="font-medium text-sm text-[#09090b]">{description}</p>
         {isSelected ? (
           <Button className="w-full mt-2" disabled variant="outline">

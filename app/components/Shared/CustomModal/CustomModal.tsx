@@ -6,6 +6,8 @@ interface IPortalModalProps {
   fullscreen?: boolean;
   children: React.ReactNode;
   maxWidth?: number;
+  containerClassName?: string;
+  contentClassName?: string;
   onClose?: () => void;
 }
 
@@ -17,6 +19,8 @@ const PortalModal = ({
   fullscreen,
   children,
   maxWidth,
+  containerClassName,
+  contentClassName,
   onClose,
 }: IPortalModalProps) => {
   return createPortal(
@@ -25,13 +29,16 @@ const PortalModal = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed top-0 left-0 h-screen w-screen z-50 p-2 flex items-center justify-center backdrop-blur-xl "
+      className={
+        "fixed top-0 left-0 h-screen w-screen z-50 p-2 flex items-center justify-center backdrop-blur-xl " +
+        containerClassName
+      }
     >
       <div className="absolute top-0 left-0 bg-black/50 h-full w-full"></div>
       <div
-        className={`max-h-[90vh] relative bg-background p-2 box-border rounded z-10 max-w-3xl w-full ${
+        className={`overflow-hidden max-h-[90vh] relative bg-background p-2 box-border rounded z-10 max-w-3xl w-full ${
           fullscreen ? "w-full h-full" : ""
-        }`}
+        } ${contentClassName}`}
       >
         {children}
         <button
@@ -50,12 +57,19 @@ const CustomModal = ({
   children,
   isOpen,
   fullscreen,
+  containerClassName,
+  contentClassName,
   onClose,
 }: ICustomModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <PortalModal fullscreen={fullscreen} onClose={onClose}>
+        <PortalModal
+          fullscreen={fullscreen}
+          onClose={onClose}
+          containerClassName={containerClassName}
+          contentClassName={contentClassName}
+        >
           {children}
         </PortalModal>
       )}

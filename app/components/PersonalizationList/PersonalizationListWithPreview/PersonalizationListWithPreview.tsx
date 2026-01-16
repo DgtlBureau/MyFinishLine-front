@@ -1,6 +1,5 @@
 import CustomModal from "../../Shared/CustomModal/CustomModal";
 import PersonalizationList from "../PersonalizationList";
-import { XIcon } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -25,7 +24,7 @@ const PersonalizationListWithPreview = (props: {
 
       <CustomModal isOpen={!!clickedImageUrl} onClose={handleCloseModal}>
         <Image
-          className="h-full w-fit"
+          className="w-full h-full object-cover"
           src={clickedImageUrl}
           width={1080}
           height={800}
