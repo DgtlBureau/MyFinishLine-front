@@ -7,18 +7,10 @@ import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
 import StoryModal from "../Shared/StoryList/StoryList";
 import { IActiveChallenge, IStep } from "@/app/types";
-import MapStats from "./MapStats/MapStats";
 import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
 
-const Map = ({
-  background_images,
-  steps,
-  total_distance,
-  activate_date,
-  user_distance,
-  is_completed,
-}: IActiveChallenge) => {
+const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
@@ -148,8 +140,8 @@ const Map = ({
           ))}
         </div>
 
-        <div className="relative max-w-5xl mx-auto overflow-x-auto">
-          <ul ref={backgroundListRef} className="relative z-0 w-5xl">
+        <div className="relative max-w-2xl mx-auto overflow-x-auto">
+          <ul ref={backgroundListRef} className="relative z-0 w-2xl">
             {background_images.map((image, index) => (
               <li key={`map-bg-${index}`} className="relative w-full">
                 <img
@@ -161,7 +153,7 @@ const Map = ({
             ))}
           </ul>
 
-          <div className="absolute inset-0 z-10 px-4 sm:px-8 w-5xl">
+          <div className="absolute inset-0 z-10 px-4 sm:px-8 w-2xl">
             <div className="relative w-full h-full">
               <Xwrapper>
                 {steps.map((step, index) => (

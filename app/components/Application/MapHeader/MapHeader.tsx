@@ -26,7 +26,7 @@ const MapHeader = ({
 
   return (
     <header className="fixed z-100 w-full ">
-      <div className="max-w-5xl p-4 mx-auto w-full bg-linear-to-b from-[#C3B7E2] via-[#E9E0F6CC] via-60% to-transparent">
+      <div className="max-w-2xl p-4 mx-auto w-full bg-linear-to-b from-[#C3B7E2] via-[#E9E0F6CC] via-60% to-transparent">
         <Image src="/icons/logo-new.svg" width={100} height={30} alt="Logo" />
         <div className="mt-3 flex justify-between items-center">
           <div>

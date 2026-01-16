@@ -77,11 +77,11 @@ const Step = memo(
         {(completed || isActive) && (
           <div
             style={
-              +x > 512
+              +x > 336
                 ? { right: "100%", transform: "translateX(-8px)" }
                 : { left: "100%", transform: "translateX(8px)" }
             }
-            className="absolute"
+            className="absolute z-20"
           >
             <div
               className={`
