@@ -59,7 +59,7 @@ const ProfileUserline = () => {
             ) : (
               <div
                 style={{ backgroundColor: user.avatar_color }}
-                className="border-border shrink-0 border-2 rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold"
+                className="border-border shrink-0 border-2 rounded-full w-32 h-32 flex items-center justify-center text-3xl font-bold"
               >
                 {user.avatar_symbol || <Camera />}
               </div>
@@ -88,7 +88,9 @@ const ProfileUserline = () => {
           <div className="flex items-stretch">
             <div className="border-r border-neutral-400 px-2">
               <StatBlock
-                valueClassName="block text-white text-center"
+                valueClassName={`block text-center ${
+                  user.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Distance"
                 value={handleConvertDistance(user.total_distance) || "0"}
@@ -96,7 +98,9 @@ const ProfileUserline = () => {
             </div>
             <div className="border-r border-neutral-400 px-2">
               <StatBlock
-                valueClassName="block text-white text-center"
+                valueClassName={`block text-center ${
+                  user.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Hours"
                 value={user.total_moving_time_hours?.toFixed(1) + " h"}
@@ -104,7 +108,9 @@ const ProfileUserline = () => {
             </div>
             <div className="px-2">
               <StatBlock
-                valueClassName="block text-white text-center"
+                valueClassName={`block text-center ${
+                  user.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Runs"
                 value={user.total_activities_count?.toString() || "0"}
