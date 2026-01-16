@@ -57,7 +57,7 @@ const Step = memo(
     return (
       <div
         id={`step-${id}`}
-        className="relative flex items-center justify-center"
+        className="relative flex items-center z-20 justify-center"
       >
         {isLast && (
           <div className="absolute bottom-[25%] w-22 h-22 z-100">{View}</div>
@@ -109,11 +109,11 @@ const Step = memo(
         {isNext && (
           <div
             style={
-              +x > 512
+              +x > 312
                 ? { right: "100%", transform: "translateX(-8px)" }
                 : { left: "100%", transform: "translateX(8px)" }
             }
-            className="absolute"
+            className="absolute z-20"
           >
             <div
               className={`

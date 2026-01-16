@@ -149,7 +149,7 @@ const ConfirmCode = () => {
                     type="text"
                     inputMode="numeric"
                     maxLength={1}
-                    className="w-9 h-9 rounded-none first:rounded-tl-lg first:rounded-bl-lg last:rounded-tr-lg last:rounded-br-lg text-center text-xl font-semibold border focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
+                    className="w-9 h-9 rounded-none text-center text-xl font-semibold border focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
                     value={digit}
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
@@ -167,11 +167,24 @@ const ConfirmCode = () => {
                       inputRefs.current[index] = el;
                     }
                   }}
+                  style={
+                    index === 0
+                      ? {
+                          borderTopLeftRadius: 10,
+                          borderBottomLeftRadius: 10,
+                        }
+                      : index === 5
+                      ? {
+                          borderTopRightRadius: 10,
+                          borderBottomRightRadius: 10,
+                        }
+                      : {}
+                  }
                   id={`code-${index}`}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
-                  className="w-9 h-9 rounded-none first:rounded-tl-lg first:rounded-bl-lg last:rounded-tr-lg last:rounded-br-lg text-center text-xl font-semibold border focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
+                  className="w-9 h-9 rounded-none text-center text-xl font-semibold border focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}

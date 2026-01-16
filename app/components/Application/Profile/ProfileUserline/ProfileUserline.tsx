@@ -71,7 +71,9 @@ const ProfileUserline = () => {
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-medium text-white"
+              className={`font-medium ${
+                user.selected_banner ? "text-white" : "text-black"
+              }`}
             >
               {user.first_name} {user.last_name}
             </motion.span>
