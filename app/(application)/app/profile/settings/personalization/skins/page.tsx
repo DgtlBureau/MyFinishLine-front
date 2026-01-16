@@ -1,19 +1,16 @@
 "use client";
 
-import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
-import { Modal } from "@/app/components/ui/modal/Modal";
+import PersonalizationListWithPreview from "@/app/components/PersonalizationList/PersonalizationListWithPreview/PersonalizationListWithPreview";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserSkins } from "@/app/lib/utils/userService";
 import axios from "axios";
-import { Loader2, XIcon } from "lucide-react";
-import Image from "next/image";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const page = () => {
   const [skins, setSkins] = useState([]);
-  const [selectedImg, setSelectedImg] = useState("");
   const { user } = useAppSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -55,35 +52,11 @@ const page = () => {
 
   if (skins.length) {
     return (
-      <>
-        <PersonalizationList
-          items={skins}
-          handleSelectItem={handleSetActive}
-          selectedId={user.selected_skin?.id}
-          onClick={setSelectedImg}
-        />
-        {selectedImg && (
-          <Modal onClose={() => setSelectedImg("")} maxWidth={500}>
-            {
-              <div className="relative rounded-[8px] p-4 bg-white">
-                <button
-                  type="button"
-                  className="absolute top-1 right-1 cursor-pointer"
-                  onClick={() => setSelectedImg("")}
-                >
-                  <XIcon className="h-4 w-4 fill-gray-700 md:h-4 md:w-4" />
-                </button>
-                <Image
-                  src={selectedImg}
-                  width={1080}
-                  height={800}
-                  alt="w-full h-full max-w-full"
-                />
-              </div>
-            }
-          </Modal>
-        )}
-      </>
+      <PersonalizationListWithPreview
+        items={skins}
+        handleSelectItem={handleSetActive}
+        selectedId={user.selected_banner?.id}
+      />
     );
   }
 
