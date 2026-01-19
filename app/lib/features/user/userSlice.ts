@@ -14,6 +14,7 @@ const initialState: {
   };
 } = {
   user: {
+    available_onboarding: false,
     id: null,
     avatar_url: "",
     country: "",
@@ -69,7 +70,7 @@ const userSlice = createSlice({
         frame: { id: number; image_url: string } | null;
         banner: { id: number; image_url: string } | null;
         mascot: { id: number; image_url: string } | null;
-      }>
+      }>,
     ) => {
       state.personalization = action.payload;
     },

@@ -9,6 +9,7 @@ export interface IUser {
   id: number | null;
   last_name: string;
   phone: string;
+  available_onboarding: boolean;
   strava_id: string | null;
   total_activities_count: number;
   total_distance: number;

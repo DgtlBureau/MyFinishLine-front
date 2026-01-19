@@ -1,20 +1,44 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
 import StoryModal from "../Shared/StoryList/StoryList";
-import { IActiveChallenge, IStep } from "@/app/types";
+import { IActiveChallenge, IStep, IStory } from "@/app/types";
 import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
+import { useAppSelector } from "@/app/lib/hooks";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const backgroundListRef = useRef<HTMLUListElement>(null);
+  const { user } = useAppSelector((state) => state.user);
+  const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
+
+  const handleLoadOnboarding = async () => {
+    try {
+      const { data } = await axios.get("/api/user/onboarding");
+      setOnboardingSlides(data);
+      setIsStoriesOpen(true);
+    } catch (error) {
+      toast.error("Error loading onboarding");
+      console.log(error);
+    }
+  };
+
+  console.log(onboardingSlides);
+
+  useEffect(() => {
+    if (user.available_onboarding) {
+      handleLoadOnboarding();
+    }
+  }, []);
 
   const stepsAmount = steps.length;
 
@@ -241,7 +265,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
           <StoryModal
             stepId={activeStep?.id || 0}
             isViewed={activeStep?.is_viewed || false}
-            stories={activeStep?.story || []}
+            stories={activeStep?.story || onboardingSlides}
             onClose={handleCloseStories}
           />
         )}

@@ -30,12 +30,12 @@ const StoryList = ({
   const dispatch = useAppDispatch();
 
   const handleViewStories = async () => {
-    if (isViewed) {
+    if (isViewed || !stepId) {
       return;
     }
 
     try {
-      axios.post("/api/user/view-story", { step_id: stepId });
+      await axios.post("/api/user/view-story", { step_id: stepId });
       dispatch(setViewedStory(stepId));
     } catch (error) {
       console.log(error);

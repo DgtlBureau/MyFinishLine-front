@@ -25,6 +25,7 @@ const initialState: {
       created_at: "",
       email: "",
       first_name: "",
+      available_onboarding: false,
       full_avatar_url: "",
       has_activated_code: false,
       last_name: "",
@@ -51,7 +52,7 @@ const leaderboardSlice = createSlice({
       action: PayloadAction<{
         leaderboards: ILeaderboard[];
         current_user: IUserLeaderboard;
-      }>
+      }>,
     ) => {
       return action.payload;
     },
