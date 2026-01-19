@@ -4,17 +4,22 @@ import Image from "next/image";
 interface IRewardProps {
   title: string;
   description: string;
-  image: string;
+  isLegendary: boolean;
+  rewards: { id: number; contract_id: number; image_url: string }[];
 }
 
-const Reward = ({ title, description, image }: IRewardProps) => {
+const Reward = ({ title, description, isLegendary, rewards }: IRewardProps) => {
+  const rewardImage = rewards?.[0].image_url;
+
   return (
     <div>
-      <div className="flex items-center justify-center h-32 w-32 bg-linear-to-b from-[#F4E8FD] to-[#C3B7E2] rounded-2xl">
-        {image ? (
+      <div
+        className={`flex items-center justify-center h-32 w-32 bg-cover bg-center rounded-2xl ${isLegendary ? "bg-[url('/images/application/legendary.png')]" : "bg-[url('/images/application/common.png')]"}`}
+      >
+        {rewardImage ? (
           <Image
             className="w-full h-full object-contain p-2"
-            src={image}
+            src={rewardImage}
             width={128}
             height={128}
             alt={`Reward ${title}`}

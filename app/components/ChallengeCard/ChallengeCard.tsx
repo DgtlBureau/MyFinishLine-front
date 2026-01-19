@@ -8,8 +8,29 @@ import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
-import { calculateHoursBetweenDates } from "@/app/lib/utils/convertData";
 import { ShipmentStatuses } from "@/app/types";
+
+const getTimePassed = (
+  startDate: string,
+  endDate: string | Date = new Date(),
+) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const diffMs = Math.abs(end.getTime() - start.getTime());
+
+  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours === 0) {
+    return `${minutes}m`;
+  }
+  if (minutes === 0) {
+    return `${hours}h`;
+  }
+  return `${hours}h ${minutes}m`;
+};
 
 const ChallengeCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,10 +45,7 @@ const ChallengeCard = () => {
     },
   };
 
-  const hours = calculateHoursBetweenDates(
-    challenge.activate_date,
-    challenge.completed_at
-  );
+  const hours = getTimePassed(challenge.activate_date, challenge.completed_at);
 
   const progress =
     (challenge?.user_distance / +challenge?.total_distance) * 100;
@@ -130,7 +148,7 @@ const ChallengeCard = () => {
           </div>
         )}
         <span className="mt-2.5 text-lg font-semibold leading-5 text-[#09090B]">
-          {(hours || 0)?.toFixed(1)}hrs
+          {hours}
         </span>
       </div>
       {!challenge.is_completed ? (

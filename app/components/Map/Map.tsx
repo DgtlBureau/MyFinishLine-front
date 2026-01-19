@@ -35,8 +35,6 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
     }
   };
 
-  console.log(onboardingSlides);
-
   useEffect(() => {
     if (user.available_onboarding) {
       handleLoadOnboarding();

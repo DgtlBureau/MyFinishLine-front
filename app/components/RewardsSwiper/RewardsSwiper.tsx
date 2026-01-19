@@ -3,42 +3,20 @@ import { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Reward from "../Application/Reward/Reward";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import "swiper/css";
 import { useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
 
-const rewards = [
-  {
-    id: 1,
-    title: "It's Raining Man",
-    image: "/images/application/medal.png",
-    description: "Run 45 km under the rain.",
-  },
-  {
-    id: 2,
-    title: "Marathoner",
-    image: "/images/application/medal.png",
-    description: "Complete a full marathon distance of 42.195 km.",
-  },
-  {
-    id: 3,
-    title: "Great Wall Runner",
-    image: "/images/application/medal.png",
-    description: "Conquer a run along the Great Wall of China.",
-  },
-  {
-    id: 4,
-    title: "Mountain Conqueror",
-    image: "/images/application/medal.png",
-    description: "Reach the summit of a mountain over 2000m.",
-  },
-];
+import "swiper/css";
 
 const RewardsSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
-  const { completedContracts } = useAppSelector((state) => state.user);
+  const { contracts } = useAppSelector((state) => state.user);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+
+  const contractsStillToGet = contracts.filter(
+    (contract) => !contract.is_completed,
+  );
 
   const handleGoNext = () => {
     if (swiperRef.current) {
@@ -57,10 +35,10 @@ const RewardsSwiper = () => {
       <section className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between">
           <h4 className="font-medium text-3xl leading-9 text-[#09090B] px-4">
-            Contracts
+            Contracts in Progress
           </h4>
-          {completedContracts.length > 2 && (
-            <div>
+          {contractsStillToGet.length > 2 && (
+            <div className="flex items-center flex-nowrap">
               <button
                 className="px-4 cursor-pointer"
                 onClick={handleGoPrev}
@@ -91,12 +69,18 @@ const RewardsSwiper = () => {
             setIsLastSlide(swiper.isEnd);
           }}
         >
-          {completedContracts.map((contract) => (
+          {contractsStillToGet.map((contract) => (
             <SwiperSlide key={contract.id} className="px-4">
               <Reward
                 title={contract.name}
                 description={contract.description}
-                image={contract.image_url || ""}
+                isLegendary={contract.rare.type === "legendary"}
+                rewards={[
+                  ...contract.badges,
+                  ...contract.banners,
+                  ...contract.skins,
+                  ...contract.frames,
+                ]}
               />
             </SwiperSlide>
           ))}
