@@ -60,7 +60,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
             leaderboards?.map((item) => {
               const color =
                 item.user_id === current_user.user.id &&
-                current_user.position <= 4
+                  current_user.position <= 4
                   ? positionColors[item.position as 1 | 2 | 3]
                   : "";
               return (
@@ -85,7 +85,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
           )}
         </AnimatePresence>
       </motion.ul>
-      {current_user?.position > 10 && (
+      {/* {current_user?.position > 10 && (
         <div className="mt-2 mx-auto w-full flex justify-center">
           <EllipsisVertical color="#71717A" />
         </div>
@@ -95,7 +95,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
           {...current_user.user}
           position={current_user.position}
         />
-      )}
+      )} */}
     </motion.div>
   );
 };

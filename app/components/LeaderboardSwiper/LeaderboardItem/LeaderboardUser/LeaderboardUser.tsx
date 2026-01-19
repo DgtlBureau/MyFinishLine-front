@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
+import { useAppSelector } from "@/app/lib/hooks";
 
 interface ILeaderboardUserProps extends IUser {
   color: string;
@@ -29,6 +31,10 @@ const LeaderboardUser = ({
   challengeId,
 }: ILeaderboardUserProps) => {
   const [imageError, setImageError] = useState(false);
+  const { user } = useAppSelector((state) => state.user);
+
+  const linkUrl = id !== user.id ? `profile/${id}` : `profile/journey`
+
 
   return (
     <motion.li
@@ -43,7 +49,7 @@ const LeaderboardUser = ({
         color
       }
     >
-      <div className="flex items-center gap-2">
+      <Link href={linkUrl} className="flex items-center gap-2">
         <div className="w-4">
           <span
             className={`text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]`}
@@ -80,7 +86,7 @@ const LeaderboardUser = ({
           {username}
           {isCurrentUser && <div className="text-xs text-black">You</div>}
         </div>
-      </div>
+      </Link>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
           {(challengeId
