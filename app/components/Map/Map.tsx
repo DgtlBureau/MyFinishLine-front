@@ -9,9 +9,10 @@ import StoryModal from "../Shared/StoryList/StoryList";
 import { IActiveChallenge, IStep, IStory } from "@/app/types";
 import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
-import { useAppSelector } from "@/app/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { updateUser } from "@/app/lib/features/user/userSlice";
 
 const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
@@ -20,12 +21,14 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   const backgroundListRef = useRef<HTMLUListElement>(null);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
+  const dispatch = useAppDispatch();
 
   const handleLoadOnboarding = async () => {
     try {
       const { data } = await axios.get("/api/user/onboarding");
       setOnboardingSlides(data);
       setIsStoriesOpen(true);
+      dispatch(updateUser({ available_onboarding: false }));
     } catch (error) {
       toast.error("Error loading onboarding");
       console.log(error);
