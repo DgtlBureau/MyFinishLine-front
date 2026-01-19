@@ -1,6 +1,6 @@
 "use client";
 
-import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
+import PersonalizationListWithPreview from "@/app/components/PersonalizationList/PersonalizationListWithPreview/PersonalizationListWithPreview";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserSkins } from "@/app/lib/utils/userService";
@@ -52,10 +52,10 @@ const page = () => {
 
   if (skins.length) {
     return (
-      <PersonalizationList
+      <PersonalizationListWithPreview
         items={skins}
         handleSelectItem={handleSetActive}
-        selectedId={user.selected_skin?.id}
+        selectedId={user.selected_banner?.id}
       />
     );
   }

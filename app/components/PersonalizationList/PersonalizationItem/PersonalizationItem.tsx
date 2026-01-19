@@ -9,6 +9,7 @@ interface IPersonalizationItemProps {
   title: string;
   description: string;
   isSelected: boolean;
+  onClick: (value: string) => void;
   handlePressSelect: (item: {
     id: number;
     title: string;
@@ -25,6 +26,7 @@ const PersonalizationItem = ({
   image_url,
   description,
   handlePressSelect,
+  onClick,
 }: IPersonalizationItemProps) => {
   const handleSelectSkin = () => {
     handlePressSelect({ id, title, image_url, description });
@@ -35,32 +37,39 @@ const PersonalizationItem = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="border-border border rounded-2xl p-4"
+      className="border-border border gap-4 justify-between rounded-2xl w-full h-full p-4"
     >
-      <span className="text-xs">{title}</span>
-      <Image
-        className="w-full bg-[#d9d9d9] rounded-2xl mt-2"
-        src={image_url}
-        width={300}
-        height={300}
-        alt="Skin"
-      />
-      <p className="block mt-4 font-medium text-sm text-[#09090b]">
-        {description}
-      </p>
-      {isSelected ? (
-        <Button className="w-full mt-2" disabled variant="outline">
-          Selected
-        </Button>
-      ) : (
-        <Button
-          className="w-full mt-2"
-          type="button"
-          onClick={handleSelectSkin}
-        >
-          Select
-        </Button>
-      )}
+      <div className="w-full h-fulloverflow-hidden">
+        <span className="text-xs">{title}</span>
+        <div className="w-full h-full aspect-square overflow-hidden rounded-md">
+          <Image
+            className="w-full h-full object-cover"
+            src={image_url}
+            width={800}
+            height={800}
+            alt="Skin"
+            onClick={() => {
+              onClick(image_url);
+            }}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col mt-2.5">
+        <p className="font-medium text-sm text-[#09090b]">{description}</p>
+        {isSelected ? (
+          <Button className="w-full mt-2" disabled variant="outline">
+            Selected
+          </Button>
+        ) : (
+          <Button
+            className="w-full mt-2"
+            type="button"
+            onClick={handleSelectSkin}
+          >
+            Select
+          </Button>
+        )}
+      </div>
     </motion.li>
   );
 };

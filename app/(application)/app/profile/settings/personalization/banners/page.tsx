@@ -1,6 +1,5 @@
 "use client";
 
-import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserBanners } from "@/app/lib/utils/userService";
@@ -8,6 +7,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import PersonalizationListWithPreview from "@/app/components/PersonalizationList/PersonalizationListWithPreview/PersonalizationListWithPreview";
 
 const page = () => {
   const [banners, setBanners] = useState([]);
@@ -52,7 +52,7 @@ const page = () => {
 
   if (banners.length) {
     return (
-      <PersonalizationList
+      <PersonalizationListWithPreview
         items={banners}
         handleSelectItem={handleSetActive}
         selectedId={user.selected_banner?.id}

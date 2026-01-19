@@ -4,6 +4,7 @@ const PersonalizationList = ({
   items,
   selectedId,
   handleSelectItem,
+  onClick,
 }: {
   items: any[];
   selectedId: number | undefined;
@@ -13,6 +14,7 @@ const PersonalizationList = ({
     image_url: string;
     description: string;
   }) => void;
+  onClick: (value: string) => void;
 }) => {
   return (
     <ul className="grid grid-cols-2 gap-2 mt-2">
@@ -23,6 +25,7 @@ const PersonalizationList = ({
           index={index}
           isSelected={item.id === selectedId}
           handlePressSelect={handleSelectItem}
+          onClick={onClick}
         />
       ))}
     </ul>
