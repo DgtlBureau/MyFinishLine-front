@@ -7,6 +7,7 @@ import userReducer from "./features/user/userSlice";
 import challengeSlice from "./features/challenge/challengeSlice";
 import productsSlice from "./features/products/productsSlice";
 import leaderboardSlice from "./features/leaderboard/leaderboardSlice";
+import profileSlice from "./features/profile/profileSlice"
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -14,12 +15,13 @@ const rootReducer = combineReducers({
   challenge: challengeSlice,
   products: productsSlice,
   leaderboard: leaderboardSlice,
+  profile: profileSlice
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "activities", "products"],
+  whitelist: ["user", "activities", "products", "profile"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
