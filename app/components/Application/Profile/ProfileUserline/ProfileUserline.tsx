@@ -7,6 +7,7 @@ import { handleConvertDistance } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";
+import Link from "next/link";
 
 const ProfileUserline = ({ userId }: { userId?: string }) => {
   const [imageError, setImageError] = useState(false);
@@ -29,7 +30,10 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         </div>
       )}
       <div className="flex gap-4 relative items-end">
-        <div className="flex items-center justify-center relative w-32 h-32">
+        <Link href={'settings/personalization/frames'}
+          className={`flex items-center justify-center relative w-32 h-32 ${userId ? 'pointer-events-none' : ''
+            }`}
+        >
           {currentUser.selected_frame && (
             <div className="absolute left-0 top-0 h-full w-full">
               <Image
@@ -68,7 +72,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
               </div>
             )}
           </div>
-        </div>
+        </Link>
         <div className="flex flex-col justify-end gap-2">
           <div>
             <motion.span
