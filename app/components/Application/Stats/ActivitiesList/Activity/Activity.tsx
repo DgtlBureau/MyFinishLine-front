@@ -1,6 +1,8 @@
 import { IActivity } from "@/app/types";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Runner from '@/public/icons/activity-icons/runner.svg'
+import Runner2 from '@/public/icons/activity-icons/icon_running.svg'
 import {
   handleConvertDate,
   handleConvertDistance,
@@ -17,6 +19,7 @@ const Activity = ({
   pace,
   from,
 }: IActivity & { delay: number }) => {
+
   return (
     <motion.li
       initial={{
@@ -48,7 +51,7 @@ const Activity = ({
             width={16}
             height={16}
           />
-          {Number(pace.toFixed(2))} m/min
+          {Number(pace.toFixed(2))} km/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">
@@ -60,6 +63,7 @@ const Activity = ({
             height={78}
             alt="Challenge"
           />
+          {/* <Image src={Runner} width={78} height={78} alt="" className="border-[1px] border-black" /> */}
           <div className="w-full flex flex-col justify-between">
             <span className="block text-lg leading-7 font-medium text-[#09090B]">
               {activity_name}

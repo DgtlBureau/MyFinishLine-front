@@ -50,7 +50,7 @@ const Journey = () => {
           <ChallengeCard />
         </section>
       </div>
-      {!!completedContracts.length && <RewardsSwiper />}
+      {!!completedContracts?.length && <RewardsSwiper />}
 
       {/* <section className="mt-10">
           <h4 className="font-medium text-3xl text-center leading-9">
@@ -77,10 +77,10 @@ const Journey = () => {
             style={
               user.has_strava_connect
                 ? {
-                    cursor: "default",
-                    backgroundColor: "#FC4C02",
-                    color: "#FFF",
-                  }
+                  cursor: "default",
+                  backgroundColor: "#FC4C02",
+                  color: "#FFF",
+                }
                 : {}
             }
             className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
