@@ -3,6 +3,7 @@ interface IStatBlockProps {
   value: string | number;
   labelClassName?: string;
   valueClassName?: string;
+  reverse?: boolean
 }
 
 const StatBlock = ({
@@ -10,9 +11,10 @@ const StatBlock = ({
   value,
   labelClassName,
   valueClassName,
+  reverse = false
 }: IStatBlockProps) => {
   return (
-    <div>
+    <div className={`flex ${reverse ? 'flex-col-reverse' : 'flex-col'}`}>
       <span
         className={
           "font-medium text-[14px] whitespace-nowrap " + valueClassName

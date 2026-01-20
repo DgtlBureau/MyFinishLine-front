@@ -55,6 +55,7 @@ const Page = () => {
             challengeName={challenge.name}
             startDate={challenge.activate_date}
             totalDistance={challenge.user_distance}
+            distance={challenge.total_distance}
           />
           <Map {...challenge} />
         </>
