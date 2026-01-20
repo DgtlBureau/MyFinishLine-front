@@ -4,7 +4,7 @@ import LeaderboardItem from "./LeaderboardItem/LeaderboardItem";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperType } from "swiper";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IActiveChallenge } from "@/app/types";
 import "swiper/css";
 
@@ -24,6 +24,14 @@ const LeaderboardSwiper = ({
   const handleGoPrev = () => {
     swiperRef?.current?.slidePrev();
   };
+
+  useEffect(() => {
+    if (!swiperRef.current) return;
+
+    swiperRef.current.update();
+    setIsFirstSlide(swiperRef.current.isBeginning);
+    setIsLastSlide(swiperRef.current.isEnd);
+  }, [challenges.length]);
 
   return (
     <section className="">
