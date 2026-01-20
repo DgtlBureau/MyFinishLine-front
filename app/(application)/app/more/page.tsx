@@ -41,47 +41,6 @@ const links = [
       </div>
     ),
   },
-  {
-    id: 2,
-    label: "Contact info",
-    block: () => (
-      <div>
-        <ul>
-          <li className="border-b border-border pb-6 px-6">
-            <span className="text-2xl leading-8 text-[#71717A]">Email Us</span>
-            <span className="block mt-6 text-base leading-6 text-[#09090B]">
-              help@example.com
-            </span>
-            <span className="block text-base leading-6 text-[#09090B]">
-              support@example.com
-            </span>
-          </li>
-          <li className="p-6">
-            <span className="text-2xl leading-8 text-[#71717A]">Offices</span>
-            <span className="block mt-6 text-xl leading-8 text-[#71717A]">
-              New York
-            </span>
-            <span className="mt-2 block text-base leading-6 text-[#71717A]">
-              123 6th St. Melbourne, FL 32904, USA
-            </span>
-            <span className="block mt-8 text-xl leading-8 text-[#71717A]">
-              London
-            </span>
-            <span className="block mt-2 text-base leading-6 text-[#71717A]">
-              123 3rd St. London, TL 32904, UK
-            </span>
-          </li>
-        </ul>
-      </div>
-    ),
-  },
-  {
-    id: 3,
-    label: "Feedback",
-    block: (form: any) => (
-      <div className="flex items-center justify-center pb-8">{form}</div>
-    ),
-  },
 ];
 
 const arrowVariants = {
@@ -221,42 +180,6 @@ const Page = () => {
       <ul className="h-full">
         {links.map((link) => {
           const isExpanded = expandedBlockId === link.id;
-
-          const handleCallContent = () => {
-            if (link.block) {
-              return link.block(
-                <>
-                  {isSent ? (
-                    <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
-                      <p className="text-white">
-                        Thank you for sending your information!
-                      </p>
-                    </div>
-                  ) : isSending ? (
-                    <Loader />
-                  ) : (
-                    <FaqForm
-                      isValid={isValid}
-                      errors={errors}
-                      handleBlur={handleBlur}
-                      touched={touched}
-                      setFieldTouched={setFieldTouched}
-                      values={values}
-                      setValues={setFieldValue}
-                      setFieldValue={setFieldValue}
-                      onClick={handleSubmit}
-                      onClose={handleCloseModal}
-                      hasCloseIcon={false}
-                      hasCancelBtn={false}
-                    />
-                  )}
-                </>
-              );
-            } else {
-              return <></>;
-            }
-          };
-
           return (
             <li
               key={link.id}
@@ -293,7 +216,6 @@ const Page = () => {
                       <AccordionContent
                         title={link.title || ""}
                         list={link.content}
-                        content={handleCallContent}
                         additional_content={link?.additional_content}
                       />
                     </motion.div>
@@ -304,6 +226,64 @@ const Page = () => {
           );
         })}
       </ul>
+      <div className="p-[32px_16px]">
+        <div className="flex flex-col gap-2">
+          <p>Contact info</p>
+          <ul>
+            <li className="border-b border-border pb-6 px-6">
+              <span className="text-2xl leading-8 text-[#71717A]">Email Us</span>
+              <span className="block mt-6 text-base leading-6 text-[#09090B]">
+                help@example.com
+              </span>
+              <span className="block text-base leading-6 text-[#09090B]">
+                support@example.com
+              </span>
+            </li>
+            <li className="p-6">
+              <span className="text-2xl leading-8 text-[#71717A]">Offices</span>
+              <span className="block mt-6 text-xl leading-8 text-[#71717A]">
+                New York
+              </span>
+              <span className="mt-2 block text-base leading-6 text-[#71717A]">
+                123 6th St. Melbourne, FL 32904, USA
+              </span>
+              <span className="block mt-8 text-xl leading-8 text-[#71717A]">
+                London
+              </span>
+              <span className="block mt-2 text-base leading-6 text-[#71717A]">
+                123 3rd St. London, TL 32904, UK
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="p-[32px_16px] flex items-center justify-center">
+        {isSent ? (
+          <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
+            <p className="text-white">
+              Thank you for sending your information!
+            </p>
+          </div>
+        ) : isSending ? (
+          <Loader />
+        ) : (
+          <FaqForm
+            isValid={isValid}
+            errors={errors}
+            handleBlur={handleBlur}
+            touched={touched}
+            setFieldTouched={setFieldTouched}
+            values={values}
+            setValues={setFieldValue}
+            setFieldValue={setFieldValue}
+            onClick={handleSubmit}
+            onClose={handleCloseModal}
+            hasCloseIcon={false}
+            hasCancelBtn={false}
+          />
+        )}
+
+      </div>
       <div className="px-4">
         <button
           type="button"
