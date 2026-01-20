@@ -17,7 +17,7 @@ const Feature102 = () => {
             <div className="flex gap-4 min-[960px]:max-w-md">
               <div className="flex flex-col items-center justify-between gap-1">
                 <span className="h-20 shrink-0"></span>
-                <span className="bg-muted/50 flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
+                <span className="bg-[#65AE6A] border-[#e4e4e7] text-white flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
                   1
                 </span>
                 <span className="bg-linear-to-b to-primary h-20 w-[3px] shrink-0 from-transparent opacity-70"></span>
@@ -43,7 +43,7 @@ const Feature102 = () => {
                 <span className="bg-primary absolute -top-8 mx-auto h-8 w-[3px] shrink-0 opacity-70"></span>
                 <span className="bg-primary absolute -bottom-8 mx-auto h-8 w-[3px] shrink-0 opacity-70"></span>
                 <span className="bg-primary h-20 w-[3px] shrink-0 opacity-70"></span>
-                <span className="bg-muted/50 flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
+                <span className="bg-[#65AE6A] border-[#e4e4e7] text-white flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
                   2
                 </span>
                 <span className="bg-primary h-20 w-[3px] shrink-0 opacity-70"></span>
@@ -67,12 +67,14 @@ const Feature102 = () => {
           </div>
           <div className="flex flex-col items-center justify-between min-[960px]:flex-row min-[960px]:gap-10">
             <div className="flex gap-4 min-[960px]:max-w-md">
-              <div className="flex flex-col items-center justify-between gap-1">
-                <span className="bg-linear-to-t to-primary h-20 w-[3px] shrink-0 from-transparent opacity-70"></span>
-                <span className="bg-muted/50 flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
+              <div className="relative flex flex-col items-center justify-between gap-1">
+                <span className="bg-primary absolute -top-8 mx-auto h-8 w-[3px] shrink-0 opacity-70"></span>
+                <span className="bg-primary absolute -bottom-8 mx-auto h-8 w-[3px] shrink-0 opacity-70"></span>
+                <span className="bg-primary h-20 w-[3px] shrink-0 opacity-70"></span>
+                <span className="bg-[#65AE6A] border-[#e4e4e7] text-white flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
                   3
                 </span>
-                <span className="h-20 shrink-0"></span>
+                <span className="bg-primary h-20 w-[3px] shrink-0 opacity-70"></span>
               </div>
               <div className="flex flex-col justify-center gap-5 px-0 min-[960px]:gap-6 min-[960px]:px-4 min-[960px]:py-4">
                 <h3 className="text-xl min-[960px]:text-2xl">
@@ -86,6 +88,31 @@ const Feature102 = () => {
             </div>
             <img
               src={steps[3].image}
+              alt="placeholder"
+              className="z-10 max-h-56 w-full rounded-xl border object-cover min-[960px]:aspect-video min-[960px]:w-auto"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-between min-[960px]:flex-row min-[960px]:gap-10">
+            <div className="flex gap-4 min-[960px]:max-w-md">
+              <div className="flex flex-col items-center justify-between gap-1">
+                <span className="bg-linear-to-t to-primary h-20 w-[3px] shrink-0 from-transparent opacity-70"></span>
+                <span className="bg-[#65AE6A] border-[#e4e4e7] text-white flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-lg">
+                  4
+                </span>
+                <span className="h-20 shrink-0"></span>
+              </div>
+              <div className="flex flex-col justify-center gap-5 px-0 min-[960px]:gap-6 min-[960px]:px-4 min-[960px]:py-4">
+                <h3 className="text-xl min-[960px]:text-2xl">
+                  {steps[4].title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm min-[960px]:text-base">
+                  {steps[4].description}
+                </p>
+              </div>
+            </div>
+            <img
+              src={steps[4].image}
               alt="placeholder"
               className="z-10 max-h-56 w-full rounded-xl border object-cover min-[960px]:aspect-video min-[960px]:w-auto"
             />

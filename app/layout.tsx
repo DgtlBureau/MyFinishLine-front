@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <GoogleTagManager gtmId="G-LYKSZRTMBX" />
       <head>
+        <link rel="icon" href="favicon.png" sizes="any" />
         <script src="https://accounts.google.com/gsi/client" async defer />
       </head>
       <body

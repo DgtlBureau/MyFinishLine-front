@@ -7,6 +7,7 @@ import Clouds from "@/app/components/Map/Clouds/Clouds";
 import { useEffect, useState } from "react";
 import Map from "@/app/components/Map/Map";
 import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
+import { Loader2 } from "lucide-react";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -16,6 +17,7 @@ const Page = () => {
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
   const handleLoadChallenge = async () => {
+    setIsFetching(true);
     try {
       const data = await getUserActiveChallenge();
       if (data) {
@@ -58,7 +60,13 @@ const Page = () => {
         </>
       ) : (
         <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
-          No active challenge found
+          {isFetching ? (
+            <div className="animate-spin">
+              <Loader2 />
+            </div>
+          ) : (
+            "No active challenge found"
+          )}
         </div>
       )}
     </>

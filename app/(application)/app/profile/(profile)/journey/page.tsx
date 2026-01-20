@@ -1,17 +1,15 @@
 "use client";
 
-import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
 import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
 import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import { linkStrava } from "@/app/lib/utils/authWithStrava";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { Suspense, useEffect } from "react";
-import { ChevronRight } from "lucide-react";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import Link from "next/link";
 
 const Journey = () => {
   const { completedContracts } = useAppSelector((state) => state.user);
@@ -20,6 +18,7 @@ const Journey = () => {
   const errorParam = searchParams.get("error");
   const dataParam = searchParams.get("data");
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     if (errorParam) {
@@ -33,6 +32,7 @@ const Journey = () => {
       try {
         parsedData = JSON.parse(decodeURIComponent(dataParam));
         dispatch(setUser(parsedData));
+        router.replace("/app/profile/journey");
       } catch (e) {
         console.error("Failed to parse data param", e);
         return;
@@ -122,7 +122,13 @@ const Journey = () => {
 
 const page = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex w-full items-center justify-center">
+          <Loader2 />
+        </div>
+      }
+    >
       <Journey />
     </Suspense>
   );

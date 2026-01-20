@@ -18,12 +18,13 @@ const COMMON_CARDS_CLASSNAMES = {
 const content = {
   hero: {
     // Main top block with purple background
-    title: "Level Up Your Running \n Unlock Your Achievements",
+    title:
+      "Is a story-driven virtual fitness\n quest where movement unlocks\n the journey.",
     subtitle:
-      "Turn every run into an adventure. Complete quests, get achievements, and climb the leaderboards with our running platform.",
+      "Train, progress, explore the world, and become the hero of your own global journey — step into a global experience where the first quest sets everything in motion.",
     description:
       "Over 2+ million players worldwide are gaming their way to fitness with MyFinishLine.",
-    button_label: "Start Winning",
+    button_label: "Start the Adventure",
     image: "/images/hero.webp",
   },
   logos: [
@@ -79,8 +80,9 @@ const content = {
   ],
   challenges: {
     // Carousel of challenges
-    title: "Choose Your Running Challenge",
-    description: "Pick a challenge that matches your goals and fitness level",
+    title: "Choose Your Adventure Quest",
+    description:
+      "Become the protagonist of an amazing adventure. Reach the end and claim your reward.",
     features: [
       {
         id: 1,
@@ -202,30 +204,32 @@ const content = {
     ],
   },
   roadmap: {
-    title: "Launch with Assurance",
-    description:
-      "Simplify your workflow with our tools that provide clear insights, minimizing the complexity of managing intricate deployment data.",
+    title: "How it works",
+    description: "From choice to goal achievement step by step",
     steps: {
       1: {
-        title: "Monitor Deployments live",
+        title: "Choose your adventure quest",
         description:
-          "Track your deployments with clarity, seeing updates take place as they happen.",
-        image:
-          "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-1.svg",
+          "Become part of a new and incredible story where you are the main character!",
+        image: "/images/how-it-works/how-it-works-1.png",
       },
       2: {
-        title: "Immediate Issue Detection",
+        title: "Connect applications",
         description:
-          "Spot issues instantly and address them with precise metrics for optimized performance",
-        image:
-          "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-2.svg",
+          "Add access to your achievements in the Strava app or enter your activity data manually to integrate your fitness progress.",
+        image: "/images/how-it-works/how-it-works-2.png",
       },
       3: {
-        title: "Revert to a Stable Version",
+        title: "Discover engaging content",
         description:
-          "With just a few actions, revert to a previous version and restore system health swiftly.",
-        image:
-          "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-3.svg",
+          "Engage in real-time activities and progress along a virtual route. Discover new locations, solve historical mysteries, earn digital rewards, and unlock unique collections.",
+        image: "/images/how-it-works/how-it-works-3.png",
+      },
+      4: {
+        title: "Reach the end and receive your medal",
+        description:
+          "Complete all the quest tasks and receive your virtual medal. Verify your delivery details and receive your physical medal by mail. The reward for each virtual quest is exclusive.",
+        image: "/images/how-it-works/how-it-works-4.png",
       },
     },
   },
@@ -481,7 +485,7 @@ const content = {
           "I created a workspace, invited my co-founder, and started assigning tasks in 45 seconds. That’s how fast MyFinishLine works.",
         className: cn(
           COMMON_CARDS_CLASSNAMES.big,
-          "lg:[&_blockquote]:text-4xl lg:[&_blockquote]:leading-tight lg:shadow-lg"
+          "lg:[&_blockquote]:text-4xl lg:[&_blockquote]:leading-tight lg:shadow-lg",
         ),
       },
     ],
