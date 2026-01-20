@@ -1,8 +1,5 @@
 "use client";
 
-import BannerSwiper from "@/app/components/Application/CosmeticsSwiper/BannerSwiper";
-import FrameSwiper from "@/app/components/Application/CosmeticsSwiper/FrameSwiper";
-import MascotSwiper from "@/app/components/Application/CosmeticsSwiper/MaskotSkin";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import {
@@ -12,14 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
-import { countries } from "@/app/data/countries";
-import {
-  setUser,
-  updatePersonalization,
-  updateUser,
-} from "@/app/lib/features/user/userSlice";
+import { setUser, updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { getCurrentUser, getUserCosmetics } from "@/app/lib/utils/userService";
+import { getCurrentUser } from "@/app/lib/utils/userService";
 import { IUser } from "@/app/types/user";
 import axios from "axios";
 import { Upload } from "lucide-react";
@@ -29,17 +21,22 @@ import {
   FormEvent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { toast } from "react-toastify";
+import countryList from "react-select-country-list";
 
 const page = () => {
+  const [searchInput, setSearchInput] = useState("");
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [data, setData] = useState<IUser>(user);
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const options = useMemo(() => countryList().getLabels(), [searchInput]);
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => {
@@ -91,7 +88,7 @@ const page = () => {
           ...(data.full_avatar_url
             ? { full_avatar_url: data.full_avatar_url }
             : {}),
-        })
+        }),
       );
       toast.success("Profile successfully updated");
     } catch (error: any) {
@@ -107,6 +104,8 @@ const page = () => {
       setFile(event.target.files[0]);
     }
   };
+
+  console.log(options);
 
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl pt-18 pb-4 mx-auto">
@@ -234,10 +233,15 @@ const page = () => {
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
             <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.id} value={country.name}>
-                  {country.flag}
-                  {country.name}
+              {options.map((country) => (
+                <SelectItem
+                  className="w-full flex items-center justify-between"
+                  key={country}
+                  value={country}
+                >
+                  <div className="w-full flex items-center justify-between">
+                    {country}
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
