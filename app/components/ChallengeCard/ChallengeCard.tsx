@@ -17,8 +17,6 @@ const getTimePassed = (
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : new Date();
 
-  console.log(end);
-
   const diffMs = Math.abs(end.getTime() - start.getTime());
 
   const totalMinutes = Math.floor(diffMs / (1000 * 60));
@@ -46,8 +44,6 @@ const ChallengeCard = () => {
       image_url: "",
     },
   };
-
-  console.log(challenge);
 
   const hours = getTimePassed(challenge.activate_date, challenge.completed_at);
 
@@ -118,10 +114,10 @@ const ChallengeCard = () => {
             </div>
             {challenge.reward_ticket.status.type !==
               ShipmentStatuses.received && (
-              <div className="text-[13px] text-muted-foreground mt-1">
-                Shipment ID {challenge.reward_ticket.id}
-              </div>
-            )}
+                <div className="text-[13px] text-muted-foreground mt-1">
+                  Shipment ID {challenge.reward_ticket.id}
+                </div>
+              )}
           </div>
         )}
       </div>

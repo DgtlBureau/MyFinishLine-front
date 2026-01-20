@@ -29,12 +29,12 @@ const LeaderboardUser = ({
   total_progress,
   isCurrentUser,
   challengeId,
+  selected_frame
 }: ILeaderboardUserProps) => {
   const [imageError, setImageError] = useState(false);
   const { user } = useAppSelector((state) => state.user);
 
   const linkUrl = id !== user.id ? `profile/${id}` : `profile/journey`
-
 
   return (
     <motion.li
@@ -57,31 +57,34 @@ const LeaderboardUser = ({
             {position}
           </span>
         </div>
-        {!imageError && full_avatar_url ? (
-          <Image
-            className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
-            src={full_avatar_url}
-            width={40}
-            height={40}
-            alt="User image"
-            onError={() => {
-              setImageError(true);
-            }}
-          />
-        ) : avatar_symbol ? (
-          <div
-            style={{
-              backgroundColor: avatar_color,
-            }}
-            className="w-10 h-10 rounded-lg flex items-center justify-center"
-          >
-            {avatar_symbol}
-          </div>
-        ) : (
-          <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
-            <Star />
-          </div>
-        )}
+        <div className="relative w-[50px] h-[50px] flex items-center justify-center">
+          {selected_frame && <Image src={selected_frame?.image_url} width={100} height={100} alt="skin" className="absolute w-full h-full" />}
+          {!imageError && full_avatar_url ? (
+            <Image
+              className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"
+              src={full_avatar_url}
+              width={40}
+              height={40}
+              alt="User image"
+              onError={() => {
+                setImageError(true);
+              }}
+            />
+          ) : avatar_symbol ? (
+            <div
+              style={{
+                backgroundColor: avatar_color,
+              }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+            >
+              {avatar_symbol}
+            </div>
+          ) : (
+            <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
+              <Star />
+            </div>
+          )}
+        </div>
         <div className="font-medium text-xs leading-4 text-[#09090B]">
           {username}
           {isCurrentUser && <div className="text-xs text-black">You</div>}
