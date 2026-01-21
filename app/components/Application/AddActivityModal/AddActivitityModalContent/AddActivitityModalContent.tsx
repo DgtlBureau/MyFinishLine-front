@@ -261,6 +261,7 @@ const AddActivitityModalContent = ({
         className="mt-2 w-full flex items-center justify-center"
         type="button"
         variant="outline"
+        onClick={onClose}
       >
         Cancel
       </Button>
