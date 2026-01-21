@@ -11,6 +11,15 @@ export async function POST(request: NextRequest) {
       email,
       password,
     });
+    const { data } = await instance.post(
+      "/user/set-init",
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + response.data.bearer_token,
+        },
+      },
+    );
 
     if (response.data.bearer_token) {
       const cookieStore = await cookies();
@@ -23,10 +32,10 @@ export async function POST(request: NextRequest) {
       });
 
       const { token, ...userData } = response.data;
-      return NextResponse.json(userData);
+      return NextResponse.json({ ...userData, set_init: data });
     }
 
-    return NextResponse.json(response.data);
+    return NextResponse.json({ ...response.data, set_init: true });
   } catch (error: any) {
     console.error("Login API error:", error);
 
@@ -37,7 +46,7 @@ export async function POST(request: NextRequest) {
           error: error.response.data?.error || "authentication_error",
           ...error.response.data,
         },
-        { status: error.response.status }
+        { status: error.response.status },
       );
     }
 
@@ -47,7 +56,7 @@ export async function POST(request: NextRequest) {
           message: "Cannot connect to backend service",
           error: "service_unavailable",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -58,7 +67,7 @@ export async function POST(request: NextRequest) {
           message: "Request timeout. Please try again.",
           error: "timeout_error",
         },
-        { status: 408 }
+        { status: 408 },
       );
     }
 
@@ -68,7 +77,7 @@ export async function POST(request: NextRequest) {
         message: "Internal server error",
         error: "internal_error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
