@@ -122,7 +122,7 @@ const ConfirmCode = () => {
 
   return (
     <div className="fixed bg-white p-4 rounded-lg">
-      <span className="text-center text-3xl font-medium">
+      <span className="block text-center text-3xl font-medium">
         Enter your challenge code below
       </span>
       <div className="mt-10 flex items-center">
@@ -170,15 +170,15 @@ const ConfirmCode = () => {
                   style={
                     index === 0
                       ? {
-                          borderTopLeftRadius: 10,
-                          borderBottomLeftRadius: 10,
-                        }
+                        borderTopLeftRadius: 10,
+                        borderBottomLeftRadius: 10,
+                      }
                       : index === 5
-                      ? {
+                        ? {
                           borderTopRightRadius: 10,
                           borderBottomRightRadius: 10,
                         }
-                      : {}
+                        : {}
                   }
                   id={`code-${index}`}
                   type="text"
