@@ -20,9 +20,6 @@ const Activity = ({
   sport_type
 }: IActivity & { delay: number }) => {
 
-  console.log('activity_time', activity_time);
-
-
   return (
     <motion.li
       initial={{
