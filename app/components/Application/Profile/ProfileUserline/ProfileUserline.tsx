@@ -22,7 +22,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden">
           <Image
             className="object-cover"
-            src={currentUser.selected_banner?.image_url}
+            src={currentUser?.selected_banner?.image_url}
             alt="Banner"
             fill
           />

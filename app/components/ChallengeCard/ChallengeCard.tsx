@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
 import { ShipmentStatuses } from "@/app/types";
+import { setUserProfieChallenges } from "@/app/lib/features/profile/profileSlice";
 
 const getTimePassed = (
   startDate: string,
@@ -32,11 +33,12 @@ const getTimePassed = (
   return `${hours}h ${minutes}m`;
 };
 
-const ChallengeCard = () => {
+const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { challenges } = useAppSelector((state) => state.user);
-  const challenge = challenges?.[0] || {
+  const { challenges: anotherCahallenges } = useAppSelector((state) => state.profile);
+  const challenge = userId ? anotherCahallenges?.[0] : challenges?.[0] || {
     user_distance: 0,
     total_distance: 0,
     image_url: "",
@@ -52,8 +54,13 @@ const ChallengeCard = () => {
 
   const handleLoadChallenges = async () => {
     try {
-      const data = await getUserChallenges();
-      dispatch(setUserChallenges(data.data));
+      const data = await getUserChallenges(userId);
+      if (userId) {
+        dispatch(setUserProfieChallenges(data.data))
+      } else {
+
+        dispatch(setUserChallenges(data.data));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +78,18 @@ const ChallengeCard = () => {
     handleLoadChallenges();
   }, []);
 
-  if (!challenges?.[0]) {
+  if (!userId && !challenges?.[0]) {
+    return (
+      <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
+        <span className="block text-center">No active challenge available</span>
+        <Link className="block text-center mt-2 underline" href="/payment">
+          Purchase one here
+        </Link>
+      </div>
+    );
+  }
+
+  if (userId && !anotherCahallenges?.[0]) {
     return (
       <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
         <span className="block text-center">No active challenge available</span>
@@ -114,10 +132,10 @@ const ChallengeCard = () => {
             </div>
             {challenge.reward_ticket.status.type !==
               ShipmentStatuses.received && (
-              <div className="text-[13px] text-muted-foreground mt-1">
-                Shipment ID {challenge.reward_ticket.id}
-              </div>
-            )}
+                <div className="text-[13px] text-muted-foreground mt-1">
+                  Shipment ID {challenge.reward_ticket.id}
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -151,7 +169,7 @@ const ChallengeCard = () => {
           {hours}
         </span>
       </div>
-      {challenge.is_completed ? (
+      {!userId && challenge.is_completed ? (
         <Link
           href={`/app/profile/redeem?reward_id=${challenge.reward?.id}&challenge_name=${challenge.name}`}
           className="block text-center bg-transparent w-full mt-8 border-black py-2 px-4 border text-black text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer"

@@ -1,3 +1,4 @@
+import { IActiveChallenge } from "@/app/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IProfile {
@@ -30,6 +31,7 @@ interface IProfile {
 
 const initialState: {
     profile: IProfile
+    challenges: IActiveChallenge[]
 } = {
     profile: {
         id: 0,
@@ -56,7 +58,8 @@ const initialState: {
             image_url: '',
             contract_id: 0
         }
-    }
+    },
+    challenges: [],
 }
 
 const profileSlice = createSlice({
@@ -66,6 +69,9 @@ const profileSlice = createSlice({
         setUserProfile: (state, action: PayloadAction<IProfile>) => {
             state.profile = action.payload;
         },
+        setUserProfieChallenges: (state, action: PayloadAction<IActiveChallenge[]>) => {
+            state.challenges = action.payload;
+        },
         clearProfile: () => {
             return initialState;
         },
@@ -74,6 +80,7 @@ const profileSlice = createSlice({
 
 export const {
     setUserProfile,
+    setUserProfieChallenges,
     clearProfile
 } = profileSlice.actions;
 export default profileSlice.reducer;

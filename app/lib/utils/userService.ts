@@ -44,8 +44,10 @@ export const getUserActivities = async (options: {
   return data;
 };
 
-export const getUserChallenges = async () => {
-  const { data } = await axios.get("/api/user/challenges");
+export const getUserChallenges = async (userId?: string) => {
+  const { data } = await axios.get("/api/user/challenges", {
+    params: userId ? { user_id: userId } : undefined,
+  });
   return data;
 };
 
