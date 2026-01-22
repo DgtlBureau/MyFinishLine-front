@@ -112,7 +112,7 @@ const AccordionContent = ({
                 >
                   <button
                     onClick={() => handleClickBlock(item.id)}
-                    className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
+                    className="flex items-center text-left justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
                   >
                     {item.question}
                     <motion.div

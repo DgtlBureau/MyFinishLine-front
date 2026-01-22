@@ -226,38 +226,46 @@ const Page = () => {
           );
         })}
       </ul>
-      <div className="p-[32px_16px]">
+      <div className="p-[16px_16px]">
         <div className="flex flex-col gap-2">
           <p>Contact info</p>
-          <ul>
-            <li className="border-b border-border pb-6 px-6">
-              <span className="text-2xl leading-8 text-[#71717A]">Email Us</span>
-              <span className="block mt-6 text-base leading-6 text-[#09090B]">
-                help@example.com
-              </span>
-              <span className="block text-base leading-6 text-[#09090B]">
-                support@example.com
-              </span>
+          <ul className="text-sm text-muted-foreground">
+            <li className="border-b border-border px-6 py-6">
+              <p className="text-sm text-base leading-6 text-foreground text-muted-foreground">
+                Email:
+                <a
+                  href="mailto:access@myfinishline.io"
+                  className="ml-1 font-medium text-primary hover:underline text-black"
+                >
+                  access@myfinishline.io
+                </a>
+              </p>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                MyFinishLine <span className="text-black">v1.0.0</span>
+              </p>
             </li>
-            <li className="p-6">
-              <span className="text-2xl leading-8 text-[#71717A]">Offices</span>
-              <span className="block mt-6 text-xl leading-8 text-[#71717A]">
-                New York
-              </span>
-              <span className="mt-2 block text-base leading-6 text-[#71717A]">
-                123 6th St. Melbourne, FL 32904, USA
-              </span>
-              <span className="block mt-8 text-xl leading-8 text-[#71717A]">
-                London
-              </span>
-              <span className="block mt-2 text-base leading-6 text-[#71717A]">
-                123 3rd St. London, TL 32904, UK
-              </span>
+
+            <li className="px-6 py-6">
+              <p className="font-medium text-foreground">
+                © Fortem Group Limited
+              </p>
+
+              <p className="mt-4 text-xl uppercase tracking-wide text-muted-foreground">
+                Virtual Sports Quests
+              </p>
+
+              <address className="mt-4 not-italic space-y-1 text-sm text-muted-foreground">
+                <p>Unit E01, 10/F, Wong King Ind Building</p>
+                <p>2–4 Tai Yau Street</p>
+                <p>San Po Kong</p>
+                <p>Hong Kong</p>
+              </address>
             </li>
           </ul>
         </div>
       </div>
-      <div className="p-[32px_16px] flex items-center justify-center">
+      <div className="p-[5px_16px] flex items-center justify-center">
         {isSent ? (
           <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
             <p className="text-white">
