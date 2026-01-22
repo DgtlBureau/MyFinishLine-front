@@ -226,7 +226,7 @@ const Page = () => {
           );
         })}
       </ul>
-      <div className="p-[16px_16px]">
+      <div className="p-[16px]">
         <div className="flex flex-col gap-2">
           <p>Contact info</p>
           <ul className="text-sm text-muted-foreground">
