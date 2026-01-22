@@ -1,13 +1,14 @@
-import { useEffect, useState, useRef } from "react";
-import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useAnimation } from "motion/react";
-import Image from "next/image";
-import StoryShadow from "./StoryShadow/StoryShadow";
-import { IStory } from "@/app/types";
-import axios from "axios";
-import { useAppDispatch } from "@/app/lib/hooks";
 import { setViewedStory } from "@/app/lib/features/challenge/challengeSlice";
+import { AnimatePresence, motion, useAnimation } from "motion/react";
+import { useEffect, useState, useRef } from "react";
+import StoryShadow from "./StoryShadow/StoryShadow";
+import { useAppDispatch } from "@/app/lib/hooks";
+import StorySlide from "./StorySlide/StorySlide";
 import { Button } from "../../ui/button";
+import { createPortal } from "react-dom";
+import { IStory } from "@/app/types";
+import Image from "next/image";
+import axios from "axios";
 
 const StoryList = ({
   stories,
@@ -219,38 +220,20 @@ const StoryList = ({
 
         <AnimatePresence mode="wait">
           {currentStory && (
-            <motion.div
-              key={currentStory.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="relative w-full h-full"
-            >
-              <Image
-                className="w-full h-full object-contain"
-                src={currentStory?.image_url}
-                fill
-                alt="Story"
-                priority
-                sizes="(max-width: 1080px) 100vw, 1080px"
-              />
-            </motion.div>
+            <StorySlide
+              id={currentStory.id}
+              image_url={currentStory.image_url}
+            />
           )}
         </AnimatePresence>
       </div>
 
       {/* {currentStory && currentStory.content && (
-        <div className="absolute bottom-0 z-100 left-0 right-0 bg-black/75 backdrop-blur-md">
-          <div className="relative block h-full max-w-270 mx-auto pt-2 px-2 pb-9">
-            <div className="absolute bottom-1 right-2 w-fit z-100 flex gap-1 bg-black/50 px-3 py-1.5 rounded-full text-white text-xs">
-              {activeStoryIndex + 1} / {stories.length}
-            </div>
-            <p className="text-white text-lg text-center font-medium">
-              {currentStory.content}
-            </p>
-          </div>
-        </div>
+        <StoryDescription
+          currentStoryNumber={activeStoryIndex + 1}
+          storiesAmount={stories.length}
+          text={currentStory.content}
+        />
       )} */}
     </div>
   );

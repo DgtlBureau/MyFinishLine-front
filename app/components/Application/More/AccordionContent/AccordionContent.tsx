@@ -18,7 +18,6 @@ interface IAccordionContentProps {
       answer: { id: number; variant: string }[];
     }[];
   }[];
-  content: () => ReactNode;
   additional_content?: () => ReactNode;
 }
 
@@ -85,7 +84,6 @@ const contentTextVariants = {
 const AccordionContent = ({
   list,
   title,
-  content,
   additional_content,
 }: IAccordionContentProps) => {
   const [expandedBlockId, setExpandedBlockId] = useState<null | number>(null);
@@ -104,60 +102,59 @@ const AccordionContent = ({
         )}
         <ul className="mt-4">
           {list
-            ? [...list[0].variants.slice(0, 5)]?.map((item) => {
-                const isExpanded = expandedBlockId === item.id;
+            && [...list[0].variants.slice(0, 5)]?.map((item) => {
+              const isExpanded = expandedBlockId === item.id;
 
-                return (
-                  <li
-                    key={item.id}
-                    className="border-b border-border overflow-hidden nth-last-[border-b-transparent]"
+              return (
+                <li
+                  key={item.id}
+                  className="border-b border-border overflow-hidden nth-last-[border-b-transparent]"
+                >
+                  <button
+                    onClick={() => handleClickBlock(item.id)}
+                    className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
                   >
-                    <button
-                      onClick={() => handleClickBlock(item.id)}
-                      className="flex items-center justify-between text-base py-4 font-medium leading-6 text-[#09090B] w-full cursor-pointer"
+                    {item.question}
+                    <motion.div
+                      variants={arrowVariants}
+                      initial="collapsed"
+                      animate={isExpanded ? "expanded" : "collapsed"}
                     >
-                      {item.question}
-                      <motion.div
-                        variants={arrowVariants}
-                        initial="collapsed"
-                        animate={isExpanded ? "expanded" : "collapsed"}
-                      >
-                        <ChevronRight />
-                      </motion.div>
-                    </button>
+                      <ChevronRight />
+                    </motion.div>
+                  </button>
 
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.ol
-                          variants={contentContainerVariants}
-                          initial="collapsed"
-                          animate="expanded"
-                          exit="collapsed"
-                          className={`overflow-hidden ${
-                            item.answer.length > 1
-                              ? "list-decimal list-inside marker:font-semibold"
-                              : ""
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.ol
+                        variants={contentContainerVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                        className={`overflow-hidden ${item.answer.length > 1
+                          ? "list-decimal list-inside marker:font-semibold"
+                          : ""
                           }`}
-                        >
-                          {item.answer.map((el) => (
-                            <motion.li
-                              key={el.id}
-                              variants={contentTextVariants}
-                              initial="collapsed"
-                              animate="expanded"
-                              exit="collapsed"
-                              className="pb-4 text-sm leading-5 text-[#09090B]"
-                            >
-                              <RenderBoldText text={el.variant} />
-                            </motion.li>
-                          ))}
-                        </motion.ol>
-                      )}
-                    </AnimatePresence>
-                  </li>
-                );
-              })
-            : content()}
+                      >
+                        {item.answer.map((el) => (
+                          <motion.li
+                            key={el.id}
+                            variants={contentTextVariants}
+                            initial="collapsed"
+                            animate="expanded"
+                            exit="collapsed"
+                            className="pb-4 text-sm leading-5 text-[#09090B]"
+                          >
+                            <RenderBoldText text={el.variant} />
+                          </motion.li>
+                        ))}
+                      </motion.ol>
+                    )}
+                  </AnimatePresence>
+                </li>
+              );
+            })
+          }
         </ul>
         {additional_content && additional_content()}
       </div>

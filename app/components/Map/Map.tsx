@@ -248,14 +248,6 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
             <Crosshair />
           </motion.button>
         </div>
-        {/* <div className="fixed bottom-18 right-2 z-30">
-           <MapStats
-            distance={total_distance}
-            completedDistance={user_distance}
-            steps={steps}
-            startDate={activate_date}
-          /> 
-        </div> */}
       </div>
 
       <AnimatePresence>

@@ -1,15 +1,16 @@
 "use client";
 
+import AddActivityModal from "@/app/components/Application/AddActivityModal/AddActivityModal";
 import ActivitiesList from "@/app/components/Application/Stats/ActivitiesList/ActivitiesList";
 import { Button } from "@/app/components/ui/button";
-import { setActivities } from "@/app/lib/features/activities/activitiesSlice";
+import { addActivity } from "@/app/lib/features/activities/activitiesSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import {
   getUserActivities,
   updateUserStravaActivities,
 } from "@/app/lib/utils/userService";
 import { IActivity } from "@/app/types";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, Plus, RefreshCw } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useInView } from "react-intersection-observer";
@@ -23,12 +24,10 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoaded } = useAppSelector((state) => state.activities);
   const [activities, setActivities] = useState<IActivity[]>([]);
-  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isAdditionalLoading, setIsAdditionalLoading] = useState(false);
 
-  // Refs to prevent duplicate calls
   const isLoadingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
@@ -61,15 +60,13 @@ const Page = () => {
         if (page === 1) {
           setActivities(data.data);
         } else {
-          // Filter out duplicates before adding new activities
           const newActivities = data.data.filter(
             (newActivity: IActivity) =>
-              !activities.some((existing) => existing.id === newActivity.id)
+              !activities.some((existing) => existing.id === newActivity.id),
           );
           setActivities((prev) => [...prev, ...newActivities]);
         }
 
-        // Update ref for hasMore condition
         hasMoreRef.current = data.last_page ? page < data.last_page : false;
       } catch (error) {
         console.error("Error fetching activities:", error);
@@ -79,8 +76,9 @@ const Page = () => {
         isLoadingRef.current = false;
       }
     },
-    [activities]
+    [activities],
   );
+  const dispatch = useAppDispatch();
 
   const handleLoadAllActivities = async () => {
     await handleGetActivitiesFromStrava();
@@ -88,24 +86,19 @@ const Page = () => {
     await handleLoadActivities(1);
   };
 
-  // Load initial activities
   useEffect(() => {
     const loadInitialData = async () => {
-      // Only update from Strava if not already loaded
       if (!isLoaded) {
         await handleGetActivitiesFromStrava();
       }
 
-      // Load initial activities
       await handleLoadActivities(1);
     };
 
     loadInitialData();
   }, []);
 
-  // Handle infinite scroll
   useEffect(() => {
-    // Prevent multiple calls and check if there's more data
     if (
       inView &&
       hasMoreRef.current &&
@@ -126,10 +119,18 @@ const Page = () => {
     isLoading,
   ]);
 
+  const handleAddActivity = (activity: IActivity) => {
+    setActivities((prevState) => {
+      return [activity, ...prevState];
+    });
+  };
+
   return (
     <main className="relative px-4 max-w-4xl mx-auto">
       <div className="mt-10 flex items-center justify-between">
-        <div className="flex-1"></div>
+        <div className="flex-1">
+          <AddActivityModal handleAddActivity={handleAddActivity} />
+        </div>
         <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
           Recent Activities
         </h4>

@@ -81,7 +81,7 @@ const AppHeader = () => {
         {isCurrentLinkNested ? (
           <button
             onClick={handleGoBack}
-            className="flex gap-1 font-medium py-4 cursor-pointer text-background"
+            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-background"
           >
             <ChevronLeft />
             Back
@@ -90,11 +90,14 @@ const AppHeader = () => {
           <div className="h-14" />
         )}
         {currentLink?.title && (
-          <p className="text-white text-xl font-semibold">
+          <p className="text-white text-xl font-semibold text-center flex-1">
             {currentLink.title}
           </p>
         )}
-        <button className="flex items-center gap-2" onClick={handleGoToEdit}>
+        <button
+          className="flex flex-1 items-center justify-end gap-2"
+          onClick={handleGoToEdit}
+        >
           <Settings color="white" />
         </button>
       </div>

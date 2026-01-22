@@ -83,25 +83,6 @@ export const FaqForm = ({
           onSubmit={handleSubmit}
           name="faq-form"
         >
-          <div className="flex w-full flex-col gap-1">
-            <span className="text-sm md:text-base">{"Message"}</span>
-            <textarea
-              name="question"
-              id="question"
-              autoComplete="off"
-              value={values.question}
-              rows={4}
-              onChange={(e) => setValues("question", e.target.value)}
-              placeholder={`Write your question...`}
-              className={`resize-none rounded-md border border-gray-300 p-2 outline-none ${
-                touched.question && errors.question ? "border-red-500" : ""
-              }`}
-              onBlur={() => setFieldTouched("question", true)}
-            />
-            {errors.question && touched.question && (
-              <ErrorInfo error={errors.question} />
-            )}
-          </div>
 
           <div className="flex w-full flex-col gap-1">
             <span className="text-sm md:text-base">
@@ -116,14 +97,32 @@ export const FaqForm = ({
               value={values.email}
               onChange={(e) => setValues("email", e.target.value)}
               placeholder={"email"}
-              className={`rounded-md border border-gray-300 p-2 outline-none ${
-                touched.email && errors.email ? "border-red-500" : ""
-              } ${values.user_id ? "text-gray-500" : ""}`}
+              className={`rounded-md border border-gray-300 p-2 outline-none ${touched.email && errors.email ? "border-red-500" : ""
+                } ${values.user_id ? "text-gray-500" : ""}`}
               onBlur={() => setFieldTouched("email", true)}
             />
 
             {errors.email && touched.email && (
               <ErrorInfo error={errors.email as string} />
+            )}
+          </div>
+
+          <div className="flex w-full flex-col gap-1">
+            <span className="text-sm md:text-base">{"Message"}</span>
+            <textarea
+              name="question"
+              id="question"
+              autoComplete="off"
+              value={values.question}
+              rows={4}
+              onChange={(e) => setValues("question", e.target.value)}
+              placeholder={`Write your question...`}
+              className={`resize-none rounded-md border border-gray-300 p-2 outline-none ${touched.question && errors.question ? "border-red-500" : ""
+                }`}
+              onBlur={() => setFieldTouched("question", true)}
+            />
+            {errors.question && touched.question && (
+              <ErrorInfo error={errors.question} />
             )}
           </div>
 
@@ -140,11 +139,10 @@ export const FaqForm = ({
             <button
               disabled={!isValid}
               type="submit"
-              className={`bg-primary flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-white transition-all duration-300 ${
-                isValid
-                  ? "hover:bg-primary-hover cursor-not-allowed"
-                  : "opacity-50"
-              }`}
+              className={`bg-primary flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-white transition-all duration-300 ${isValid
+                ? "hover:bg-primary-hover cursor-not-allowed"
+                : "opacity-50"
+                }`}
             >
               <SendIcon className="h-5 w-5" />
               {"Send feedback"}

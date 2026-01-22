@@ -2,19 +2,20 @@
 
 import StatBlock from "../../Shared/StatBlock/StatBlock";
 import { useAppSelector } from "@/app/lib/hooks";
-import { User } from "lucide-react";
 import Image from "next/image";
 
 interface IMapHeaderProps {
   challengeName: string;
   startDate: string;
   totalDistance: number;
+  distance: string
 }
 
 const MapHeader = ({
   challengeName,
   startDate,
   totalDistance,
+  distance
 }: IMapHeaderProps) => {
   const { user } = useAppSelector((state) => state.user);
 
@@ -34,11 +35,13 @@ const MapHeader = ({
             <div className="mt-3 flex items gap-4">
               <StatBlock
                 label="Total distance"
-                value={String(totalDistance) + " km"}
+                value={String(totalDistance) + " km" + ` / ${distance} km`}
+                reverse
               />
               <StatBlock
                 label="Days on track"
                 value={daysOnTrack?.toFixed(1)}
+                reverse
               />
             </div>
           </div>
@@ -61,8 +64,8 @@ const MapHeader = ({
                 alt="Avatar"
               />
             ) : (
-              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-[#C3B7E2]">
-                <User />
+              <div className="flex items-center justify-center w-20 h-20 rounded-full" style={{ backgroundColor: user?.avatar_color }}>
+                <span className="font-bold text-3xl">{user.avatar_symbol}</span>
               </div>
             )}
           </div>

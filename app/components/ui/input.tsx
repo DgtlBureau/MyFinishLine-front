@@ -5,16 +5,18 @@ import { cn } from "@/app/lib/utils";
 const Input = React.memo(
   ({
     className,
+    containerClassName,
     error,
     displayError = true,
     type,
     ...props
   }: {
     displayError?: boolean;
+    containerClassName?: string;
     error?: string;
   } & React.ComponentProps<"input">) => {
     return (
-      <div>
+      <div className={containerClassName}>
         <input
           type={type}
           data-slot="input"
@@ -24,7 +26,7 @@ const Input = React.memo(
             "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
             error && "ring-1 ring-red-400",
-            className
+            className,
           )}
           {...props}
         />
@@ -33,7 +35,7 @@ const Input = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 export { Input };

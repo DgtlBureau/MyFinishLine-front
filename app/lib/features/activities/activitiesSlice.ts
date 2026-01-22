@@ -19,12 +19,18 @@ const activitiesSlice = createSlice({
         activities: [action.payload, ...state.activities],
       };
     },
+    addActivity: (state, action: PayloadAction<IActivity>) => {
+      return {
+        isLoaded: state.isLoaded,
+        activities: [action.payload],
+      };
+    },
     clearActivities: () => {
       return initialState;
     },
   },
 });
 
-export const { setActivities, updateActivities, clearActivities } =
+export const { setActivities, updateActivities, clearActivities, addActivity } =
   activitiesSlice.actions;
 export default activitiesSlice.reducer;

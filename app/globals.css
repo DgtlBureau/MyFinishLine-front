@@ -60,50 +60,16 @@
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 
   --animate-pulse-shimmer: pulse 2s ease-in-out infinite;
-  --animate-sheen-sweep: @keyframes pulse {
-    0% {
-      background-color: #666;
-    }
-    50% {
-      background-color: #999;
-    }
-    100% {
-      background-color: #666;
-    }
-  }
-
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(calc(-100% - var(--gap)));
-    }
-  }
-  @keyframes marquee-vertical {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(calc(-100% - var(--gap)));
-    }
-  }
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(calc(-100% - var(--gap)));
-    }
-  }
-  @keyframes marquee-vertical {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(calc(-100% - var(--gap)));
-    }
-  }
+  --animate-sheen-sweep: @keyframes pulse {0% {background-color: #666;} 50%
+    {background-color: #999;} 100% {background-color: #666;}} @keyframes marquee
+    {from {transform: translateX(0) ;} to
+    {transform: translateX(calc(-100% - var(--gap))) ;}} @keyframes
+    marquee-vertical {from {transform: translateY(0) ;} to
+    {transform: translateY(calc(-100% - var(--gap))) ;}} @keyframes marquee
+    {from {transform: translateX(0) ;} to
+    {transform: translateX(calc(-100% - var(--gap))) ;}} @keyframes
+    marquee-vertical {from {transform: translateY(0) ;} to
+    {transform: translateY(calc(-100% - var(--gap))) ;}};
 }
 
 :root {
@@ -309,8 +275,6 @@ html.theme-transition::view-transition-new(root) {
 .challenges-swiper .swiper-slide {
   opacity: 0.7;
   scale: 0.9;
-  /* transform: scale(0.9); */
-  transition: opacity 0.7s ease, scale 0.7s ease;
 }
 
 .challenges-swiper .swiper-slide-active {
