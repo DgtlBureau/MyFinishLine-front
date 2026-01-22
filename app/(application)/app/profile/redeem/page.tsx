@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, Suspense, useCallback, useState } from "react";
+import { FormEvent, Suspense, useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "react-toastify";
@@ -13,11 +13,14 @@ import RedeemStep3 from "@/app/components/Application/RedeemSteps/RedeemStep3/Re
 
 import "flag-icons/css/flag-icons.min.css";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { IActiveChallenge } from "@/app/types";
 
 const Content = () => {
   const { user } = useAppSelector((state) => state.user);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepIndex, setStepIndex] = useState(1);
+  const [challenge, setChallenge] = useState<IActiveChallenge>();
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
@@ -26,7 +29,6 @@ const Content = () => {
     zip_code: "",
     address_1: "",
     address_2: "",
-    company_name: "",
     city: "",
     email: user.email || "",
     dial_code: "",
@@ -36,6 +38,22 @@ const Content = () => {
   const searchParams = useSearchParams();
   const reward_id = searchParams.get("reward_id");
   const challenge_name = searchParams.get("challenge_name");
+  const challenge_id = searchParams.get("challenge_id");
+
+  const handleLoadChallenge = async () => {
+    try {
+      const { data } = await axios.get(
+        "/api/user/challenge?challenge_id=" + challenge_id,
+      );
+      setChallenge(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadChallenge();
+  }, []);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -70,12 +88,12 @@ const Content = () => {
     }
   };
 
-  const handleGoToProfile = () => {
-    router.push("/app/profile");
-  };
-
   const handleGoNext = () => {
     setStepIndex((prevState) => prevState + 1);
+  };
+
+  const handleGoBack = () => {
+    setStepIndex((prevState) => prevState - 1);
   };
 
   return (
@@ -117,27 +135,34 @@ const Content = () => {
                 handleUpdateSelect={handleUpdateState}
               />
             ) : (
-              <RedeemStep3 {...formData} isLoading={isSubmitting} />
+              <RedeemStep3
+                {...formData}
+                isLoading={isSubmitting}
+                rewardImage={challenge?.reward?.image_url || ""}
+              />
             )}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 }}
-              className="flex flex-col gap-3 mt-2"
+              className="flex gap-3 mt-2"
             >
-              {stepIndex !== 3 && (
-                <Button type="button" className="flex-1" onClick={handleGoNext}>
-                  Next
+              {stepIndex !== 1 && (
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="flex-1"
+                  onClick={handleGoBack}
+                >
+                  <ArrowLeft />
+                  Back
                 </Button>
               )}
-              <Button
-                variant="outline"
-                type="button"
-                className="flex-1"
-                onClick={handleGoToProfile}
-              >
-                Close
-              </Button>
+              {stepIndex !== 3 && (
+                <Button type="button" className="flex-1" onClick={handleGoNext}>
+                  Next <ArrowRight />
+                </Button>
+              )}
             </motion.div>
           </form>
         </motion.div>

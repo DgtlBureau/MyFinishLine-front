@@ -18,7 +18,7 @@ const SettingSection = ({
       transition={{ delay: delay * 0.05, duration: 0.25 }}
       className="mb-8"
     >
-      <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">
+      <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
         {title}
       </h2>
       <div className="space-y-0.5">{children}</div>

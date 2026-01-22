@@ -153,7 +153,7 @@ const ChallengeCard = () => {
       </div>
       {challenge.is_completed ? (
         <Link
-          href={`/app/profile/redeem?reward_id=${challenge.reward?.id}&challenge_name=${challenge.name}`}
+          href={`/app/profile/redeem?reward_id=${challenge.reward?.id}&challenge_name=${challenge.name}&challenge_id=${challenge.id}`}
           className="block text-center bg-transparent w-full mt-8 border-black py-2 px-4 border text-black text-sm leading-6 font-medium hover:bg-white hover:text-black shadow-xs transition-colors rounded-lg cursor-pointer"
         >
           Claim medal

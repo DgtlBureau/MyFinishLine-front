@@ -9,23 +9,23 @@ interface IMapHeaderProps {
   challengeName: string;
   startDate: string;
   totalDistance: number;
-  distance: string
+  distance: string;
 }
 
 const MapHeader = ({
   challengeName,
   startDate,
   totalDistance,
-  distance
+  distance,
 }: IMapHeaderProps) => {
   const { user } = useAppSelector((state) => state.user);
 
-  const date = getDaysAndHours(startDate)
+  const date = getDaysAndHours(startDate);
 
   return (
     <header className="fixed z-100 w-full ">
       <div className="max-w-2xl p-4 mx-auto w-full bg-linear-to-b from-[#C3B7E2] via-[#E9E0F6CC] via-60% to-transparent">
-        <Image src="/icons/logo-new.svg" width={100} height={30} alt="Logo" />
+        <Image src="/images/logo-line.png" width={200} height={60} alt="Logo" />
         <div className="mt-3 flex justify-between items-center">
           <div>
             <h2 className="font-medium text-lg">{challengeName}</h2>
@@ -35,11 +35,7 @@ const MapHeader = ({
                 value={String(totalDistance) + " km" + ` / ${distance} km`}
                 reverse
               />
-              <StatBlock
-                label="Time on track"
-                value={date}
-                reverse
-              />
+              <StatBlock label="Time on track" value={date} reverse />
             </div>
           </div>
           <div className="w-24 h-24 relative rounded-full flex items-center justify-center">
@@ -61,7 +57,10 @@ const MapHeader = ({
                 alt="Avatar"
               />
             ) : (
-              <div className="flex items-center justify-center w-20 h-20 rounded-full" style={{ backgroundColor: user?.avatar_color }}>
+              <div
+                className="flex items-center justify-center w-20 h-20 rounded-full"
+                style={{ backgroundColor: user?.avatar_color }}
+              >
                 <span className="font-bold text-3xl">{user.avatar_symbol}</span>
               </div>
             )}

@@ -53,6 +53,7 @@ const page = () => {
   if (banners.length) {
     return (
       <PersonalizationList
+        type="banners"
         items={banners}
         handleSelectItem={handleSetActive}
         selectedId={user.selected_banner?.id}

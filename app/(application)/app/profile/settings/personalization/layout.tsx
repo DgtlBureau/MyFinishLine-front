@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
+import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 
 const links = [
   {
@@ -30,41 +31,45 @@ const page = ({
   const pathname = usePathname();
 
   return (
-    <main className="max-w-4xl mx-auto pt-18 px-4">
-      <h2 className="text-3xl">Personalization</h2>
-
-      <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b">
-        {links.map((link) => {
-          return (
-            <Link
-              className="flex-1 p-1 py-2 text-sm text-center relative text-foreground"
-              key={link.id}
-              href={link.href}
-            >
-              {pathname.includes(link.href) && (
-                <motion.div
-                  className="absolute w-full h-0.5 left-0 bottom-0 bg-black rounded-lg shadow-sm"
-                  layoutId="personalization"
-                  transition={{
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 30,
-                  }}
-                />
-              )}
-              <span
-                className={`${
-                  pathname.includes(link.href) && "font-semibold transition-all"
-                } relative z-10 text-sm leading-5 flex items-center justify-center gap-1.5`}
+    <PageContainer
+      title="Personalization"
+      description="Edit how you and other users will see your profile."
+    >
+      <div className="px-4">
+        <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b">
+          {links.map((link) => {
+            return (
+              <Link
+                className="flex-1 p-1 py-2 text-sm text-center relative text-foreground"
+                key={link.id}
+                href={link.href}
               >
-                {link.name}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-      {children}
-    </main>
+                {pathname.includes(link.href) && (
+                  <motion.div
+                    className="absolute w-full h-0.5 left-0 bottom-0 bg-black rounded-lg shadow-sm"
+                    layoutId="personalization"
+                    transition={{
+                      type: "spring",
+                      stiffness: 150,
+                      damping: 30,
+                    }}
+                  />
+                )}
+                <span
+                  className={`${
+                    pathname.includes(link.href) &&
+                    "font-semibold transition-all"
+                  } relative z-10 text-sm leading-5 flex items-center justify-center gap-1.5`}
+                >
+                  {link.name}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+        {children}
+      </div>
+    </PageContainer>
   );
 };
 

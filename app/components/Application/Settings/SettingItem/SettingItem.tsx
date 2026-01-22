@@ -30,8 +30,8 @@ const SettingItem = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay * 0.03, duration: 0.2 }}
       className={cn(
-        "flex items-center justify-between px-3 py-3 rounded-md transition-colors group hover:bg-[hsl(var(--setting-hover))] active:bg-[hsl(var(--setting-active))]",
-        type !== "toggle" && onClick && "cursor-pointer"
+        "flex items-center justify-between py-3 rounded-md transition-colors group hover:bg-[hsl(var(--setting-hover))] active:bg-[hsl(var(--setting-active))]",
+        type !== "toggle" && onClick && "cursor-pointer",
       )}
       onClick={type !== "toggle" ? onClick : undefined}
     >

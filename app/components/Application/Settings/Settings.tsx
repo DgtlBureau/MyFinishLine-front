@@ -50,9 +50,7 @@ const Settings = () => {
           onClick={() => handleGoTo("/app/profile/settings/personalization")}
           delay={1}
         />
-        <div className="px-2">
-          <Integrations />
-        </div>
+        <Integrations />
       </SettingSection>
 
       <Separator className="my-6 bg-border" />

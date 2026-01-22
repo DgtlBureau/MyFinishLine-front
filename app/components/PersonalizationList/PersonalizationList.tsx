@@ -2,10 +2,12 @@ import PersonalizationItem from "./PersonalizationItem/PersonalizationItem";
 
 const PersonalizationList = ({
   items,
+  type,
   selectedId,
   handleSelectItem,
 }: {
   items: any[];
+  type: "frames" | "skins" | "banners";
   selectedId: number | undefined;
   handleSelectItem: (item: {
     id: number;
@@ -19,6 +21,7 @@ const PersonalizationList = ({
       {items.map((item, index) => (
         <PersonalizationItem
           key={item.id}
+          type={type}
           {...item}
           index={index}
           isSelected={item.id === selectedId}

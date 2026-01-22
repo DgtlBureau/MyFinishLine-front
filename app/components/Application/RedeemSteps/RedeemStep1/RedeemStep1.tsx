@@ -7,14 +7,12 @@ import {
   SelectValue,
 } from "@/app/components/ui/select";
 import { motion } from "framer-motion";
-import { countries } from "@/app/data/countries";
 import { useMemo } from "react";
 import countryList from "react-select-country-list";
 
 interface IRedeemStep1Props {
   first_name: string;
   last_name: string;
-  company_name: string;
   country: string;
   dial_code: string;
   phone: string;
@@ -25,7 +23,6 @@ interface IRedeemStep1Props {
 const RedeemStep1 = ({
   first_name,
   last_name,
-  company_name,
   country,
   dial_code,
   phone,
@@ -50,14 +47,6 @@ const RedeemStep1 = ({
         placeholder="Duarte"
         delay={0.1}
         value={last_name}
-        onChange={handleChange}
-      />
-      <RedeemInput
-        id="company_name"
-        label="Company name (optional)"
-        placeholder="Company name"
-        delay={0.15}
-        value={company_name}
         onChange={handleChange}
       />
       <motion.div

@@ -42,7 +42,7 @@ const links = [
   },
   {
     id: 9,
-    link: "/profile/journey",
+    link: "/profile",
     title: "Profile",
   },
   {
@@ -56,7 +56,7 @@ const links = [
     title: "Claim medal",
   },
   {
-    id: 11,
+    id: 12,
     link: "/app/activities/new",
     title: "Add Activity",
   },

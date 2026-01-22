@@ -27,9 +27,5 @@ export const validate = (values: IValuesProps) => {
     errors.repeatPassword = "Passwords do not match";
   }
 
-  if (!values.code || codeRegex.test(values.code)) {
-    errors.code = "Enter valid activation code";
-  }
-
   return errors;
 };

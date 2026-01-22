@@ -9,7 +9,7 @@ interface IFeatureListProps {
 
 const areEqual = (
   prevProps: IFeatureListProps,
-  nextProps: IFeatureListProps
+  nextProps: IFeatureListProps,
 ) => {
   let prevIdString = "";
   let nextIdString = "";
