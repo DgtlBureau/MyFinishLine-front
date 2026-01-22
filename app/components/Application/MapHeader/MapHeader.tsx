@@ -2,6 +2,7 @@
 
 import StatBlock from "../../Shared/StatBlock/StatBlock";
 import { useAppSelector } from "@/app/lib/hooks";
+import { getDaysAndHours } from "@/app/lib/utils/convertData";
 import Image from "next/image";
 
 interface IMapHeaderProps {
@@ -19,11 +20,7 @@ const MapHeader = ({
 }: IMapHeaderProps) => {
   const { user } = useAppSelector((state) => state.user);
 
-  const createdDate = new Date(startDate);
-  const currentDate = new Date();
-
-  const d = 24 * 60 * 60 * 1000;
-  const daysOnTrack = (Number(currentDate) - Number(createdDate)) / d;
+  const date = getDaysAndHours(startDate)
 
   return (
     <header className="fixed z-100 w-full ">
@@ -39,8 +36,8 @@ const MapHeader = ({
                 reverse
               />
               <StatBlock
-                label="Days on track"
-                value={daysOnTrack?.toFixed(1)}
+                label="Time on track"
+                value={date}
                 reverse
               />
             </div>

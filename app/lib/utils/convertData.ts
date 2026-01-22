@@ -26,13 +26,24 @@ export const handleConvertTime = (
 
 export const handleConvertTimeShort = (elapsedTimeInSeconds: number) => {
   if (!elapsedTimeInSeconds) return "0m";
+
   const hours = Math.floor(elapsedTimeInSeconds / 3600);
-  const minutes = (elapsedTimeInSeconds % 3600) / 60;
-  const parts = [];
-  if (hours > 0)
-    parts.push(`${hours}${minutes > 0 ? `.${Math.floor(minutes * 10)}` : ""}h`);
-  else if (minutes > 0) parts.push(`${minutes.toFixed(1)}m`);
-  else parts.push(`${elapsedTimeInSeconds}s`);
+  const minutes = Math.floor((elapsedTimeInSeconds % 3600) / 60);
+  const seconds = elapsedTimeInSeconds % 60;
+
+  const parts: string[] = [];
+
+  if (hours > 0) {
+    parts.push(`${hours}h`);
+    if (minutes > 0) {
+      parts.push(`${minutes}m`);
+    }
+  } else if (minutes > 0) {
+    parts.push(`${minutes}m`);
+  } else {
+    parts.push(`${seconds}s`);
+  }
+
   return parts.join(" ");
 };
 
@@ -83,4 +94,27 @@ export const calculateHoursBetweenDates = (
   const hours = diffInMs / (1000 * 60 * 60);
 
   return hours;
+};
+
+export const getDaysAndHours = (startDate: Date | string) => {
+  const start = new Date(startDate);
+  const now = new Date();
+
+  const diffMs = now.getTime() - start.getTime();
+  if (diffMs <= 0) return "0h";
+
+  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+
+  if (days > 0 && hours === 0) {
+    return `${days}d`;
+  }
+
+  if (days > 0) {
+    return `${days}d ${hours}h`;
+  }
+
+  return `${hours}h`;
 };
