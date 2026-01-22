@@ -226,7 +226,7 @@ const Page = () => {
           );
         })}
       </ul>
-      <div className="p-[16px]">
+      <div className="p-4">
         <div className="flex flex-col gap-2">
           <p>Contact info</p>
           <ul className="text-sm text-muted-foreground">
@@ -265,7 +265,7 @@ const Page = () => {
           </ul>
         </div>
       </div>
-      <div className="p-[5px_16px] flex items-center justify-center">
+      <div className="px-4 flex items-center justify-center">
         {isSent ? (
           <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
             <p className="text-white">
