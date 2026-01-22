@@ -8,7 +8,7 @@ export const ProfileById = ({ userId }: { userId: string | undefined }) => {
     return (
         <div className="w-full">
             <ProfileUserline userId={userId} />
-            <Challenges />
+            {userId && <Challenges userId={userId} />}
         </div>
     )
 }
