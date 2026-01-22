@@ -96,7 +96,7 @@ export const FaqForm = ({
               autoComplete="email"
               value={values.email}
               onChange={(e) => setValues("email", e.target.value)}
-              placeholder={"email"}
+              placeholder={"Email"}
               className={`rounded-md border border-gray-300 p-2 outline-none ${touched.email && errors.email ? "border-red-500" : ""
                 } ${values.user_id ? "text-gray-500" : ""}`}
               onBlur={() => setFieldTouched("email", true)}
