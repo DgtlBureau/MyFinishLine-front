@@ -68,7 +68,7 @@ const Integrations = () => {
       <Button
         className="mt-2 h-fit w-full px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-start gap-3"
         variant="outline"
-        onClick={() => {}}
+        onClick={() => { }}
       >
         <svg fill="#000" viewBox="0 0 24 24">
           <g>
@@ -76,7 +76,7 @@ const Integrations = () => {
           </g>
         </svg>
         <div className="flex items-center w-full justify-between">
-          Connect Garmin
+          Connect Fitbit
           <span>WIP</span>
         </div>
       </Button>
