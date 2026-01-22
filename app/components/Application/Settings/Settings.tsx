@@ -68,33 +68,6 @@ const Settings = () => {
 
       <Separator className="my-6 bg-border" />
 
-      <SettingSection title="Preferences" delay={3}>
-        <SettingItem
-          icon={<Globe className="w-4 h-4" />}
-          label="Language"
-          type="info"
-          value="English"
-          onClick={() => {}}
-          delay={3}
-        />
-      </SettingSection>
-
-      <Separator className="my-6 bg-border" />
-
-      <SettingSection title="Notifications" delay={4}>
-        <SettingItem
-          icon={<Mail className="w-4 h-4" />}
-          label="Email updates"
-          description="Weekly digest and announcements"
-          type="toggle"
-          value={emailUpdates}
-          onToggle={setEmailUpdates}
-          delay={4}
-        />
-      </SettingSection>
-
-      <Separator className="my-6 bg-border" />
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
