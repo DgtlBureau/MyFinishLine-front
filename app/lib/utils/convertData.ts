@@ -95,3 +95,26 @@ export const calculateHoursBetweenDates = (
 
   return hours;
 };
+
+export const getDaysAndHours = (startDate: Date | string) => {
+  const start = new Date(startDate);
+  const now = new Date();
+
+  const diffMs = now.getTime() - start.getTime();
+  if (diffMs <= 0) return "0h";
+
+  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+
+  if (days > 0 && hours === 0) {
+    return `${days}d`;
+  }
+
+  if (days > 0) {
+    return `${days}d ${hours}h`;
+  }
+
+  return `${hours}h`;
+};
