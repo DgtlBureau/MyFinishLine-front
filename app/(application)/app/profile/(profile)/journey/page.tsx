@@ -10,6 +10,7 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 
 const Journey = () => {
   const { completedContracts } = useAppSelector((state) => state.user);
@@ -103,15 +104,18 @@ const Journey = () => {
               </>
             )}
           </button>
-          <button className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden">
+          <button
+            className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden"
+            onClick={linkFitbit}
+          >
             <Image
-              className="rounded-2xl"
-              src="/icons/garmin.svg"
-              width={56}
-              height={56}
-              alt="Garmin"
+              className="rounded-2xl h-full"
+              src="/images/fitbit.png"
+              width={54}
+              height={54}
+              alt="FitBit"
             />
-            Connect Garmin
+            Connect FitBit
             <ChevronRight />
           </button>
         </div>
