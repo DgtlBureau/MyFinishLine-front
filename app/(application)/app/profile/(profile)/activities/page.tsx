@@ -2,25 +2,21 @@
 
 import AddActivityModal from "@/app/components/Application/AddActivityModal/AddActivityModal";
 import ActivitiesList from "@/app/components/Application/Stats/ActivitiesList/ActivitiesList";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 import { Button } from "@/app/components/ui/button";
-import { addActivity } from "@/app/lib/features/activities/activitiesSlice";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { Loader2, RefreshCw } from "lucide-react";
+import { useAppSelector } from "@/app/lib/hooks";
+import { AnimatePresence } from "motion/react";
+import { IActivity } from "@/app/types";
 import {
   getUserActivities,
   updateUserStravaActivities,
 } from "@/app/lib/utils/userService";
-import { IActivity } from "@/app/types";
-import { Loader2, Plus, RefreshCw } from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useInView } from "react-intersection-observer";
+import Link from "next/link";
+import Image from "next/image";
 
 const Page = () => {
-  const [activitiesData, setActivitiesData] = useState<{
-    last_page: number | null;
-  }>({
-    last_page: 0,
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoaded } = useAppSelector((state) => state.activities);
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -55,7 +51,6 @@ const Page = () => {
 
       try {
         const data = await getUserActivities({ perPage: 10, page });
-        setActivitiesData(data);
 
         if (page === 1) {
           setActivities(data.data);
@@ -78,7 +73,6 @@ const Page = () => {
     },
     [activities],
   );
-  const dispatch = useAppDispatch();
 
   const handleLoadAllActivities = async () => {
     await handleGetActivitiesFromStrava();
@@ -119,22 +113,10 @@ const Page = () => {
     isLoading,
   ]);
 
-  const handleAddActivity = (activity: IActivity) => {
-    setActivities((prevState) => {
-      return [activity, ...prevState];
-    });
-  };
-
   return (
     <main className="relative px-4 max-w-4xl mx-auto">
       <div className="mt-10 flex items-center justify-between">
-        <div className="flex-1">
-          <AddActivityModal handleAddActivity={handleAddActivity} />
-        </div>
-        <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
-          Recent Activities
-        </h4>
-        <div className="flex-1 flex justify-end">
+        <div className="flex justify-end">
           <Button
             onClick={handleLoadAllActivities}
             className="ml-auto mr-0 rounded-full w-10 h-10"
@@ -145,6 +127,20 @@ const Page = () => {
             </div>
           </Button>
         </div>
+        <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
+          Recent Activities
+        </h4>
+        <Link
+          href="/app/activities/new"
+          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center p-2.5"
+        >
+          <Image
+            src="/icons/navigation-add.svg"
+            width={24}
+            height={24}
+            alt="Add activity"
+          />
+        </Link>
       </div>
       <AnimatePresence mode="wait">
         {isLoading ? (

@@ -12,7 +12,7 @@ export function proxy(request: NextRequest) {
     "/signup",
   ];
   const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   if (isPublicRoute) {

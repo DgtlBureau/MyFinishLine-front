@@ -71,7 +71,7 @@ const LeaderboardSwiper = ({
             }}
           >
             {challenges.map((item) => (
-              <SwiperSlide key={item.id}>
+              <SwiperSlide className="px-4" key={item.id}>
                 <h4 className="block font-medium text-xl leading-9 text-[#09090B] px-4 mb-4">
                   {item.name}
                 </h4>

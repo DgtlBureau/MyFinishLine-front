@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/app/lib/hooks";
 
 interface ILeaderboardUserProps extends IUser {
-  color: string;
+  user_id: number;
   position: number;
   isCurrentUser: boolean;
   challengeId: number;
@@ -15,9 +15,15 @@ interface ILeaderboardUserProps extends IUser {
   total_hours: string;
 }
 
+const positionColors = {
+  1: "#E6C954",
+  2: "#DADADA",
+  3: "#DD9063",
+};
+
 const LeaderboardUser = ({
   id,
-  color,
+  user_id,
   position,
   full_avatar_url,
   username,
@@ -29,36 +35,53 @@ const LeaderboardUser = ({
   total_progress,
   isCurrentUser,
   challengeId,
-  selected_frame
+  selected_frame,
 }: ILeaderboardUserProps) => {
   const [imageError, setImageError] = useState(false);
   const { user } = useAppSelector((state) => state.user);
 
-  const linkUrl = id !== user.id ? `profile/${id}` : `profile/journey`
+  const linkUrl = id !== user.id ? `profile/${id}` : `profile/journey`;
+
+  const positionStyles =
+    position < 4
+      ? {
+          backgroundColor: positionColors[position as 1 | 2 | 3],
+          color: "#fff",
+        }
+      : {
+          color: "#09090B",
+        };
 
   return (
     <motion.li
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       key={id}
-      style={{
-        backgroundColor: color,
-      }}
       className={
-        "flex items-center justify-between p-4 not:last:border-b  not:last:border-[#DADADA]" +
-        color
+        "flex items-center justify-between p-4 not:last:border-b  not:last:border-[#DADADA]"
       }
     >
       <Link href={linkUrl} className="flex items-center gap-2">
-        <div className="w-4">
+        <div
+          style={positionStyles}
+          className="w-7 h-7 text-center rounded-full"
+        >
           <span
-            className={`text-center font-bold leading-7 flex-1 w text-[100%] text-[#09090B]`}
+            className={`text-center font-bold leading-7 flex-1 w text-[100%]`}
           >
             {position}
           </span>
         </div>
-        <div className="relative w-[50px] h-[50px] flex items-center justify-center">
-          {selected_frame && <Image src={selected_frame?.image_url} width={100} height={100} alt="skin" className="absolute w-full h-full" />}
+        <div className="relative w-12.5 h-12.5 flex items-center justify-center">
+          {selected_frame && (
+            <Image
+              src={selected_frame?.image_url}
+              width={100}
+              height={100}
+              alt="skin"
+              className="absolute w-full h-full"
+            />
+          )}
           {!imageError && full_avatar_url ? (
             <Image
               className="rounded-lg shrink-0 max-w-10 max-h-10 object-cover"

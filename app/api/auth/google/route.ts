@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     if (!tokenData.access_token) {
       return NextResponse.json(
         { error: "No access_token from Google" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,21 +49,21 @@ export async function POST(req: Request) {
     } catch (axiosErr: any) {
       console.error(
         "Backend /social-login error:",
-        axiosErr.response?.data || axiosErr.message
+        axiosErr.response?.data || axiosErr.message,
       );
       return NextResponse.json(
         {
           error: "Backend login failed",
           details: axiosErr.response?.data || axiosErr.message,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   } catch (err: any) {
     console.error("Route error:", err);
     return NextResponse.json(
       { error: err.message || "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

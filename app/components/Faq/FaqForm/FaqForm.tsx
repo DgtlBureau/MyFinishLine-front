@@ -22,12 +22,12 @@ interface IFaqFormProps {
   setFieldTouched: (field: string, value: boolean) => void;
   setFieldValue: (
     field: string,
-    value: string | { id: number; name: string } | number | null
+    value: string | { id: number; name: string } | number | null,
   ) => void;
   isValid: boolean;
   setValues: (
     field: string,
-    value: string | { id: number; name: string } | number | null
+    value: string | { id: number; name: string } | number | null,
   ) => void;
   onClick: () => void;
   onClose: () => void;
@@ -54,7 +54,7 @@ export const FaqForm = ({
   };
 
   return (
-    <div className="relative flex w-full max-w-[600px] flex-col gap-4 rounded-md bg-white p-4">
+    <div className="relative flex w-full flex-col gap-4 rounded-md bg-white p-4">
       {hasCloseIcon && (
         <button
           type="button"
@@ -83,7 +83,6 @@ export const FaqForm = ({
           onSubmit={handleSubmit}
           name="faq-form"
         >
-
           <div className="flex w-full flex-col gap-1">
             <span className="text-sm md:text-base">
               Сontact info {`(Email)`}
@@ -97,8 +96,9 @@ export const FaqForm = ({
               value={values.email}
               onChange={(e) => setValues("email", e.target.value)}
               placeholder={"email"}
-              className={`rounded-md border border-gray-300 p-2 outline-none ${touched.email && errors.email ? "border-red-500" : ""
-                } ${values.user_id ? "text-gray-500" : ""}`}
+              className={`rounded-md border border-gray-300 p-2 outline-none ${
+                touched.email && errors.email ? "border-red-500" : ""
+              } ${values.user_id ? "text-gray-500" : ""}`}
               onBlur={() => setFieldTouched("email", true)}
             />
 
@@ -117,8 +117,9 @@ export const FaqForm = ({
               rows={4}
               onChange={(e) => setValues("question", e.target.value)}
               placeholder={`Write your question...`}
-              className={`resize-none rounded-md border border-gray-300 p-2 outline-none ${touched.question && errors.question ? "border-red-500" : ""
-                }`}
+              className={`resize-none rounded-md border border-gray-300 p-2 outline-none ${
+                touched.question && errors.question ? "border-red-500" : ""
+              }`}
               onBlur={() => setFieldTouched("question", true)}
             />
             {errors.question && touched.question && (
@@ -139,10 +140,11 @@ export const FaqForm = ({
             <button
               disabled={!isValid}
               type="submit"
-              className={`bg-primary flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-white transition-all duration-300 ${isValid
-                ? "hover:bg-primary-hover cursor-not-allowed"
-                : "opacity-50"
-                }`}
+              className={`bg-primary flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-white transition-all duration-300 ${
+                isValid
+                  ? "hover:bg-primary-hover cursor-not-allowed"
+                  : "opacity-50"
+              }`}
             >
               <SendIcon className="h-5 w-5" />
               {"Send feedback"}

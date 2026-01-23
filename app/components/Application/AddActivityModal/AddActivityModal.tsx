@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import AddActivitityModalContent from "./AddActivitityModalContent/AddActivitityModalContent";
 import { IActivity } from "@/app/types";
+import Image from "next/image";
 
 const AddActivityModal = ({
   handleAddActivity,
@@ -24,9 +25,15 @@ const AddActivityModal = ({
     <>
       <Button
         onClick={handleOpenModal}
-        className="ml-auto mr-0 rounded-full w-10 h-10"
+        className="ml-auto mr-0 rounded-full w-10 h-10 p-2.5"
       >
-        <Plus width={40} height={40} />
+        <Image
+          className="w-full"
+          src="/icons/navigation-add.svg"
+          width={24}
+          height={24}
+          alt="Add activity"
+        />
       </Button>
       <CustomModal isOpen={isOpen} onClose={handleCloseModal}>
         <AddActivitityModalContent

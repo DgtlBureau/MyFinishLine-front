@@ -53,6 +53,7 @@ const page = () => {
   if (skins.length) {
     return (
       <PersonalizationList
+        type="skins"
         items={skins}
         handleSelectItem={handleSetActive}
         selectedId={user.selected_skin?.id}

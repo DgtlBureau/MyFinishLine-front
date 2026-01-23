@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
+import Image from "next/image";
 
 const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
@@ -177,6 +178,16 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
           </ul>
 
           <div className="absolute inset-0 z-10 px-4 sm:px-8 w-2xl">
+            <div className="absolute z-10 left-0  top-40">
+              <div className="fixed">
+                <Image
+                  src="/images/application/map-racoon.png"
+                  width={100}
+                  height={100}
+                  alt="Map racoon"
+                />
+              </div>
+            </div>
             <div className="relative w-full h-full">
               <Xwrapper>
                 {steps.map((step, index) => (

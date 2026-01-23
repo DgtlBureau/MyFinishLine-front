@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import Link from "next/link";
+import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 
 const links = [
   {
@@ -26,12 +27,11 @@ const page = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   return (
-    <div className="pt-14 p-4 max-w-4xl mx-auto">
-      <h2 className="mt-2 font-medium text-3xl leading-9 text-[#09090B]">
-        Contracts
-      </h2>
-
-      <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b">
+    <PageContainer
+      title="Contracts"
+      description="Here you can see your next goals to achieve"
+    >
+      <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b px-4">
         {links.map((link) => {
           return (
             <Link
@@ -61,8 +61,8 @@ const page = ({ children }: { children: React.ReactNode }) => {
           );
         })}
       </nav>
-      {children}
-    </div>
+      <div className="px-4">{children}</div>
+    </PageContainer>
   );
 };
 

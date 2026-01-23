@@ -14,7 +14,6 @@ import Link from "next/link";
 import axios from "axios";
 import PasswordValidator from "@/app/components/PasswordValidator/PasswordValidator";
 import { setUser } from "@/app/lib/features/user/userSlice";
-import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
 
 interface IFormik {
   email: string;
@@ -26,47 +25,65 @@ interface IFormik {
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
+  const [isCodeRevealed, setIsCodeRevealed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const {
-    values,
-    errors,
-    touched,
-    handleSubmit,
-    handleBlur,
-    setFieldValue,
-    isSubmitting,
-  } = useFormik<IFormik>({
-    validate,
-    initialValues: {
-      email: "",
-      password: "",
-      repeatPassword: "",
-      code: "",
-      error: "",
-    },
-    onSubmit: async (values) => {
-      try {
-        const { data } = await axios.post("/api/auth/register", {
-          email: values.email,
-          password: values.password,
-          confirmPassword: values.repeatPassword,
-          code: +values.code,
-        });
-        dispatch(setUser(data.user));
-        router.replace("/app");
-      } catch (error: any) {
-        setFieldValue("error", error.response.data.message);
-        console.error("Registration error:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
+  const { values, errors, touched, handleSubmit, handleBlur, setFieldValue } =
+    useFormik<IFormik>({
+      validate,
+      initialValues: {
+        email: "",
+        password: "",
+        repeatPassword: "",
+        code: "",
+        error: "",
+      },
+      onSubmit: async (values) => {
+        if (isCodeRevealed) {
+          setIsLoading(true);
+          try {
+            const { data } = await axios.post("/api/auth/register", {
+              email: values.email,
+              password: values.password,
+              confirmPassword: values.repeatPassword,
+              code: +values.code,
+            });
+            dispatch(setUser(data.user));
+            router.replace("/app");
+          } catch (error: any) {
+            setFieldValue("error", error.response.data.message);
+            console.error("Registration error:", error);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          handleSendCode();
+        }
+      },
+    });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue(e.target.name, e.target.value);
+  };
+
+  console.log(errors);
+
+  const handleSendCode = async () => {
+    setIsLoading(true);
+    try {
+      setFieldValue("error", "");
+      await axios.post("/api/auth/send-code", {
+        email: values.email,
+      });
+      setIsCodeRevealed(true);
+    } catch (error: any) {
+      console.log(error);
+      setFieldValue("error", error.response.data.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,6 +103,7 @@ export default function Register() {
               name="email"
               type="email"
               placeholder="Enter your email"
+              disabled={isCodeRevealed}
               value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -97,55 +115,85 @@ export default function Register() {
               type="password"
               className="mt-2"
               placeholder="Create a password"
+              disabled={isCodeRevealed}
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.password ? errors.password : ""}
             />
+            {!isCodeRevealed && (
+              <div className="mt-2">
+                <PasswordValidator password={values.password} />
+              </div>
+            )}
             <Input
               id="repeatPassword"
               name="repeatPassword"
               type="password"
               className="mt-2"
               placeholder="Repeat your password"
+              disabled={isCodeRevealed}
               value={values.repeatPassword}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.repeatPassword ? errors.repeatPassword : ""}
             />
-            <div className="mt-2">
-              <PasswordValidator password={values.password} />
-            </div>
-            <Input
-              id="code"
-              name="code"
-              className="mt-2"
-              placeholder="Challenge activation code"
-              value={values.code}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.code ? errors.code : ""}
-            />
-            <Button
-              type="submit"
-              disabled={loading}
-              className={`mt-2 w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
-              ${loading && "opacity-70 cursor-not-allowed"}
+            {isCodeRevealed && (
+              <label className="block mt-1" htmlFor="code">
+                <Input
+                  id="code"
+                  name="code"
+                  className="w-full py-3 px-4"
+                  placeholder="123456"
+                  value={values.code}
+                  onChange={handleChange}
+                />
+                <span className="block mt-2 leading-4 text-xs">
+                  Enter code that was send to your email
+                </span>
+              </label>
+            )}
+            {isCodeRevealed && (
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`mt-2 w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
+              ${isLoading && "opacity-70 cursor-not-allowed"}
             `}
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Creating Account...
-                </>
-              ) : (
-                "Create Account"
-              )}
-            </Button>
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+            )}
             {values.error && (
               <span className="text-red-400 text-xs leading-0">
                 {values.error}
               </span>
+            )}
+            {!isCodeRevealed && (
+              <Button
+                variant="outline"
+                type="submit"
+                disabled={isLoading}
+                className={`mt-2 w-full py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
+              ${isLoading && "opacity-70 cursor-not-allowed"}
+            `}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Sending code...
+                  </>
+                ) : (
+                  "Send code"
+                )}
+              </Button>
             )}
           </form>
           <div className="mt-2">
@@ -191,11 +239,7 @@ export default function Register() {
           </p>
         </div>
       </section>
-      <div className="relative bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat dark:bg-[url(/images/gradient-dark.webp)] ">
-        <div className="py-2 flex items-center justify-center h-full w-full">
-          <ChallengesSwiper />
-        </div>
-      </div>
+      <div className="relative hidden bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat lg:block dark:bg-[url(/images/gradient-dark.webp)]"></div>
     </section>
   );
 }

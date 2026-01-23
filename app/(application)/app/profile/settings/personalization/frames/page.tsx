@@ -53,6 +53,7 @@ const page = () => {
   if (frames.length) {
     return (
       <PersonalizationList
+        type="frames"
         items={frames}
         handleSelectItem={handleSetActive}
         selectedId={user.selected_frame?.id}

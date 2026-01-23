@@ -10,12 +10,12 @@ interface IRedeemStep3Props {
   zip_code: string;
   address_1: string;
   address_2: string;
-  company_name: string;
   city: string;
   email: string;
   dial_code: string;
   state: string;
   isLoading: boolean;
+  rewardImage: string;
 }
 
 const Label = ({ label, text }: { label: string; text: string }) => {
@@ -36,10 +36,10 @@ const RedeemStep3 = ({
   city,
   address_1,
   address_2,
-  company_name,
   dial_code,
   state,
   isLoading,
+  rewardImage,
 }: IRedeemStep3Props) => {
   return (
     <motion.div
@@ -47,13 +47,13 @@ const RedeemStep3 = ({
       animate={{ opacity: 1, y: 0 }}
       className="bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD] border border-border rounded-xl py-6 px-4"
     >
-      <div className="mx-auto relative flex items-center justify-center rounded-full max-w-30 max-h-30 bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
-        <div className="bg-white w-29 h-29 rounded-full">
+      <div className="mx-auto relative flex items-center justify-center rounded-full max-w-30 max-h-30 w-full h-full bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
+        <div className="bg-white w-28 h-28 rounded-full">
           <Image
-            className="px-4 pb-3 w-full object-contain h-full"
-            src="/images/application/medal.png"
-            width={1080}
-            height={1080}
+            className="pt-1 w-full object-contain h-full"
+            src={rewardImage}
+            width={500}
+            height={500}
             alt="Medal"
           />
         </div>
@@ -71,7 +71,6 @@ const RedeemStep3 = ({
         <Label label="State / Province" text={state} />
         <Label label="ZIP / Postcode" text={zip_code} />
         <Label label="Mobile Number" text={dial_code + phone} />
-        <Label label="Company" text={company_name} />
       </ul>
       <Button className="mt-8 w-full" type="submit">
         {isLoading ? (

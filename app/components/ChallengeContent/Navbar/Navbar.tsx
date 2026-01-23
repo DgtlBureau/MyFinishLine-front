@@ -24,33 +24,21 @@ import { useMediaQuery } from "@/app/hooks/use-media-query";
 import { cn } from "@/app/lib/utils";
 import Logo from "../Logo/Logo";
 
-export const NAV_LINKS = [
+interface NavLinks {
+  label: string;
+  href: string;
+  isChallenge?: boolean;
+  subitems?: any[];
+}
+
+export const NAV_LINKS: NavLinks[] = [
   {
-    label: "Features",
-    href: "#",
-    subitems: [
-      {
-        label: "Work with clarity",
-        href: "/#features-carousel",
-        description: "This is a subtext that explains a part of the item",
-        icon: Link2,
-      },
-      {
-        label: "Issue tracking with less noise",
-        href: "/#features-grid",
-        description: "This is a subtext that explains a part of the item",
-        icon: BarChart3,
-      },
-      {
-        label: "Filtering Tasks, no more distractions",
-        href: "/#features-showcase",
-        description: "This is a subtext that explains a part of the item",
-        icon: Filter,
-      },
-    ],
+    label: "Amazonia Route",
+    href: "/challenges/1",
+    isChallenge: true,
   },
-  { label: "About", href: "/about" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Challenges", href: "/#challenges" },
+  { label: "How it works", href: "/#how-it-works" },
   { label: "Blog", href: "/blog" },
   { label: "FAQ", href: "/faq" },
 ];
@@ -70,7 +58,7 @@ const Navbar = ({
   const pathname = usePathname();
   const [isBannerVisible, setIsBannerVisible] = useState(initialBannerVisible);
   const hideNavbar = ["/login", "/signup", "/not-found", "/verify"].some(
-    (route) => pathname.includes(route)
+    (route) => pathname.includes(route),
   );
 
   useEffect(() => {
@@ -116,7 +104,7 @@ const Navbar = ({
         "isolate z-50 transition-all duration-300 ease-in-out",
         isScrolled && isAtLeast("lg")
           ? "fixed top-0 right-0 left-0 translate-y-2 px-5.5"
-          : "relative"
+          : "relative",
       )}
     >
       <div
@@ -124,7 +112,7 @@ const Navbar = ({
           "bg-background navbar-container relative z-50 flex h-(--header-height) items-center justify-between gap-4 transition-all duration-300 ease-in-out",
           isScrolled &&
             isAtLeast("lg") &&
-            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-sm backdrop-blur-md"
+            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-sm backdrop-blur-md",
         )}
       >
         <Logo className="" />
@@ -141,7 +129,7 @@ const Navbar = ({
                           "cursor-pointer [&_svg]:ms-2 [&_svg]:size-4",
                           // "after:from-chart-2 after:to-chart-3 after:absolute after:-inset-0.25 after:-z-1 after:rounded-sm after:bg-gradient-to-tr after:opacity-0 after:transition-all after:content-[''] hover:after:opacity-100",
                           pathname.startsWith(item.href) &&
-                            "bg-accent font-semibold"
+                            "bg-accent font-semibold",
                         )}
                         suppressHydrationWarning
                       >
@@ -174,9 +162,12 @@ const Navbar = ({
                     <NavigationMenuLink
                       href={item.href}
                       className={cn(
+                        // item.isChallenge
+                        //   ? 'bg-[url("/images/application/challenge-bg-1.png")] opacity-50'
+                        //   : "",
                         navigationMenuTriggerStyle(),
                         // "after:from-chart-2 after:to-chart-3 after:absolute after:-inset-0.25 after:-z-1 after:rounded-sm after:bg-gradient-to-tr after:opacity-0 after:transition-all after:content-[''] hover:after:opacity-100",
-                        pathname === item.href && "bg-accent font-semibold"
+                        pathname === item.href && "bg-accent font-semibold",
                       )}
                       suppressHydrationWarning
                     >
@@ -209,28 +200,28 @@ const Navbar = ({
               <span className="sr-only">Open main menu</span>
               <div
                 className={cn(
-                  "absolute top-1/2 left-1/2 block w-4 -translate-x-1/2 -translate-y-1/2"
+                  "absolute top-1/2 left-1/2 block w-4 -translate-x-1/2 -translate-y-1/2",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
                     "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
-                    isMenuOpen ? "rotate-45" : "-translate-y-1.5"
+                    isMenuOpen ? "rotate-45" : "-translate-y-1.5",
                   )}
                 ></span>
                 <span
                   aria-hidden="true"
                   className={cn(
                     "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
-                    isMenuOpen ? "opacity-0" : ""
+                    isMenuOpen ? "opacity-0" : "",
                   )}
                 ></span>
                 <span
                   aria-hidden="true"
                   className={cn(
                     "absolute block h-px w-full rounded-full bg-current transition duration-500 ease-in-out",
-                    isMenuOpen ? "-rotate-45" : "translate-y-1.5"
+                    isMenuOpen ? "-rotate-45" : "translate-y-1.5",
                   )}
                 ></span>
               </div>
@@ -246,7 +237,7 @@ const Navbar = ({
               : "pt-(--header-height)",
             isMenuOpen
               ? "translate-x-0 opacity-100"
-              : "pointer-events-none translate-x-full opacity-0"
+              : "pointer-events-none translate-x-full opacity-0",
           )}
         >
           <div className="container">
@@ -273,7 +264,7 @@ const Navbar = ({
                                   className={cn(
                                     "text-muted-foreground hover:bg-accent/50 flex flex-row gap-2 p-3 font-medium transition-colors",
                                     pathname === subitem.href &&
-                                      "bg-accent font-semibold"
+                                      "bg-accent font-semibold",
                                   )}
                                   suppressHydrationWarning
                                 >
@@ -290,7 +281,7 @@ const Navbar = ({
                         href={item.href}
                         className={cn(
                           "hover:text-foreground text-base transition-colors",
-                          pathname === item.href && "font-semibold"
+                          pathname === item.href && "font-semibold",
                         )}
                         onClick={() => setIsMenuOpen(false)}
                         suppressHydrationWarning

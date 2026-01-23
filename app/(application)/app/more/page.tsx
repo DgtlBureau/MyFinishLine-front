@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MessageCircleIcon } from "lucide-react";
 import { AnimatePresence, easeInOut, motion } from "motion/react";
 import { useState } from "react";
 import AccordionContent from "@/app/components/Application/More/AccordionContent/AccordionContent";
@@ -13,8 +13,10 @@ import Loader from "@/app/components/Shared/Loader/Loader";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
 import { FaqForm } from "@/app/components/Faq/FaqForm/FaqForm";
-import { clearUser } from "@/app/lib/features/user/userSlice";
 import { useRouter } from "next/navigation";
+import { Button } from "@/app/components/ui/button";
+import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
+import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
 
 interface IFormik {
   email: string;
@@ -111,6 +113,19 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const [isContactMeOpen, setIsContactMeOpen] = useState(false);
+
+  const handleOpenContactMenu = () => {
+    setIsContactMeOpen(true);
+  };
+
+  const handleCloseContactMenu = () => {
+    setTimeout(() => {
+      setIsSent(false);
+    }, 100);
+    setIsContactMeOpen(false);
+  };
+
   const {
     values,
     isValid,
@@ -164,19 +179,11 @@ const Page = () => {
     setExpandedBlockId(expandedBlockId === id ? null : id);
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("/api/auth/logout");
-      dispatch(clearUser());
-      localStorage.removeItem("persist:root");
-      router.replace("/");
-    } catch (error) {
-      console.error("Error logging out: ", error);
-    }
-  };
-
   return (
-    <div className="pt-14 flex flex-col gap-4 justify-between max-w-4xl mx-auto min-h-[80vh]">
+    <PageContainer
+      title="More"
+      description="Additional information that might be useful"
+    >
       <ul className="h-full">
         {links.map((link) => {
           const isExpanded = expandedBlockId === link.id;
@@ -226,74 +233,78 @@ const Page = () => {
           );
         })}
       </ul>
-      <div className="p-[32px_16px]">
+      <div className="p-4">
         <div className="flex flex-col gap-2">
           <p>Contact info</p>
-          <ul>
-            <li className="border-b border-border pb-6 px-6">
-              <span className="text-2xl leading-8 text-[#71717A]">Email Us</span>
-              <span className="block mt-6 text-base leading-6 text-[#09090B]">
-                help@example.com
-              </span>
-              <span className="block text-base leading-6 text-[#09090B]">
-                support@example.com
-              </span>
+          <ul className="text-sm text-muted-foreground">
+            <li className="border-b border-border px-6 py-6">
+              <p className="text-sm text-base leading-6 text-foreground text-muted-foreground">
+                Email:
+                <a
+                  href="mailto:access@myfinishline.io"
+                  className="ml-1 font-medium text-primary hover:underline text-black"
+                >
+                  access@myfinishline.io
+                </a>
+              </p>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                MyFinishLine <span className="text-black">v1.0.0</span>
+              </p>
             </li>
-            <li className="p-6">
-              <span className="text-2xl leading-8 text-[#71717A]">Offices</span>
-              <span className="block mt-6 text-xl leading-8 text-[#71717A]">
-                New York
-              </span>
-              <span className="mt-2 block text-base leading-6 text-[#71717A]">
-                123 6th St. Melbourne, FL 32904, USA
-              </span>
-              <span className="block mt-8 text-xl leading-8 text-[#71717A]">
-                London
-              </span>
-              <span className="block mt-2 text-base leading-6 text-[#71717A]">
-                123 3rd St. London, TL 32904, UK
-              </span>
+
+            <li className="px-6 py-6">
+              <p className="font-medium text-foreground">
+                © Fortem Group Limited
+              </p>
+
+              <p className="mt-4 text-xl uppercase tracking-wide text-muted-foreground">
+                Virtual Sports Quests
+              </p>
+
+              <address className="mt-4 not-italic space-y-1 text-sm text-muted-foreground">
+                <p>Unit E01, 10/F, Wong King Ind Building</p>
+                <p>2–4 Tai Yau Street</p>
+                <p>San Po Kong</p>
+                <p>Hong Kong</p>
+              </address>
             </li>
           </ul>
+          <Button className="w-fit" onClick={handleOpenContactMenu}>
+            <MessageCircleIcon className="h-5 w-5 md:h-8 md:w-8" />
+            Send feedback
+          </Button>
         </div>
       </div>
-      <div className="p-[32px_16px] flex items-center justify-center">
-        {isSent ? (
-          <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px] bg-black">
-            <p className="text-white">
-              Thank you for sending your information!
-            </p>
-          </div>
-        ) : isSending ? (
-          <Loader />
-        ) : (
-          <FaqForm
-            isValid={isValid}
-            errors={errors}
-            handleBlur={handleBlur}
-            touched={touched}
-            setFieldTouched={setFieldTouched}
-            values={values}
-            setValues={setFieldValue}
-            setFieldValue={setFieldValue}
-            onClick={handleSubmit}
-            onClose={handleCloseModal}
-            hasCloseIcon={false}
-            hasCancelBtn={false}
-          />
-        )}
-
-      </div>
-      <div className="px-4">
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="p-[4px_8px] w-full rounded-[8px] bg-black text-white font-semibold cursor-pointer hover:scale-[101%] duration-300"
-        >
-          Log out
-        </button>
-      </div>
-    </div>
+      <SheetContainer isOpen={isContactMeOpen} onClose={handleCloseContactMenu}>
+        <div className="max-w-4xl mx-auto px-4 pb-20 flex items-center justify-center">
+          {isSent ? (
+            <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px]">
+              <p className="text-black">
+                Thank you for sending your information!
+              </p>
+            </div>
+          ) : isSending ? (
+            <Loader />
+          ) : (
+            <FaqForm
+              isValid={isValid}
+              errors={errors}
+              handleBlur={handleBlur}
+              touched={touched}
+              setFieldTouched={setFieldTouched}
+              values={values}
+              setValues={setFieldValue}
+              setFieldValue={setFieldValue}
+              onClick={handleSubmit}
+              onClose={handleCloseModal}
+              hasCloseIcon={false}
+              hasCancelBtn={false}
+            />
+          )}
+        </div>
+      </SheetContainer>
+    </PageContainer>
   );
 };
 

@@ -8,8 +8,9 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Loader from "@/app/components/Shared/Loader/Loader";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
+import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 
-const generalChallengeInfo = { ...initialState, name: "General table" };
+const generalChallengeInfo = { ...initialState, name: "General" };
 
 const page = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,10 +40,7 @@ const page = () => {
   }
 
   return (
-    <section className="pt-18 max-w-4xl mx-auto p-4">
-      <h2 className="font-bold text-2xl leading-8 text-[#09090B]">
-        Leaderboard
-      </h2>
+    <PageContainer title="Leaderboard" description="Keep up the great work!">
       {challenges.length > 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <LeaderboardSwiper challenges={challenges} />
@@ -54,7 +52,7 @@ const page = () => {
       ) : (
         <span>No challenges found</span>
       )}
-    </section>
+    </PageContainer>
   );
 };
 

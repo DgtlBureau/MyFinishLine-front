@@ -43,7 +43,7 @@ const IconType = ({
 
 const handleGetStyle = (
   is_completed: boolean,
-  rareness: "common" | "legendary"
+  rareness: "common" | "legendary",
 ) => {
   const style = {
     background: "#fff",
@@ -81,7 +81,7 @@ const Feature = memo(
 
         const d = 24 * 60 * 60 * 1000;
         const daysLeft = ((Number(currentDate) - Number(endDate)) / d)?.toFixed(
-          0
+          0,
         );
         return daysLeft;
       }
@@ -129,7 +129,12 @@ const Feature = memo(
                 return (
                   <li className="shrink-0" key={index}>
                     {reward.image_url && (
-                      <div className="relative flex items-center justify-center">
+                      <div
+                        className={cn(
+                          "relative flex items-center justify-center",
+                          !is_completed ? "grayscale-100" : "",
+                        )}
+                      >
                         <Image
                           className="w-34 h-full absolute rounded-lg object-cover"
                           src="/images/application/common.png"
@@ -160,7 +165,7 @@ const Feature = memo(
       </motion.li>
     );
   },
-  areEqual
+  areEqual,
 );
 
 export default Feature;

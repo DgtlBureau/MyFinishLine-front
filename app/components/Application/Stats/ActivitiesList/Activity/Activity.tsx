@@ -7,6 +7,7 @@ import {
   handleConvertTimeShort,
 } from "@/app/lib/utils/convertData";
 import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
+import { ActivityImage } from "./ActivityImage";
 
 const Activity = ({
   delay,
@@ -16,6 +17,7 @@ const Activity = ({
   activity_date,
   pace,
   from,
+  sport_type,
 }: IActivity & { delay: number }) => {
   return (
     <motion.li
@@ -33,33 +35,27 @@ const Activity = ({
       className="group shadow-md border border-[#E4E4E7] overflow-hidden rounded-lg"
     >
       <div className="px-4 pt-4 pb-2.5 flex items-center justify-between bg-[#F4E8FD]">
-        <div className="flex items-center gap-2.5 font-semibold text-sm leading-5 text-[#09090B]">
+        <div className="flex flex-1 items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
           <Route color="#C3B7E2" width={16} height={16} />{" "}
           {handleConvertDistance(Number(progress))}
         </div>
-        <div className="flex items-center gap-2.5 font-semibold text-sm leading-5 text-[#09090B]">
+        <div className="flex flex-1 justify-center items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
           <Clock color="#C3B7E2" width={16} height={16} />{" "}
           {handleConvertTimeShort(activity_time)}
         </div>
-        <div className="flex items-center gap-2.5 font-semibold text-sm leading-5 text-[#09090B]">
+        <div className="flex flex-1 justify-end items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
           <Image
             src="/icons/average-time.svg"
             alt="Average speed"
             width={16}
             height={16}
           />
-          {Number(pace.toFixed(2))} m/min
+          {Number(pace.toFixed(2))} km/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">
         <div className="flex gap-4 h-full items-stretch">
-          <Image
-            className="shrink-0 h-20 w-20"
-            src="/images/application/challenge1.png"
-            width={78}
-            height={78}
-            alt="Challenge"
-          />
+          <ActivityImage sport_type={sport_type} />
           <div className="w-full flex flex-col justify-between">
             <span className="block text-lg leading-7 font-medium text-[#09090B]">
               {activity_name}

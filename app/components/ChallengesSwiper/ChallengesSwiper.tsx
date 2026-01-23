@@ -66,7 +66,7 @@ const ChallengesSwiper = () => {
         <SwiperSlide key={product.challenge_info.id} className="px-0 w-full">
           <motion.div className="w-full h-full bg-white/30 py-4 rounded-2xl">
             <Image
-              className="object-cover w-full h-130 rounded-4xl"
+              className="object-cover w-full h-full h-130 rounded-4xl"
               src={product.main_image}
               alt={product.challenge_info.name}
               width={400}

@@ -270,6 +270,9 @@ html.theme-transition::view-transition-new(root) {
   width: 100% !important;
   margin: 0 20px !important;
   max-width: 500px;
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 14;
 }
 
 .challenges-swiper .swiper-slide {

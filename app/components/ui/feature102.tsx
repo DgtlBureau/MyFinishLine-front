@@ -4,7 +4,7 @@ const steps = content.roadmap.steps;
 
 const Feature102 = () => {
   return (
-    <section className="py-32">
+    <section id="how-it-works" className="py-32">
       <div className="container">
         <div className="mx-auto flex max-w-3xl flex-col justify-center gap-7 md:text-center">
           <h2 className="text-2xl md:text-4xl">{content.roadmap.title}</h2>

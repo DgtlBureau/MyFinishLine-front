@@ -1,10 +1,13 @@
+import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 import Settings from "@/app/components/Application/Settings/Settings";
 
 const page = () => {
   return (
-    <main className="pt-18 max-w-4xl mx-auto mb-20 bg-white">
-      <Settings />
-    </main>
+    <PageContainer title="Settings" description="Change your account settings">
+      <main className="pt-2 px-4 max-w-4xl mx-auto mb-10 bg-white">
+        <Settings />
+      </main>
+    </PageContainer>
   );
 };
 

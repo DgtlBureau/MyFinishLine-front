@@ -1,3 +1,4 @@
+import { cn } from "@/app/lib/utils";
 import { Button } from "../../ui/button";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -7,6 +8,7 @@ interface IPersonalizationItemProps {
   id: number;
   image_url: string;
   title: string;
+  type: "frames" | "skins" | "banners";
   description: string;
   isSelected: boolean;
   handlePressSelect: (item: {
@@ -24,6 +26,7 @@ const PersonalizationItem = ({
   title,
   image_url,
   description,
+  type,
   handlePressSelect,
 }: IPersonalizationItemProps) => {
   const handleSelectSkin = () => {
@@ -37,9 +40,12 @@ const PersonalizationItem = ({
       transition={{ delay: index * 0.05 }}
       className="border-border border rounded-2xl p-4"
     >
-      <span className="text-xs">{title}</span>
       <Image
-        className="w-full bg-[#d9d9d9] rounded-2xl mt-2"
+        className={cn(
+          "w-full bg-[#d9d9d9] rounded-2xl mt-2",
+          type === "banners" ? "max-h-50 h-full object-cover" : "",
+          type === "skins" ? "max-h-50 h-full object-contain" : "",
+        )}
         src={image_url}
         width={300}
         height={300}

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       const text = await tokenRes.text();
       return NextResponse.json(
         { error: "Token request failed", details: text },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

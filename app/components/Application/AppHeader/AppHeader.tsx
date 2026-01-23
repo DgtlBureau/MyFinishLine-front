@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, Settings } from "lucide-react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
@@ -41,7 +42,7 @@ const links = [
   },
   {
     id: 9,
-    link: "/profile/journey",
+    link: "/profile",
     title: "Profile",
   },
   {
@@ -53,6 +54,11 @@ const links = [
     id: 11,
     link: "/profile/redeem",
     title: "Claim medal",
+  },
+  {
+    id: 12,
+    link: "/app/activities/new",
+    title: "Add Activity",
   },
 ];
 
@@ -84,16 +90,22 @@ const AppHeader = () => {
             className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-background"
           >
             <ChevronLeft />
-            Back
           </button>
         ) : (
           <div className="h-14" />
         )}
-        {currentLink?.title && (
+        {/* {currentLink?.title && (
           <p className="text-white text-xl font-semibold text-center flex-1">
             {currentLink.title}
           </p>
-        )}
+        )} */}
+        <Image
+          className="max-h-5 w-fit "
+          src="/images/logo-line.png"
+          width={957}
+          height={489}
+          alt="Logo"
+        />
         <button
           className="flex flex-1 items-center justify-end gap-2"
           onClick={handleGoToEdit}

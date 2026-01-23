@@ -1,9 +1,12 @@
 import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("user_id");
+
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
 
@@ -11,6 +14,7 @@ export const GET = async () => {
       headers: {
         Authorization: "Bearer " + token,
       },
+      params: userId ? { user_id: userId } : undefined,
     });
     return NextResponse.json(data);
   } catch (error: any) {

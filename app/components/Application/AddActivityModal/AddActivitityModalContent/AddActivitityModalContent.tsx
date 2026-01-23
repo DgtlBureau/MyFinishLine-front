@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/app/components/ui/button";
 import { DateTimePicker } from "@/app/components/ui/dateTimePicker";
 import { Input } from "@/app/components/ui/input";
@@ -65,7 +67,6 @@ const AddActivitityModalContent = ({
     average_heart_rate: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useAppDispatch();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (

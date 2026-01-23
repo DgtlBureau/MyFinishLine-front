@@ -11,6 +11,7 @@ const Content = () => {
   const router = useRouter();
   const params = useSearchParams();
   const code = params.get("code");
+  const error = params.get("error");
   const [status, setStatus] = useState("Signed in successfully");
   const dispatch = useAppDispatch();
 
@@ -39,6 +40,10 @@ const Content = () => {
       }, 3000);
     }
   };
+
+  if (error) {
+    setStatus("Error signing in with google. " + error);
+  }
 
   useEffect(() => {
     if (!code) return;

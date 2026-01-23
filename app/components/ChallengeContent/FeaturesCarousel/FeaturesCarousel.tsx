@@ -136,7 +136,7 @@ export default function FeaturesCarousel() {
 
   return (
     <section
-      id="features-carousel"
+      id="challenges"
       className="section-padding relative overflow-x-hidden"
     >
       <Noise />
