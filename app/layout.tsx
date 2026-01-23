@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <GoogleTagManager gtmId="G-LYKSZRTMBX" />
+      <GoogleTagManager gtmId="GTM-T5H8KM5T" />
       <head>
         <script src="https://accounts.google.com/gsi/client" async defer />
       </head>

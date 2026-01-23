@@ -33,6 +33,7 @@ import DateWheelPicker from "@/app/components/Shared/WheelDatePicker/WheelDatePi
 import BirthDateWheelPicker from "@/app/components/Shared/WheelDateBirthPicker/WheelDateBirthPicker";
 import CustomWheelPicker from "@/app/components/Shared/CustomWheelPicker/CustomWheelPicker";
 import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const page = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -121,6 +122,16 @@ const page = () => {
             : {}),
         }),
       );
+      if (file) {
+        sendGTMEvent({
+          event: "profile_image_updated",
+          data: {
+            user_id: user?.id,
+            username: user?.username || "",
+            full_name: user?.first_name + " " + user?.last_name,
+          },
+        });
+      }
       toast.success("Profile successfully updated");
     } catch (error: any) {
       toast.error(error.response?.data.message || error.response.data.error);
@@ -135,6 +146,17 @@ const page = () => {
       setFile(event.target.files[0]);
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      sendGTMEvent({
+        event: "page_view",
+        page_path: "/app/profile/settings/edit-account",
+        page_location: location,
+        title: "/edit-accout",
+      });
+    }, 1000);
+  }, []);
 
   return (
     <>

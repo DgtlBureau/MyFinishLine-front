@@ -4,6 +4,7 @@ import PersonalizationList from "@/app/components/PersonalizationList/Personaliz
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserBanners } from "@/app/lib/utils/userService";
+import { sendGTMEvent } from "@next/third-parties/google";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -38,6 +39,13 @@ const page = () => {
       dispatch(updateUser({ selected_banner: item }));
       await axios.post("/api/user/update-cosmetics", {
         contracts_banner_id: item.id,
+      });
+      sendGTMEvent({
+        event: "personalization_updated",
+        selected: {
+          type: "banner",
+          id: item.id,
+        },
       });
     } catch (error) {
       toast.error("Error updating banner");

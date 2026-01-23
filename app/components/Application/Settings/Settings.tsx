@@ -11,6 +11,7 @@ import Integrations from "../Integrations/Integrations";
 import axios from "axios";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { clearUser } from "@/app/lib/features/user/userSlice";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const Settings = () => {
   const [emailUpdates, setEmailUpdates] = useState(false);
@@ -33,6 +34,13 @@ const Settings = () => {
     }
   };
 
+  const handleClickEditAccount = () => {
+    sendGTMEvent({
+      event: "page_view",
+    });
+    handleGoTo("/app/profile/settings/edit-account");
+  };
+
   return (
     <>
       <SettingSection title="Account" delay={1}>
@@ -40,7 +48,7 @@ const Settings = () => {
           icon={<User className="w-4 h-4" />}
           label="Edit account"
           description="Edit your account information"
-          onClick={() => handleGoTo("/app/profile/settings/edit-account")}
+          onClick={handleClickEditAccount}
           delay={1}
         />
         <SettingItem

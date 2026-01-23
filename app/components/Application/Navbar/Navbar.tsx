@@ -4,7 +4,7 @@ import { BookCheck, Map, MoreHorizontal, Trophy, User } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { sendGTMEvent } from "@/app/lib/utils/sendEvent";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const navLinks = [
   {
@@ -56,12 +56,11 @@ const Navbar = () => {
 
   const handleClickLink = () => {
     const link = navLinks.find((navLink) => navLink.href === pathname);
-
     sendGTMEvent({
-      event: "page_visit",
-      page_location: link?.href,
-      page_path: link?.href,
-      page_title: link?.name,
+      event: "page_view",
+      page_path: pathname,
+      page_location: location,
+      title: link?.name,
     });
   };
 

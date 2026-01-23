@@ -4,6 +4,7 @@ import PersonalizationList from "@/app/components/PersonalizationList/Personaliz
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserFrames } from "@/app/lib/utils/userService";
+import { sendGTMEvent } from "@next/third-parties/google";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -38,6 +39,13 @@ const page = () => {
       dispatch(updateUser({ selected_frame: item }));
       await axios.post("/api/user/update-cosmetics", {
         contracts_frame_id: item.id,
+      });
+      sendGTMEvent({
+        event: "personalization_updated",
+        selected: {
+          type: "frame",
+          id: item.id,
+        },
       });
     } catch (error) {
       toast.error("Error updating frame");
