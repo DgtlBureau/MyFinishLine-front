@@ -76,7 +76,7 @@ const Integrations = () => {
           </g>
         </svg>
         <div className="flex items-center w-full justify-between">
-          Connect Garmin
+          Connect FitBit
           <span>WIP</span>
         </div>
       </Button>
