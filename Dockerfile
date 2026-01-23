@@ -12,7 +12,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.ts ./
 
 RUN npm install
 
