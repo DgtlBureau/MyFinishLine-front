@@ -13,13 +13,10 @@ import Loader from "@/app/components/Shared/Loader/Loader";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
 import { FaqForm } from "@/app/components/Faq/FaqForm/FaqForm";
-import { clearUser } from "@/app/lib/features/user/userSlice";
 import { useRouter } from "next/navigation";
-import { BottomSheet } from "react-spring-bottom-sheet";
 import { Button } from "@/app/components/ui/button";
-
-import "react-spring-bottom-sheet/dist/style.css";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
+import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
 
 interface IFormik {
   email: string;
@@ -279,7 +276,7 @@ const Page = () => {
           </Button>
         </div>
       </div>
-      <BottomSheet open={isContactMeOpen} onDismiss={handleCloseContactMenu}>
+      <SheetContainer isOpen={isContactMeOpen} onClose={handleCloseContactMenu}>
         <div className="max-w-4xl mx-auto px-4 pb-20 flex items-center justify-center">
           {isSent ? (
             <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px]">
@@ -306,7 +303,7 @@ const Page = () => {
             />
           )}
         </div>
-      </BottomSheet>
+      </SheetContainer>
     </PageContainer>
   );
 };

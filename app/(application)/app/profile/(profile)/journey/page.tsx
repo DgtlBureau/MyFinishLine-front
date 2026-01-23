@@ -10,6 +10,7 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 
 const Journey = () => {
   const { completedContracts } = useAppSelector((state) => state.user);
@@ -77,10 +78,10 @@ const Journey = () => {
             style={
               user.has_strava_connect
                 ? {
-                  cursor: "default",
-                  backgroundColor: "#FC4C02",
-                  color: "#FFF",
-                }
+                    cursor: "default",
+                    backgroundColor: "#FC4C02",
+                    color: "#FFF",
+                  }
                 : {}
             }
             className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
@@ -103,16 +104,34 @@ const Journey = () => {
               </>
             )}
           </button>
-          <button className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden">
-            <Image
-              className="rounded-2xl"
-              src="/icons/garmin.svg"
-              width={56}
-              height={56}
-              alt="Garmin"
-            />
-            Connect Garmin
-            <ChevronRight />
+          <button
+            style={
+              user.has_fitbit_connect
+                ? {
+                    cursor: "default",
+                    backgroundColor: "#4cafbb",
+                    color: "#FFF",
+                  }
+                : {}
+            }
+            className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden"
+            onClick={linkFitbit}
+          >
+            {user.has_fitbit_connect ? (
+              <div className="text-center mx-auto">Connected to Fitbit</div>
+            ) : (
+              <>
+                <Image
+                  className="rounded-2xl h-full"
+                  src="/images/fitbit.png"
+                  width={54}
+                  height={54}
+                  alt="FitBit"
+                />
+                Connect Fitbit
+                <ChevronRight />
+              </>
+            )}
           </button>
         </div>
       </section>

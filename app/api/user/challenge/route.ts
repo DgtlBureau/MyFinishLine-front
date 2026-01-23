@@ -10,11 +10,14 @@ export const GET = async (req: NextRequest) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
 
-    const { data } = await instance.get("/challenges/" + challengeId, {
-      headers: {
-        Authorization: "Bearer " + token,
+    const { data } = await instance.get(
+      "/challenges/challenge-one/" + challengeId,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
       },
-    });
+    );
 
     return NextResponse.json(data);
   } catch (error: any) {

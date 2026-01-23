@@ -8,13 +8,15 @@ const ConnectionToast = () => {
   const { user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    if (!user.has_strava_connect) {
+    if (!user.has_strava_connect && !user.has_fitbit_connect) {
       toast.error("Connect your Strava or FitBit account", {
         autoClose: false,
         draggable: false,
       });
+    } else {
+      toast.dismiss();
     }
-  }, [user.has_strava_connect]);
+  }, [user.has_strava_connect, user.has_fitbit_connect]);
 
   return <></>;
 };

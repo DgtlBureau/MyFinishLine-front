@@ -17,6 +17,7 @@ export interface IUser {
   updated_at: string;
   username: string;
   has_strava_connect: boolean;
+  has_fitbit_connect: boolean;
   avatar_symbol: string | null;
   avatar_color: string;
   selected_skin?: { id: number; image_url: string } | null;

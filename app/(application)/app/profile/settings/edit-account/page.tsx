@@ -27,6 +27,12 @@ import {
 import { toast } from "react-toastify";
 import countryList from "react-select-country-list";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
+import { Sheet } from "react-modal-sheet";
+import DateWheelPicker from "@/app/components/Shared/WheelDatePicker/WheelDatePicker";
+
+import BirthDateWheelPicker from "@/app/components/Shared/WheelDateBirthPicker/WheelDateBirthPicker";
+import CustomWheelPicker from "@/app/components/Shared/CustomWheelPicker/CustomWheelPicker";
+import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
 
 const page = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -35,8 +41,33 @@ const page = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isGenderSelectOpen, setIsGenderSelectOpen] = useState(false);
+  const [isBirthDateOpen, setIsBirthDateOpen] = useState(false);
+  const [gender, setGender] = useState("Prefer not to say");
+  const currentDate = new Date();
+  const [birthDate, setBirthDate] = useState({
+    year: currentDate.getFullYear(),
+    month: currentDate.getMonth() + 1,
+    day: currentDate.getDate(),
+  });
 
   const options = useMemo(() => countryList().getLabels(), []);
+
+  const handleOpenGenderSheet = () => {
+    setIsGenderSelectOpen(true);
+  };
+
+  const handleCloseGenderSheet = () => {
+    setIsGenderSelectOpen(false);
+  };
+
+  const handleOpenBirthDateSheet = () => {
+    setIsBirthDateOpen(true);
+  };
+
+  const handleCloseBirthDateSheet = () => {
+    setIsBirthDateOpen(false);
+  };
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => {
@@ -106,161 +137,213 @@ const page = () => {
   };
 
   return (
-    <PageContainer
-      title="Edit info"
-      description="Edit your account information"
-    >
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        <div className="px-4">
-          <div className="mt-8 w-full leading-0">
-            <label className="block w-full">
-              <span className="text-sm">First Name</span>
-              <Input
-                name="first_name"
-                className="mt-px"
-                placeholder="John"
-                value={data.first_name}
-                onChange={handleChange}
-              />
-            </label>
-            <label className="block w-full mt-2">
-              <span className="text-sm">Last Name</span>
-              <Input
-                name="last_name"
-                className="mt-px"
-                placeholder="Doe"
-                value={data.last_name}
-                onChange={handleChange}
-              />
-            </label>
-            <label className="block mt-2 w-full">
-              <span className="text-sm">Username</span>
-              <div className="relative flex items-center">
+    <>
+      <PageContainer
+        title="Edit account"
+        description="Edit your account information"
+      >
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+          <div className="px-4">
+            <div className="mt-8 w-full leading-0">
+              <label className="block w-full">
+                <span className="text-sm">First Name</span>
                 <Input
-                  containerClassName="w-full"
-                  name="username"
-                  className="mt-px pl-7 w-full"
-                  placeholder="John.doe"
-                  value={data.username}
+                  name="first_name"
+                  className="mt-px"
+                  placeholder="John"
+                  value={data.first_name}
                   onChange={handleChange}
                 />
-                <span className="absolute left-3 text-neutral-400">@</span>
-              </div>
-            </label>
-          </div>
-
-          <div className="mt-2">
-            <span className="font-medium text-sm text-[#09090B]">
-              Upload photo
-            </span>
-            <div className="mt-1 group relative w-15 h-15 flex items-center justify-center border rounded-xl overflow-hidden shrink-0">
-              {file ? (
-                <Image
-                  className="object-cover rounded-lg"
-                  src={URL.createObjectURL(file)}
-                  alt="Profile Picture"
-                  loading="eager"
-                  width={60}
-                  height={60}
+              </label>
+              <label className="block w-full mt-2">
+                <span className="text-sm">Last Name</span>
+                <Input
+                  name="last_name"
+                  className="mt-px"
+                  placeholder="Doe"
+                  value={data.last_name}
+                  onChange={handleChange}
                 />
-              ) : !imageError && data.full_avatar_url ? (
-                <Image
-                  className="object-cover w-full h-full rounded-lg"
-                  src={data.full_avatar_url}
-                  alt="Profile Picture"
-                  loading="eager"
-                  width={60}
-                  height={60}
-                  onError={() => {
-                    setImageError(true);
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Upload />
+              </label>
+              <label className="block mt-2 w-full">
+                <span className="text-sm">Username</span>
+                <div className="relative flex items-center">
+                  <Input
+                    containerClassName="w-full"
+                    name="username"
+                    className="mt-px pl-7 w-full"
+                    placeholder="John.doe"
+                    value={data.username}
+                    onChange={handleChange}
+                  />
+                  <span className="absolute left-3 text-neutral-400">@</span>
                 </div>
-              )}
+              </label>
+              <label className="block mt-2 w-full">
+                <span className="text-sm">Birth Date</span>
+                <Button
+                  className="block w-full text-left hover:bg-transparent"
+                  variant="outline"
+                  type="button"
+                  onClick={handleOpenBirthDateSheet}
+                >
+                  {birthDate.month < 10
+                    ? "0" + birthDate.month
+                    : birthDate.month}
+                  .{birthDate.day < 10 ? "0" + birthDate.day : birthDate.day}.
+                  {birthDate.year}
+                </Button>
+              </label>
+            </div>
+            <label className="block mt-2 w-full">
+              <span className="text-sm">Gender</span>
+              <Button
+                className="block w-full text-left hover:bg-transparent"
+                variant="outline"
+                type="button"
+                onClick={handleOpenGenderSheet}
+              >
+                {gender}
+              </Button>
+            </label>
 
-              <Upload
-                width={32}
-                height={32}
-                className="absolute text-white bg-gray-700/80 rounded-lg p-1"
-              />
+            <div className="mt-2">
+              <span className="font-medium text-sm text-[#09090B]">
+                Upload photo
+              </span>
+              <div className="mt-1 group relative w-15 h-15 flex items-center justify-center border rounded-xl overflow-hidden shrink-0">
+                {file ? (
+                  <Image
+                    className="object-cover rounded-lg"
+                    src={URL.createObjectURL(file)}
+                    alt="Profile Picture"
+                    loading="eager"
+                    width={60}
+                    height={60}
+                  />
+                ) : !imageError && data.full_avatar_url ? (
+                  <Image
+                    className="object-cover w-full h-full rounded-lg"
+                    src={data.full_avatar_url}
+                    alt="Profile Picture"
+                    loading="eager"
+                    width={60}
+                    height={60}
+                    onError={() => {
+                      setImageError(true);
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Upload />
+                  </div>
+                )}
 
-              <input
-                className="absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
-                type="file"
-                onChange={handleChangeFile}
-              />
+                <Upload
+                  width={32}
+                  height={32}
+                  className="absolute text-white bg-gray-700/80 rounded-lg p-1"
+                />
+
+                <input
+                  className="absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
+                  type="file"
+                  onChange={handleChangeFile}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="px-4">
-          <label className="block mt-2">
-            <span className="text-sm">Phone</span>
-            <Input
-              name="phone"
-              className="mt-px"
-              value={data.phone}
-              onChange={handleChange}
-              placeholder="+1 234 567 8901"
-              defaultValue="+1 234 567 8901"
+          <div className="px-4">
+            <label className="block mt-2">
+              <span className="text-sm">Phone</span>
+              <Input
+                name="phone"
+                className="mt-px"
+                value={data.phone}
+                onChange={handleChange}
+                placeholder="+1 234 567 8901"
+                defaultValue="+1 234 567 8901"
+              />
+            </label>
+            <label className="block mt-2">
+              <span className="text-sm">Email</span>
+              <Input
+                name="email"
+                className="mt-px"
+                placeholder="Email Address"
+                value={data.email}
+                onChange={handleChange}
+              />
+            </label>
+
+            <label htmlFor="country" className="block mt-2">
+              <span className="text-sm">Country</span>
+              <Select
+                name="country"
+                value={data.country || ""}
+                onValueChange={(value) => {
+                  setData({ ...data, country: value });
+                }}
+                required
+              >
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.map((country) => (
+                    <SelectItem
+                      className="w-full flex items-center justify-between"
+                      key={country}
+                      value={country}
+                    >
+                      <div className="w-full flex items-center justify-between">
+                        {country}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
+
+            <Button className="mt-6 w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
+                  Saving updates...
+                </>
+              ) : (
+                "Save updates"
+              )}
+            </Button>
+          </div>
+        </form>
+        <SheetContainer
+          isOpen={isGenderSelectOpen}
+          onClose={handleCloseGenderSheet}
+        >
+          <div className="pb-20 max-w-4xl mx-auto">
+            <CustomWheelPicker
+              options={[
+                { label: "Male", value: "male" },
+                { label: "Female", value: "female" },
+                { label: "Prefer not to say", value: "prefer_not_to_say" },
+              ]}
+              value={gender}
+              onChange={setGender}
             />
-          </label>
-          <label className="block mt-2">
-            <span className="text-sm">Email</span>
-            <Input
-              name="email"
-              className="mt-px"
-              placeholder="Email Address"
-              value={data.email}
-              onChange={handleChange}
-            />
-          </label>
-
-          <label htmlFor="country" className="block mt-2">
-            <span className="text-sm">Country</span>
-            <Select
-              name="country"
-              value={data.country || ""}
-              onValueChange={(value) => {
-                setData({ ...data, country: value });
-              }}
-              required
-            >
-              <SelectTrigger className="w-full mt-1">
-                <SelectValue placeholder="Select country" />
-              </SelectTrigger>
-              <SelectContent>
-                {options.map((country) => (
-                  <SelectItem
-                    className="w-full flex items-center justify-between"
-                    key={country}
-                    value={country}
-                  >
-                    <div className="w-full flex items-center justify-between">
-                      {country}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <Button className="mt-6 w-full" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
-                Saving updates...
-              </>
-            ) : (
-              "Save updates"
-            )}
-          </Button>
+          </div>
+        </SheetContainer>
+      </PageContainer>
+      <SheetContainer
+        isOpen={isBirthDateOpen}
+        onClose={handleCloseBirthDateSheet}
+      >
+        <div className="pb-20 max-w-4xl mx-auto">
+          <BirthDateWheelPicker value={birthDate} onChange={setBirthDate} />
         </div>
-      </form>
-    </PageContainer>
+      </SheetContainer>
+    </>
   );
 };
 

@@ -1,12 +1,11 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { SetStateAction } from "react";
 import {
   WheelPicker,
   type WheelPickerOption,
   WheelPickerWrapper,
 } from "../../wheel-picker";
-import { IDate } from "../../Application/AddActivityForm/AddActivityForm";
 
 export const createArray = (
   length: number,
@@ -21,7 +20,7 @@ export const createArray = (
   });
 
 const currentYear = new Date().getFullYear();
-const yearOptions = createArray(21, currentYear - 10).map((option) => ({
+const yearOptions = createArray(71, currentYear - 70).map((option) => ({
   label: option.value.toString(),
   value: option.value,
 }));
@@ -45,12 +44,22 @@ const getDaysInMonth = (month: number, year: number): number => {
   return new Date(year, month, 0).getDate();
 };
 
-const DateWheelPicker = ({
+const BirthDateWheelPicker = ({
   value,
   onChange,
 }: {
-  value: IDate;
-  onChange: (value: SetStateAction<IDate>) => void;
+  value: {
+    day: number;
+    month: number;
+    year: number;
+  };
+  onChange: (
+    value: SetStateAction<{
+      day: number;
+      month: number;
+      year: number;
+    }>,
+  ) => void;
 }) => {
   const daysInMonth = getDaysInMonth(value.month, value.year);
   const dayOptions = createArray(daysInMonth, 1);
@@ -58,19 +67,19 @@ const DateWheelPicker = ({
   const handleChangeDate = (value: number, type: string) => {
     switch (type) {
       case "year": {
-        onChange((prevState: IDate) => {
+        onChange((prevState: { day: number; month: number; year: number }) => {
           return { ...prevState, year: value };
         });
         return;
       }
       case "month": {
-        onChange((prevState: IDate) => {
+        onChange((prevState: { day: number; month: number; year: number }) => {
           return { ...prevState, month: value };
         });
         return;
       }
       case "day": {
-        onChange((prevState: IDate) => {
+        onChange((prevState: { day: number; month: number; year: number }) => {
           return { ...prevState, day: value };
         });
         return;
@@ -96,10 +105,9 @@ const DateWheelPicker = ({
         options={yearOptions}
         value={value.year}
         onValueChange={(value) => handleChangeDate(value, "year")}
-        infinite
       />
     </WheelPickerWrapper>
   );
 };
 
-export default DateWheelPicker;
+export default BirthDateWheelPicker;

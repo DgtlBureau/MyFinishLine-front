@@ -31,6 +31,7 @@ const initialState: {
     total_moving_time_hours: 0,
     updated_at: "",
     username: "",
+    has_fitbit_connect: false,
     has_strava_connect: false,
     avatar_symbol: "",
     avatar_color: "#fff",

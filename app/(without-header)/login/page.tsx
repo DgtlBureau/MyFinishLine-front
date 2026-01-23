@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import GoogleLogin from "@/app/components/Shared/GoogleLogin/GoogleLogin";
 import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
 import ChallengesSwiper from "@/app/components/ChallengesSwiper/ChallengesSwiper";
+import Image from "next/image";
+import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -154,6 +156,24 @@ export default function Login() {
             </svg>
             Sign in with Strava
           </Button>
+
+          <Button
+            variant="outline"
+            onClick={linkFitbit}
+            disabled={formData.isLoading}
+            className={`mt-2 w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
+            ${formData.isLoading && "opacity-70 cursor-not-allowed"}
+          `}
+          >
+            <Image
+              src="/icons/fitbit.svg"
+              width={16}
+              height={16}
+              alt="Fitbit icon"
+            />
+            Sign in with FitBit
+          </Button>
+
           <GoogleLogin type="login" />
           <div className="mt-6 space-y-3 text-sm">
             <Link

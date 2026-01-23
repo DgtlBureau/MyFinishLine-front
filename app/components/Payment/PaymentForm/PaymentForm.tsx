@@ -56,8 +56,6 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     }
   };
 
-  console.log(errors);
-
   // useEffect(() => {
   //   initializePaddle({
   //     environment: "production",

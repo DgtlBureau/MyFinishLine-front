@@ -15,13 +15,11 @@ import { Loader2 } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import WheelTimePicker from "../../Shared/WheelTimePicker/WheelTimePicker";
-import { BottomSheet } from "react-spring-bottom-sheet";
 import DateWheelPicker from "../../Shared/WheelDatePicker/WheelDatePicker";
 import WheelStartTimePicker from "../../Shared/WheelStartTimePicker/WheelStartTimePicker";
+import SheetContainer from "../../SheetContainer/SheetContainer";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-import "react-spring-bottom-sheet/dist/style.css";
 
 enum ActivityType {
   Walk = "Walk",
@@ -294,24 +292,24 @@ const AddActivitityForm = () => {
       >
         Cancel
       </Link>
-      <BottomSheet open={isDateModalOpen} onDismiss={handleCloseDateModal}>
+      <SheetContainer isOpen={isDateModalOpen} onClose={handleCloseDateModal}>
         <div className="max-w-4xl mx-auto pb-20 pt-4">
           <DateWheelPicker value={date} onChange={setDate} />
         </div>
-      </BottomSheet>
-      <BottomSheet
-        open={isStartTimeModalOpen}
-        onDismiss={handleCloseStartTimeModal}
+      </SheetContainer>
+      <SheetContainer
+        isOpen={isStartTimeModalOpen}
+        onClose={handleCloseStartTimeModal}
       >
         <div className="max-w-4xl mx-auto pb-20 pt-4">
           <WheelStartTimePicker value={date} onChange={setDate} />
         </div>
-      </BottomSheet>
-      <BottomSheet open={isTimeModalOpen} onDismiss={handleCloseTimeModal}>
+      </SheetContainer>
+      <SheetContainer isOpen={isTimeModalOpen} onClose={handleCloseTimeModal}>
         <div className="max-w-4xl mx-auto pb-20 pt-4">
           <WheelTimePicker value={time} onChange={setTime} />
         </div>
-      </BottomSheet>
+      </SheetContainer>
     </form>
   );
 };

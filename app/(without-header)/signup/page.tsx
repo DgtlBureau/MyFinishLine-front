@@ -14,6 +14,8 @@ import Link from "next/link";
 import axios from "axios";
 import PasswordValidator from "@/app/components/PasswordValidator/PasswordValidator";
 import { setUser } from "@/app/lib/features/user/userSlice";
+import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
+import Image from "next/image";
 
 interface IFormik {
   email: string;
@@ -67,8 +69,6 @@ export default function Register() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue(e.target.name, e.target.value);
   };
-
-  console.log(errors);
 
   const handleSendCode = async () => {
     setIsLoading(true);
@@ -222,6 +222,22 @@ export default function Register() {
             </svg>
             Sign up with Strava
           </Button>
+
+          <Button
+            variant="outline"
+            onClick={linkFitbit}
+            className={`mt-2 w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
+                    `}
+          >
+            <Image
+              src="/icons/fitbit.svg"
+              width={16}
+              height={16}
+              alt="Fitbit icon"
+            />
+            Sign up with FitBit
+          </Button>
+
           <GoogleLogin type="sign-up" />
 
           <div className="mt-6 space-y-3 text-sm">
