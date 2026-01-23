@@ -4,6 +4,7 @@ import { BookCheck, Map, MoreHorizontal, Trophy, User } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const navLinks = [
   {
@@ -53,6 +54,17 @@ const Navbar = () => {
     return pathname.includes(link.parent);
   };
 
+  const handleClickLink = () => {
+    const link = navLinks.find((navLink) => navLink.href === pathname);
+
+    sendGTMEvent({
+      event: "page_view",
+      page_location: location,
+      page_path: pathname,
+      page_title: link?.name,
+    });
+  };
+
   return (
     <motion.div className="fixed bottom-0 left-0 right-0 z-40">
       <div className="bg-background border-t border-navbar-border">
@@ -61,6 +73,7 @@ const Navbar = () => {
             const active = isActive(link);
             return (
               <Link
+                onClick={handleClickLink}
                 key={link.id}
                 href={link.href}
                 scroll={false}
