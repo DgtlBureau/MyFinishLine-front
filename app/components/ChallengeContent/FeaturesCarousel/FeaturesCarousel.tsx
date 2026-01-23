@@ -141,13 +141,13 @@ export default function FeaturesCarousel() {
     >
       <Noise />
       <div className="container gap-8 lg:grid-cols-3">
-        <h2 className="text-4xl tracking-tight text-balance">
-          {content.challenges.title}
+        <h2 className="text-4xl tracking-tight text-balance flex flex-col text-center text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl">
+          Choose Your
+          <span className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent">Adventure Quest</span>
         </h2>
-        <p className="block mt-4 text-muted-foreground text-lg leading-snug">
+        <p className="block mt-4 text-muted-foreground text-lg leading-snug text-center">
           {content.challenges.description}
         </p>
-
         <motion.div
           className="mt-4 select-none md:mask-r-from-60% md:mask-r-to-100% lg:col-span-2"
           initial={prefersReducedMotion ? "visible" : "hidden"}

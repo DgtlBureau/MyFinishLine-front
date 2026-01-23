@@ -10,6 +10,11 @@ import {
   Zap,
 } from "lucide-react";
 import { cn } from "../../utils";
+import astroImage from '@/public/icons/technologies/astro.svg'
+import figmaImage from '@/public/icons/technologies/figma.svg'
+import supabaseImage from '@/public/icons/technologies/supabase.svg'
+import tailwindImage from '@/public/icons/technologies/tailwind.svg'
+import vercelImage from '@/public/icons/technologies/vercel.svg'
 
 const COMMON_CARDS_CLASSNAMES = {
   big: "col-span-4 lg:[&_blockquote]:text-base lg:[&_blockquote]:leading-loose lg:[&_blockquote]:text-foreground",
@@ -19,7 +24,7 @@ const content = {
   hero: {
     // Main top block with purple background
     title:
-      "Is a story-driven virtual fitness\n quest where movement unlocks\n the journey.",
+      "Is a story-driven virtual fitness\n quest where movement unlocks\n the journey",
     subtitle:
       "Train, progress, explore the world, and become the hero of your own global journey — step into a global experience where the first quest sets everything in motion.",
     description:
@@ -30,53 +35,53 @@ const content = {
   logos: [
     // Marquee (бегущая строка) with companies
     {
-      name: "Booking.com",
-      logo: "/images/logos/booking.svg",
-      className: "dark:hidden",
-      url: "https://booking.com",
-    },
-    {
-      name: "Fortinet",
-      logo: "/images/logos/fortinet.svg",
-      className: "dark:hidden",
-      url: "https://fortinet.com",
-    },
-    {
-      name: "IBM",
-      logo: "/images/logos/ibm.svg",
+      name: "Vercel",
+      logo: vercelImage,
       className: "",
-      url: "https://ibm.com",
+      url: 'https://vercel.com',
     },
     {
-      name: "Logitech",
-      logo: "/images/logos/logitech.svg",
-      className: "dark:hidden",
-      url: "https://logitech.com",
-    },
-    {
-      name: "Netflix",
-      logo: "/images/logos/netflix.svg",
+      name: "Tailwind",
+      logo: tailwindImage,
       className: "",
-      url: "https://netflix.com",
+      url: "https://tailwindcss.com/",
     },
     {
-      name: "Spotify",
-      logo: "/images/logos/spotify.svg",
+      name: "Supabase",
+      logo: supabaseImage,
       className: "",
-      url: "https://spotify.com",
+      url: "https://supabase.com/",
     },
     {
-      name: "T-Mobile",
-      logo: "/images/logos/t-mobile.svg",
-      className: "",
-      url: "https://t-mobile.com",
+      name: "Figma",
+      logo: figmaImage,
+      className: "max-h-[25px]",
+      url: "https://supabase.com/",
     },
-    {
-      name: "TIBCO",
-      logo: "/images/logos/tibc.svg",
-      className: "",
-      url: "https://tibco.com",
-    },
+    // {
+    //   name: "Astro",
+    //   logo: astroImage,
+    //   className: "",
+    //   url: "https://astro.build",
+    // },
+    // {
+    //   name: "Spotify",
+    //   logo: "/images/logos/spotify.svg",
+    //   className: "",
+    //   url: "https://spotify.com",
+    // },
+    // {
+    //   name: "T-Mobile",
+    //   logo: "/images/logos/t-mobile.svg",
+    //   className: "",
+    //   url: "https://t-mobile.com",
+    // },
+    // {
+    //   name: "TIBCO",
+    //   logo: "/images/logos/tibc.svg",
+    //   className: "",
+    //   url: "https://tibco.com",
+    // },
   ],
   challenges: {
     // Carousel of challenges

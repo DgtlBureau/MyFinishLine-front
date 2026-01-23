@@ -43,13 +43,13 @@ export default function Logos() {
               href={company.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative h-8 w-24 transition-transform duration-200 hover:scale-105"
+              className="relative h-8 flex items-center justify-center w-24 transition-transform duration-200 hover:scale-105"
             >
               <Image
                 src={company.logo}
                 alt={`${company.name} logo`}
                 fill
-                className={cn("object-contain", company.className)}
+                className={cn("object-contain m-auto", company.className)}
               />
             </Link>
           ))}
