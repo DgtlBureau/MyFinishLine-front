@@ -19,6 +19,7 @@ interface StepProps {
   isViewed: boolean;
   x: string;
   index: number;
+  hideArrows?: boolean;
 }
 
 const Step = memo(
@@ -34,6 +35,7 @@ const Step = memo(
     isNext,
     isViewed,
     x,
+    hideArrows = false,
   }: StepProps) => {
     const isLast = id === stepsAmount;
 
@@ -133,7 +135,7 @@ const Step = memo(
           </div>
         )}
 
-        {index + 1 <= stepsAmount && (
+        {!hideArrows && index + 1 <= stepsAmount && (
           <>
             <div className="relative z-10">
               <Xarrow

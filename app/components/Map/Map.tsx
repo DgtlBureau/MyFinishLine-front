@@ -1,11 +1,12 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
 import StoryModal from "../Shared/StoryList/StoryList";
+import RouteRenderer from "./RouteRenderer";
 import { IActiveChallenge, IStep, IStory } from "@/app/types";
 import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
@@ -14,12 +15,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
+import FogOfWar from "./FogOfWar";
 
-const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
+const Map = ({ background_images, steps, is_completed, route_data }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const backgroundListRef = useRef<HTMLUListElement>(null);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const dispatch = useAppDispatch();
@@ -44,19 +45,36 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
 
   const stepsAmount = steps.length;
 
-  const handleScrollToActiveStep = () => {
+  // Map dimensions - same as admin
+  const MAP_WIDTH = 672; // max-w-2xl
+  const DEFAULT_MAP_HEIGHT = 5354;
+  const CONTENT_WIDTH = MAP_WIDTH - 64; // 608px after px-8 padding
+  const maxYCoordinate = steps.length > 0
+    ? Math.max(...steps.map(s => Number(s.y_coordinate)))
+    : 0;
+  const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+
+  // Check if we should use saved routes (must have routes with actual points)
+  const hasRouteData = route_data &&
+    route_data.routes &&
+    route_data.routes.length > 0 &&
+    route_data.routes.some(r => r.points && r.points.length >= 2);
+
+  const handleScrollToActiveStep = (animate: boolean = true) => {
     const activeStep = steps.find((step) => step.active);
+    const behavior = animate ? "smooth" : "instant";
+
     if (activeStep) {
       const element = document.getElementById("step-" + activeStep.index);
       element?.scrollIntoView({
-        behavior: "smooth",
+        behavior,
         block: "center",
         inline: "center",
       });
     } else {
       const element = document.getElementById("step-" + steps.length);
       element?.scrollIntoView({
-        behavior: "smooth",
+        behavior,
         block: "center",
         inline: "center",
       });
@@ -66,10 +84,14 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
   useLayoutEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
 
-    const scrollToBottom = () => {
+    // Check if user has already seen the scroll animation this session
+    const SESSION_KEY = "map_scroll_animated";
+    const hasSeenAnimation = sessionStorage.getItem(SESSION_KEY) === "true";
+
+    const scrollToBottom = (animate: boolean) => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
-        behavior: "smooth",
+        behavior: animate ? "smooth" : "instant",
       });
     };
 
@@ -77,9 +99,25 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
     const isAllCompleted = is_completed;
 
     if (hasActiveStep || isAllCompleted) {
-      timer = setTimeout(handleScrollToActiveStep, 100);
+      if (hasSeenAnimation) {
+        // Instant scroll - no animation
+        timer = setTimeout(() => handleScrollToActiveStep(false), 10);
+      } else {
+        // First visit - animate and save to session
+        timer = setTimeout(() => {
+          handleScrollToActiveStep(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
+        }, 100);
+      }
     } else {
-      timer = setTimeout(scrollToBottom, 100);
+      if (hasSeenAnimation) {
+        timer = setTimeout(() => scrollToBottom(false), 10);
+      } else {
+        timer = setTimeout(() => {
+          scrollToBottom(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
+        }, 100);
+      }
     }
 
     return () => {
@@ -164,21 +202,32 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
           ))}
         </div>
 
-        <div className="relative max-w-2xl mx-auto overflow-x-auto">
-          <ul ref={backgroundListRef} className="relative z-0 w-2xl">
-            {background_images.map((image, index) => (
-              <li key={`map-bg-${index}`} className="relative w-full">
-                <img
-                  src={image.image_url}
-                  alt=""
-                  className="object-cover w-full h-auto block"
-                />
-              </li>
-            ))}
-          </ul>
+        {/* Map container - same structure as admin */}
+        <div className="relative mx-auto overflow-x-auto">
+          <div
+            className="relative mx-auto"
+            style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
+          >
+            {/* Background Image - same as admin */}
+            {background_images[0] && (
+              <img
+                src={background_images[0].image_url}
+                alt=""
+                className="absolute inset-0 w-full h-full"
+                style={{ objectFit: "fill" }}
+                draggable={false}
+              />
+            )}
 
-          <div className="absolute inset-0 z-10 px-4 sm:px-8 w-2xl">
-            <div className="absolute z-10 left-0  top-40">
+            {/* Fog of War overlay - optimized gradient */}
+            <FogOfWar
+              steps={steps}
+              mapHeight={MAP_HEIGHT}
+              isCompleted={is_completed}
+            />
+
+            {/* Racoon mascot - above fog of war */}
+            <div className="absolute left-0 top-40" style={{ zIndex: 30 }}>
               <div className="fixed">
                 <Image
                   src="/images/application/map-racoon.png"
@@ -188,9 +237,22 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                 />
               </div>
             </div>
-            <div className="relative w-full h-full">
+
+            {/* Content layer with padding - same as admin */}
+            <div className="absolute inset-0 z-10 px-4 sm:px-8">
+              {/* Render saved routes if available */}
+              {hasRouteData && route_data && (
+                <RouteRenderer
+                  routeData={route_data}
+                  steps={steps}
+                  mapWidth={CONTENT_WIDTH}
+                  mapHeight={MAP_HEIGHT}
+                />
+              )}
+
+              {/* Steps */}
               <Xwrapper>
-                {steps.map((step, index) => (
+                {steps.map((step) => (
                   <div
                     key={step.id}
                     id={`step-${step.index}`}
@@ -198,6 +260,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                     style={{
                       left: `${step.x_coordinate}px`,
                       bottom: `${step.y_coordinate}px`,
+                      zIndex: 10,
                     }}
                   >
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
@@ -241,6 +304,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                         isNext={step.next}
                         index={step.index}
                         isViewed={step.is_viewed}
+                        hideArrows={hasRouteData}
                       />
                     </div>
                   </div>

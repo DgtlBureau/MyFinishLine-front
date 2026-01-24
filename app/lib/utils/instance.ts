@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://dev.myfinishline.io/back/api";
+const baseURL = "http://127.0.0.1/back/api";
 const paddleBaseUrl = "https://api.paddle.com/v2";
 
 const instance = axios.create({

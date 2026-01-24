@@ -9,7 +9,7 @@ interface IRewardProps {
 }
 
 const Reward = ({ title, description, isLegendary, rewards }: IRewardProps) => {
-  const rewardImage = rewards?.[0].image_url;
+  const rewardImage = rewards?.[0]?.image_url;
 
   return (
     <div>

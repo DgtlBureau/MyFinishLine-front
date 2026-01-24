@@ -39,6 +39,24 @@ export interface IStep {
   is_viewed: boolean;
 }
 
+export interface IRoutePoint {
+  x: number;
+  y: number;
+}
+
+export interface IRoute {
+  from_step_index: number;
+  to_step_index: number;
+  points: IRoutePoint[];
+}
+
+export interface IRouteData {
+  version: number;
+  routes: IRoute[];
+  base_width: number;
+  base_height: number;
+}
+
 export interface IActiveChallenge {
   background_images: IBackgroundImage[];
   description: string;
@@ -54,6 +72,7 @@ export interface IActiveChallenge {
   completed_at: string;
   reward?: IReward;
   reward_ticket?: IRewardTicket;
+  route_data?: IRouteData;
 }
 
 export interface IActivity {
