@@ -1,5 +1,5 @@
 "use client";
-import { BarChart3, Filter, Link2 } from "lucide-react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -136,7 +136,7 @@ const Navbar = ({
                         {item.label}
                       </NavigationMenuTrigger>
                       <NavigationMenuContent className="">
-                        <ul className="grid w-[263px] gap-2">
+                        <ul className="grid w-65.75 gap-2">
                           {item.subitems.map((subitem) => (
                             <li key={subitem.label}>
                               <NavigationMenuLink

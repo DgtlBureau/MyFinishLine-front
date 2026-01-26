@@ -212,3 +212,8 @@ export enum ShipmentStatuses {
   at_pickup_point = "at_pickup_point",
   received = "received",
 }
+
+export interface IWheelOption {
+  label: string;
+  value: string;
+}

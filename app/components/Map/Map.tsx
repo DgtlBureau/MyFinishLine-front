@@ -17,7 +17,12 @@ import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
 
-const Map = ({ background_images, steps, is_completed, route_data }: IActiveChallenge) => {
+const Map = ({
+  background_images,
+  steps,
+  is_completed,
+  route_data,
+}: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
@@ -49,16 +54,18 @@ const Map = ({ background_images, steps, is_completed, route_data }: IActiveChal
   const MAP_WIDTH = 672; // max-w-2xl
   const DEFAULT_MAP_HEIGHT = 5354;
   const CONTENT_WIDTH = MAP_WIDTH - 64; // 608px after px-8 padding
-  const maxYCoordinate = steps.length > 0
-    ? Math.max(...steps.map(s => Number(s.y_coordinate)))
-    : 0;
+  const maxYCoordinate =
+    steps.length > 0
+      ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
+      : 0;
   const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
 
   // Check if we should use saved routes (must have routes with actual points)
-  const hasRouteData = route_data &&
+  const hasRouteData =
+    route_data &&
     route_data.routes &&
     route_data.routes.length > 0 &&
-    route_data.routes.some(r => r.points && r.points.length >= 2);
+    route_data.routes.some((r) => r.points && r.points.length >= 2);
 
   const handleScrollToActiveStep = (animate: boolean = true) => {
     const activeStep = steps.find((step) => step.active);
@@ -318,7 +325,7 @@ const Map = ({ background_images, steps, is_completed, route_data }: IActiveChal
           <motion.button
             whileTap={{ scale: 0.9 }}
             className="bg-white rounded-full p-2 shadow-lg"
-            onClick={handleScrollToActiveStep}
+            onClick={() => handleScrollToActiveStep()}
           >
             <Crosshair />
           </motion.button>

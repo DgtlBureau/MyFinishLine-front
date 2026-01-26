@@ -38,6 +38,20 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
     handleLoadLeaderboard();
   }, [challengeId]);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <Loader />
+      </div>
+    );
+  } else if (leaderboards.length === 0) {
+    return (
+      <div className="block text-center text-sm text-[#71717A]">
+        Leaderboard is not available or empty
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial="collapsed"
@@ -46,28 +60,20 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
     >
       <motion.ul initial="collapsed" className="overflow-hidden">
         <AnimatePresence>
-          {leaderboards.length > 0 ? (
-            leaderboards?.map((item) => {
-              return (
-                <LeaderboardUser
-                  key={item.user_id}
-                  {...item.user}
-                  position={item.position}
-                  isCurrentUser={item.user_id === current_user.user.id}
-                  challengeId={challengeId}
-                  total_progress={item.total_progress}
-                  total_hours={item.total_hours}
-                  user_id={item.user_id}
-                />
-              );
-            })
-          ) : isLoading ? (
-            <div className="flex items-center justify-center p-4">
-              <Loader />
-            </div>
-          ) : (
-            "No data available"
-          )}
+          {leaderboards?.map((item) => {
+            return (
+              <LeaderboardUser
+                key={item.user_id}
+                {...item.user}
+                position={item.position}
+                isCurrentUser={item.user_id === current_user.user.id}
+                challengeId={challengeId}
+                total_progress={item.total_progress}
+                total_hours={item.total_hours}
+                user_id={item.user_id}
+              />
+            );
+          })}
         </AnimatePresence>
       </motion.ul>
       {/* {current_user?.position > 10 && (
