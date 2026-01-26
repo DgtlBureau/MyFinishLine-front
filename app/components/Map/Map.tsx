@@ -67,9 +67,16 @@ const Map = ({
 
   const handleScrollToActiveStep = (animate: boolean = true) => {
     const behavior = animate ? "smooth" : "instant";
-
+    const lastActiveStepId = steps.find((step) => step.active)?.id;
     const element = document.getElementById("user-progress-icon");
     if (element) {
+      element?.scrollIntoView({
+        behavior,
+        block: "center",
+        inline: "center",
+      });
+    } else if (lastActiveStepId) {
+      const element = document.getElementById("step-" + lastActiveStepId);
       element?.scrollIntoView({
         behavior,
         block: "center",
