@@ -69,7 +69,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
     const scrollToBottom = () => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
-        behavior: "smooth",
+        behavior: "instant",
       });
     };
 

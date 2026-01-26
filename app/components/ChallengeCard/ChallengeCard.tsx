@@ -37,17 +37,24 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { challenges } = useAppSelector((state) => state.user);
-  const { challenges: anotherCahallenges } = useAppSelector((state) => state.profile);
-  const challenge = userId ? anotherCahallenges?.[0] : challenges?.[0] || {
-    user_distance: 0,
-    total_distance: 0,
-    image_url: "",
-    reward: {
-      image_url: "",
-    },
-  };
+  const { challenges: anotherCahallenges } = useAppSelector(
+    (state) => state.profile,
+  );
+  const challenge = userId
+    ? anotherCahallenges?.[0]
+    : challenges?.[0] || {
+        user_distance: 0,
+        total_distance: 0,
+        image_url: "",
+        reward: {
+          image_url: "",
+        },
+      };
 
-  const hours = getTimePassed(challenge.activate_date, challenge.completed_at);
+  const hours = getTimePassed(
+    challenge?.activate_date,
+    challenge?.completed_at,
+  );
 
   const progress =
     (challenge?.user_distance / +challenge?.total_distance) * 100;
@@ -56,9 +63,8 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
     try {
       const data = await getUserChallenges(userId);
       if (userId) {
-        dispatch(setUserProfieChallenges(data.data))
+        dispatch(setUserProfieChallenges(data.data));
       } else {
-
         dispatch(setUserChallenges(data.data));
       }
     } catch (error) {
@@ -132,10 +138,10 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             </div>
             {challenge.reward_ticket.status.type !==
               ShipmentStatuses.received && (
-                <div className="text-[13px] text-muted-foreground mt-1">
-                  Shipment ID {challenge.reward_ticket.id}
-                </div>
-              )}
+              <div className="text-[13px] text-muted-foreground mt-1">
+                Shipment ID {challenge.reward_ticket.id}
+              </div>
+            )}
           </div>
         )}
       </div>

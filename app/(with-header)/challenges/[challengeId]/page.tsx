@@ -12,6 +12,7 @@ import { Currencies, IProduct } from "@/app/types";
 import { useEffect } from "react";
 import { setProducts } from "@/app/lib/features/products/productsSlice";
 import axios from "axios";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const page = () => {
   const { challengeId } = useParams();
@@ -36,6 +37,7 @@ const page = () => {
 
     paddle_product_id: "",
     challenge_info: {
+      product_id: "",
       completed_at: "",
       is_completed: false,
       background_images: [
@@ -77,6 +79,14 @@ const page = () => {
       handleLoadProducts();
     }
   }, []);
+
+  sendGTMEvent({
+    event: "page_view",
+    page_location: "/challenges/" + challengeId,
+    page_path: "/challenges/id",
+    page_title: "Challenge",
+    challenge_id: challengeId,
+  });
 
   return (
     <>

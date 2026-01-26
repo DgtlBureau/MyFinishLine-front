@@ -14,6 +14,7 @@ export const initialState: IActiveChallenge = {
   activate_date: "",
   is_completed: false,
   completed_at: "",
+  product_id: "",
 };
 
 const challengeSlice = createSlice({

@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import Link from "next/link";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const Content = () => {
   const router = useRouter();
@@ -24,6 +25,11 @@ const Content = () => {
 
       if (data.success) {
         setStatus("Signed in successfully! Redirecting to the app");
+
+        sendGTMEvent({
+          event: "login",
+          type: "google",
+        });
         setTimeout(() => {
           router.replace("/app");
         }, 3000);

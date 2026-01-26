@@ -1,18 +1,12 @@
 import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import { Select } from "../../ui/select";
-import {
-  formatCardNumber,
-  formatExpiryDate,
-  numberRegex,
-} from "@/app/lib/utils/regex";
-import { CustomSelect } from "../../ui/customSect/CustomSelect";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { useEffect, useState } from "react";
+import { Paddle } from "@paddle/paddle-js";
+import { useState } from "react";
 import { IProduct } from "@/app/types";
 import axios from "axios";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const PaymentForm = ({ product }: { product: IProduct }) => {
   const {
@@ -47,6 +41,11 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     try {
       const { data } = await axios.post("/api/payment/order", {
         stripe_price_id: product.prices?.[0].stripe_price_id,
+      });
+      sendGTMEvent({
+        event: "submit_order",
+        challenge_id: product.challenge_info.id,
+        product_id: product.challenge_info.product_id,
       });
       window.location.href = data.payment_url;
     } catch (error) {

@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { IProduct } from "@/app/types";
 import axios from "axios";
 import { setProducts } from "@/app/lib/features/products/productsSlice";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 export default function PaymentPage() {
   const [total, setTotal] = useState<number>(0);
@@ -24,6 +25,12 @@ export default function PaymentPage() {
   };
 
   useEffect(() => {
+    sendGTMEvent({
+      event: "page_view",
+      page_location: "/payment",
+      page_path: "/payment",
+      page_title: "Payment",
+    });
     if (!products.length) {
       handleLoadProducts();
     }

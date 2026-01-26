@@ -4,10 +4,11 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
 import { clearUser, updateUser } from "@/app/lib/features/user/userSlice";
-import { useAppDispatch } from "@/app/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { sendGTMEvent } from "@next/third-parties/google";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const ConfirmCode = () => {
@@ -19,6 +20,7 @@ const ConfirmCode = () => {
   const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -102,6 +104,10 @@ const ConfirmCode = () => {
       if (data?.status) {
         dispatch(updateUser({ has_activated_code: true }));
       }
+      sendGTMEvent({
+        event: "code_submitted",
+        user_id: user.id,
+      });
       handleGetActiveChallenge();
     } catch (error: any) {
       setError(error.response?.data.message);

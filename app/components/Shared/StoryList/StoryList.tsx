@@ -181,7 +181,7 @@ const StoryList = ({
           {stories.map((story, index) => {
             const isActive = index === activeStoryIndex;
             const isCompleted = index < activeStoryIndex;
-
+            console.log(story);
             return (
               <div
                 key={story.id}

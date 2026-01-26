@@ -139,7 +139,7 @@ const Navbar = ({
                         <ul className="grid w-[263px] gap-2">
                           {item.subitems.map((subitem) => (
                             <li key={subitem.label}>
-                              <NavigationMenuLink
+                              <Link
                                 href={subitem.href}
                                 className="hover:bg-accent/50 flex-row gap-3 p-3"
                               >
@@ -152,14 +152,14 @@ const Navbar = ({
                                     {subitem.description}
                                   </div>
                                 </div>
-                              </NavigationMenuLink>
+                              </Link>
                             </li>
                           ))}
                         </ul>
                       </NavigationMenuContent>
                     </>
                   ) : (
-                    <NavigationMenuLink
+                    <Link
                       href={item.href}
                       className={cn(
                         // item.isChallenge
@@ -172,7 +172,7 @@ const Navbar = ({
                       suppressHydrationWarning
                     >
                       {item.label}
-                    </NavigationMenuLink>
+                    </Link>
                   )}
                 </NavigationMenuItem>
               ))}

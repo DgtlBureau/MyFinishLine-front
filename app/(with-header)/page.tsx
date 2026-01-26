@@ -1,6 +1,3 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-
 import Hero from "@/app/components/ChallengeContent/Hero/Hero";
 import Logos from "@/app/components/ChallengeContent/Logos/Logos";
 import FeaturesCarousel from "@/app/components/ChallengeContent/FeaturesCarousel/FeaturesCarousel";
@@ -10,17 +7,12 @@ import Testimonials from "@/app/components/ChallengeContent/Testimonials/Testimo
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
 import Pricing from "@/app/components/ChallengeContent/Pricing/Pricing";
 import { Feature102 } from "../components/ui/feature102";
+import SendGTMComponent from "../components/Shared/SendGTMComponent/SendGTMComponent";
 
-export default async function Home() {
-  const cookieStore = await cookies();
-  const athleteCookie = cookieStore.get("strava_athlete");
-
-  if (athleteCookie) {
-    redirect("/app");
-  }
-
+export default function Home() {
   return (
     <>
+      <SendGTMComponent />
       <Hero />
       <Logos />
       <FeaturesCarousel />

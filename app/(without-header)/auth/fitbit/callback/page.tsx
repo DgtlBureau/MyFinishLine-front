@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import Link from "next/link";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const FitBitCallbackPage = () => {
   const [status, setStatus] = useState<string>(
@@ -26,6 +27,11 @@ const FitBitCallbackPage = () => {
 
       if (data.status === 200) {
         setStatus(data.message);
+
+        sendGTMEvent({
+          event: "login",
+          type: "fitbit",
+        });
 
         setTimeout(() => {
           router.push("/app/homepage");

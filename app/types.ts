@@ -53,6 +53,7 @@ export interface IActiveChallenge {
   is_completed: boolean;
   completed_at: string;
   reward?: IReward;
+  product_id: string;
   reward_ticket?: IRewardTicket;
 }
 
