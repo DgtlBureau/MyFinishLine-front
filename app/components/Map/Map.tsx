@@ -44,7 +44,7 @@ const Map = ({
 
   useEffect(() => {
     if (user.available_onboarding) {
-      handleLoadOnboarding();
+      // handleLoadOnboarding();
     }
   }, []);
 
@@ -67,28 +67,63 @@ const Map = ({
 
   const handleScrollToActiveStep = (animate: boolean = true) => {
     const behavior = animate ? "smooth" : "instant";
-    const lastActiveStepId = steps.find((step) => step.active)?.id;
-    const element = document.getElementById("user-progress-icon");
-    if (element) {
-      element?.scrollIntoView({
+
+    // Find ALL user circles
+    const userCircles = document.querySelectorAll("#user-progress-icon");
+
+    // Find the first circle that's actually visible (not display: none, opacity > 0)
+    let visibleCircle = null;
+
+    for (const circle of userCircles) {
+      const style = window.getComputedStyle(circle);
+      const isVisible =
+        style.display !== "none" &&
+        style.opacity !== "0" &&
+        style.visibility !== "hidden";
+
+      // Also check if parent is visible (ProgressArrow might hide the container)
+      let parent = circle.parentElement;
+      let parentVisible = true;
+
+      while (parent && parent !== document.body) {
+        const parentStyle = window.getComputedStyle(parent);
+        if (
+          parentStyle.display === "none" ||
+          parentStyle.opacity === "0" ||
+          parentStyle.visibility === "hidden"
+        ) {
+          parentVisible = false;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+
+      if (isVisible && parentVisible) {
+        visibleCircle = circle;
+        break;
+      }
+    }
+
+    if (visibleCircle) {
+      visibleCircle.scrollIntoView({
         behavior,
         block: "center",
         inline: "center",
       });
-    } else if (lastActiveStepId) {
-      const element = document.getElementById("step-" + lastActiveStepId);
-      element?.scrollIntoView({
-        behavior,
-        block: "center",
-        inline: "center",
-      });
-    } else {
-      const element = document.getElementById("step-" + steps.length);
-      element?.scrollIntoView({
-        behavior,
-        block: "center",
-        inline: "center",
-      });
+      return;
+    }
+
+    // If no visible circle, fallback to active step
+    const activeStep = steps.find((step) => step.active);
+    if (activeStep) {
+      const stepElement = document.getElementById(`step-${activeStep.index}`);
+      if (stepElement) {
+        stepElement.scrollIntoView({
+          behavior,
+          block: "center",
+          inline: "center",
+        });
+      }
     }
   };
 
@@ -210,13 +245,11 @@ const Map = ({
           ))}
         </div>
 
-        {/* Map container - same structure as admin */}
         <div className="relative mx-auto overflow-x-auto">
           <div
             className="relative mx-auto"
             style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
           >
-            {/* Background Image - same as admin */}
             {background_images[0] && (
               <img
                 src={background_images[0].image_url}
@@ -227,28 +260,39 @@ const Map = ({
               />
             )}
 
-            {/* Fog of War overlay - optimized gradient */}
             <FogOfWar
               steps={steps}
               mapHeight={MAP_HEIGHT}
               isCompleted={is_completed}
             />
 
-            {/* Racoon mascot - above fog of war */}
             <div className="absolute left-0 top-40" style={{ zIndex: 30 }}>
-              <div className="fixed">
+              <div className="fixed flex gap-2 items-start">
                 <Image
                   src="/images/application/map-racoon.png"
                   width={100}
                   height={100}
                   alt="Map racoon"
                 />
+                {(!user.has_fitbit_connect || !user.has_fitbit_connect) && (
+                  <div className="relative bg-white p-2 px-4 rounded-xl shadow-lg max-w-xs ml-2">
+                    <div className="text-sm font-medium text-gray-800 italic">
+                      Connect your Strava or FitBit account to track your
+                      progress!
+                    </div>
+                    <div
+                      className="absolute -left-1 bottom-0 w-0 h-0 
+                      border-t-8 border-t-transparent
+                      border-r-12 border-r-white
+                      border-b-8 border-b-transparent
+                      rotate-95"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Content layer with padding - same as admin */}
             <div className="absolute inset-0 z-10 px-4 sm:px-8">
-              {/* Render saved routes if available */}
               {hasRouteData && route_data && (
                 <RouteRenderer
                   routeData={route_data}
@@ -258,7 +302,6 @@ const Map = ({
                 />
               )}
 
-              {/* Steps */}
               <Xwrapper>
                 {steps.map((step) => (
                   <div

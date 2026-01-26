@@ -38,7 +38,6 @@ const Step = memo(
     hideArrows = false,
   }: StepProps) => {
     const isLast = id === stepsAmount;
-    console.log("rerendered " + id);
 
     const options = {
       animationData: crown,
