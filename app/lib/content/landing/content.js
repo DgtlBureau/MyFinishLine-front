@@ -372,7 +372,7 @@ const content = {
   },
   feedback_block: {
     // Carousel with feedback cards
-    title: "Trusted by runners worldwide",
+    title: "Trusted by athletes worldwide",
     description:
       "Join thousands of marathoners, casual joggers, and fitness enthusiasts who rely on MyFinishLine to plan, track, and achieve their running goals.",
     testimonials: [

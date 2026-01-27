@@ -16,8 +16,6 @@ export default function Logos() {
     setMounted(true);
   }, []);
 
-  // Filter out companies with dark:hidden when theme is dark
-  // Only apply theme-based filtering after component is mounted to prevent hydration mismatch
   const visibleCompanies = content.logos.filter((company) => {
     if (mounted && company.className.includes("dark:hidden")) {
       return false;
