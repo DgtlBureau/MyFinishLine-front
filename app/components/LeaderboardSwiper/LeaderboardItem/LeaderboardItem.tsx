@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
 import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
 import LeaderboardUser from "./LeaderboardUser/LeaderboardUser";
-import Loader from "../../Shared/Loader/Loader";
+import LeaderboardShimmer from "../../Shared/Shimmer/LeaderboardShimmer/LeaderboardShimmer";
 
 interface ILeaderboardItemProps {
   challengeId: number;
@@ -39,11 +39,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
   }, [challengeId]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <Loader />
-      </div>
-    );
+    return <LeaderboardShimmer rows={8} />;
   } else if (leaderboards.length === 0) {
     return (
       <div className="block text-center text-sm text-[#71717A]">

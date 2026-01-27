@@ -78,10 +78,10 @@ const Journey = () => {
             style={
               user.has_strava_connect
                 ? {
-                    cursor: "default",
-                    backgroundColor: "#FC4C02",
-                    color: "#FFF",
-                  }
+                  cursor: "default",
+                  backgroundColor: "#FC4C02",
+                  color: "#FFF",
+                }
                 : {}
             }
             className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
@@ -108,10 +108,10 @@ const Journey = () => {
             style={
               user.has_fitbit_connect
                 ? {
-                    cursor: "default",
-                    backgroundColor: "#4cafbb",
-                    color: "#FFF",
-                  }
+                  cursor: "default",
+                  backgroundColor: "#4cafbb",
+                  color: "#FFF",
+                }
                 : {}
             }
             className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden"
