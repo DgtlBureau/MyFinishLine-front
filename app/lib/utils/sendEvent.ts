@@ -2,7 +2,6 @@ export const sendGTMEvent = (data: any) => {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(data);
 
-  // Если все еще используете gtag
   if (window.gtag) {
     window.gtag("event", data.event, {
       page_location: data.page_location,

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "react-toastify";
@@ -10,18 +10,101 @@ import { useAppSelector } from "@/app/lib/hooks";
 import RedeemStep1 from "@/app/components/Application/RedeemSteps/RedeemStep1/RedeemStep1";
 import RedeemStep2 from "@/app/components/Application/RedeemSteps/RedeemStep2/RedeemStep2";
 import RedeemStep3 from "@/app/components/Application/RedeemSteps/RedeemStep3/RedeemStep3";
+import { isValidPhone } from "@/app/lib/utils/regex";
 
 import "flag-icons/css/flag-icons.min.css";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { IActiveChallenge } from "@/app/types";
 
+interface FormValues {
+  first_name: string;
+  last_name: string;
+  phone: string;
+  country: string;
+  zip_code: string;
+  address_1: string;
+  address_2: string;
+  city: string;
+  email: string;
+  dial_code: string;
+  state: string;
+}
+
+interface FormErrors {
+  [key: string]: string | undefined;
+}
+
+interface FormTouched {
+  [key: string]: boolean | undefined;
+}
+
+const validateStep1 = (values: FormValues): FormErrors => {
+  const errors: FormErrors = {};
+
+  if (!values.first_name.trim()) {
+    errors.first_name = "First name is required";
+  } else if (values.first_name.length < 2) {
+    errors.first_name = "First name must be at least 2 characters";
+  }
+
+  if (!values.last_name.trim()) {
+    errors.last_name = "Last name is required";
+  } else if (values.last_name.length < 2) {
+    errors.last_name = "Last name must be at least 2 characters";
+  }
+
+  if (!values.country) {
+    errors.country = "Country is required";
+  }
+
+  if (!values.dial_code.trim()) {
+    errors.dial_code = "Dial code is required";
+  } else if (!/^\+?\d{1,4}$/.test(values.dial_code.replace(/\s/g, ''))) {
+    errors.dial_code = "Invalid dial code";
+  }
+
+  if (!values.phone.trim()) {
+    errors.phone = "Phone number is required";
+  } else if (!isValidPhone(values.phone)) {
+    errors.phone = "Invalid phone number";
+  }
+
+  return errors;
+};
+
+const validateStep2 = (values: FormValues): FormErrors => {
+  const errors: FormErrors = {};
+
+  if (!values.address_1.trim()) {
+    errors.address_1 = "Address is required";
+  }
+
+  if (!values.city.trim()) {
+    errors.city = "City is required";
+  }
+
+  if (!values.zip_code.trim()) {
+    errors.zip_code = "Zip code is required";
+  } else if (!/^[a-zA-Z0-9\s\-]{3,10}$/.test(values.zip_code)) {
+    errors.zip_code = "Invalid zip code";
+  }
+
+  return errors;
+};
+
 const Content = () => {
   const { user } = useAppSelector((state) => state.user);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepIndex, setStepIndex] = useState(1);
   const [challenge, setChallenge] = useState<IActiveChallenge>();
-  const [formData, setFormData] = useState({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const reward_id = searchParams.get("reward_id");
+  const challenge_name = searchParams.get("challenge_name");
+  const challenge_id = searchParams.get("challenge_id");
+
+  const [values, setValues] = useState<FormValues>({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
     phone: user.phone || "",
@@ -34,11 +117,9 @@ const Content = () => {
     dial_code: "",
     state: "",
   });
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const reward_id = searchParams.get("reward_id");
-  const challenge_name = searchParams.get("challenge_name");
-  const challenge_id = searchParams.get("challenge_id");
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<FormTouched>({});
 
   const handleLoadChallenge = async () => {
     try {
@@ -55,45 +136,83 @@ const Content = () => {
     handleLoadChallenge();
   }, []);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+  };
 
-  const handleUpdateCountry = useCallback((value: string) => {
-    setFormData((prevState) => ({ ...prevState, country: value }));
-  }, []);
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
 
-  const handleUpdateState = useCallback((value: string) => {
-    setFormData((prevState) => ({ ...prevState, state: value }));
-  }, []);
+    // Validate the field
+    const allErrors = { ...validateStep1(values), ...validateStep2(values) };
+    setErrors(prev => ({ ...prev, [name]: allErrors[name] }));
+  };
 
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+  const handleUpdateCountry = (value: string) => {
+    setValues(prev => ({ ...prev, country: value }));
+    setTouched(prev => ({ ...prev, country: true }));
+
+    const updatedValues = { ...values, country: value };
+    const countryError = validateStep1(updatedValues).country;
+    setErrors(prev => ({ ...prev, country: countryError }));
+  };
+
+  const handleGoNext = () => {
+    const currentStepErrors = stepIndex === 1
+      ? validateStep1(values)
+      : validateStep2(values);
+
+    // Touch all fields in current step
+    if (stepIndex === 1) {
+      setTouched(prev => ({
+        ...prev,
+        first_name: true,
+        last_name: true,
+        country: true,
+        dial_code: true,
+        phone: true,
+      }));
+    } else if (stepIndex === 2) {
+      setTouched(prev => ({
+        ...prev,
+        address_1: true,
+        city: true,
+        zip_code: true,
+      }));
+    }
+
+    setErrors(prev => ({ ...prev, ...currentStepErrors }));
+
+    if (Object.keys(currentStepErrors).length === 0) {
+      setStepIndex(prev => prev + 1);
+    }
+  };
+
+  const handleGoBack = () => {
+    setStepIndex(prev => prev - 1);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (stepIndex !== 3) return;
+
     setIsSubmitting(true);
     try {
       await axios.post("/api/user/redeem-reward", {
         reward_id,
-        ...formData,
-        address: formData.address_1,
+        ...values,
+        address: values.address_1,
       });
       router.push("/app/profile/journey");
       toast.success("Medal claimed! Your medal is on its way.");
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleGoNext = () => {
-    setStepIndex((prevState) => prevState + 1);
-  };
-
-  const handleGoBack = () => {
-    setStepIndex((prevState) => prevState - 1);
   };
 
   return (
@@ -121,22 +240,35 @@ const Content = () => {
           transition={{ delay: 0.1 }}
           className="mt-8"
         >
-          <form onSubmit={onSubmit} className="flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             {stepIndex === 1 ? (
               <RedeemStep1
-                {...formData}
+                first_name={values.first_name}
+                last_name={values.last_name}
+                country={values.country}
+                dial_code={values.dial_code}
+                phone={values.phone}
                 handleChange={handleChange}
+                handleBlur={handleBlur}
                 handleUpdateCountry={handleUpdateCountry}
+                errors={errors}
+                touched={touched}
               />
             ) : stepIndex === 2 ? (
               <RedeemStep2
-                {...formData}
+                address_1={values.address_1}
+                address_2={values.address_2}
+                city={values.city}
+                state={values.state}
+                zip_code={values.zip_code}
                 handleChange={handleChange}
-                handleUpdateSelect={handleUpdateState}
+                handleBlur={handleBlur}
+                errors={errors}
+                touched={touched}
               />
             ) : (
               <RedeemStep3
-                {...formData}
+                {...values}
                 isLoading={isSubmitting}
                 rewardImage={challenge?.reward?.image_url || ""}
               />

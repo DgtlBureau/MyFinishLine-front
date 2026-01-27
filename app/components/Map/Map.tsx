@@ -1,7 +1,7 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useLayoutEffect, useEffect, useMemo } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
@@ -26,6 +26,7 @@ const Map = ({
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [awardQueue, setAwardQueue] = useState<IStep[]>([]);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const dispatch = useAppDispatch();
@@ -48,6 +49,74 @@ const Map = ({
     }
   }, []);
 
+  // Track previous steps to detect newly completed ones
+  const previousStepsRef = useRef<IStep[]>([]);
+  const isInitialLoadRef = useRef(true);
+  const CELEBRATED_STEPS_KEY = "celebrated_steps";
+
+  // Detect when steps are newly completed and queue award modals
+  useEffect(() => {
+    if (steps.length === 0) return;
+
+    // Get already celebrated steps from sessionStorage
+    let celebratedSteps: number[] = [];
+    try {
+      const stored = sessionStorage.getItem(CELEBRATED_STEPS_KEY);
+      if (stored) {
+        celebratedSteps = JSON.parse(stored);
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+
+    const previousSteps = previousStepsRef.current;
+    const newlyCompletedSteps: IStep[] = [];
+
+    // On initial load, find steps completed since last session
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+
+      for (const step of steps) {
+        if (step.completed && !celebratedSteps.includes(step.id)) {
+          newlyCompletedSteps.push(step);
+          celebratedSteps.push(step.id);
+        }
+      }
+    } else {
+      // For subsequent updates, detect steps that just became completed
+      for (const step of steps) {
+        if (step.completed && !celebratedSteps.includes(step.id)) {
+          const prevStep = previousSteps.find((s) => s.id === step.id);
+          const wasNotCompletedBefore = prevStep && !prevStep.completed;
+
+          if (wasNotCompletedBefore) {
+            newlyCompletedSteps.push(step);
+            celebratedSteps.push(step.id);
+          }
+        }
+      }
+    }
+
+    // If there are newly completed steps, queue them for celebration
+    if (newlyCompletedSteps.length > 0) {
+      sessionStorage.setItem(CELEBRATED_STEPS_KEY, JSON.stringify(celebratedSteps));
+
+      // Sort by index (lowest first) so user sees them in order
+      const sortedSteps = newlyCompletedSteps.sort((a, b) => a.index - b.index);
+
+      // Show the first one immediately, queue the rest
+      const [firstStep, ...remainingSteps] = sortedSteps;
+      setActiveStep(firstStep);
+      setIsAwardOpen(true);
+      if (remainingSteps.length > 0) {
+        setAwardQueue(remainingSteps);
+      }
+    }
+
+    // Update previous steps ref
+    previousStepsRef.current = steps;
+  }, [steps]);
+
   const stepsAmount = steps.length;
 
   const MAP_WIDTH = 672;
@@ -65,14 +134,8 @@ const Map = ({
     route_data.routes.length > 0 &&
     route_data.routes.some((r) => r.points && r.points.length >= 2);
 
-  const handleScrollToActiveStep = (animate: boolean = true) => {
-    const behavior = animate ? "smooth" : "instant";
-
-    // Find ALL user circles
+  const findVisibleUserCircle = (): Element | null => {
     const userCircles = document.querySelectorAll("#user-progress-icon");
-
-    // Find the first circle that's actually visible (not display: none, opacity > 0)
-    let visibleCircle = null;
 
     for (const circle of userCircles) {
       const style = window.getComputedStyle(circle);
@@ -99,10 +162,18 @@ const Map = ({
       }
 
       if (isVisible && parentVisible) {
-        visibleCircle = circle;
-        break;
+        return circle;
       }
     }
+    return null;
+  };
+
+  const handleScrollToActiveStep = (animate: boolean = true, retryCount: number = 0) => {
+    const behavior = animate ? "smooth" : "instant";
+    const MAX_RETRIES = 5;
+    const RETRY_DELAY = 100;
+
+    const visibleCircle = findVisibleUserCircle();
 
     if (visibleCircle) {
       visibleCircle.scrollIntoView({
@@ -113,7 +184,15 @@ const Map = ({
       return;
     }
 
-    // If no visible circle, fallback to active step
+    // Retry a few times to wait for RouteRenderer avatar to become visible
+    if (retryCount < MAX_RETRIES) {
+      setTimeout(() => {
+        handleScrollToActiveStep(animate, retryCount + 1);
+      }, RETRY_DELAY);
+      return;
+    }
+
+    // If still no visible circle after retries, fallback to active step
     const activeStep = steps.find((step) => step.active);
     if (activeStep) {
       const stepElement = document.getElementById(`step-${activeStep.index}`);
@@ -219,12 +298,27 @@ const Map = ({
     setIsAwardOpen(false);
     if (activeStep?.story?.length) {
       setIsStoriesOpen(true);
+    } else {
+      // No stories, check if there are more steps in queue
+      showNextQueuedAward();
+    }
+  };
+
+  const showNextQueuedAward = () => {
+    if (awardQueue.length > 0) {
+      const [nextStep, ...remainingSteps] = awardQueue;
+      setActiveStep(nextStep);
+      setAwardQueue(remainingSteps);
+      setIsAwardOpen(true);
+    } else {
+      setActiveStep(null);
     }
   };
 
   const handleCloseStories = () => {
-    setActiveStep(null);
     setIsStoriesOpen(false);
+    // After closing stories, show next queued award if any
+    showNextQueuedAward();
   };
 
   return (

@@ -3,7 +3,7 @@
 import { useAppSelector } from "@/app/lib/hooks";
 import { User } from "lucide-react";
 import Image from "next/image";
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 
 type XarrowProps = React.ComponentProps<typeof Xarrow>;
@@ -17,356 +17,207 @@ interface ProgressArrowProps extends XarrowProps {
   showText?: boolean;
 }
 
+const STORAGE_KEY_PREFIX = "progress_arrow_";
+
 const ProgressArrow: React.FC<ProgressArrowProps> = ({
   progress,
   showProgressCircle = true,
-  circleColor = "#ff6b6b",
   circleRadius = 16,
   circleClassName = "",
   showText = true,
   ...xarrowProps
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
+  const pathRef = useRef<SVGPathElement | null>(null);
   const circleContainerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
   const [svgReady, setSvgReady] = useState(false);
-  const [shouldAnimate, setShouldAnimate] = useState(false);
   const { user } = useAppSelector((state) => state.user);
 
-  // Create unique ID for this arrow
-  const arrowId = `arrow_${xarrowProps.start}_${xarrowProps.end}`;
+  const arrowId = `${STORAGE_KEY_PREFIX}${xarrowProps.start}_${xarrowProps.end}`;
 
-  // Store animation state
-  const animationStateRef = useRef({
-    from: 0,
-    to: 0,
-    startTime: 0,
-    isAnimating: false,
-  });
+  // Easing function
+  const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 
-  // Store previous progress in ref AND sessionStorage
-  const previousProgressRef = useRef<number>(progress);
+  // Calculate animation duration based on progress change
+  const getAnimationDuration = (fromProgress: number, toProgress: number): number => {
+    const change = Math.abs(toProgress - fromProgress);
 
-  // Easing function for smooth animation
-  const easeOutCubic = (t: number): number => {
-    return 1 - Math.pow(1 - t, 3);
+    if (change === 0) return 0;
+
+    // Slower animation speeds for better visibility
+    // Small changes (< 5%): 300ms per 1%
+    // Medium changes (5-20%): 200ms per 1%
+    // Large changes (> 20%): 100ms per 1%
+    // Minimum 1000ms, maximum 5000ms
+
+    let msPerPercent: number;
+    if (change < 5) {
+      msPerPercent = 300;
+    } else if (change < 20) {
+      msPerPercent = 200;
+    } else {
+      msPerPercent = 100;
+    }
+
+    const duration = change * msPerPercent;
+    return Math.max(1000, Math.min(duration, 5000));
   };
 
-  // Get circle position from progress percentage
-  const getCirclePosition = useCallback((progressValue: number) => {
-    if (!pathRef.current || !wrapperRef.current) return null;
+  // Update circle position
+  const updateCirclePosition = (progressValue: number) => {
+    if (!pathRef.current || !wrapperRef.current || !circleContainerRef.current) return;
 
     const path = pathRef.current;
     const svg = wrapperRef.current.querySelector("svg");
-    if (!path || !svg) return null;
+    if (!svg) return;
 
     const totalLength = path.getTotalLength();
-    if (totalLength === 0) return null;
+    if (totalLength === 0) return;
 
-    const strokeLength = totalLength * (progressValue / 100);
+    const shouldShow = progressValue > 0 && progressValue < 100;
+
+    if (!shouldShow) {
+      circleContainerRef.current.style.opacity = "0";
+      circleContainerRef.current.style.display = "none";
+      return;
+    }
 
     try {
-      const point = path.getPointAtLength(strokeLength);
-      if (!point) return null;
-
+      const point = path.getPointAtLength(totalLength * (progressValue / 100));
       const svgRect = svg.getBoundingClientRect();
       const wrapperRect = wrapperRef.current.getBoundingClientRect();
 
       const x = point.x + svgRect.left - wrapperRect.left;
       const y = point.y + svgRect.top - wrapperRect.top;
 
-      return { x, y };
+      circleContainerRef.current.style.left = `${x}px`;
+      circleContainerRef.current.style.top = `${y}px`;
+      circleContainerRef.current.style.transform = `translate(-${circleRadius}px, -${circleRadius}px)`;
+      circleContainerRef.current.style.opacity = "1";
+      circleContainerRef.current.style.display = "flex";
     } catch (error) {
-      console.warn("Error getting circle position:", error);
-      return null;
+      console.warn("Error updating circle position:", error);
     }
-  }, []);
+  };
 
-  // Apply progress styling to path
-  const applyProgressToPath = useCallback(
-    (progressValue: number, animate: boolean = false) => {
-      if (!pathRef.current) return;
+  // Update stroke dash
+  const updateStrokeDash = (progressValue: number) => {
+    if (!pathRef.current) return;
 
-      const path = pathRef.current;
-      const totalLength = path.getTotalLength();
-      if (totalLength === 0) return;
+    const path = pathRef.current;
+    const totalLength = path.getTotalLength();
+    if (totalLength === 0) return;
 
-      const strokeLength = totalLength * (progressValue / 100);
+    const strokeLength = totalLength * (progressValue / 100);
+    path.style.strokeDasharray = `${strokeLength} ${totalLength}`;
+    path.style.strokeDashoffset = "0";
+  };
 
-      if (animate) {
-        path.style.transition = "stroke-dasharray 1.5s ease-out";
-      } else {
-        path.style.transition = "none";
+  // Animate from one progress value to another
+  const animateProgress = (from: number, to: number) => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
+    const duration = getAnimationDuration(from, to);
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const ratio = Math.min(elapsed / duration, 1);
+      const easedRatio = easeOutCubic(ratio);
+      const currentProgress = from + (to - from) * easedRatio;
+
+      updateStrokeDash(currentProgress);
+      if (showProgressCircle) {
+        updateCirclePosition(currentProgress);
       }
 
-      path.style.strokeDasharray = `${strokeLength} ${totalLength}`;
-      path.style.strokeDashoffset = "0";
-    },
-    [],
-  );
+      if (ratio < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        animationRef.current = null;
+        // Store final progress
+        sessionStorage.setItem(arrowId, to.toString());
+      }
+    };
 
-  // Animate progress using requestAnimationFrame
-  const animateProgress = useCallback(
-    (from: number, to: number) => {
-      if (!pathRef.current || !wrapperRef.current) return;
+    animationRef.current = requestAnimationFrame(animate);
+  };
 
-      const path = pathRef.current;
-      const svg = wrapperRef.current.querySelector("svg");
-      if (!path || !svg) return;
+  // Initialize and handle progress changes
+  useEffect(() => {
+    if (!svgReady) return;
 
-      const totalLength = path.getTotalLength();
-      if (totalLength === 0) return;
+    const storedProgress = sessionStorage.getItem(arrowId);
+    const previousProgress = storedProgress ? parseFloat(storedProgress) : 0;
 
-      // Cancel any existing animation
+    if (previousProgress !== progress) {
+      // Set initial position immediately (where animation starts from)
+      updateStrokeDash(previousProgress);
+      if (showProgressCircle && previousProgress > 0) {
+        updateCirclePosition(previousProgress);
+      }
+
+      // Delay animation start to let the page fully render
+      const delayTimer = setTimeout(() => {
+        animateProgress(previousProgress, progress);
+      }, 800);
+
+      return () => {
+        clearTimeout(delayTimer);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      };
+    } else {
+      // No animation needed, just set position
+      updateStrokeDash(progress);
+      if (showProgressCircle) {
+        updateCirclePosition(progress);
+      }
+    }
+
+    return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-
-      animationStateRef.current = {
-        from,
-        to,
-        startTime: performance.now(),
-        isAnimating: true,
-      };
-
-      const duration = 1500; // ms
-
-      const animateStep = (timestamp: number) => {
-        const elapsed = timestamp - animationStateRef.current.startTime;
-        const progressRatio = Math.min(elapsed / duration, 1);
-
-        // Apply easing
-        const easedProgress = easeOutCubic(progressRatio);
-        const currentValue = from + (to - from) * easedProgress;
-
-        // Update stroke dash
-        applyProgressToPath(currentValue);
-
-        // Show circle only when progress > 0 and < 100
-        const shouldShowCircle = currentValue > 0 && currentValue < 100;
-
-        // Update circle position
-        if (showProgressCircle && shouldShowCircle) {
-          try {
-            const point = path.getPointAtLength(
-              totalLength * (currentValue / 100),
-            );
-            if (point) {
-              const svgRect = svg.getBoundingClientRect();
-              const wrapperRect = wrapperRef.current!.getBoundingClientRect();
-
-              const x = point.x + svgRect.left - wrapperRect.left;
-              const y = point.y + svgRect.top - wrapperRect.top;
-
-              // Update circle position directly for smoother animation
-              if (circleContainerRef.current) {
-                circleContainerRef.current.style.left = `${x}px`;
-                circleContainerRef.current.style.top = `${y}px`;
-                circleContainerRef.current.style.transform = `translate(-${circleRadius}px, -${circleRadius}px)`;
-                circleContainerRef.current.style.opacity = "1";
-                circleContainerRef.current.style.display = "flex";
-              }
-            }
-          } catch (error) {
-            console.warn("Error updating circle position:", error);
-          }
-        } else if (circleContainerRef.current) {
-          // Hide circle
-          circleContainerRef.current.style.opacity = "0";
-          circleContainerRef.current.style.display = "none";
-        }
-
-        // Continue animation if not finished
-        if (progressRatio < 1) {
-          animationRef.current = requestAnimationFrame(animateStep);
-        } else {
-          // Animation complete
-          animationRef.current = null;
-          animationStateRef.current.isAnimating = false;
-
-          // Ensure final position is accurate
-          const shouldShowFinalCircle = to > 0 && to < 100;
-          if (shouldShowFinalCircle) {
-            const finalPosition = getCirclePosition(to);
-            if (finalPosition && circleContainerRef.current) {
-              circleContainerRef.current.style.left = `${finalPosition.x}px`;
-              circleContainerRef.current.style.top = `${finalPosition.y}px`;
-              circleContainerRef.current.style.transform = `translate(-${circleRadius}px, -${circleRadius}px)`;
-              circleContainerRef.current.style.opacity = "1";
-              circleContainerRef.current.style.display = "flex";
-            }
-          } else if (circleContainerRef.current) {
-            // Hide circle at 0% or 100%
-            circleContainerRef.current.style.opacity = "0";
-            circleContainerRef.current.style.display = "none";
-          }
-        }
-      };
-
-      // Start animation
-      animationRef.current = requestAnimationFrame(animateStep);
-    },
-    [showProgressCircle, circleRadius, getCirclePosition, applyProgressToPath],
-  );
-
-  // CHECK ON MOUNT: Look for stored progress from other pages
-  useEffect(() => {
-    // Check sessionStorage for previous progress value
-    const storedProgress = sessionStorage.getItem(arrowId);
-    const storedShouldAnimate = sessionStorage.getItem(`${arrowId}_animate`);
-
-    if (storedProgress && storedShouldAnimate === "true") {
-      const previousValue = parseFloat(storedProgress);
-
-      if (previousValue !== progress) {
-        // We have a different progress value stored - animate!
-        setShouldAnimate(true);
-        previousProgressRef.current = previousValue;
-      }
-
-      // Clear the animation flag
-      sessionStorage.removeItem(`${arrowId}_animate`);
-    }
-  }, [arrowId, progress]);
-
-  // STORE PROGRESS: When progress changes, store it for other pages
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    // Store current progress in sessionStorage
-    sessionStorage.setItem(arrowId, progress.toString());
-
-    // Also store that we should animate on other pages
-    sessionStorage.setItem(`${arrowId}_animate`, "true");
-
-    // Keep track of when this was stored
-    sessionStorage.setItem(`${arrowId}_timestamp`, Date.now().toString());
-
-    // Clean up old entries
-    const cleanupOldEntries = () => {
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key && key.startsWith("arrow_") && key.endsWith("_timestamp")) {
-          const arrowKey = key.replace("_timestamp", "");
-          const timestamp = sessionStorage.getItem(key);
-          if (timestamp && Date.now() - parseInt(timestamp) > 30000) {
-            // 30 seconds
-            keysToRemove.push(arrowKey);
-            keysToRemove.push(`${arrowKey}_animate`);
-            keysToRemove.push(key);
-          }
-        }
-      }
-      keysToRemove.forEach((key) => sessionStorage.removeItem(key));
     };
+  }, [svgReady, progress, arrowId, showProgressCircle]);
 
-    cleanupOldEntries();
-  }, [progress, arrowId]);
-
+  // Wait for SVG to be ready
   useEffect(() => {
     const checkSvgReady = () => {
-      if (wrapperRef.current) {
-        const path = wrapperRef.current.querySelector("path");
-        if (path && path.getTotalLength() > 0) {
-          setSvgReady(true);
+      if (!wrapperRef.current) return false;
 
-          if (shouldAnimate) {
-            animateProgress(previousProgressRef.current, progress);
-          } else {
-            applyProgressToPath(progress);
+      const path = wrapperRef.current.querySelector("path");
+      if (path && path.getTotalLength() > 0) {
+        pathRef.current = path;
 
-            const shouldShowInitialCircle = progress > 0 && progress < 100;
-            if (showProgressCircle && shouldShowInitialCircle) {
-              const position = getCirclePosition(progress);
-              if (position && circleContainerRef.current) {
-                circleContainerRef.current.style.left = `${position.x}px`;
-                circleContainerRef.current.style.top = `${position.y}px`;
-                circleContainerRef.current.style.transform = `translate(-${circleRadius}px, -${circleRadius}px)`;
-                circleContainerRef.current.style.opacity = "1";
-                circleContainerRef.current.style.display = "flex";
-              }
-            } else if (circleContainerRef.current) {
-              circleContainerRef.current.style.opacity = "0";
-              circleContainerRef.current.style.display = "none";
-            }
-          }
+        // Apply initial styles
+        path.style.stroke = xarrowProps.color?.toString() || "#6d63ff";
+        path.style.strokeWidth = xarrowProps.strokeWidth ? `${xarrowProps.strokeWidth}px` : "4px";
+        path.style.strokeDashoffset = "0";
 
-          return true;
-        }
+        setSvgReady(true);
+        return true;
       }
       return false;
     };
 
     if (!checkSvgReady()) {
-      const timer = setTimeout(() => {
-        checkSvgReady();
-      }, 100);
-
       const intervalId = setInterval(() => {
         if (checkSvgReady()) {
           clearInterval(intervalId);
         }
       }, 50);
 
-      return () => {
-        clearTimeout(timer);
-        clearInterval(intervalId);
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-        }
-      };
+      return () => clearInterval(intervalId);
     }
-  }, [
-    progress,
-    showProgressCircle,
-    circleRadius,
-    getCirclePosition,
-    applyProgressToPath,
-    shouldAnimate,
-    animateProgress,
-  ]);
+  }, [xarrowProps.color, xarrowProps.strokeWidth]);
 
-  useEffect(() => {
-    if (!svgReady || shouldAnimate) return;
-
-    if (previousProgressRef.current !== progress) {
-      const changeAmount = Math.abs(progress - previousProgressRef.current);
-
-      if (changeAmount > 0.1) {
-        animateProgress(previousProgressRef.current, progress);
-      } else {
-        applyProgressToPath(progress);
-
-        const shouldShowCircle = progress > 0 && progress < 100;
-        if (shouldShowCircle) {
-          const position = getCirclePosition(progress);
-          if (position && circleContainerRef.current) {
-            circleContainerRef.current.style.left = `${position.x}px`;
-            circleContainerRef.current.style.top = `${position.y}px`;
-            circleContainerRef.current.style.transform = `translate(-${circleRadius}px, -${circleRadius}px)`;
-          }
-        }
-      }
-
-      previousProgressRef.current = progress;
-    }
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [
-    progress,
-    svgReady,
-    shouldAnimate,
-    animateProgress,
-    getCirclePosition,
-    applyProgressToPath,
-  ]);
-
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (animationRef.current) {
@@ -375,53 +226,18 @@ const ProgressArrow: React.FC<ProgressArrowProps> = ({
     };
   }, []);
 
-  const XarrowWithRef = useCallback(
-    (props: XarrowProps) => {
-      const xarrowRef = useCallback(
-        (node: HTMLDivElement) => {
-          if (node) {
-            const path = node.querySelector("path");
-            if (path) {
-              (pathRef as any).current = path;
-
-              path.style.stroke = props.color || "#6d63ff";
-              path.style.strokeWidth = props.strokeWidth
-                ? `${props.strokeWidth}px`
-                : "4px";
-              path.style.strokeDashoffset = "0";
-
-              if (props.dashness) {
-                path.style.strokeDasharray = "10 5";
-              } else {
-                path.style.strokeDasharray = "none";
-              }
-            }
-          }
-        },
-        [props.color, props.strokeWidth, props.dashness],
-      );
-
-      return (
-        <div ref={xarrowRef}>
-          <Xarrow {...props} />
-        </div>
-      );
-    },
-    [xarrowProps.color, xarrowProps.strokeWidth, xarrowProps.dashness],
-  );
-
   return (
     <div
       ref={wrapperRef}
       style={{ position: "relative", display: "inline-block" }}
     >
-      <XarrowWithRef {...xarrowProps} />
+      <Xarrow {...xarrowProps} />
 
-      {progress < 100 && (
+      {showProgressCircle && progress < 100 && (
         <div
           id="user-progress-icon"
           ref={circleContainerRef}
-          className="pr-2 absolute flex items-center gap-2 bg-black/50 rounded-full transition-none pointer-events-none"
+          className="pr-2 absolute flex items-center gap-2 bg-black/50 rounded-full pointer-events-none"
           style={{
             opacity: 0,
             display: "none",
@@ -473,4 +289,4 @@ const ProgressArrow: React.FC<ProgressArrowProps> = ({
   );
 };
 
-export default React.memo(ProgressArrow);
+export default ProgressArrow;

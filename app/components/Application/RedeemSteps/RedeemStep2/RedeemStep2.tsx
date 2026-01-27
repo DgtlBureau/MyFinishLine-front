@@ -1,13 +1,12 @@
 import RedeemInput from "@/app/components/Shared/RedeemInput/RedeemInput";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/components/ui/select";
-import { motion } from "framer-motion";
-import { countries } from "@/app/data/countries";
+
+interface FormErrors {
+  [key: string]: string | undefined;
+}
+
+interface FormTouched {
+  [key: string]: boolean | undefined;
+}
 
 interface IRedeemStep2Props {
   address_1: string;
@@ -16,7 +15,9 @@ interface IRedeemStep2Props {
   state: string;
   zip_code: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleUpdateSelect: (value: string) => void;
+  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  errors: FormErrors;
+  touched: FormTouched;
 }
 
 const RedeemStep2 = ({
@@ -26,7 +27,9 @@ const RedeemStep2 = ({
   state,
   zip_code,
   handleChange,
-  handleUpdateSelect,
+  handleBlur,
+  errors,
+  touched,
 }: IRedeemStep2Props) => {
   return (
     <>
@@ -37,6 +40,9 @@ const RedeemStep2 = ({
         delay={0}
         value={address_1}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.address_1}
+        touched={touched.address_1}
       />
       <RedeemInput
         id="address_2"
@@ -45,6 +51,10 @@ const RedeemStep2 = ({
         delay={0.15}
         value={address_2}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.address_2}
+        touched={touched.address_2}
+        required={false}
       />
       <RedeemInput
         id="city"
@@ -53,32 +63,20 @@ const RedeemStep2 = ({
         delay={0.2}
         value={city}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.city}
+        touched={touched.city}
       />
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="space-y-2"
-      >
-        <label className="text-sm font-medium text-foreground">
-          State / Province / Region
-        </label>
-        <div className="mt-2">
-          <Select value={state} onValueChange={handleUpdateSelect} required>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.id} value={country.name}>
-                  {country.flag}
-                  {country.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </motion.div>
+      <RedeemInput
+        id="state"
+        label="State / Province / Region"
+        placeholder="Optional"
+        delay={0.25}
+        value={state}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required={false}
+      />
 
       <RedeemInput
         id="zip_code"
@@ -87,6 +85,9 @@ const RedeemStep2 = ({
         delay={0.3}
         value={zip_code}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.zip_code}
+        touched={touched.zip_code}
       />
     </>
   );

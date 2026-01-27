@@ -52,3 +52,12 @@ export const formatCardNumber = (value: string) => {
     .replace(/(.{4})/g, "$1-") // после каждых 4 цифр добавляем "-"
     .replace(/-$/, "");
 };
+
+// Phone number regex - accepts formats like: 1234567890, 123-456-7890, (123) 456-7890, +1 123 456 7890
+export const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/;
+
+export const isValidPhone = (phone: string): boolean => {
+  // Remove all non-digit characters except + for validation
+  const cleaned = phone.replace(/[\s\-\(\)\.]/g, '');
+  return phoneRegex.test(cleaned) && cleaned.replace(/\D/g, '').length >= 7;
+};

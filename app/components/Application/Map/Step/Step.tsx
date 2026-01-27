@@ -129,7 +129,7 @@ const Step = memo(
         `}
             >
               <div className="text-white">
-                {userDistanceReached} km to reach
+                {userDistanceReached?.toFixed(2)} km to reach
               </div>
             </div>
           </div>
