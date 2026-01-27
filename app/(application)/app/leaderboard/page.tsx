@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import Loader from "@/app/components/Shared/Loader/Loader";
+import LeaderboardShimmer from "@/app/components/Shared/Shimmer/LeaderboardShimmer/LeaderboardShimmer";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 
@@ -46,9 +46,7 @@ const page = () => {
           <LeaderboardSwiper challenges={challenges} />
         </motion.div>
       ) : isLoading ? (
-        <div className="flex justify-center p-8">
-          <Loader />
-        </div>
+        <LeaderboardShimmer />
       ) : (
         <span>No challenges found</span>
       )}

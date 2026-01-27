@@ -1,6 +1,7 @@
 "use client";
 
 import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
+import PersonalizationListShimmer from "@/app/components/Shared/Shimmer/PersonalizationListShimmer/PersonalizationListShimmer";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserFrames } from "@/app/lib/utils/userService";
@@ -63,9 +64,7 @@ const page = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center mt-8">
-        <Loader2 width={48} height={48} className="animate-spin" />
-      </div>
+      <PersonalizationListShimmer imageHeight="h-100" />
     );
   }
 

@@ -43,13 +43,13 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
   const challenge = userId
     ? anotherCahallenges?.[0]
     : challenges?.[0] || {
-        user_distance: 0,
-        total_distance: 0,
+      user_distance: 0,
+      total_distance: 0,
+      image_url: "",
+      reward: {
         image_url: "",
-        reward: {
-          image_url: "",
-        },
-      };
+      },
+    };
 
   const hours = getTimePassed(challenge?.activate_date, challenge?.completed_at);
 
@@ -81,18 +81,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
     handleLoadChallenges();
   }, []);
 
-  if (!userId && !challenges?.[0]) {
-    return (
-      <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
-        <span className="block text-center">No active challenge available</span>
-        <Link className="block text-center mt-2 underline" href="/payment">
-          Purchase one here
-        </Link>
-      </div>
-    );
-  }
-
-  if (userId && !anotherCahallenges?.[0]) {
+  if ((!userId && !challenges?.[0]) || (userId && !anotherCahallenges?.[0])) {
     return (
       <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
         <span className="block text-center">No active challenge available</span>
@@ -135,10 +124,10 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             </div>
             {challenge.reward_ticket.status.type !==
               ShipmentStatuses.received && (
-              <div className="text-[13px] text-muted-foreground mt-1">
-                Shipment ID {challenge.reward_ticket.id}
-              </div>
-            )}
+                <div className="text-[13px] text-muted-foreground mt-1">
+                  Shipment ID {challenge.reward_ticket.id}
+                </div>
+              )}
           </div>
         )}
       </div>
