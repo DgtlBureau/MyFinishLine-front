@@ -9,6 +9,7 @@ import usePrefersReducedMotion from "@/app/hooks/usePrefersReducedMotion";
 import Noise from "../../Shared/Noise/noise";
 import content from "@/app/lib/content/landing/content";
 import { useRouter } from "next/navigation";
+import heroImage from '@/public/images/landing/hero-image.webp'
 
 export default function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -90,7 +91,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="section-padding relative flex flex-col items-center bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat pb-0! dark:bg-[url(/images/gradient-dark.webp)]">
+    <section className="section-padding relative flex flex-col items-center bg-cover bg-center bg-no-repeat pb-0! dark:bg-[url(/images/gradient-dark.webp)]">
       <motion.div
         variants={overlayVariants}
         initial={prefersReducedMotion ? "visible" : "hidden"}
@@ -108,7 +109,13 @@ export default function Hero() {
           variants={itemVariants}
           className="text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl"
         >
-          {content.hero.title}
+          {content.hero.title.split(" ").map((word, i) =>
+            word === 'journey' ? (
+              <span key={i} className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent">{word} </span>
+            ) : (
+              <span key={i}>{word} </span>
+            )
+          )}
         </motion.h1>
 
         <motion.p
@@ -131,20 +138,20 @@ export default function Hero() {
           </Button>
         </motion.div>
 
-        <motion.div
-          variants={imageVariants}
-          className="bg-background/45 border-background relative mt-10 justify-self-end overflow-hidden rounded-t-xl border p-2 md:mt-20 md:rounded-t-3xl md:p-4 lg:mt-25"
-        >
-          <Image
-            src={content.hero.image}
-            alt="Lumina Workspace"
-            width={1056}
-            height={752.5}
-            priority
-            className="border-background/45 rounded-t-sm md:rounded-t-xl"
-          />
-        </motion.div>
         <div className="from-background pointer-events-none absolute inset-0 bg-linear-to-t via-transparent via-25% to-transparent" />
+      </motion.div>
+      <motion.div
+        variants={imageVariants}
+        className="bg-background/45 w-full flex justify-center border-background relative mt-6 overflow-hidden rounded-t-xl border p-2 md:mt-20 md:rounded-t-3xl md:p-4 lg:mt-6"
+      >
+        <Image
+          src={heroImage}
+          alt="Lumina Workspace"
+          width={1056}
+          height={752.5}
+          priority
+          className="border-background/45 rounded-t-sm md:rounded-t-xl w-full"
+        />
       </motion.div>
     </section>
   );
