@@ -5,20 +5,29 @@ import {
   handleConvertDate,
   handleConvertDistance,
   handleConvertTimeShort,
+  getDistanceUnit,
 } from "@/app/lib/utils/convertData";
 import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
 import { ActivityImage } from "./ActivityImage";
+import { useAppSelector } from "@/app/lib/hooks";
 
 const Activity = ({
   delay,
   activity_name,
   progress,
+  progress_mile,
   activity_time,
   activity_date,
   pace,
+  pace_mile,
   from,
   sport_type,
 }: IActivity & { delay: number }) => {
+  const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+  const displayProgress = isMiles ? progress_mile : progress;
+  const displayPace = isMiles ? pace_mile : pace;
   return (
     <motion.li
       initial={{
@@ -37,7 +46,7 @@ const Activity = ({
       <div className="px-4 pt-4 pb-2.5 flex items-center justify-between bg-[#F4E8FD]">
         <div className="flex flex-1 items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
           <Route color="#C3B7E2" width={16} height={16} />{" "}
-          {handleConvertDistance(Number(progress))}
+          {handleConvertDistance(Number(displayProgress))} {Number(displayProgress) >= 1000 ? distanceUnit : (isMiles ? "ft" : "m")}
         </div>
         <div className="flex flex-1 justify-center items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
           <Clock color="#C3B7E2" width={16} height={16} />{" "}
@@ -50,7 +59,7 @@ const Activity = ({
             width={16}
             height={16}
           />
-          {Number(pace.toFixed(2))} km/min
+          {Number(displayPace?.toFixed(2))} {distanceUnit}/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">

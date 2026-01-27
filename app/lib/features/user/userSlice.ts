@@ -41,6 +41,7 @@ const initialState: {
       month: 0,
       day: 0,
     },
+    measure: "km",
   },
   contracts: [],
   challenges: [],
@@ -84,6 +85,9 @@ const userSlice = createSlice({
     ) => {
       state.personalization = action.payload;
     },
+    setDistanceUnit: (state, action: PayloadAction<"km" | "mile">) => {
+      state.user.measure = action.payload;
+    },
     clearUser: () => {
       return initialState;
     },
@@ -98,6 +102,7 @@ export const {
   updatePersonalization,
   updateUserSex,
   setUserChallenges,
+  setDistanceUnit,
   clearUser,
 } = userSlice.actions;
 export default userSlice.reducer;

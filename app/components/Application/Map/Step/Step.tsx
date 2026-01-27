@@ -3,6 +3,8 @@ import { useLottie } from "lottie-react";
 import crown from "./crown.json";
 import ProgressArrow from "@/app/components/Shared/ProgressArrow/ProgressArrow";
 import { memo } from "react";
+import { useAppSelector } from "@/app/lib/hooks";
+import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
 interface StepProps {
   id: number;
@@ -20,6 +22,7 @@ interface StepProps {
   x: string;
   index: number;
   hideArrows?: boolean;
+  userDistanceReachedMile?: number;
 }
 
 const Step = memo(
@@ -31,6 +34,7 @@ const Step = memo(
     completed,
     progress,
     userDistanceReached,
+    userDistanceReachedMile,
     isActive = false,
     isNext,
     isViewed,
@@ -38,6 +42,10 @@ const Step = memo(
     hideArrows = false,
   }: StepProps) => {
     const isLast = id === stepsAmount;
+    const { user } = useAppSelector((state) => state.user);
+    const distanceUnit = getDistanceUnit(user.measure);
+    const isMiles = user.measure === "mile";
+    const displayUserDistanceReached = isMiles ? userDistanceReachedMile : userDistanceReached;
 
     const options = {
       animationData: crown,
@@ -105,9 +113,9 @@ const Step = memo(
         `}
             >
               {title}
-              {!!userDistanceReached && (
+              {!!displayUserDistanceReached && (
                 <div className="text-white/50 text-center">
-                  {userDistanceReached} km
+                  {displayUserDistanceReached} {distanceUnit}
                 </div>
               )}
             </div>
@@ -129,7 +137,7 @@ const Step = memo(
         `}
             >
               <div className="text-white">
-                {userDistanceReached?.toFixed(2)} km to reach
+                {displayUserDistanceReached?.toFixed(2)} {distanceUnit} to reach
               </div>
             </div>
           </div>

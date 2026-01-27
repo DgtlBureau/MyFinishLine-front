@@ -1,12 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useAppSelector } from "@/app/lib/hooks";
+import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
 interface StatsBlockProps {
   completedDistance: number;
   distance: string;
   steps: Array<{ completed: boolean }>;
   startDate: string;
+  completedDistanceMile?: number;
+  distanceMile?: string;
 }
 
 const MapStats = ({
@@ -14,9 +18,18 @@ const MapStats = ({
   completedDistance,
   distance,
   startDate,
+  completedDistanceMile,
+  distanceMile,
 }: StatsBlockProps) => {
+  const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+
+  const displayCompletedDistance = isMiles ? completedDistanceMile : completedDistance;
+  const displayDistance = isMiles ? distanceMile : distance;
+
   const completedSteps = steps.filter((s) => s.completed).length;
-  const progressPercentage = (completedDistance / Number(distance)) * 100;
+  const progressPercentage = (Number(displayCompletedDistance) / Number(displayDistance)) * 100;
 
   const createdDate = new Date(startDate);
   const currentDate = new Date();
@@ -31,7 +44,7 @@ const MapStats = ({
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-medium text-gray-600">Distance</span>
             <span className="text-xs font-semibold text-gray-800">
-              {completedDistance || 0}/{distance || 0} km
+              {displayCompletedDistance || 0}/{displayDistance || 0} {distanceUnit}
             </span>
           </div>
           <div className="flex justify-between items-center">

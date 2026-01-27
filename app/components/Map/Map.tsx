@@ -444,6 +444,11 @@ const Map = ({
                           +step.distance_to_reach_step -
                           +step.user_distance_reach
                         }
+                        userDistanceReachedMile={
+                          step.distance_to_reach_step_mile && step.user_distance_reach_mile
+                            ? +step.distance_to_reach_step_mile - +step.user_distance_reach_mile
+                            : undefined
+                        }
                         x={step.x_coordinate}
                         distanceLeft={1}
                         isNext={step.next}

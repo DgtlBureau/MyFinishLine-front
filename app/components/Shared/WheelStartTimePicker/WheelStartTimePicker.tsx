@@ -15,7 +15,8 @@ const createArray = (length: number, add = 0): WheelPickerOption<number>[] =>
     };
   });
 
-const hourOptions = createArray(12, 1);
+const hourOptions12 = createArray(12, 1);
+const hourOptions24 = createArray(24, 0);
 const minuteOptions = createArray(60);
 const meridiemOptions: WheelPickerOption[] = [
   { label: "AM", value: "AM" },
@@ -25,10 +26,13 @@ const meridiemOptions: WheelPickerOption[] = [
 const WheelStartTimePicker = ({
   value,
   onChange,
+  use24Hour = false,
 }: {
   value: IDate;
   onChange: (value: SetStateAction<IDate>) => void;
+  use24Hour?: boolean;
 }) => {
+  const hourOptions = use24Hour ? hourOptions24 : hourOptions12;
   const handleChangeDate = (value: number | string, type: string) => {
     switch (type) {
       case "hour": {
@@ -64,11 +68,13 @@ const WheelStartTimePicker = ({
         value={value.minute}
         onValueChange={(value) => handleChangeDate(value, "minute")}
       />
-      <WheelPicker
-        options={meridiemOptions}
-        value={value.meridiem}
-        onValueChange={(value) => handleChangeDate(value, "meridiem")}
-      />
+      {!use24Hour && (
+        <WheelPicker
+          options={meridiemOptions}
+          value={value.meridiem}
+          onValueChange={(value) => handleChangeDate(value, "meridiem")}
+        />
+      )}
     </WheelPickerWrapper>
   );
 };

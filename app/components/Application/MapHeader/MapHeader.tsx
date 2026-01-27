@@ -2,7 +2,7 @@
 
 import StatBlock from "../../Shared/StatBlock/StatBlock";
 import { useAppSelector } from "@/app/lib/hooks";
-import { getDaysAndHours } from "@/app/lib/utils/convertData";
+import { getDaysAndHours, getDistanceUnit } from "@/app/lib/utils/convertData";
 import Image from "next/image";
 
 interface IMapHeaderProps {
@@ -10,6 +10,8 @@ interface IMapHeaderProps {
   startDate: string;
   totalDistance: number;
   distance: string;
+  totalDistanceMile?: number;
+  distanceMile?: number;
 }
 
 const MapHeader = ({
@@ -17,8 +19,15 @@ const MapHeader = ({
   startDate,
   totalDistance,
   distance,
+  totalDistanceMile,
+  distanceMile,
 }: IMapHeaderProps) => {
   const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+
+  const displayTotalDistance = isMiles ? totalDistanceMile : totalDistance;
+  const displayDistance = isMiles ? distanceMile : distance;
 
   const date = getDaysAndHours(startDate);
 
@@ -32,7 +41,7 @@ const MapHeader = ({
             <div className="mt-3 flex items gap-4">
               <StatBlock
                 label="Total distance"
-                value={String(totalDistance) + " km" + ` / ${distance} km`}
+                value={`${Number(displayTotalDistance).toFixed(2)} ${distanceUnit} / ${Number(displayDistance).toFixed(2)} ${distanceUnit}`}
                 reverse
               />
               <StatBlock label="Time on track" value={date} reverse />

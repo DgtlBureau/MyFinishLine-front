@@ -10,6 +10,7 @@ import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
 import { ShipmentStatuses } from "@/app/types";
 import { setUserProfieChallenges } from "@/app/lib/features/profile/profileSlice";
+import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
 const getTimePassed = (
   startDate: string,
@@ -36,7 +37,7 @@ const getTimePassed = (
 const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const { challenges } = useAppSelector((state) => state.user);
+  const { challenges, user } = useAppSelector((state) => state.user);
   const { challenges: anotherCahallenges } = useAppSelector(
     (state) => state.profile,
   );
@@ -51,10 +52,16 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         },
       };
 
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+
+  const displayTotalDistance = isMiles ? challenge?.total_distance_mile : challenge?.total_distance;
+  const displayUserDistance = isMiles ? challenge?.user_distance_mile : challenge?.user_distance;
+
   const hours = getTimePassed(challenge?.activate_date, challenge?.completed_at);
 
   const progress =
-    (challenge?.user_distance / +challenge?.total_distance) * 100;
+    (Number(displayUserDistance) / Number(displayTotalDistance)) * 100;
 
   const handleLoadChallenges = async () => {
     try {
@@ -123,7 +130,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
           </h5>
           <div className="w-full flex items-center justify-between">
             <span className="text-[13px] text-muted-foreground">
-              Total Distance {challenge.total_distance} km
+              Total Distance {displayTotalDistance} {distanceUnit}
             </span>
           </div>
         </div>
@@ -150,7 +157,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
       </div>
       <div className="flex justify-between mt-8">
         <span className="mt-2.5 text-lg font-semibold leading-5 text-[#09090B]">
-          {challenge.user_distance || 0} km
+          {displayUserDistance || 0} {distanceUnit}
         </span>
         {challenge.reward?.image_url && (
           <div

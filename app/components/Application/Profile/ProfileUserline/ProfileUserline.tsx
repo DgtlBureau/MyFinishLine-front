@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
-import { handleConvertDistance } from "@/app/lib/utils/convertData";
+import { handleConvertDistance, getDistanceUnit } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";
@@ -15,6 +15,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
   const { profile } = useAppSelector((state) => state.profile);
 
   const currentUser = userId ? profile : user;
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+  const displayDistance = isMiles ? currentUser.total_distance_mile : currentUser.total_distance;
 
   return (
     <section className="flex justify-between px-2 pt-12 pb-4 rounded-tl-xl rounded-tr-xl relative max-w-4xl mx-auto">
@@ -102,7 +105,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                 }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Distance"
-                value={handleConvertDistance(currentUser.total_distance) || "0"}
+                value={`${handleConvertDistance(displayDistance || 0) || "0"} ${displayDistance && displayDistance >= 1000 ? distanceUnit : (isMiles ? "ft" : "m")}`}
               />
             </div>
             <div className="border-r border-neutral-400 px-2">

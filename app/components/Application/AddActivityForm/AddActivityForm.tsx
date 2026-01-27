@@ -21,8 +21,9 @@ import SheetContainer from "../../SheetContainer/SheetContainer";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getUserActiveChallenge } from "@/app/lib/utils/userService";
-import { useAppDispatch } from "@/app/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
+import { getSmallDistanceUnit } from "@/app/lib/utils/convertData";
 
 enum ActivityType {
   Walk = "Walk",
@@ -59,19 +60,18 @@ const sportTypeOptions = [
   ActivityType.Cycling,
   ActivityType.Swimming,
 ];
-const currentDate = new Date();
-const rawHours = currentDate.getHours();
-const hour12 = rawHours % 12 || 12;
-const ampm = rawHours >= 12 ? "PM" : "AM";
 
-const formatToBackendString = (dateTime: IDate): string => {
+const formatToBackendString = (dateTime: IDate, is24Hour: boolean): string => {
   let hour24 = dateTime.hour;
 
-  if (dateTime.meridiem === "PM" && hour24 !== 12) {
-    hour24 += 12;
-  } else if (dateTime.meridiem === "AM" && hour24 === 12) {
-    hour24 = 0;
+  if (!is24Hour) {
+    if (dateTime.meridiem === "PM" && hour24 !== 12) {
+      hour24 += 12;
+    } else if (dateTime.meridiem === "AM" && hour24 === 12) {
+      hour24 = 0;
+    }
   }
+
   const date = new Date(
     dateTime.year,
     dateTime.month - 1,
@@ -88,6 +88,17 @@ const convertObjectToSeconds = (timeObject: ITime): number => {
 };
 
 const AddActivitityForm = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { user } = useAppSelector((state) => state.user);
+  const smallDistanceUnit = getSmallDistanceUnit(user.measure);
+  const use24Hour = user.measure === "km";
+
+  const currentDate = new Date();
+  const rawHours = currentDate.getHours();
+  const hour12 = rawHours % 12 || 12;
+  const ampm = rawHours >= 12 ? "PM" : "AM";
+
   const [activityData, setActivityData] = useState<IManualActivity>({
     name: "",
     start_date: new Date(),
@@ -103,7 +114,7 @@ const AddActivitityForm = () => {
     year: currentDate.getFullYear(),
     month: currentDate.getMonth() + 1,
     day: currentDate.getDate(),
-    hour: hour12,
+    hour: use24Hour ? rawHours : hour12,
     minute: currentDate.getMinutes(),
     meridiem: ampm,
   });
@@ -111,8 +122,6 @@ const AddActivitityForm = () => {
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [isStartTimeModalOpen, setIsStartTimeModalOpen] = useState(false);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const handleOpenTimeModal = () => {
     setIsTimeModalOpen(true);
@@ -177,7 +186,7 @@ const AddActivitityForm = () => {
       const { data } = await axios.post("/api/user/activities", {
         ...activityData,
         moving_time: convertObjectToSeconds(time),
-        start_date: formatToBackendString(date),
+        start_date: formatToBackendString(date, use24Hour),
       });
       toast.success("Manual activity successfully added");
       await handleLoadChallenge();
@@ -226,7 +235,9 @@ const AddActivitityForm = () => {
           >
             {date.hour === 0 && date.minute === 0
               ? "Select time"
-              : `${date.hour < 10 ? "0" + date.hour : date.hour}:${date.minute < 10 ? "0" + date.minute : date.minute} ${date.meridiem}`}
+              : use24Hour
+                ? `${date.hour < 10 ? "0" + date.hour : date.hour}:${date.minute < 10 ? "0" + date.minute : date.minute}`
+                : `${date.hour < 10 ? "0" + date.hour : date.hour}:${date.minute < 10 ? "0" + date.minute : date.minute} ${date.meridiem}`}
           </Button>
         </label>
       </div>
@@ -282,11 +293,11 @@ const AddActivitityForm = () => {
             type="number"
             containerClassName="w-full"
             className="w-full pr-8 placeholder:opacity-25"
-            placeholder="1000"
+            placeholder={smallDistanceUnit === "m" ? "1000" : "3280"}
             value={activityData.distance}
             onChange={handleChange}
           />
-          <span className="absolute right-3.5 text-sm text-[#71717A]">m</span>
+          <span className="absolute right-3.5 text-sm text-[#71717A]">{smallDistanceUnit}</span>
         </div>
       </label>
       <Button
@@ -318,7 +329,7 @@ const AddActivitityForm = () => {
         onClose={handleCloseStartTimeModal}
       >
         <div className="max-w-4xl mx-auto pb-20 pt-4">
-          <WheelStartTimePicker value={date} onChange={setDate} />
+          <WheelStartTimePicker value={date} onChange={setDate} use24Hour={use24Hour} />
         </div>
       </SheetContainer>
       <SheetContainer isOpen={isTimeModalOpen} onClose={handleCloseTimeModal}>

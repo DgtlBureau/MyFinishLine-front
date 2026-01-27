@@ -9,6 +9,7 @@ interface IProfile {
     total_moving_time_hours: number
     total_activities_count: number
     total_distance: number
+    total_distance_mile?: number
     avatar_url: string
     avatar_symbol: string
     avatar_color: string

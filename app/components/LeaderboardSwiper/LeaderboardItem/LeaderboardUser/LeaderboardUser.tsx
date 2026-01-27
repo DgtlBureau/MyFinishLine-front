@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import { useAppSelector } from "@/app/lib/hooks";
+import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
 interface ILeaderboardUserProps extends IUser {
   user_id: number;
@@ -12,6 +13,7 @@ interface ILeaderboardUserProps extends IUser {
   isCurrentUser: boolean;
   challengeId: number;
   total_progress: string;
+  total_progress_mile?: number;
   total_hours: string;
 }
 
@@ -30,15 +32,19 @@ const LeaderboardUser = ({
   avatar_color,
   avatar_symbol,
   total_distance,
+  total_distance_mile,
   total_moving_time_hours,
   total_hours,
   total_progress,
+  total_progress_mile,
   isCurrentUser,
   challengeId,
   selected_frame,
 }: ILeaderboardUserProps) => {
   const [imageError, setImageError] = useState(false);
   const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
 
   const linkUrl = id !== user.id ? `profile/${id}` : `profile/journey`;
 
@@ -115,11 +121,10 @@ const LeaderboardUser = ({
       </Link>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {(challengeId
-            ? Number(total_progress)
-            : Number(total_distance) / 1000
-          )?.toFixed(2)}{" "}
-          km
+          {challengeId
+            ? (isMiles ? Number(total_progress_mile) : Number(total_progress))?.toFixed(2)
+            : (isMiles ? Number(total_distance_mile) / 1000 : Number(total_distance) / 1000)?.toFixed(2)}{" "}
+          {distanceUnit}
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
           {challengeId

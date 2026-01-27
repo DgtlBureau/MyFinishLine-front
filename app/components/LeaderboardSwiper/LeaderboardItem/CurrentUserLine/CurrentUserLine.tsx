@@ -1,15 +1,21 @@
-import { handleConvertTimeShort } from "@/app/lib/utils/convertData";
+import { handleConvertTimeShort, getDistanceUnit } from "@/app/lib/utils/convertData";
 import { IUser } from "@/app/types/user";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import { useAppSelector } from "@/app/lib/hooks";
 
 const CurrentUserLine = ({
   username,
   full_avatar_url,
   total_distance,
+  total_distance_mile,
   total_moving_time_hours,
   position,
 }: IUser & { position: number }) => {
+  const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+  const displayDistance = isMiles ? total_distance_mile : total_distance;
   return (
     <div className="flex items-center justify-between p-4 border-b border-[#DADADA]">
       <div className="flex items-center gap-2">
@@ -38,7 +44,7 @@ const CurrentUserLine = ({
       </div>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {total_distance} km
+          {displayDistance} {distanceUnit}
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
           {handleConvertTimeShort(total_moving_time_hours)}

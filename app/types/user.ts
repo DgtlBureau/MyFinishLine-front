@@ -29,4 +29,6 @@ export interface IUser {
     month: number;
     day: number;
   };
+  measure: "km" | "mile";
+  total_distance_mile?: number;
 }

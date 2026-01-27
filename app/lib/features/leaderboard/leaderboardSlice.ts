@@ -41,6 +41,7 @@ const initialState: {
       avatar_symbol: "",
       avatar_color: "#fff",
       sex: "",
+      measure: "km",
       birth_date: {
         year: 0,
         month: 0,

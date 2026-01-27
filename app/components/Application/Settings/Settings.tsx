@@ -2,20 +2,22 @@
 
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
-import { Shield, Globe, LogOut, Mail, User, UserCog } from "lucide-react";
+import { Shield, Globe, LogOut, Mail, User, UserCog, Route } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Integrations from "../Integrations/Integrations";
 import axios from "axios";
-import { useAppDispatch } from "@/app/lib/hooks";
-import { clearUser } from "@/app/lib/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { clearUser, setDistanceUnit } from "@/app/lib/features/user/userSlice";
 
 const Settings = () => {
   const [emailUpdates, setEmailUpdates] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.user);
+  const measure = user.measure || "km";
 
   const handleGoTo = (link: string) => {
     router.push(link);
@@ -30,6 +32,25 @@ const Settings = () => {
       dispatch;
     } catch (error) {
       console.error("Error logging out: ", error);
+    }
+  };
+
+  const handleDistanceUnitChange = async (unit: "km" | "mile") => {
+    const previousUnit = measure;
+    dispatch(setDistanceUnit(unit));
+
+    try {
+      const formData = new FormData();
+      formData.append("measure", unit);
+
+      const response = await axios.post("/api/user/update-user", formData);
+
+      if (response.status !== 200) {
+        dispatch(setDistanceUnit(previousUnit));
+      }
+    } catch (error) {
+      console.error("Error updating distance unit: ", error);
+      dispatch(setDistanceUnit(previousUnit));
     }
   };
 
@@ -73,6 +94,19 @@ const Settings = () => {
           type="info"
           value="English"
           onClick={() => {}}
+          delay={3}
+        />
+        <SettingItem
+          icon={<Route className="w-4 h-4" />}
+          label="Distance unit"
+          description="Choose your preferred distance measurement"
+          type="segment"
+          value={measure}
+          onToggle={(value) => handleDistanceUnitChange(value as "km" | "mile")}
+          segmentOptions={[
+            { value: "km", label: "km" },
+            { value: "mile", label: "mi" },
+          ]}
           delay={3}
         />
       </SettingSection>
