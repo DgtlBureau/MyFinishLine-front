@@ -5,11 +5,10 @@ import Hero from "@/app/components/ChallengeContent/Hero/Hero";
 import Logos from "@/app/components/ChallengeContent/Logos/Logos";
 import FeaturesCarousel from "@/app/components/ChallengeContent/FeaturesCarousel/FeaturesCarousel";
 import FeaturesGrid from "@/app/components/ChallengeContent/FeaturesGrid/FeaturesGrid";
-import FeaturesShowcase from "@/app/components/ChallengeContent/FeaturesShowcase/FeaturesShowcase";
 import Testimonials from "@/app/components/ChallengeContent/Testimonials/Testimonials";
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
-import Pricing from "@/app/components/ChallengeContent/Pricing/Pricing";
-import { Feature102 } from "../components/ui/feature102";
+import { HowItWorks } from "../components/ui/howItWorks";
+import { ExperienceLevels } from "../components/ChallengeContent/ExperienceLevels/ExperienceLevels";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -24,12 +23,11 @@ export default async function Home() {
       <Hero />
       <Logos />
       <FeaturesCarousel />
-      <Feature102 />
+      <HowItWorks />
       <FeaturesGrid />
-      <FeaturesShowcase />
-      <Testimonials />
       <FAQSection />
-      <Pricing />
+      <ExperienceLevels />
+      <Testimonials />
     </>
   );
 }

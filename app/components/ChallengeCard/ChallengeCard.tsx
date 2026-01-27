@@ -51,7 +51,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         },
       };
 
-  const hours = getTimePassed(challenge.activate_date, challenge.completed_at);
+  const hours = getTimePassed(challenge?.activate_date, challenge?.completed_at);
 
   const progress =
     (challenge?.user_distance / +challenge?.total_distance) * 100;
