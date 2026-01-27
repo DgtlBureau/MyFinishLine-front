@@ -30,22 +30,26 @@ const getTimePassed = (
   if (minutes === 0) {
     return `${hours}h`;
   }
-  return `${hours}h ${minutes}m`;
+  return `${hours || 0}h ${minutes || 0}m`;
 };
 
 const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { challenges } = useAppSelector((state) => state.user);
-  const { challenges: anotherCahallenges } = useAppSelector((state) => state.profile);
-  const challenge = userId ? anotherCahallenges?.[0] : challenges?.[0] || {
-    user_distance: 0,
-    total_distance: 0,
-    image_url: "",
-    reward: {
-      image_url: "",
-    },
-  };
+  const { challenges: anotherCahallenges } = useAppSelector(
+    (state) => state.profile,
+  );
+  const challenge = userId
+    ? anotherCahallenges?.[0]
+    : challenges?.[0] || {
+        user_distance: 0,
+        total_distance: 0,
+        image_url: "",
+        reward: {
+          image_url: "",
+        },
+      };
 
   const hours = getTimePassed(challenge?.activate_date, challenge?.completed_at);
 
@@ -56,9 +60,8 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
     try {
       const data = await getUserChallenges(userId);
       if (userId) {
-        dispatch(setUserProfieChallenges(data.data))
+        dispatch(setUserProfieChallenges(data.data));
       } else {
-
         dispatch(setUserChallenges(data.data));
       }
     } catch (error) {
@@ -132,10 +135,10 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             </div>
             {challenge.reward_ticket.status.type !==
               ShipmentStatuses.received && (
-                <div className="text-[13px] text-muted-foreground mt-1">
-                  Shipment ID {challenge.reward_ticket.id}
-                </div>
-              )}
+              <div className="text-[13px] text-muted-foreground mt-1">
+                Shipment ID {challenge.reward_ticket.id}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -147,7 +150,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
       </div>
       <div className="flex justify-between mt-8">
         <span className="mt-2.5 text-lg font-semibold leading-5 text-[#09090B]">
-          {challenge.user_distance} km
+          {challenge.user_distance || 0} km
         </span>
         {challenge.reward?.image_url && (
           <div
@@ -166,7 +169,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
           </div>
         )}
         <span className="mt-2.5 text-lg font-semibold leading-5 text-[#09090B]">
-          {hours}
+          {hours || 0}
         </span>
       </div>
       {!userId && challenge.is_completed ? (

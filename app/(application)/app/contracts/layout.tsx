@@ -8,8 +8,8 @@ import PageContainer from "@/app/components/Application/PageContainer/PageContai
 const links = [
   {
     id: 1,
-    name: "Still to get",
-    href: "/app/contracts/still-to-get",
+    name: "All",
+    href: "/app/contracts/all",
   },
   {
     id: 2,
@@ -18,8 +18,8 @@ const links = [
   },
   {
     id: 3,
-    name: "All",
-    href: "/app/contracts/all",
+    name: "Still to get",
+    href: "/app/contracts/still-to-get",
   },
 ];
 

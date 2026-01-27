@@ -20,6 +20,9 @@ import WheelStartTimePicker from "../../Shared/WheelStartTimePicker/WheelStartTi
 import SheetContainer from "../../SheetContainer/SheetContainer";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getUserActiveChallenge } from "@/app/lib/utils/userService";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
 
 enum ActivityType {
   Walk = "Walk",
@@ -108,6 +111,7 @@ const AddActivitityForm = () => {
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [isStartTimeModalOpen, setIsStartTimeModalOpen] = useState(false);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleOpenTimeModal = () => {
@@ -155,6 +159,17 @@ const AddActivitityForm = () => {
     }
   };
 
+  const handleLoadChallenge = async () => {
+    try {
+      const data = await getUserActiveChallenge();
+      if (data) {
+        dispatch(setChallenge(data));
+      }
+    } catch (error) {
+      console.error("Failed to load challenge:", error);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
@@ -165,6 +180,7 @@ const AddActivitityForm = () => {
         start_date: formatToBackendString(date),
       });
       toast.success("Manual activity successfully added");
+      await handleLoadChallenge();
       router.push("/app/profile/activities");
     } catch (error: any) {
       toast.error(

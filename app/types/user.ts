@@ -23,4 +23,10 @@ export interface IUser {
   selected_skin?: { id: number; image_url: string } | null;
   selected_frame?: { id: number; image_url: string } | null;
   selected_banner?: { id: number; image_url: string } | null;
+  sex: string;
+  birth_date: {
+    year: number;
+    month: number;
+    day: number;
+  };
 }

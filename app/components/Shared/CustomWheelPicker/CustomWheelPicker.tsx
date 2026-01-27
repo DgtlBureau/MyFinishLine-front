@@ -30,7 +30,14 @@ const CustomWheelPicker = ({
 }) => {
   return (
     <WheelPickerWrapper>
-      <WheelPicker options={options} value={value} onValueChange={onChange} />
+      <WheelPicker
+        options={options}
+        value={value}
+        onValueChange={(value) => {
+          console.log(value);
+          onChange(value);
+        }}
+      />
     </WheelPickerWrapper>
   );
 };

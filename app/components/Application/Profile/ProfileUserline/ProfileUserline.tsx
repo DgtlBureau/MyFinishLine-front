@@ -12,9 +12,9 @@ import Link from "next/link";
 const ProfileUserline = ({ userId }: { userId?: string }) => {
   const [imageError, setImageError] = useState(false);
   const { user } = useAppSelector((state) => state.user);
-  const { profile } = useAppSelector(state => state.profile)
+  const { profile } = useAppSelector((state) => state.profile);
 
-  const currentUser = userId ? profile : user
+  const currentUser = userId ? profile : user;
 
   return (
     <section className="flex justify-between px-2 pt-12 pb-4 rounded-tl-xl rounded-tr-xl relative max-w-4xl mx-auto">
@@ -30,9 +30,11 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         </div>
       )}
       <div className="flex gap-4 relative items-end">
-        <Link href={'settings/personalization/frames'}
-          className={`flex items-center justify-center relative w-32 h-32 ${userId ? 'pointer-events-none' : ''
-            }`}
+        <Link
+          href={"settings/personalization/frames"}
+          className={`flex items-center justify-center relative w-32 h-32 ${
+            userId ? "pointer-events-none" : ""
+          }`}
         >
           {currentUser.selected_frame && (
             <div className="absolute left-0 top-0 h-full w-full">
@@ -78,8 +80,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`font-medium ${user.selected_banner ? "text-white" : "text-black"
-                }`}
+              className={`font-medium ${
+                user.selected_banner ? "text-white" : "text-black"
+              }`}
             >
               {currentUser.first_name} {currentUser.last_name}
             </motion.span>
@@ -94,8 +97,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           <div className="flex items-stretch">
             <div className="border-r border-neutral-400 px-2">
               <StatBlock
-                valueClassName={`block text-center ${currentUser.selected_banner ? "text-white" : "text-black"
-                  }`}
+                valueClassName={`block text-center ${
+                  currentUser.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Distance"
                 value={handleConvertDistance(currentUser.total_distance) || "0"}
@@ -103,8 +107,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
             </div>
             <div className="border-r border-neutral-400 px-2">
               <StatBlock
-                valueClassName={`block text-center ${currentUser.selected_banner ? "text-white" : "text-black"
-                  }`}
+                valueClassName={`block text-center ${
+                  currentUser.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Hours"
                 value={currentUser.total_moving_time_hours?.toFixed(1) + " h"}
@@ -112,8 +117,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
             </div>
             <div className="px-2">
               <StatBlock
-                valueClassName={`block text-center ${currentUser.selected_banner ? "text-white" : "text-black"
-                  }`}
+                valueClassName={`block text-center ${
+                  currentUser.selected_banner ? "text-white" : "text-black"
+                }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
                 label="Runs"
                 value={currentUser.total_activities_count?.toString() || "0"}

@@ -40,6 +40,12 @@ const initialState: {
       has_strava_connect: false,
       avatar_symbol: "",
       avatar_color: "#fff",
+      sex: "",
+      birth_date: {
+        year: 0,
+        month: 0,
+        day: 0,
+      },
     },
   },
 };

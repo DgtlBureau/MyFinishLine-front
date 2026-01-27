@@ -1,11 +1,12 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
 import StoryModal from "../Shared/StoryList/StoryList";
+import RouteRenderer from "./RouteRenderer";
 import { IActiveChallenge, IStep, IStory } from "@/app/types";
 import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
@@ -14,12 +15,17 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
+import FogOfWar from "./FogOfWar";
 
-const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
+const Map = ({
+  background_images,
+  steps,
+  is_completed,
+  route_data,
+}: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const backgroundListRef = useRef<HTMLUListElement>(null);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const dispatch = useAppDispatch();
@@ -38,38 +44,99 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
 
   useEffect(() => {
     if (user.available_onboarding) {
-      handleLoadOnboarding();
+      // handleLoadOnboarding();
     }
   }, []);
 
   const stepsAmount = steps.length;
 
-  const handleScrollToActiveStep = () => {
+  const MAP_WIDTH = 672;
+  const DEFAULT_MAP_HEIGHT = 5354;
+  const CONTENT_WIDTH = MAP_WIDTH - 64;
+  const maxYCoordinate =
+    steps.length > 0
+      ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
+      : 0;
+  const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+
+  const hasRouteData =
+    route_data &&
+    route_data.routes &&
+    route_data.routes.length > 0 &&
+    route_data.routes.some((r) => r.points && r.points.length >= 2);
+
+  const handleScrollToActiveStep = (animate: boolean = true) => {
+    const behavior = animate ? "smooth" : "instant";
+
+    // Find ALL user circles
+    const userCircles = document.querySelectorAll("#user-progress-icon");
+
+    // Find the first circle that's actually visible (not display: none, opacity > 0)
+    let visibleCircle = null;
+
+    for (const circle of userCircles) {
+      const style = window.getComputedStyle(circle);
+      const isVisible =
+        style.display !== "none" &&
+        style.opacity !== "0" &&
+        style.visibility !== "hidden";
+
+      // Also check if parent is visible (ProgressArrow might hide the container)
+      let parent = circle.parentElement;
+      let parentVisible = true;
+
+      while (parent && parent !== document.body) {
+        const parentStyle = window.getComputedStyle(parent);
+        if (
+          parentStyle.display === "none" ||
+          parentStyle.opacity === "0" ||
+          parentStyle.visibility === "hidden"
+        ) {
+          parentVisible = false;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+
+      if (isVisible && parentVisible) {
+        visibleCircle = circle;
+        break;
+      }
+    }
+
+    if (visibleCircle) {
+      visibleCircle.scrollIntoView({
+        behavior,
+        block: "center",
+        inline: "center",
+      });
+      return;
+    }
+
+    // If no visible circle, fallback to active step
     const activeStep = steps.find((step) => step.active);
     if (activeStep) {
-      const element = document.getElementById("step-" + activeStep.index);
-      element?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
-    } else {
-      const element = document.getElementById("step-" + steps.length);
-      element?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
+      const stepElement = document.getElementById(`step-${activeStep.index}`);
+      if (stepElement) {
+        stepElement.scrollIntoView({
+          behavior,
+          block: "center",
+          inline: "center",
+        });
+      }
     }
   };
 
   useLayoutEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
 
-    const scrollToBottom = () => {
+    const SESSION_KEY = "map_scroll_animated";
+    const hasSeenAnimation = sessionStorage.getItem(SESSION_KEY) === "true";
+
+    const scrollToBottom = (animate: boolean) => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
-        behavior: "smooth",
+        behavior: animate ? "smooth" : "instant",
       });
     };
 
@@ -77,9 +144,23 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
     const isAllCompleted = is_completed;
 
     if (hasActiveStep || isAllCompleted) {
-      timer = setTimeout(handleScrollToActiveStep, 100);
+      if (hasSeenAnimation) {
+        timer = setTimeout(() => handleScrollToActiveStep(false), 10);
+      } else {
+        timer = setTimeout(() => {
+          handleScrollToActiveStep(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
+        }, 100);
+      }
     } else {
-      timer = setTimeout(scrollToBottom, 100);
+      if (hasSeenAnimation) {
+        timer = setTimeout(() => scrollToBottom(false), 10);
+      } else {
+        timer = setTimeout(() => {
+          scrollToBottom(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
+        }, 100);
+      }
     }
 
     return () => {
@@ -164,33 +245,65 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
           ))}
         </div>
 
-        <div className="relative max-w-2xl mx-auto overflow-x-auto">
-          <ul ref={backgroundListRef} className="relative z-0 w-2xl">
-            {background_images.map((image, index) => (
-              <li key={`map-bg-${index}`} className="relative w-full">
-                <img
-                  src={image.image_url}
-                  alt=""
-                  className="object-cover w-full h-auto block"
-                />
-              </li>
-            ))}
-          </ul>
+        <div className="relative mx-auto overflow-x-auto">
+          <div
+            className="relative mx-auto"
+            style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
+          >
+            {background_images[0] && (
+              <img
+                src={background_images[0].image_url}
+                alt=""
+                className="absolute inset-0 w-full h-full"
+                style={{ objectFit: "fill" }}
+                draggable={false}
+              />
+            )}
 
-          <div className="absolute inset-0 z-10 px-4 sm:px-8 w-2xl">
-            <div className="absolute z-10 left-0  top-40">
-              <div className="fixed">
+            <FogOfWar
+              steps={steps}
+              mapHeight={MAP_HEIGHT}
+              isCompleted={is_completed}
+            />
+
+            <div className="absolute left-0 top-40" style={{ zIndex: 30 }}>
+              <div className="fixed flex gap-2 items-start">
                 <Image
                   src="/images/application/map-racoon.png"
                   width={100}
                   height={100}
                   alt="Map racoon"
                 />
+                {(!user.has_fitbit_connect || !user.has_fitbit_connect) && (
+                  <div className="relative bg-white p-2 px-4 rounded-xl shadow-lg max-w-xs ml-2">
+                    <div className="text-sm font-medium text-gray-800 italic">
+                      Connect your Strava or FitBit account to track your
+                      progress!
+                    </div>
+                    <div
+                      className="absolute -left-1 bottom-0 w-0 h-0 
+                      border-t-8 border-t-transparent
+                      border-r-12 border-r-white
+                      border-b-8 border-b-transparent
+                      rotate-95"
+                    />
+                  </div>
+                )}
               </div>
             </div>
-            <div className="relative w-full h-full">
+
+            <div className="absolute inset-0 z-10 px-4 sm:px-8">
+              {hasRouteData && route_data && (
+                <RouteRenderer
+                  routeData={route_data}
+                  steps={steps}
+                  mapWidth={CONTENT_WIDTH}
+                  mapHeight={MAP_HEIGHT}
+                />
+              )}
+
               <Xwrapper>
-                {steps.map((step, index) => (
+                {steps.map((step) => (
                   <div
                     key={step.id}
                     id={`step-${step.index}`}
@@ -198,6 +311,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                     style={{
                       left: `${step.x_coordinate}px`,
                       bottom: `${step.y_coordinate}px`,
+                      zIndex: 10,
                     }}
                   >
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
@@ -225,7 +339,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                     >
                       <Step
                         id={step.id}
-                        title={step.title || "Test"}
+                        title={step.title || "Step"}
                         stepsAmount={stepsAmount}
                         completed={step.completed}
                         isActive={step.active}
@@ -241,6 +355,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
                         isNext={step.next}
                         index={step.index}
                         isViewed={step.is_viewed}
+                        hideArrows={hasRouteData}
                       />
                     </div>
                   </div>
@@ -254,7 +369,7 @@ const Map = ({ background_images, steps, is_completed }: IActiveChallenge) => {
           <motion.button
             whileTap={{ scale: 0.9 }}
             className="bg-white rounded-full p-2 shadow-lg"
-            onClick={handleScrollToActiveStep}
+            onClick={() => handleScrollToActiveStep()}
           >
             <Crosshair />
           </motion.button>

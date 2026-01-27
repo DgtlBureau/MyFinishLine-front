@@ -27,12 +27,16 @@ import {
 import { toast } from "react-toastify";
 import countryList from "react-select-country-list";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
-import { Sheet } from "react-modal-sheet";
-import DateWheelPicker from "@/app/components/Shared/WheelDatePicker/WheelDatePicker";
-
 import BirthDateWheelPicker from "@/app/components/Shared/WheelDateBirthPicker/WheelDateBirthPicker";
 import CustomWheelPicker from "@/app/components/Shared/CustomWheelPicker/CustomWheelPicker";
 import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
+import { format } from "date-fns";
+
+const sexOptions = [
+  { label: "Male", value: "M" },
+  { label: "Female", value: "F" },
+  { label: "Prefer not to say", value: null },
+];
 
 const page = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -43,7 +47,6 @@ const page = () => {
   const [imageError, setImageError] = useState(false);
   const [isGenderSelectOpen, setIsGenderSelectOpen] = useState(false);
   const [isBirthDateOpen, setIsBirthDateOpen] = useState(false);
-  const [gender, setGender] = useState("Prefer not to say");
   const currentDate = new Date();
   const [birthDate, setBirthDate] = useState({
     year: currentDate.getFullYear(),
@@ -75,6 +78,15 @@ const page = () => {
     });
   }, []);
 
+  const handleChangeSex = (value: string) => {
+    setData((prevState) => {
+      return {
+        ...prevState,
+        sex: value,
+      };
+    });
+  };
+
   const handleLoadUser = async () => {
     try {
       const data = await getCurrentUser();
@@ -97,6 +109,8 @@ const page = () => {
     dataArray.forEach((item) => {
       !!item[1] && formData.append(item[0], item[1]);
     });
+    const date = new Date(birthDate.year, birthDate.month - 1, birthDate.day);
+    formData.append("birth_date", format(date, "yyyy-MM-dd"));
     if (file) {
       formData.append("avatar", file);
     }
@@ -115,6 +129,8 @@ const page = () => {
             ? { username: data.username }
             : {}),
           ...(data.country ? { country: data.country } : {}),
+          ...(data.sex ? { sex: data.sex.toLowerCase() } : {}),
+          birth_date: birthDate,
           phone: data.phone,
           ...(data.full_avatar_url
             ? { full_avatar_url: data.full_avatar_url }
@@ -203,7 +219,7 @@ const page = () => {
                 type="button"
                 onClick={handleOpenGenderSheet}
               >
-                {gender}
+                {sexOptions.find((option) => option.value === data.sex)?.label}
               </Button>
             </label>
 
@@ -324,13 +340,9 @@ const page = () => {
         >
           <div className="pb-20 max-w-4xl mx-auto">
             <CustomWheelPicker
-              options={[
-                { label: "Male", value: "male" },
-                { label: "Female", value: "female" },
-                { label: "Prefer not to say", value: "prefer_not_to_say" },
-              ]}
-              value={gender}
-              onChange={setGender}
+              options={sexOptions}
+              value={data.sex}
+              onChange={handleChangeSex}
             />
           </div>
         </SheetContainer>

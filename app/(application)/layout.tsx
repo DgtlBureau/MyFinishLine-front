@@ -3,9 +3,6 @@ import AppHeader from "../components/Application/AppHeader/AppHeader";
 import { Slide, ToastContainer } from "react-toastify";
 import RedirectComponent from "../components/RedirectComponent/RedirectComponent";
 import { buildSeo } from "../lib/utils/buildSeo";
-import { Toast } from "../components/ui/toast";
-import { useAppSelector } from "../lib/hooks";
-import ConnectionToast from "../components/Application/ConnectionToast/ConnectionToast";
 
 export const metadata = buildSeo({
   title: "MyFinishLine",
@@ -23,7 +20,6 @@ export default function ApplicationLayout({
     <>
       <RedirectComponent />
       <div className="min-h-screen h-full">
-        <ConnectionToast />
         <div className="min-h-screen flex flex-col">
           <AppHeader />
           <main className="min-h-screen pb-15.75 bg-white rounded-tl-2xl rounded-tr-2xl">

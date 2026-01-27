@@ -1,4 +1,4 @@
-import { IActiveChallenge, IContract } from "@/app/types";
+import { IActiveChallenge, IContract, IWheelOption } from "@/app/types";
 import { IUser } from "@/app/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -35,6 +35,12 @@ const initialState: {
     has_strava_connect: false,
     avatar_symbol: "",
     avatar_color: "#fff",
+    sex: "Prefer not to say",
+    birth_date: {
+      year: 0,
+      month: 0,
+      day: 0,
+    },
   },
   contracts: [],
   challenges: [],
@@ -65,6 +71,9 @@ const userSlice = createSlice({
     setUserChallenges: (state, action: PayloadAction<IActiveChallenge[]>) => {
       state.challenges = action.payload;
     },
+    updateUserSex: (state, action: PayloadAction<string>) => {
+      state.user.sex = action.payload;
+    },
     updatePersonalization: (
       state,
       action: PayloadAction<{
@@ -87,6 +96,7 @@ export const {
   setUserContracts,
   setUserCompletedContracts,
   updatePersonalization,
+  updateUserSex,
   setUserChallenges,
   clearUser,
 } = userSlice.actions;

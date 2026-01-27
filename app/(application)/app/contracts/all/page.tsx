@@ -18,7 +18,7 @@ const page = () => {
       const data = await getUserContracts();
       setContracts(data.data);
     } catch (error: any) {
-      toast.error("Error loading contracts: ", error.response.data.message);
+      toast.error("Error loading contracts: " + error.response.data.message);
       console.log(error);
     } finally {
       setIsLoading(false);
