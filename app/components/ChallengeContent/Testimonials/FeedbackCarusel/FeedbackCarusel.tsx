@@ -5,6 +5,7 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import Image from 'next/image';
 import { cn } from "@/app/lib/utils";
+import { Autoplay } from "swiper/modules";
 
 interface IFeedbackCardProps {
     name: string,
@@ -13,7 +14,6 @@ interface IFeedbackCardProps {
     image: string
 }
 
-import { Autoplay } from "swiper/modules";
 
 const swiperBreakpoints = {
     0: { slidesPerView: 1.2 },
@@ -58,7 +58,9 @@ export const FeedbackCarusel = () => {
                     }}
                 >
                     {[...testimonials].slice(0, 5).map((item, idx) => (
-                        <SwiperSlide key={idx} tag='div'><FeedbackCard name={item.name} subtitle={item.title} image={item.image} description={item.testimonial} /></SwiperSlide>
+                        <SwiperSlide key={idx} tag='div'>
+                            <FeedbackCard name={item.name} subtitle={item.title} image={item.image} description={item.testimonial} />
+                        </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
@@ -77,7 +79,9 @@ export const FeedbackCarusel = () => {
                     }}
                 >
                     {[...testimonials].slice(4).map((item, idx) => (
-                        <SwiperSlide key={idx} tag='div'><FeedbackCard name={item.name} subtitle={item.title} image={item.image} description={item.testimonial} /></SwiperSlide>
+                        <SwiperSlide key={idx} tag='div'>
+                            <FeedbackCard name={item.name} subtitle={item.title} image={item.image} description={item.testimonial} />
+                        </SwiperSlide>
                     ))}
                 </Swiper>
             </div>

@@ -58,12 +58,12 @@ const content = {
       className: "max-h-[25px]",
       url: "https://supabase.com/",
     },
-    // {
-    //   name: "Astro",
-    //   logo: astroImage,
-    //   className: "",
-    //   url: "https://astro.build",
-    // },
+    {
+      name: "Astro",
+      logo: astroImage,
+      className: "",
+      url: "https://astro.build",
+    },
     // {
     //   name: "Spotify",
     //   logo: "/images/logos/spotify.svg",
