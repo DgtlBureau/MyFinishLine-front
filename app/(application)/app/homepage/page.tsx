@@ -7,7 +7,8 @@ import Clouds from "@/app/components/Map/Clouds/Clouds";
 import { useEffect, useState } from "react";
 import Map from "@/app/components/Map/Map";
 import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
-import { Loader2 } from "lucide-react";
+import LoadingScreen from "@/app/components/Application/LoadingScreen/LoadingScreen";
+import { AnimatePresence } from "framer-motion";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -48,27 +49,28 @@ const Page = () => {
 
   return (
     <>
+      <AnimatePresence mode="wait">
+        {isFetching && !shouldAnimate && <LoadingScreen isVisible={true} />}
+      </AnimatePresence>
       {shouldAnimate && <Clouds isVisible={isFetching} />}
-      {isActive ? (
+      {!isFetching && isActive ? (
         <>
           <MapHeader
             challengeName={challenge.name}
             startDate={challenge.activate_date}
             totalDistance={challenge.user_distance}
+            totalDistanceMile={challenge.user_distance_mile}
             distance={challenge.total_distance}
+            distanceMile={challenge.total_distance_mile}
           />
           <Map {...challenge} />
         </>
       ) : (
-        <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
-          {isFetching ? (
-            <div className="animate-spin">
-              <Loader2 />
-            </div>
-          ) : (
-            "No active challenge found"
-          )}
-        </div>
+        !isFetching && (
+          <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
+            No active challenge found
+          </div>
+        )
       )}
     </>
   );

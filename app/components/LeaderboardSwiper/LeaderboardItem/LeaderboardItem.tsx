@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
 import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
 import LeaderboardUser from "./LeaderboardUser/LeaderboardUser";
-import Loader from "../../Shared/Loader/Loader";
+import LeaderboardSkeleton from "./LeaderboardSkeleton";
 
 interface ILeaderboardItemProps {
   challengeId: number;
@@ -39,11 +39,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
   }, [challengeId]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <Loader />
-      </div>
-    );
+    return <LeaderboardSkeleton count={7} />;
   } else if (leaderboards.length === 0) {
     return (
       <div className="block text-center text-sm text-[#71717A]">
@@ -56,7 +52,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
     <motion.div
       initial="collapsed"
       variants={containerVariants}
-      className="bg-linear-to-b from-[#F4E8FD] via-[#FFFFFF] to-[#F4E8FD] border border-[#E4E4E7] rounded-xl overflow-hidden"
+      className="bg-linear-to-b from-[#CEE9D8] via-[#FFFFFF] to-[#CEE9D8] border border-[#E4E4E7] rounded-xl overflow-hidden"
     >
       <motion.ul initial="collapsed" className="overflow-hidden">
         <AnimatePresence>

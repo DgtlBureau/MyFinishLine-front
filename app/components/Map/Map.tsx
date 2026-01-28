@@ -1,7 +1,7 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useLayoutEffect, useEffect, useMemo } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
@@ -22,13 +22,21 @@ const Map = ({
   steps,
   is_completed,
   route_data,
+  reward,
 }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
+  const [scale, setScale] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Math.min(1, window.innerWidth / 672);
+    }
+    return 1;
+  });
   const dispatch = useAppDispatch();
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const handleLoadOnboarding = async () => {
     try {
@@ -58,6 +66,20 @@ const Map = ({
       ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
       : 0;
   const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+
+  // Calculate scale to fit map in viewport
+  useLayoutEffect(() => {
+    const calculateScale = () => {
+      const viewportWidth = window.innerWidth;
+      // Scale based on width (fit horizontally)
+      const widthScale = Math.min(1, viewportWidth / MAP_WIDTH);
+      setScale(widthScale);
+    };
+
+    calculateScale();
+    window.addEventListener("resize", calculateScale);
+    return () => window.removeEventListener("resize", calculateScale);
+  }, []);
 
   const hasRouteData =
     route_data &&
@@ -229,7 +251,7 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full min-h-screen bg-slate-900">
+      <div className="relative w-full min-h-screen bg-slate-900 overflow-x-hidden">
         <div className="fixed inset-0 -z-10">
           {background_images.map((image, index) => (
             <div
@@ -245,11 +267,26 @@ const Map = ({
           ))}
         </div>
 
-        <div className="relative mx-auto overflow-x-auto">
+        <div
+          ref={mapContainerRef}
+          className="relative w-full overflow-hidden"
+        >
           <div
-            className="relative mx-auto"
-            style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
+            style={{
+              width: `${MAP_WIDTH * scale}px`,
+              height: `${MAP_HEIGHT * scale}px`,
+              margin: "0 auto",
+            }}
           >
+            <div
+              className="relative"
+              style={{
+                width: `${MAP_WIDTH}px`,
+                height: `${MAP_HEIGHT}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
+              }}
+            >
             {background_images[0] && (
               <img
                 src={background_images[0].image_url}
@@ -363,6 +400,7 @@ const Map = ({
               </Xwrapper>
             </div>
           </div>
+          </div>
         </div>
 
         <div className="fixed bottom-18 left-2 z-30">
@@ -377,7 +415,12 @@ const Map = ({
       </div>
 
       <AnimatePresence>
-        {isAwardOpen && <AwardModal onCloseClick={handleContinueAwards} />}
+        {isAwardOpen && (
+          <AwardModal
+            onCloseClick={handleContinueAwards}
+            medalImage={reward?.image_url || undefined}
+          />
+        )}
       </AnimatePresence>
       <AnimatePresence>
         {isStoriesOpen && (

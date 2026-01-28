@@ -1,12 +1,12 @@
 "use client";
 
 import FeatureList from "@/app/components/Application/FeatureList/FeatureList";
+import FeatureSkeleton from "@/app/components/Application/FeatureList/FeatureSkeleton";
 import { IContract } from "@/app/types";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { getUserContracts } from "@/app/lib/utils/userService";
 import { toast } from "react-toastify";
-import { Loader2 } from "lucide-react";
 
 const page = () => {
   const [contracts, setContracts] = useState<IContract[]>([]);
@@ -30,11 +30,7 @@ const page = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center mt-8">
-        <Loader2 width={48} height={48} className="animate-spin" />
-      </div>
-    );
+    return <FeatureSkeleton count={3} />;
   }
 
   if (!isLoading && !contracts.length) {

@@ -10,6 +10,7 @@ import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import ShipmentStatusBadge from "../Shared/ShipmentStatusBadge/ShipmentStatusBadge";
 import { ShipmentStatuses } from "@/app/types";
 import { setUserProfieChallenges } from "@/app/lib/features/profile/profileSlice";
+import { useMeasure } from "@/app/hooks/useMeasure";
 
 const getTimePassed = (
   startDate: string,
@@ -40,11 +41,14 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
   const { challenges: anotherCahallenges } = useAppSelector(
     (state) => state.profile,
   );
+  const { label, isMile } = useMeasure();
   const challenge = userId
     ? anotherCahallenges?.[0]
     : challenges?.[0] || {
         user_distance: 0,
+        user_distance_mile: 0,
         total_distance: 0,
+        total_distance_mile: 0,
         image_url: "",
         reward: {
           image_url: "",
@@ -83,7 +87,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
 
   if (!userId && !challenges?.[0]) {
     return (
-      <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
+      <div className="p-6 border border-white/30 rounded-2xl bg-gradient-to-b from-[#5170D5]/60 via-white/40 to-[#CEE9D8]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-lg">
         <span className="block text-center">No active challenge available</span>
         <Link className="block text-center mt-2 underline" href="/payment">
           Purchase one here
@@ -94,7 +98,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
 
   if (userId && !anotherCahallenges?.[0]) {
     return (
-      <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
+      <div className="p-6 border border-white/30 rounded-2xl bg-gradient-to-b from-[#5170D5]/60 via-white/40 to-[#CEE9D8]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-lg">
         <span className="block text-center">No active challenge available</span>
         <Link className="block text-center mt-2 underline" href="/payment">
           Purchase one here
@@ -104,7 +108,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
   }
 
   return (
-    <div className="p-6 border border-[#e4e4e7] rounded-xl bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD]">
+    <div className="p-6 border border-white/30 rounded-2xl bg-gradient-to-b from-[#5170D5]/60 via-white/40 to-[#CEE9D8]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-lg">
       <div className="flex gap-3 items-start">
         {/*@ts-ignore */}
         {challenge.image_url && (
@@ -123,7 +127,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
           </h5>
           <div className="w-full flex items-center justify-between">
             <span className="text-[13px] text-muted-foreground">
-              Total Distance {challenge.total_distance} km
+              Total Distance {isMile ? challenge.total_distance_mile : challenge.total_distance} {label}
             </span>
           </div>
         </div>
@@ -150,7 +154,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
       </div>
       <div className="flex justify-between mt-8">
         <span className="mt-2.5 text-lg font-semibold leading-5 text-[#09090B]">
-          {challenge.user_distance || 0} km
+          {(isMile ? challenge.user_distance_mile : challenge.user_distance) || 0} {label}
         </span>
         {challenge.reward?.image_url && (
           <div

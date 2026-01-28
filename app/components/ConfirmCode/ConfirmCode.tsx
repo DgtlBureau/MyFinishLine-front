@@ -128,7 +128,7 @@ const ConfirmCode = () => {
 
   return (
     <div className="fixed z-9999 to-white w-screen h-screen top-0 left-0 bg-white backdrop-blur-3xl flex items-center justify-center">
-      <div className="absolute w-full h-[30vh] top-0 left-0 bg-linear-to-b from-[#C3B7E2] via-80% via-[#E9E0F6CC]"></div>
+      <div className="absolute w-full h-[30vh] top-0 left-0 bg-linear-to-b from-[#5170D5] via-80% via-[#D6EFE3CC]"></div>
       <div className="fixed p-4 rounded-lg">
         <span className="block text-center text-3xl font-medium">
           Enter your challenge code below

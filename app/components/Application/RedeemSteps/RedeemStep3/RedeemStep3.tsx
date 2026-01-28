@@ -45,7 +45,7 @@ const RedeemStep3 = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-linear-to-b from-[#C3B7E2] via-[#FBFBFB] to-[#F4E8FD] border border-border rounded-xl py-6 px-4"
+      className="bg-linear-to-b from-[#5170D5] via-[#FBFBFB] to-[#CEE9D8] border border-border rounded-xl py-6 px-4"
     >
       <div className="mx-auto relative flex items-center justify-center rounded-full max-w-30 max-h-30 w-full h-full bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
         <div className="bg-white w-28 h-28 rounded-full">

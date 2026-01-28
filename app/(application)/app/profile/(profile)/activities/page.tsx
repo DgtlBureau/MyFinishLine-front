@@ -119,11 +119,12 @@ const Page = () => {
         <div className="flex justify-end">
           <Button
             onClick={handleLoadAllActivities}
-            className="ml-auto mr-0 rounded-full w-10 h-10"
+            className="ml-auto mr-0 rounded-full w-10 h-10 bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80"
+            variant="ghost"
             disabled={isUpdating || isLoading}
           >
-            <div className={`${isUpdating && "animate-spin"}`}>
-              <RefreshCw />
+            <div className={`${isUpdating && "animate-spin"} text-gray-600`}>
+              <RefreshCw strokeWidth={2.5} />
             </div>
           </Button>
         </div>
@@ -132,7 +133,7 @@ const Page = () => {
         </h4>
         <Link
           href="/app/activities/new"
-          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center p-2.5"
+          className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80 flex items-center justify-center p-2.5 transition-colors"
         >
           <Image
             src="/icons/navigation-add.svg"

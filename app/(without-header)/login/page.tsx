@@ -38,10 +38,12 @@ export default function Login() {
 
     e.preventDefault();
     try {
+      // Use Next.js API route to avoid CORS
       const { data } = await axios.post("/api/auth/login", {
         email: formData.email,
         password: formData.password,
       });
+
       dispatch(setUser(data.user));
       if (data.user.has_activated_code === false) {
         router.replace("/confirm-challenge");
@@ -50,21 +52,13 @@ export default function Login() {
       router.replace("/app");
     } catch (error: any) {
       setFormData((prevState) => {
-        return { ...prevState, error: error.response?.data.message };
+        return { ...prevState, error: error.response?.data?.message || "Login failed" };
       });
     } finally {
       setFormData((prevState) => {
         return { ...prevState, isLoading: false };
       });
     }
-
-    // window.location.href = "/app";
-    // cookieStore.set({
-    //   name: "user_authenticated",
-    //   value: "true", // or "1" or user ID
-    //   path: "/",
-    //   sameSite: "strict",
-    // });
   };
 
   const handleStravaLogin = () => {
@@ -72,7 +66,7 @@ export default function Login() {
       return { ...prevState, isLoading: true };
     });
     const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/api/strava/callback`;
+    const redirectUri = "https://dev.myfinishline.io/api/strava/callback";
     const scope = "activity:read_all,profile:read_all";
     const authUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&approval_prompt=force`;
     window.location.href = authUrl;

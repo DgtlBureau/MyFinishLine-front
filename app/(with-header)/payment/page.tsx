@@ -31,7 +31,7 @@ export default function PaymentPage() {
 
   return (
     <Suspense>
-      <div className="min-h-screen mt-24 bg-linear-to-b from-indigo-white via-[#C3B7E2] to-pink-white">
+      <div className="min-h-screen mt-24 bg-linear-to-b from-indigo-white via-[#5170D5] to-pink-white">
         <div className="relative flex flex-col gap-10 z-10 container mx-auto px-6 max-w-7xl mt-4">
           <div className="flex flex-col gap-3">
             <h1 className="text-5xl">Sign Up for your Challenge</h1>

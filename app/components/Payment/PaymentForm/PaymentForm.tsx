@@ -78,7 +78,7 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
   return (
     <>
       <form onSubmit={handleSubmit} className="flex flex-col gap-7.5 w-full">
-        <div className="flex flex-col gap-3 p-6 rounded-3xl border border-[#C3B7E2] bg-white">
+        <div className="flex flex-col gap-3 p-6 rounded-3xl border border-[#5170D5] bg-white">
           <p className="font-bold text-[22px]">Your details</p>
           <div className="flex gap-5">
             <label className="w-[50%]">

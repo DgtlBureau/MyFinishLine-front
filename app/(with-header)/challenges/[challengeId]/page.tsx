@@ -56,8 +56,10 @@ const page = () => {
       status_id: 0,
       steps: [],
       total_distance: "",
+      total_distance_mile: 0,
       activate_date: "",
       user_distance: 0,
+      user_distance_mile: 0,
     },
   };
 

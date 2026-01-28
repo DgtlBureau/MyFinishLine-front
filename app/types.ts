@@ -24,10 +24,12 @@ export interface IStep {
   challenge_id: number;
   completed: boolean;
   distance_by_next_step: string;
+  distance_by_next_step_mile?: number;
   id: number;
   index: number;
   story: IStory[];
   user_distance: number;
+  user_distance_mile?: number;
   user_distance_percent: number;
   x_coordinate: string;
   y_coordinate: string;
@@ -35,7 +37,9 @@ export interface IStep {
   title: string;
   next: boolean;
   distance_to_reach_step: string;
+  distance_to_reach_step_mile?: number;
   user_distance_reach: string;
+  user_distance_reach_mile?: number;
   is_viewed: boolean;
 }
 
@@ -66,8 +70,10 @@ export interface IActiveChallenge {
   status_id: number;
   steps: IStep[];
   total_distance: string;
+  total_distance_mile?: number;
   activate_date: string;
   user_distance: number;
+  user_distance_mile?: number;
   is_completed: boolean;
   completed_at: string;
   reward?: IReward;
@@ -82,16 +88,20 @@ export interface IActivity {
   activity_time: number;
   average_heart_rate: number | null;
   average_speed: string;
+  average_speed_mile?: number;
   created_at: string;
   from: string;
   id: number;
   max_heart_rate: number | null;
   max_speed: string;
+  max_speed_mile?: number;
   progress: string;
+  progress_mile?: number;
   sport_type: string;
   updated_at: string;
   user_id: number;
   pace: number;
+  pace_mile?: number;
 }
 
 export interface IAthlete {
@@ -195,6 +205,7 @@ export interface ILeaderboard {
   challenge_id: number;
   id: number;
   total_progress: string;
+  total_progress_mile?: number;
   total_hours: string;
   user_id: number;
   user: IUser;

@@ -1,15 +1,20 @@
+"use client";
+
 import { handleConvertTimeShort } from "@/app/lib/utils/convertData";
 import { IUser } from "@/app/types/user";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import { useMeasure } from "@/app/hooks/useMeasure";
 
 const CurrentUserLine = ({
   username,
   full_avatar_url,
   total_distance,
+  total_distance_mile,
   total_moving_time_hours,
   position,
 }: IUser & { position: number }) => {
+  const { label, isMile } = useMeasure();
   return (
     <div className="flex items-center justify-between p-4 border-b border-[#DADADA]">
       <div className="flex items-center gap-2">
@@ -27,7 +32,7 @@ const CurrentUserLine = ({
             alt="User image"
           />
         ) : (
-          <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
+          <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#CEE9D8] bg-white">
             <Star />
           </div>
         )}
@@ -38,7 +43,7 @@ const CurrentUserLine = ({
       </div>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {total_distance} km
+          {isMile ? total_distance_mile : total_distance} {label}
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
           {handleConvertTimeShort(total_moving_time_hours)}

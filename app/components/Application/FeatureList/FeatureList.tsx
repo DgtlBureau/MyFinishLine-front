@@ -24,7 +24,7 @@ const areEqual = (
 
 const FeatureList = memo(({ features }: IFeatureListProps) => {
   return (
-    <ul className="bg-linear-to-b from-[#F4E8FD] via-white to-[#F4E8FD] p-4 rounded-xl">
+    <ul className="bg-linear-to-b from-[#CEE9D8] via-white to-[#CEE9D8] p-4 rounded-xl">
       {features.map((feature) => (
         <Feature key={feature.id} {...feature} />
       ))}

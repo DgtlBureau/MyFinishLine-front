@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import StatBlock from "@/app/components/Shared/StatBlock/StatBlock";
 import { handleConvertDistance } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
@@ -17,7 +16,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
   const currentUser = userId ? profile : user;
 
   return (
-    <section className="flex justify-between px-2 pt-12 pb-4 rounded-tl-xl rounded-tr-xl relative max-w-4xl mx-auto">
+    <section className="flex flex-col items-center px-4 pt-12 pb-4 relative max-w-4xl mx-auto">
       {currentUser.selected_banner && (
         <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden">
           <Image
@@ -29,35 +28,32 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10" />
         </div>
       )}
-      <div className="flex gap-4 relative items-end">
-        <Link
-          href={"settings/personalization/frames"}
-          className={`flex items-center justify-center relative w-32 h-32 ${
-            userId ? "pointer-events-none" : ""
-          }`}
-        >
-          {currentUser.selected_frame && (
-            <div className="absolute left-0 top-0 h-full w-full">
+
+      {/* Avatar */}
+      <Link
+        href={"settings/personalization/frames"}
+        className={`flex items-center justify-center relative w-36 h-36 z-10 ${
+          userId ? "pointer-events-none" : ""
+        }`}
+      >
+        {currentUser.selected_frame && (
+          <div className="absolute left-0 top-0 h-full w-full">
+            <Image
+              className="z-20"
+              src={currentUser.selected_frame?.image_url}
+              alt="Frame"
+              fill
+            />
+          </div>
+        )}
+        <div className="relative z-10 flex items-center justify-center w-32 h-32">
+          {currentUser?.full_avatar_url && !imageError ? (
+            <div className="relative w-32 h-32">
               <Image
-                className="z-20"
-                src={currentUser.selected_frame?.image_url}
-                alt="Frame"
-                fill
-              />
-            </div>
-          )}
-          <div className="relative z-10 flex items-end justify-center">
-            {currentUser?.full_avatar_url && !imageError ? (
-              <Image
-                style={
-                  currentUser.selected_frame?.image_url
-                    ? { height: 120, width: 120 }
-                    : { height: 136, width: 136 }
-                }
-                className="rounded-full object-cover p-0.75 shrink-0"
+                className="rounded-full object-cover w-32 h-32"
                 src={currentUser.full_avatar_url}
-                width={136}
-                height={136}
+                width={128}
+                height={128}
                 quality={75}
                 loading="eager"
                 alt="Profile image"
@@ -65,76 +61,107 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                   setImageError(true);
                 }}
               />
-            ) : (
-              <div
-                style={{ backgroundColor: currentUser.avatar_color }}
-                className="border-border shrink-0 border-2 rounded-full w-32 h-32 flex items-center justify-center text-3xl font-bold"
-              >
-                {currentUser.avatar_symbol || <Camera />}
-              </div>
-            )}
-          </div>
-        </Link>
-        <div className="flex flex-col justify-end gap-2">
-          <div>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={`font-medium ${
-                user.selected_banner ? "text-white" : "text-black"
-              }`}
+              {/* Glass effect overlay */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/40 via-white/5 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-transparent to-black/10 pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-10 rounded-full bg-gradient-to-b from-white/50 to-transparent blur-sm pointer-events-none" />
+              <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1)] pointer-events-none" />
+            </div>
+          ) : (
+            <div
+              style={{ backgroundColor: currentUser.avatar_color }}
+              className="shrink-0 rounded-full w-32 h-32 flex items-center justify-center text-4xl font-bold relative"
             >
-              {currentUser.first_name} {currentUser.last_name}
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="block font-medium text-neutral-300 text-sm"
-            >
-              @{currentUser.username}
-            </motion.span>
+              {currentUser.avatar_symbol || <Camera />}
+              {/* Glass effect overlay */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/40 via-white/5 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-transparent to-black/10 pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-10 rounded-full bg-gradient-to-b from-white/50 to-transparent blur-sm pointer-events-none" />
+              <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1)] pointer-events-none" />
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {/* Name and Username */}
+      <div className="mt-3 text-center relative z-10">
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="font-semibold text-lg text-white block"
+        >
+          {currentUser.first_name} {currentUser.last_name}
+        </motion.span>
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="block font-medium text-white/60 text-sm"
+        >
+          @{currentUser.username}
+        </motion.span>
+      </div>
+
+      {/* Stats */}
+      <div className="flex items-start gap-6 mt-4 relative z-10">
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] text-white/70 font-medium tracking-wider">TOTAL DISTANCE</span>
+          <div className="h-[12px]" />
+          <span className="font-bold text-white text-lg">
+            {handleConvertDistance(currentUser.total_distance) || "0"}
+          </span>
+        </div>
+        <div className="w-px h-14 bg-white/30" />
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] text-white/70 font-medium tracking-wider">TIME ON TRACK</span>
+          <div className="flex items-center gap-0.5 text-[8px] text-white/50">
+            <span className="w-5 text-center">DAYS</span>
+            <span className="w-2" />
+            <span className="w-5 text-center">HRS</span>
+            <span className="w-2" />
+            <span className="w-5 text-center">MIN</span>
+            <span className="w-2" />
+            <span className="w-5 text-center">SEC</span>
           </div>
-          <div className="flex items-stretch">
-            <div className="border-r border-neutral-400 px-2">
-              <StatBlock
-                valueClassName={`block text-center ${
-                  currentUser.selected_banner ? "text-white" : "text-black"
-                }`}
-                labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Distance"
-                value={handleConvertDistance(currentUser.total_distance) || "0"}
-              />
-            </div>
-            <div className="border-r border-neutral-400 px-2">
-              <StatBlock
-                valueClassName={`block text-center ${
-                  currentUser.selected_banner ? "text-white" : "text-black"
-                }`}
-                labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Hours"
-                value={currentUser.total_moving_time_hours?.toFixed(1) + " h"}
-              />
-            </div>
-            <div className="px-2">
-              <StatBlock
-                valueClassName={`block text-center ${
-                  currentUser.selected_banner ? "text-white" : "text-black"
-                }`}
-                labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Runs"
-                value={currentUser.total_activities_count?.toString() || "0"}
-              />
-            </div>
+          <div className="flex items-center font-bold text-white text-lg tabular-nums">
+            {(() => {
+              const totalHours = currentUser.total_moving_time_hours || 0;
+              const days = Math.floor(totalHours / 24);
+              const hours = Math.floor(totalHours % 24);
+              const minutes = Math.floor((totalHours * 60) % 60);
+              const seconds = Math.floor((totalHours * 3600) % 60);
+              const pad = (n: number) => n.toString().padStart(2, '0');
+              return (
+                <>
+                  <span className="w-5 text-center">{pad(days)}</span>
+                  <span className="w-2 text-center text-white/50">:</span>
+                  <span className="w-5 text-center">{pad(hours)}</span>
+                  <span className="w-2 text-center text-white/50">:</span>
+                  <span className="w-5 text-center">{pad(minutes)}</span>
+                  <span className="w-2 text-center text-white/50">:</span>
+                  <span className="w-5 text-center">{pad(seconds)}</span>
+                </>
+              );
+            })()}
           </div>
         </div>
+        <div className="w-px h-14 bg-white/30" />
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] text-white/70 font-medium tracking-wider">TOTAL ACTIVITIES</span>
+          <div className="h-[12px]" />
+          <span className="font-bold text-white text-lg">
+            {currentUser.total_activities_count?.toString() || "0"}
+          </span>
+        </div>
       </div>
+
+      {/* Talisman */}
       {currentUser.selected_skin?.image_url && (
-        <button className="self-start cursor-pointer relative">
+        <button className="absolute top-12 right-4 cursor-pointer z-10">
           <Image
             src={currentUser.selected_skin?.image_url || ""}
             alt="Talisman"
-            height={80}
-            width={80}
+            height={60}
+            width={60}
           />
         </button>
       )}

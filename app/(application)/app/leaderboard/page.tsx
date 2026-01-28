@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import Loader from "@/app/components/Shared/Loader/Loader";
+import LeaderboardSkeleton from "@/app/components/LeaderboardSwiper/LeaderboardItem/LeaderboardSkeleton";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 
@@ -46,11 +46,11 @@ const page = () => {
           <LeaderboardSwiper challenges={challenges} />
         </motion.div>
       ) : isLoading ? (
-        <div className="flex justify-center p-8">
-          <Loader />
+        <div className="px-4 mt-8">
+          <LeaderboardSkeleton count={7} />
         </div>
       ) : (
-        <span>No challenges found</span>
+        <span className="block text-center text-gray-500 mt-8">No challenges found</span>
       )}
     </PageContainer>
   );

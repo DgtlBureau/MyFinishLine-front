@@ -90,6 +90,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "example.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.figma.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {

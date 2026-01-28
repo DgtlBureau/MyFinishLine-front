@@ -82,12 +82,12 @@ const AppHeader = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-foreground">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-b from-white/40 to-white/30 backdrop-blur-3xl backdrop-saturate-200 border-b border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]">
       <div className="flex items-center justify-between max-w-4xl mx-auto px-4">
         {isCurrentLinkNested ? (
           <button
             onClick={handleGoBack}
-            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-background"
+            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-gray-800"
           >
             <ChevronLeft />
           </button>
@@ -110,7 +110,7 @@ const AppHeader = () => {
           className="flex flex-1 items-center justify-end gap-2"
           onClick={handleGoToEdit}
         >
-          <Settings color="white" />
+          <Settings color="#374151" />
         </button>
       </div>
     </header>
