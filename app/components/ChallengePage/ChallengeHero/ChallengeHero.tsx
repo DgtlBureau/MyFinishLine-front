@@ -9,7 +9,7 @@ import challengeImage from "@/public/images/landing/quest.webp";
 interface IChallengeProps {
   title: string;
   description: string;
-  distance: string;
+  distance?: string | undefined;
   image: string;
 }
 
@@ -61,30 +61,19 @@ const ChallengeHero = ({
     >
       <Image src={title.toLocaleLowerCase() === 'amazonia route' ? challengeImage : image} width={1000} height={800} alt="challenge" className="absolute top-0 left-0 object-cover w-full h-full" />
       <div className="absolute w-full h-full bg-gradient-to-b from-white/20 to-black/20" />
-      <motion.div
+      {distance && <motion.div
         variants={itemVariants}
         className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm"
       >
         <Route className="size-4" />
         <span>{distance}</span>
-      </motion.div>
+      </motion.div>}
 
       <motion.h1
         variants={itemVariants}
         className="text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl"
       >
-        {title.split(" ").map((word, i, arr) =>
-          i === arr.length - 1 ? (
-            <span
-              key={i}
-              className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent"
-            >
-              {word}
-            </span>
-          ) : (
-            <span key={i}>{word} </span>
-          ),
-        )}
+        {title}
       </motion.h1>
 
       <motion.p

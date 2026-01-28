@@ -48,7 +48,6 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    // If products are loaded and product is not found, redirect to home
     if (!isLoading && !product) {
       router.push("/");
     }
@@ -63,7 +62,7 @@ const page = () => {
   }
 
   if (!product) {
-    return null; // Will redirect via useEffect
+    return null;
   }
 
   return (
@@ -72,13 +71,13 @@ const page = () => {
         <ChallengeHero
           title={product.name}
           description={product.description}
-          image={product.main_image}
-          distance={product.challenge_info.total_distance}
+          image={product?.images}
+          distance={product?.challenge_info?.total_distance}
         />
       </LumenBackgroundBlock>
-      <section className="section-padding bg-gradient-to-b from-white from-10% via-indigo-300/90 via-70% to-white-50">
-        <ChallengeContent content={product.content} />
-      </section>
+      {product?.content && <section className="section-padding bg-gradient-to-b from-white from-10% via-indigo-300/90 via-70% to-white-50">
+        <ChallengeContent content={product?.content} />
+      </section>}
 
       <section className="section-padding relative overflow-hidden bg-gradient-to-b from-white from-10% via-green-300/20 via-30% to-white-50">
         <div className="relative w-full py-10 flex items-center justify-center px-4 md:px-2">

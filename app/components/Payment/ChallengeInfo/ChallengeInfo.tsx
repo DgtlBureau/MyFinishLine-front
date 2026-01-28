@@ -16,7 +16,7 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
             {priceAmount}
           </span>
         </div>
-        <div className="border-4 border-[#EEDFBA] w-50 h-50 rounded-full overflow-hidden flex items-center justify-center">
+        <div className="border-4 border-[#EEDFBA] aspect-square w-50 rounded-full overflow-hidden flex items-center justify-center">
           <Image
             src={product.main_image || product.images}
             width={200}

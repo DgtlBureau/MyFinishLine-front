@@ -135,9 +135,11 @@ export enum CurrencieSymbols {
   USD = "$",
 }
 
+type Currency = keyof typeof CurrencieSymbols;
+
 export interface IPrice {
   amount: string;
-  currency: string;
+  currency: Currency;
   stripe_price_id?: string;
   paddle_price_id: string;
 }
