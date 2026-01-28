@@ -133,7 +133,7 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
         <Button
           className="w-full mt-4 uppercase text-2xl py-6"
           type="submit"
-          disabled={isLoading || !paddle}
+          disabled={isLoading}
         >
           {isLoading ? (
             <>
