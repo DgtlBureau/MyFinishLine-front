@@ -16,8 +16,10 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
+import { useTranslation } from "@/app/lib/i18n";
 
 const Page = () => {
+  const t = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoaded } = useAppSelector((state) => state.activities);
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -129,7 +131,7 @@ const Page = () => {
           </Button>
         </div>
         <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
-          Recent Activities
+          {t("profile.recentActivities")}
         </h4>
         <Link
           href="/app/activities/new"
@@ -162,7 +164,7 @@ const Page = () => {
                     ref={inViewRef}
                     className="block text-center mt-2 text-xs text-neutral-400"
                   >
-                    Scroll down to see more
+                    {t("profile.scrollForMore")}
                   </div>
                 )}
               </>
@@ -170,8 +172,7 @@ const Page = () => {
           </div>
         ) : (
           <div className="text-center text-sm py-10">
-            No activities found. Connect your Strava account to see your
-            activities here.
+            {t("profile.noActivities")}
           </div>
         )}
       </AnimatePresence>

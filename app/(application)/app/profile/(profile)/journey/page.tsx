@@ -11,8 +11,10 @@ import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
+import { useTranslation } from "@/app/lib/i18n";
 
 const Journey = () => {
+  const t = useTranslation();
   const { completedContracts } = useAppSelector((state) => state.user);
   const { user } = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
@@ -45,7 +47,7 @@ const Journey = () => {
     <section>
       <div className="max-w-4xl mx-auto">
         <h2 className="mt-10 font-medium text-3xl leading-9 text-[#09090B] text-center px-4">
-          My Journey
+          {t("profile.myJourney")}
         </h2>
         <section className="my-8 px-4">
           <ChallengeCard />
@@ -71,7 +73,7 @@ const Journey = () => {
       <section className="px-4 pb-4 w-full border-t border-[#DADADA] pt-11">
         <div className="max-w-4xl mx-auto">
           <h4 className="font-medium leading-7 text-xl text-center text-[#71717A]">
-            Authorize your accounts to connect to MyFinishLine
+            {t("profile.authorizeAccounts")}
           </h4>
           <div className="mt-5 max-w-25 w-full bg-[#dadada] h-px mx-auto" />
           <button
@@ -89,7 +91,7 @@ const Journey = () => {
             onClick={linkStrava}
           >
             {user.has_strava_connect ? (
-              <div className="text-center mx-auto">Connected to Strava</div>
+              <div className="text-center mx-auto">{t("profile.connectedToStrava")}</div>
             ) : (
               <>
                 <Image
@@ -99,7 +101,7 @@ const Journey = () => {
                   height={56}
                   alt="Strava"
                 />
-                Connect Strava
+                {t("profile.connectStrava")}
                 <ChevronRight />
               </>
             )}
@@ -118,7 +120,7 @@ const Journey = () => {
             onClick={linkFitbit}
           >
             {user.has_fitbit_connect ? (
-              <div className="text-center mx-auto">Connected to Fitbit</div>
+              <div className="text-center mx-auto">{t("profile.connectedToFitbit")}</div>
             ) : (
               <>
                 <Image
@@ -128,7 +130,7 @@ const Journey = () => {
                   height={54}
                   alt="FitBit"
                 />
-                Connect Fitbit
+                {t("profile.connectFitbit")}
                 <ChevronRight />
               </>
             )}

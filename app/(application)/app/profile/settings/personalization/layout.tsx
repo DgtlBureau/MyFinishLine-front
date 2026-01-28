@@ -32,8 +32,8 @@ const page = ({
 
   return (
     <PageContainer
-      title="Personalization"
-      description="Edit how you and other users will see your profile."
+      titleKey="pages.personalization.title"
+      descriptionKey="pages.personalization.description"
     >
       <div className="px-4">
         <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b">

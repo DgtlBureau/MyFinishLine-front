@@ -1,0 +1,81 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "seeAll": "See All"
+  },
+  "nav": {
+    "rating": "Rating",
+    "contracts": "Contracts",
+    "journey": "Journey",
+    "profile": "Profile",
+    "more": "More"
+  },
+  "pages": {
+    "leaderboard": {
+      "title": "Leaderboard",
+      "description": "Keep up the great work!"
+    },
+    "contracts": {
+      "title": "Contracts",
+      "description": "Here you can see your next goals to achieve"
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Change your account settings"
+    },
+    "editAccount": {
+      "title": "Edit account",
+      "description": "Edit your account information"
+    },
+    "personalization": {
+      "title": "Personalization",
+      "description": "Edit how you and other users will see your profile."
+    },
+    "more": {
+      "title": "More",
+      "description": "Additional information that might be useful"
+    },
+    "newActivity": {
+      "title": "New activity",
+      "description": "Add your activity manually"
+    },
+    "redeem": {
+      "title": "Claim your medal",
+      "description": "Congratulations! You have completed your challenge, now claim your reward."
+    }
+  },
+  "profile": {
+    "myJourney": "My Journey",
+    "totalDistance": "Total Distance",
+    "timeOnTrack": "Time on track",
+    "settings": "Settings",
+    "editAccount": "Edit Account",
+    "language": "Language",
+    "journey": "Journey",
+    "activities": "Activities",
+    "distance": "Distance",
+    "time": "Time",
+    "runs": "Runs",
+    "authorizeAccounts": "Authorize your accounts to connect to MyFinishLine",
+    "connectStrava": "Connect Strava",
+    "connectedToStrava": "Connected to Strava",
+    "connectFitbit": "Connect Fitbit",
+    "connectedToFitbit": "Connected to Fitbit",
+    "contractsInProgress": "Contracts in Progress",
+    "recentActivities": "Recent Activities",
+    "scrollForMore": "Scroll down to see more",
+    "noActivities": "No activities found. Connect your Strava account to see your activities here."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "russian": "Russian"
+  }
+}

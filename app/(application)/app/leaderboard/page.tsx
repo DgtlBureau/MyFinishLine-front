@@ -40,7 +40,7 @@ const page = () => {
   }
 
   return (
-    <PageContainer title="Leaderboard" description="Keep up the great work!">
+    <PageContainer titleKey="pages.leaderboard.title" descriptionKey="pages.leaderboard.description">
       {challenges.length > 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <LeaderboardSwiper challenges={challenges} />

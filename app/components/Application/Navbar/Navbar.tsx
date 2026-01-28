@@ -5,39 +5,40 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sendGTMEvent } from "@/app/lib/utils/sendEvent";
+import { useTranslation } from "@/app/lib/i18n";
 
 const navLinks = [
   {
     id: 1,
-    name: "Rating",
+    nameKey: "nav.rating",
     href: "/app/leaderboard",
     parent: "leaderboard",
     Icon: Trophy,
   },
   {
     id: 2,
-    name: "Contracts",
+    nameKey: "nav.contracts",
     href: "/app/contracts",
     parent: "contracts",
     Icon: BookCheck,
   },
   {
     id: 3,
-    name: "Journey",
+    nameKey: "nav.journey",
     href: "/app/homepage",
     parent: "homepage",
     Icon: Map,
   },
   {
     id: 4,
-    name: "Profile",
+    nameKey: "nav.profile",
     href: "/app/profile/journey",
     parent: "profile",
     Icon: User,
   },
   {
     id: 5,
-    name: "More",
+    nameKey: "nav.more",
     href: "/app/more",
     parent: "more",
     Icon: MoreHorizontal,
@@ -46,6 +47,7 @@ const navLinks = [
 
 const Navbar = () => {
   const pathname = usePathname();
+  const t = useTranslation();
 
   const isActive = (link: (typeof navLinks)[0]) => {
     if (link.href === "/") {
@@ -61,7 +63,7 @@ const Navbar = () => {
       event: "page_visit",
       page_location: link?.href,
       page_path: link?.href,
-      page_title: link?.name,
+      page_title: link ? t(link.nameKey) : undefined,
     });
   };
 
@@ -110,7 +112,7 @@ const Navbar = () => {
                         : "text-navbar-text group-hover:text-navbar-text-active"
                     }`}
                   >
-                    {link.name}
+                    {t(link.nameKey)}
                   </span>
                 </div>
               </Link>

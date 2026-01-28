@@ -8,11 +8,13 @@ import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";
 import Link from "next/link";
+import { useTranslation } from "@/app/lib/i18n";
 
 const ProfileUserline = ({ userId }: { userId?: string }) => {
   const [imageError, setImageError] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const { profile } = useAppSelector((state) => state.profile);
+  const t = useTranslation();
 
   const currentUser = userId ? profile : user;
   const distanceUnit = getDistanceUnit(user.measure);
@@ -104,7 +106,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                   currentUser.selected_banner ? "text-white" : "text-black"
                 }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Distance"
+                label={t("profile.distance")}
                 value={`${handleConvertDistance(displayDistance || 0) || "0"} ${displayDistance && displayDistance >= 1000 ? distanceUnit : (isMiles ? "ft" : "m")}`}
               />
             </div>
@@ -114,7 +116,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                   currentUser.selected_banner ? "text-white" : "text-black"
                 }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Hours"
+                label={t("profile.time")}
                 value={currentUser.total_moving_time_hours?.toFixed(1) + " h"}
               />
             </div>
@@ -124,7 +126,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                   currentUser.selected_banner ? "text-white" : "text-black"
                 }`}
                 labelClassName="text-center text-neutral-400 text-[10px]!"
-                label="Runs"
+                label={t("profile.runs")}
                 value={currentUser.total_activities_count?.toString() || "0"}
               />
             </div>

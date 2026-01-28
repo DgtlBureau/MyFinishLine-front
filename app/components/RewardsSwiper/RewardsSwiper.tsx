@@ -5,6 +5,7 @@ import Reward from "../Application/Reward/Reward";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useAppSelector } from "@/app/lib/hooks";
 import Link from "next/link";
+import { useTranslation } from "@/app/lib/i18n";
 
 import "swiper/css";
 
@@ -13,6 +14,7 @@ const RewardsSwiper = () => {
   const { contracts } = useAppSelector((state) => state.user);
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+  const t = useTranslation();
 
   const contractsStillToGet = contracts.filter(
     (contract) => !contract.is_completed,
@@ -39,7 +41,7 @@ const RewardsSwiper = () => {
       <section className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between">
           <h4 className="font-medium text-3xl leading-9 text-[#09090B] px-4">
-            Contracts in Progress
+            {t("profile.contractsInProgress")}
           </h4>
           {contractsStillToGet.length > 2 && (
             <div className="flex items-center flex-nowrap">
@@ -93,7 +95,7 @@ const RewardsSwiper = () => {
           href="/app/contracts/still-to-get"
           className="underline block p-4 text-right text-sm text-[#71717A]"
         >
-          See All
+          {t("common.seeAll")}
         </Link>
       </section>
     </section>

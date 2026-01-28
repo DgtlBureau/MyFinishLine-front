@@ -3,7 +3,7 @@ import Settings from "@/app/components/Application/Settings/Settings";
 
 const page = () => {
   return (
-    <PageContainer title="Settings" description="Change your account settings">
+    <PageContainer titleKey="pages.settings.title" descriptionKey="pages.settings.description">
       <main className="pt-2 px-4 max-w-4xl mx-auto mb-10 bg-white">
         <Settings />
       </main>

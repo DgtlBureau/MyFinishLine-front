@@ -16,21 +16,7 @@ import {
 import { Activity, Award } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-
-const profileLinks = [
-  {
-    id: 1,
-    name: "Journey",
-    href: "/app/profile/journey",
-    icon: <Award width={16} height={16} />,
-  },
-  {
-    id: 2,
-    name: "Activities",
-    href: "/app/profile/activities",
-    icon: <Activity width={16} height={16} />,
-  },
-];
+import { useTranslation } from "@/app/lib/i18n";
 
 const page = ({
   children,
@@ -38,6 +24,22 @@ const page = ({
   children: React.ReactNode;
 }>) => {
   const dispatch = useAppDispatch();
+  const t = useTranslation();
+
+  const profileLinks = [
+    {
+      id: 1,
+      name: t("profile.journey"),
+      href: "/app/profile/journey",
+      icon: <Award width={16} height={16} />,
+    },
+    {
+      id: 2,
+      name: t("profile.activities"),
+      href: "/app/profile/activities",
+      icon: <Activity width={16} height={16} />,
+    },
+  ];
 
   const handleLoadUser = async () => {
     try {

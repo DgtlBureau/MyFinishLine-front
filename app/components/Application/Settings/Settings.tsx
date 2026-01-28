@@ -2,7 +2,7 @@
 
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
-import { Shield, Globe, LogOut, Mail, User, UserCog, Route } from "lucide-react";
+import { Shield, Globe, LogOut, Mail, User, UserCog, Route, Check } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -11,13 +11,29 @@ import Integrations from "../Integrations/Integrations";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { clearUser, setDistanceUnit } from "@/app/lib/features/user/userSlice";
+import { useI18n, Locale } from "@/app/lib/i18n";
+import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
+
+const languageOptions: { value: Locale; label: string; flag: string }[] = [
+  { value: "en", label: "English", flag: "🇺🇸" },
+  { value: "ru", label: "Русский", flag: "🇷🇺" },
+];
 
 const Settings = () => {
   const [emailUpdates, setEmailUpdates] = useState(false);
+  const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const user = useAppSelector((state) => state.user.user);
   const measure = user.measure || "km";
+  const { locale, setLocale } = useI18n();
+
+  const currentLanguage = languageOptions.find((l) => l.value === locale);
+
+  const handleLanguageSelect = (newLocale: Locale) => {
+    setLocale(newLocale);
+    setIsLanguageSheetOpen(false);
+  };
 
   const handleGoTo = (link: string) => {
     router.push(link);
@@ -92,8 +108,8 @@ const Settings = () => {
           icon={<Globe className="w-4 h-4" />}
           label="Language"
           type="info"
-          value="English"
-          onClick={() => {}}
+          value={`${currentLanguage?.flag} ${currentLanguage?.label}`}
+          onClick={() => setIsLanguageSheetOpen(true)}
           delay={3}
         />
         <SettingItem
@@ -147,6 +163,36 @@ const Settings = () => {
           Version 1.0.0
         </motion.p>
       </motion.div>
+
+      <SheetContainer
+        isOpen={isLanguageSheetOpen}
+        onClose={() => setIsLanguageSheetOpen(false)}
+      >
+        <div className="p-4 pb-8 max-w-4xl mx-auto">
+          <h3 className="text-lg font-semibold text-center mb-4">Select Language</h3>
+          <div className="flex flex-col gap-1">
+            {languageOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => handleLanguageSelect(option.value)}
+                className={`flex items-center justify-between w-full p-3 rounded-lg transition-colors ${
+                  locale === option.value
+                    ? "bg-[#F4F4F5]"
+                    : "bg-white hover:bg-[#F4F4F5]"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{option.flag}</span>
+                  <span className="text-sm">{option.label}</span>
+                </div>
+                {locale === option.value && (
+                  <Check className="w-4 h-4 text-[#71717A]" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </SheetContainer>
     </>
   );
 };

@@ -155,8 +155,8 @@ const page = () => {
   return (
     <>
       <PageContainer
-        title="Edit account"
-        description="Edit your account information"
+        titleKey="pages.editAccount.title"
+        descriptionKey="pages.editAccount.description"
       >
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="px-4">

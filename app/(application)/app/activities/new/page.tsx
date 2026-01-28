@@ -4,8 +4,8 @@ import PageContainer from "@/app/components/Application/PageContainer/PageContai
 const page = () => {
   return (
     <PageContainer
-      title="New activity"
-      description="Add your activity manually"
+      titleKey="pages.newActivity.title"
+      descriptionKey="pages.newActivity.description"
     >
       <AddActivitityForm />
     </PageContainer>

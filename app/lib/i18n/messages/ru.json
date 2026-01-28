@@ -1,0 +1,81 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "submit": "Отправить",
+    "back": "Назад",
+    "next": "Далее",
+    "seeAll": "Смотреть все"
+  },
+  "nav": {
+    "rating": "Рейтинг",
+    "contracts": "Контракты",
+    "journey": "Путешествие",
+    "profile": "Профиль",
+    "more": "Ещё"
+  },
+  "pages": {
+    "leaderboard": {
+      "title": "Рейтинг",
+      "description": "Так держать!"
+    },
+    "contracts": {
+      "title": "Контракты",
+      "description": "Здесь вы можете увидеть ваши следующие цели"
+    },
+    "settings": {
+      "title": "Настройки",
+      "description": "Измените настройки вашего аккаунта"
+    },
+    "editAccount": {
+      "title": "Редактировать аккаунт",
+      "description": "Редактируйте информацию вашего аккаунта"
+    },
+    "personalization": {
+      "title": "Персонализация",
+      "description": "Настройте как вы и другие пользователи видят ваш профиль."
+    },
+    "more": {
+      "title": "Ещё",
+      "description": "Дополнительная информация, которая может быть полезна"
+    },
+    "newActivity": {
+      "title": "Новая активность",
+      "description": "Добавьте вашу активность вручную"
+    },
+    "redeem": {
+      "title": "Получите вашу медаль",
+      "description": "Поздравляем! Вы завершили челлендж, теперь получите вашу награду."
+    }
+  },
+  "profile": {
+    "myJourney": "Моё путешествие",
+    "totalDistance": "Общая дистанция",
+    "timeOnTrack": "Время в пути",
+    "settings": "Настройки",
+    "editAccount": "Редактировать аккаунт",
+    "language": "Язык",
+    "journey": "Путешествие",
+    "activities": "Активности",
+    "distance": "Дистанция",
+    "time": "Время",
+    "runs": "Пробежки",
+    "authorizeAccounts": "Авторизуйте ваши аккаунты для подключения к MyFinishLine",
+    "connectStrava": "Подключить Strava",
+    "connectedToStrava": "Подключено к Strava",
+    "connectFitbit": "Подключить Fitbit",
+    "connectedToFitbit": "Подключено к Fitbit",
+    "contractsInProgress": "Контракты в процессе",
+    "recentActivities": "Недавние активности",
+    "scrollForMore": "Прокрутите вниз, чтобы увидеть больше",
+    "noActivities": "Активности не найдены. Подключите ваш Strava аккаунт, чтобы увидеть ваши активности здесь."
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": "Язык",
+    "selectLanguage": "Выберите язык",
+    "english": "Английский",
+    "russian": "Русский"
+  }
+}

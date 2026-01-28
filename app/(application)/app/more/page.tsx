@@ -181,8 +181,8 @@ const Page = () => {
 
   return (
     <PageContainer
-      title="More"
-      description="Additional information that might be useful"
+      titleKey="pages.more.title"
+      descriptionKey="pages.more.description"
     >
       <ul className="h-full">
         {links.map((link) => {

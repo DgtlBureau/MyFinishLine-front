@@ -28,8 +28,8 @@ const page = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PageContainer
-      title="Contracts"
-      description="Here you can see your next goals to achieve"
+      titleKey="pages.contracts.title"
+      descriptionKey="pages.contracts.description"
     >
       <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b px-4">
         {links.map((link) => {

@@ -217,9 +217,9 @@ const Content = () => {
 
   return (
     <PageContainer
-      title={challenge_name || "Claim your medal"}
-      description="Congratulations! You have completed you challenge, now claim your
-            medal!"
+      title={challenge_name}
+      titleKey={!challenge_name ? "pages.redeem.title" : undefined}
+      descriptionKey="pages.redeem.description"
     >
       <div className="px-4">
         <div className="mt-4">
