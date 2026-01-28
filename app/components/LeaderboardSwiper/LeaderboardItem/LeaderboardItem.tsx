@@ -15,6 +15,8 @@ const containerVariants = {
   collapsed: {},
 };
 
+const CACHE_KEY = "leaderboard_count";
+
 const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
   const { leaderboards, current_user } = useAppSelector(
     (state) => state.leaderboard,
@@ -22,11 +24,21 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
+  const [skeletonCount] = useState(() => {
+    if (typeof window !== "undefined") {
+      return Number(sessionStorage.getItem(`${CACHE_KEY}_${challengeId}`)) || 7;
+    }
+    return 7;
+  });
+
   const handleLoadLeaderboard = async () => {
     setIsLoading(true);
     try {
       const data = await getLeaderboard(challengeId);
       dispatch(setLeaderboard(data));
+      if (typeof window !== "undefined" && data.leaderboard?.length) {
+        sessionStorage.setItem(`${CACHE_KEY}_${challengeId}`, String(data.leaderboard.length));
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -39,10 +51,10 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
   }, [challengeId]);
 
   if (isLoading) {
-    return <LeaderboardSkeleton count={7} />;
+    return <LeaderboardSkeleton count={skeletonCount} />;
   } else if (leaderboards.length === 0) {
     return (
-      <div className="block text-center text-sm text-[#71717A]">
+      <div className="block text-center text-sm text-white/70">
         Leaderboard is not available or empty
       </div>
     );
@@ -52,7 +64,7 @@ const LeaderboardItem = ({ challengeId }: ILeaderboardItemProps) => {
     <motion.div
       initial="collapsed"
       variants={containerVariants}
-      className="bg-linear-to-b from-[#CEE9D8] via-[#FFFFFF] to-[#CEE9D8] border border-[#E4E4E7] rounded-xl overflow-hidden"
+      className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] overflow-hidden"
     >
       <motion.ul initial="collapsed" className="overflow-hidden">
         <AnimatePresence>

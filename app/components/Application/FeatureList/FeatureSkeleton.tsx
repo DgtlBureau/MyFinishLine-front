@@ -1,21 +1,21 @@
 const SkeletonItem = () => {
   return (
-    <li className="bg-white mt-1 rounded-xl overflow-hidden border border-border">
-      <div className="flex flex-col h-[284px] gap-4 justify-between">
-        <div className="flex gap-4 px-4 pt-4">
-          <div>
-            <div className="w-10 h-10 rounded-lg bg-gray-200 animate-shimmer" />
-            <div className="w-10 h-3 mt-1 rounded bg-gray-200 animate-shimmer" />
-          </div>
-          <div className="flex-1">
-            <div className="h-6 w-3/4 rounded bg-gray-200 animate-shimmer" />
-            <div className="h-4 w-full mt-2 rounded bg-gray-200 animate-shimmer" />
-            <div className="h-4 w-2/3 mt-1 rounded bg-gray-200 animate-shimmer" />
-          </div>
+    <li className="bg-white/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-white/30">
+      <div className="flex flex-col p-3 pb-4">
+        {/* Header skeleton */}
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="h-4 w-3/4 rounded bg-gray-200/60 animate-shimmer" />
         </div>
-        <div className="flex items-center flex-col gap-2 mt-2 bg-gradient-to-b from-transparent to-[#E8E0F0] p-4">
-          <div className="w-32 h-32 rounded-lg bg-gray-200 animate-shimmer" />
-          <div className="w-20 h-3 rounded bg-gray-200 animate-shimmer" />
+
+        {/* Image skeleton */}
+        <div className="flex items-center justify-center mb-3">
+          <div className="w-24 h-24 rounded-xl bg-gray-200/60 animate-shimmer" />
+        </div>
+
+        {/* Description skeleton */}
+        <div className="space-y-1">
+          <div className="h-3 w-full rounded bg-gray-200/60 animate-shimmer mx-auto" />
+          <div className="h-3 w-2/3 rounded bg-gray-200/60 animate-shimmer mx-auto" />
         </div>
       </div>
     </li>
@@ -26,9 +26,9 @@ interface FeatureSkeletonProps {
   count?: number;
 }
 
-const FeatureSkeleton = ({ count = 3 }: FeatureSkeletonProps) => {
+const FeatureSkeleton = ({ count = 4 }: FeatureSkeletonProps) => {
   return (
-    <ul className="bg-gradient-to-b from-[#CEE9D8] via-white to-[#CEE9D8] p-4 rounded-xl mt-2">
+    <ul className="grid grid-cols-2 gap-3 p-2 mt-2">
       {Array.from({ length: count }).map((_, index) => (
         <SkeletonItem key={index} />
       ))}

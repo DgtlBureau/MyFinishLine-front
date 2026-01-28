@@ -1,11 +1,11 @@
 "use client";
 
 import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
+import PersonalizationSkeleton from "@/app/components/PersonalizationList/PersonalizationSkeleton";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserSkins } from "@/app/lib/utils/userService";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -62,14 +62,10 @@ const page = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center mt-8">
-        <Loader2 width={48} height={48} className="animate-spin" />
-      </div>
-    );
+    return <PersonalizationSkeleton />;
   }
 
-  return <span className="block text-center mt-2">No skins available</span>;
+  return <span className="block text-center mt-8 text-white/50 text-sm">No skins available</span>;
 };
 
 export default page;

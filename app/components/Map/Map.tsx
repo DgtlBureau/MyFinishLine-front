@@ -27,6 +27,9 @@ const Map = ({
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
+  const [isZooming, setIsZooming] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const [scale, setScale] = useState(() => {
@@ -230,10 +233,42 @@ const Map = ({
 
   const handleStepClick = (clickedStep: IStep) => {
     if (!clickedStep.completed && !clickedStep.active) return;
+
+    // If clicking the same step while zoomed, zoom out
+    if (isZooming && activeStep?.id === clickedStep.id) {
+      setZoomScale(1);
+      setIsZooming(false);
+      return;
+    }
+
     setActiveStep(clickedStep);
 
+    // First scroll to center the step smoothly
+    const stepElement = document.getElementById(`step-${clickedStep.index}`);
+    if (stepElement) {
+      stepElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+
+    // Calculate zoom origin based on step position
+    const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
+    const yPercent = 100 - (Number(clickedStep.y_coordinate) / MAP_HEIGHT) * 100;
+
+    // Delay zoom to let scroll complete first
+    setTimeout(() => {
+      setZoomOrigin({ x: xPercent, y: yPercent });
+      setZoomScale(1.8);
+      setIsZooming(true);
+    }, 300);
+
+    // Open stories after zoom animation
     if (clickedStep.story?.length) {
-      setIsStoriesOpen(true);
+      setTimeout(() => {
+        setIsStoriesOpen(true);
+      }, 1000);
     }
   };
 
@@ -247,6 +282,8 @@ const Map = ({
   const handleCloseStories = () => {
     setActiveStep(null);
     setIsStoriesOpen(false);
+    setZoomScale(1);
+    setIsZooming(false);
   };
 
   return (
@@ -283,8 +320,11 @@ const Map = ({
               style={{
                 width: `${MAP_WIDTH}px`,
                 height: `${MAP_HEIGHT}px`,
-                transform: `scale(${scale})`,
-                transformOrigin: "top left",
+                transform: `scale(${scale * zoomScale})`,
+                transformOrigin: isZooming ? `${zoomOrigin.x}% ${zoomOrigin.y}%` : "top left",
+                transition: isZooming
+                  ? "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  : "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
               }}
             >
             {background_images[0] && (

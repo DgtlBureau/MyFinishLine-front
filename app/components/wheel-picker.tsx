@@ -18,9 +18,9 @@ function WheelPickerWrapper({
   return (
     <WheelPickerPrimitive.WheelPickerWrapper
       className={cn(
-        "w-56 rounded-lg bg-white px-1 dark:border-zinc-700/80 dark:bg-zinc-900",
-        "*:data-rwp:first:*:data-rwp-highlight-wrapper:rounded-s-md",
-        "*:data-rwp:last:*:data-rwp-highlight-wrapper:rounded-e-md",
+        "w-full rounded-2xl bg-white/40 backdrop-blur-xl px-2 border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]",
+        "*:data-rwp:first:*:data-rwp-highlight-wrapper:rounded-s-xl",
+        "*:data-rwp:last:*:data-rwp-highlight-wrapper:rounded-e-xl",
         className,
       )}
       {...props}
@@ -35,10 +35,10 @@ function WheelPicker<T extends WheelPickerValue = string>({
   return (
     <WheelPickerPrimitive.WheelPicker
       classNames={{
-        optionItem: "text-zinc-400 dark:text-zinc-500",
+        optionItem: "text-[#1a1a2e]/40 font-medium text-xl",
         highlightWrapper: cn(
-          "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50",
-          "data-rwp-focused:ring-2 data-rwp-focused:ring-zinc-300 data-rwp-focused:ring-inset dark:data-rwp-focused:ring-zinc-600",
+          "bg-white/70 backdrop-blur-sm text-[#1a1a2e] font-bold text-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5)]",
+          "data-rwp-focused:ring-2 data-rwp-focused:ring-white/30 data-rwp-focused:ring-inset",
         ),
         ...classNames,
       }}

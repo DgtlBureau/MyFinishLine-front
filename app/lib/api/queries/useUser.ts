@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../axiosInstance";
 import { IUser } from "@/app/types/user";
+import { INotification } from "@/app/types/notification";
 
 export const userKeys = {
   all: ["user"] as const,
@@ -12,6 +13,7 @@ export const userKeys = {
   activities: (page: number, perPage: number) =>
     [...userKeys.all, "activities", page, perPage] as const,
   cosmetics: () => [...userKeys.all, "cosmetics"] as const,
+  notifications: () => [...userKeys.all, "notifications"] as const,
 };
 
 export const useCurrentUser = () => {
@@ -121,7 +123,16 @@ export const useRefreshActivities = () => {
       await apiClient.get("/api/user/refresh-activities");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.activities(1, 10) });
+      queryClient.invalidateQueries({ queryKey: userKeys.activities(1, 5) });
+    },
+  });
+};
+
+export const useFetchNotifications = () => {
+  return useMutation({
+    mutationFn: async (): Promise<INotification[]> => {
+      const { data } = await apiClient.get("/api/user/notifications");
+      return data;
     },
   });
 };

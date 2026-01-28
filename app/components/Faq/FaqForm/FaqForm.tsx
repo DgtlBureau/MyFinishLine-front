@@ -54,38 +54,38 @@ export const FaqForm = ({
   };
 
   return (
-    <div className="relative flex w-full flex-col gap-4 rounded-md bg-white p-4">
+    <div className="relative flex w-full flex-col gap-4 rounded-2xl p-5">
       {hasCloseIcon && (
         <button
           type="button"
           onClick={onClose}
           className="absolute top-[10px] right-[10px] cursor-pointer md:top-[20px] md:right-[20px]"
         >
-          <XIcon className="h-4 w-3 fill-gray-700 md:h-4 md:w-4" />
+          <XIcon className="h-4 w-4 text-white/50" />
         </button>
       )}
       <div
-        className="flex w-full flex-col gap-4 rounded-md bg-white"
+        className="flex w-full flex-col gap-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-start gap-2">
-            <MessageCircleIcon className="h-5 w-5 md:h-8 md:w-8" />
-            <p className="text-xl font-semibold md:text-2xl">Send feedback</p>
+            <MessageCircleIcon className="h-5 w-5 md:h-7 md:w-7 text-white" />
+            <p className="text-xl font-semibold md:text-2xl text-white">Send feedback</p>
           </div>
-          <span className="text-text-secondary text-sm">
+          <span className="text-white/60 text-sm">
             Help us improve MyFinishLine by sharing your thoughts, suggestions,
             or reporting issues
           </span>
         </div>
         <form
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-5"
           onSubmit={handleSubmit}
           name="faq-form"
         >
-          <div className="flex w-full flex-col gap-1">
-            <span className="text-sm md:text-base">
-              Сontact info {`(Email)`}
+          <div className="flex w-full flex-col gap-1.5">
+            <span className="text-sm font-medium text-white">
+              Contact info {`(Email)`}
             </span>
             <input
               type="email"
@@ -96,9 +96,9 @@ export const FaqForm = ({
               value={values.email}
               onChange={(e) => setValues("email", e.target.value)}
               placeholder={"email"}
-              className={`rounded-md border border-gray-300 p-2 outline-none ${
-                touched.email && errors.email ? "border-red-500" : ""
-              } ${values.user_id ? "text-gray-500" : ""}`}
+              className={`rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/35 text-white ${
+                touched.email && errors.email ? "border-red-400" : ""
+              } ${values.user_id ? "text-white/60" : ""}`}
               onBlur={() => setFieldTouched("email", true)}
             />
 
@@ -107,8 +107,8 @@ export const FaqForm = ({
             )}
           </div>
 
-          <div className="flex w-full flex-col gap-1">
-            <span className="text-sm md:text-base">{"Message"}</span>
+          <div className="flex w-full flex-col gap-1.5">
+            <span className="text-sm font-medium text-white">{"Message"}</span>
             <textarea
               name="question"
               id="question"
@@ -117,8 +117,8 @@ export const FaqForm = ({
               rows={4}
               onChange={(e) => setValues("question", e.target.value)}
               placeholder={`Write your question...`}
-              className={`resize-none rounded-md border border-gray-300 p-2 outline-none ${
-                touched.question && errors.question ? "border-red-500" : ""
+              className={`resize-none rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/35 text-white ${
+                touched.question && errors.question ? "border-red-400" : ""
               }`}
               onBlur={() => setFieldTouched("question", true)}
             />
@@ -127,12 +127,12 @@ export const FaqForm = ({
             )}
           </div>
 
-          <div className="flex w-full flex-col-reverse items-center justify-center gap-4 md:flex-row">
+          <div className="flex w-full flex-col-reverse items-center justify-center gap-3 md:flex-row">
             {hasCancelBtn && (
               <button
                 type="button"
                 onClick={onClose}
-                className="text-text-foreground border-text-muted hover:bg-primary hover:text-white w-full cursor-pointer rounded-md border px-4 py-2 font-medium"
+                className="w-full cursor-pointer rounded-xl border border-white/60 bg-white/40 backdrop-blur-xl px-4 py-3 font-medium text-white hover:bg-white/50 transition-all"
               >
                 {"Cancel"}
               </button>
@@ -140,14 +140,15 @@ export const FaqForm = ({
             <button
               disabled={!isValid}
               type="submit"
-              className={`bg-primary flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-white transition-all duration-300 ${
+              className={`group relative flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold text-white transition-all duration-300 overflow-hidden ${
                 isValid
-                  ? "hover:bg-primary-hover cursor-not-allowed"
-                  : "opacity-50"
+                  ? "bg-gradient-to-r from-[#5170D5] to-[#66af69] hover:opacity-90 shadow-lg backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]"
+                  : "bg-gradient-to-r from-[#5170D5]/40 to-[#66af69]/40 cursor-not-allowed border border-white/20"
               }`}
             >
-              <SendIcon className="h-5 w-5" />
-              {"Send feedback"}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+              <SendIcon className="h-5 w-5 relative z-10" />
+              <span className="relative z-10">Send feedback</span>
             </button>
           </div>
         </form>

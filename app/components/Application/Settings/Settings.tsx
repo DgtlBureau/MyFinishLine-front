@@ -4,7 +4,6 @@ import SettingSection from "@/app/components/Application/Settings/SettingSection
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
 import LanguageBottomSheet from "@/app/components/Application/Settings/LanguageBottomSheet/LanguageBottomSheet";
 import { Shield, Globe, LogOut, Mail, User, UserCog, Ruler } from "lucide-react";
-import { Separator } from "@/app/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -68,8 +67,6 @@ const Settings = () => {
         <Integrations />
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
       <SettingSection title={t.settings.security} delay={2}>
         <SettingItem
           icon={<Shield className="w-4 h-4" />}
@@ -78,8 +75,6 @@ const Settings = () => {
           delay={2}
         />
       </SettingSection>
-
-      <Separator className="my-6 bg-border" />
 
       <SettingSection title={t.settings.preferences} delay={3}>
         <SettingItem
@@ -97,26 +92,26 @@ const Settings = () => {
           className="flex items-center justify-between py-3 rounded-md"
         >
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <span className="text-icon-muted shrink-0">
+            <span className="text-white/70 shrink-0">
               <Ruler className="w-4 h-4" />
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-sm font-medium text-white truncate">
                 {t.settings.distanceUnit}
               </p>
-              <p className="text-xs text-muted-foreground truncate mt-0.5">
+              <p className="text-xs text-white/60 truncate mt-0.5">
                 {t.settings.distanceUnitDesc}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-white/30 backdrop-blur-xl rounded-lg p-1 border border-white/40">
             <button
               onClick={() => handleChangeMeasure("km")}
               disabled={isChangingMeasure}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 measure === "km"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white/80 text-[#09090B] shadow-sm"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               km
@@ -126,8 +121,8 @@ const Settings = () => {
               disabled={isChangingMeasure}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 measure === "mile"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white/80 text-[#09090B] shadow-sm"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               mi
@@ -135,8 +130,6 @@ const Settings = () => {
           </div>
         </motion.div>
       </SettingSection>
-
-      <Separator className="my-6 bg-border" />
 
       <SettingSection title={t.settings.notifications} delay={4}>
         <SettingItem
@@ -150,12 +143,11 @@ const Settings = () => {
         />
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.25 }}
+        className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-3"
       >
         <SettingItem
           icon={<LogOut className="w-4 h-4" />}
@@ -163,15 +155,15 @@ const Settings = () => {
           onClick={handleLogout}
           delay={5}
         />
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-xs text-muted-foreground text-center mt-2"
-        >
-          {t.settings.version} 1.0.0
-        </motion.p>
       </motion.div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="text-xs text-white/60 text-center mt-4"
+      >
+        {t.settings.version} 1.0.0
+      </motion.p>
 
       <LanguageBottomSheet
         isOpen={isLanguageSheetOpen}

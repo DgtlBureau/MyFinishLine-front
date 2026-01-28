@@ -17,7 +17,7 @@ const PersonalizationList = ({
   }) => void;
 }) => {
   return (
-    <ul className="grid grid-cols-2 gap-2 mt-2">
+    <ul className="grid grid-cols-2 gap-3 mt-3 auto-rows-fr">
       {items.map((item, index) => (
         <PersonalizationItem
           key={item.id}

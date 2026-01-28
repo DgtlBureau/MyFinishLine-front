@@ -77,64 +77,6 @@ const MapHeader = ({
               </div>
               <TimeCounter startDate={startDate} />
             </div>
-
-            {/* Raccoon helper */}
-            {!user.has_fitbit_connect && !user.has_strava_connect && (
-              <motion.div
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-              >
-                <Link href="/app/profile/settings" className="flex gap-1 items-center mt-12 cursor-pointer">
-                  <motion.div
-                    className="relative"
-                    initial={{ y: 80, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.5,
-                      type: "spring",
-                      stiffness: 200,
-                      damping: 15
-                    }}
-                  >
-                    <Image
-                      src="/images/application/map-racoon.png"
-                      width={180}
-                      height={180}
-                      alt="Map racoon"
-                      className="-ml-4"
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="relative bg-white py-2.5 px-4 rounded-2xl shadow-md max-w-[200px] ml-1"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      duration: 0.3,
-                      delay: 1.4,
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20
-                    }}
-                  >
-                  <div
-                    className="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0
-                    border-t-8 border-t-transparent
-                    border-r-8 border-r-white
-                    border-b-8 border-b-transparent"
-                  />
-                  <motion.p
-                    className="text-[13px] font-semibold text-gray-800 leading-tight"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3, delay: 1.7 }}
-                  >
-                      Connect <span className="text-blue-600">Strava</span> or <span className="text-blue-600">FitBit</span> to track progress!
-                    </motion.p>
-                  </motion.div>
-                </Link>
-              </motion.div>
-            )}
           </div>
           <div className="w-28 h-28 relative rounded-full flex items-center justify-center shrink-0 -mt-30 -ml-18">
             {user.selected_frame?.image_url && (
@@ -171,6 +113,57 @@ const MapHeader = ({
             </div>
           </div>
         </div>
+
+        {/* Raccoon mascot - only show when not connected */}
+        {!user.has_fitbit_connect && !user.has_strava_connect && (
+          <motion.div
+            className="mt-4 flex items-end"
+            whileTap={{ scale: 0.98 }}
+          >
+            <Link href="/app/profile/settings" className="flex items-end gap-1">
+              <motion.div
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+              >
+                <Image
+                  src="/images/application/map-racoon.png"
+                  width={70}
+                  height={70}
+                  alt="Map racoon"
+                />
+              </motion.div>
+              <motion.div
+                className="relative bg-white/90 backdrop-blur-sm py-2 px-3 rounded-xl shadow-lg mb-4"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  duration: 0.25,
+                  delay: 0.7,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20
+                }}
+              >
+                <div
+                  className="absolute -left-1.5 bottom-3 w-0 h-0
+                  border-t-6 border-t-transparent
+                  border-r-6 border-r-white/90
+                  border-b-6 border-b-transparent"
+                />
+                <p className="text-[12px] font-medium text-gray-700 leading-tight">
+                  Connect <span className="text-blue-500 font-semibold">Strava</span> or <span className="text-teal-500 font-semibold">Fitbit</span>
+                </p>
+              </motion.div>
+            </Link>
+          </motion.div>
+        )}
       </div>
     </motion.header>
   );

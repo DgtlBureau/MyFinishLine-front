@@ -36,37 +36,42 @@ const page = ({
       description="Edit how you and other users will see your profile."
     >
       <div className="px-4">
-        <nav className="mt-2 flex items-center gap-1 overflow-hidden border-b">
+        <motion.nav
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-2 flex items-center gap-1 overflow-hidden bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-1"
+        >
           {links.map((link) => {
+            const isActive = pathname.includes(link.href);
             return (
               <Link
-                className="flex-1 p-1 py-2 text-sm text-center relative text-foreground"
+                className="flex-1 p-2 py-2.5 text-sm text-center relative text-[#1a1a2e] rounded-xl"
                 key={link.id}
                 href={link.href}
               >
-                {pathname.includes(link.href) && (
+                {isActive && (
                   <motion.div
-                    className="absolute w-full h-0.5 left-0 bottom-0 bg-black rounded-lg shadow-sm"
+                    className="absolute inset-0 bg-white/60 rounded-xl shadow-sm"
                     layoutId="personalization"
                     transition={{
                       type: "spring",
-                      stiffness: 150,
-                      damping: 30,
+                      stiffness: 200,
+                      damping: 25,
                     }}
                   />
                 )}
                 <span
                   className={`${
-                    pathname.includes(link.href) &&
-                    "font-semibold transition-all"
-                  } relative z-10 text-sm leading-5 flex items-center justify-center gap-1.5`}
+                    isActive ? "font-semibold" : "font-medium text-[#1a1a2e]/70"
+                  } relative z-10 text-sm leading-5 flex items-center justify-center gap-1.5 transition-all`}
                 >
                   {link.name}
                 </span>
               </Link>
             );
           })}
-        </nav>
+        </motion.nav>
         {children}
       </div>
     </PageContainer>

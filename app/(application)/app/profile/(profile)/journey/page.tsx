@@ -6,12 +6,12 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import { linkStrava } from "@/app/lib/utils/authWithStrava";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronRight } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 import AnimatedSection from "@/app/components/Shared/AnimatedSection/AnimatedSection";
+import SwipeToUnlock from "@/app/components/Shared/SwipeToUnlock/SwipeToUnlock";
 import ChallengeCardSkeleton from "@/app/components/Skeletons/ChallengeCardSkeleton";
 import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkeleton";
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
@@ -48,7 +48,7 @@ const Journey = () => {
   return (
     <section>
       <div className="max-w-4xl mx-auto">
-        <h2 className="mt-10 font-medium text-3xl leading-9 text-[#09090B] text-center px-4">
+        <h2 className="mt-10 font-medium text-3xl leading-9 text-white text-center px-4">
           My Journey
         </h2>
         <AnimatedSection
@@ -71,71 +71,49 @@ const Journey = () => {
         skeleton={<ConnectButtonsSkeleton />}
         delay={0.2}
       >
-        <section className="px-4 pb-4 w-full border-t border-[#DADADA] pt-11">
+        <section className="px-4 pb-4 w-full border-t border-white/20 pt-11">
           <div className="max-w-4xl mx-auto">
-            <h4 className="font-medium leading-7 text-xl text-center text-[#71717A]">
+            <h4 className="font-medium leading-7 text-xl text-center text-white/70">
               Authorize your accounts to connect to MyFinishLine
             </h4>
-            <div className="mt-5 max-w-25 w-full bg-[#dadada] h-px mx-auto" />
-            <button
-              style={
-                user.has_strava_connect
-                  ? {
-                      cursor: "default",
-                      backgroundColor: "#FC4C02",
-                      color: "#FFF",
-                    }
-                  : {}
-              }
-              className="mt-5 w-full h-14 cursor-pointer flex border text-[#777777] font-medium border-[#f9f3f3] items-center justify-between shadow-sm rounded-2xl overflow-hidden"
-              disabled={user.has_strava_connect}
-              onClick={linkStrava}
-            >
-              {user.has_strava_connect ? (
-                <div className="text-center mx-auto">Connected to Strava</div>
-              ) : (
-                <>
-                  <Image
-                    className="rounded-2xl"
-                    src="/icons/strava.svg"
-                    width={56}
-                    height={56}
-                    alt="Strava"
-                  />
-                  Connect Strava
-                  <ChevronRight />
-                </>
-              )}
-            </button>
-            <button
-              style={
-                user.has_fitbit_connect
-                  ? {
-                      cursor: "default",
-                      backgroundColor: "#4cafbb",
-                      color: "#FFF",
-                    }
-                  : {}
-              }
-              className="w-full h-14 mt-5 cursor-pointer border text-[#777777] font-medium border-[#f9f3f3] flex items-center justify-between shadow-sm rounded-2xl overflow-hidden"
-              onClick={linkFitbit}
-            >
-              {user.has_fitbit_connect ? (
-                <div className="text-center mx-auto">Connected to Fitbit</div>
-              ) : (
-                <>
-                  <Image
-                    className="rounded-2xl h-full"
-                    src="/images/fitbit.png"
-                    width={54}
-                    height={54}
-                    alt="FitBit"
-                  />
-                  Connect Fitbit
-                  <ChevronRight />
-                </>
-              )}
-            </button>
+            <div className="mt-5 max-w-25 w-full bg-white/30 h-px mx-auto" />
+            <div className="mt-5 space-y-2">
+              <SwipeToUnlock
+                onUnlock={linkStrava}
+                label="Swipe the slider to the right to connect Strava"
+                isConnected={user.has_strava_connect}
+                disconnectLabel="Connected to Strava"
+                serviceName="Strava"
+                icon={
+                  <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden">
+                    <Image
+                      src="/icons/strava.svg"
+                      fill
+                      alt="Strava"
+                      className="object-cover"
+                    />
+                  </div>
+                }
+              />
+              <SwipeToUnlock
+                onUnlock={linkFitbit}
+                label="Swipe the slider to the right to connect Fitbit"
+                isConnected={user.has_fitbit_connect}
+                disconnectLabel="Connected to Fitbit"
+                serviceName="Fitbit"
+                icon={
+                  <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden bg-[#00B0B9] flex items-center justify-center">
+                    <Image
+                      src="/icons/fitbit.svg"
+                      width={40}
+                      height={40}
+                      alt="Fitbit"
+                      className="invert"
+                    />
+                  </div>
+                }
+              />
+            </div>
           </div>
         </section>
       </AnimatedSection>

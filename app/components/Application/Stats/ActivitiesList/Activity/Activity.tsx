@@ -8,8 +8,9 @@ import {
 } from "@/app/lib/utils/convertData";
 import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
 import { ActivityImage } from "./ActivityImage";
+import { forwardRef } from "react";
 
-const Activity = ({
+const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
   delay,
   activity_name,
   progress,
@@ -18,9 +19,10 @@ const Activity = ({
   pace,
   from,
   sport_type,
-}: IActivity & { delay: number }) => {
+}, ref) => {
   return (
     <motion.li
+      ref={ref}
       initial={{
         opacity: 0,
         y: 10,
@@ -88,6 +90,8 @@ const Activity = ({
       </div>
     </motion.li>
   );
-};
+});
+
+Activity.displayName = "Activity";
 
 export default Activity;

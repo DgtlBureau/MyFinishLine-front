@@ -13,6 +13,7 @@ import {
   getUserActivities,
   updateUserStravaActivities,
 } from "@/app/lib/utils/userService";
+import { useNotifications } from "@/app/contexts/NotificationContext";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -23,6 +24,7 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isAdditionalLoading, setIsAdditionalLoading] = useState(false);
+  const { checkNotifications } = useNotifications();
 
   const isLoadingRef = useRef(false);
   const hasMoreRef = useRef(true);
@@ -35,6 +37,7 @@ const Page = () => {
     setIsUpdating(true);
     try {
       await updateUserStravaActivities();
+      await checkNotifications();
     } catch (error) {
       console.error("Error fetching activities:", error);
     } finally {
@@ -50,7 +53,7 @@ const Page = () => {
       }
 
       try {
-        const data = await getUserActivities({ perPage: 10, page });
+        const data = await getUserActivities({ perPage: 5, page });
 
         if (page === 1) {
           setActivities(data.data);
@@ -81,15 +84,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      if (!isLoaded) {
-        await handleGetActivitiesFromStrava();
-      }
-
-      await handleLoadActivities(1);
-    };
-
-    loadInitialData();
+    handleLoadActivities(1);
   }, []);
 
   useEffect(() => {
@@ -128,7 +123,7 @@ const Page = () => {
             </div>
           </Button>
         </div>
-        <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
+        <h4 className="text-3xl text-center font-medium leading-9 text-white flex-1">
           Recent Activities
         </h4>
         <Link
@@ -150,22 +145,11 @@ const Page = () => {
           </div>
         ) : activities?.length > 0 ? (
           <div className="mt-8">
-            <ActivitiesList activities={activities} />
-            {isAdditionalLoading ? (
+            <ActivitiesList activities={activities} loadMoreRef={inViewRef} />
+            {isAdditionalLoading && (
               <div className="flex justify-center items-center mt-8">
                 <Loader2 width={48} height={48} className="animate-spin" />
               </div>
-            ) : (
-              <>
-                {hasMoreRef.current && (
-                  <div
-                    ref={inViewRef}
-                    className="block text-center mt-2 text-xs text-neutral-400"
-                  >
-                    Scroll down to see more
-                  </div>
-                )}
-              </>
             )}
           </div>
         ) : (

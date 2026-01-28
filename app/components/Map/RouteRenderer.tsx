@@ -15,6 +15,8 @@ interface RouteSegmentProps {
   mapHeight: number;
   progress: number;
   isCompleted: boolean;
+  isActive: boolean;
+  segmentIndex: number;
 }
 
 // Convert points to smooth SVG path using Catmull-Rom splines
@@ -54,8 +56,9 @@ function pointsToSmoothPath(
 
 // Individual route segment with progress animation
 const RouteSegment = memo(
-  ({ points, mapHeight, progress, isCompleted }: RouteSegmentProps) => {
+  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex }: RouteSegmentProps) => {
     const progressPathRef = useRef<SVGPathElement>(null);
+    const glowPathRef = useRef<SVGPathElement>(null);
 
     // Build smooth SVG path
     const pathD = useMemo(() => {
@@ -64,42 +67,105 @@ const RouteSegment = memo(
 
     // Apply progress animation using stroke-dashoffset
     useLayoutEffect(() => {
-      if (progressPathRef.current && pathD) {
-        const path = progressPathRef.current;
-        const length = path.getTotalLength();
-        const validatedProgress = Math.max(0, Math.min(100, progress));
+      const applyProgress = (pathElement: SVGPathElement | null) => {
+        if (pathElement && pathD) {
+          const length = pathElement.getTotalLength();
+          const validatedProgress = Math.max(0, Math.min(100, progress));
 
-        path.style.strokeDasharray = `${length} ${length}`;
-        const offset = length * (1 - validatedProgress / 100);
-        path.style.strokeDashoffset = offset.toString();
-        path.style.transition = "stroke-dashoffset 0.5s ease-out";
-      }
+          pathElement.style.strokeDasharray = `${length} ${length}`;
+          const offset = length * (1 - validatedProgress / 100);
+          pathElement.style.strokeDashoffset = offset.toString();
+          pathElement.style.transition = "stroke-dashoffset 0.8s ease-out";
+        }
+      };
+
+      applyProgress(progressPathRef.current);
+      applyProgress(glowPathRef.current);
     }, [progress, pathD]);
 
     if (!pathD) return null;
 
+    const filterId = `glow-${segmentIndex}`;
+    const gradientId = `progress-gradient-${segmentIndex}`;
+
     return (
       <g>
-        {/* Background dashed line (gray) */}
+        {/* Filter for glow effect */}
+        <defs>
+          <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="50%" stopColor="#06B6D4" />
+            <stop offset="100%" stopColor="#10B981" />
+          </linearGradient>
+        </defs>
+
+        {/* Background path - uncompleted (dimmed, dashed) */}
         <path
           d={pathD}
           fill="none"
-          stroke="gray"
-          strokeWidth={4}
-          strokeDasharray="8 4"
+          stroke="rgba(255, 255, 255, 0.15)"
+          strokeWidth={6}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Progress colored line - no strokeDasharray here, it's set by JS for animation */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke="rgba(139, 92, 246, 0.25)"
+          strokeWidth={4}
+          strokeDasharray="12 8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Progress glow effect (behind the main line) */}
+        {(isActive || isCompleted) && (
+          <path
+            ref={glowPathRef}
+            d={pathD}
+            fill="none"
+            stroke={isCompleted ? "#8B5CF6" : "#06B6D4"}
+            strokeWidth={12}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter={`url(#${filterId})`}
+            opacity={0.5}
+          />
+        )}
+
+        {/* Progress colored line - completed/in-progress portion */}
         <path
           ref={progressPathRef}
           d={pathD}
           fill="none"
-          stroke={isCompleted ? "#8D5DF8" : "#6d63ff"}
-          strokeWidth={4}
+          stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
+          strokeWidth={5}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+
+        {/* Highlight line on top for extra shine */}
+        {(isActive || isCompleted) && progress > 0 && (
+          <path
+            d={pathD}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.4)"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              strokeDasharray: progressPathRef.current ? `${progressPathRef.current.getTotalLength()} ${progressPathRef.current.getTotalLength()}` : undefined,
+              strokeDashoffset: progressPathRef.current ? (progressPathRef.current.getTotalLength() * (1 - progress / 100)).toString() : undefined,
+            }}
+          />
+        )}
       </g>
     );
   }
@@ -118,7 +184,7 @@ const RouteRenderer = ({
 
   // Scale and render each route
   const scaledRoutes = useMemo(() => {
-    return routeData.routes.map((route) => {
+    return routeData.routes.map((route, index) => {
       // Find the step for this route to get progress info
       const step = steps.find((s) => s.index === route.from_step_index);
 
@@ -133,6 +199,8 @@ const RouteRenderer = ({
         scaledPoints,
         progress: step?.user_distance_percent || 0,
         isCompleted: step?.completed || false,
+        isActive: step?.active || false,
+        segmentIndex: index,
       };
     });
   }, [routeData.routes, steps, scaleX, scaleY]);
@@ -151,6 +219,8 @@ const RouteRenderer = ({
           mapHeight={mapHeight}
           progress={route.progress}
           isCompleted={route.isCompleted}
+          isActive={route.isActive}
+          segmentIndex={route.segmentIndex}
         />
       ))}
     </svg>

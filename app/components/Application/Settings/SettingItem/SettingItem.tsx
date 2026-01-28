@@ -30,13 +30,13 @@ const SettingItem = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay * 0.03, duration: 0.2 }}
       className={cn(
-        "flex items-center justify-between py-3 rounded-md transition-colors group hover:bg-[hsl(var(--setting-hover))] active:bg-[hsl(var(--setting-active))]",
+        "flex items-center justify-between py-3 px-1 rounded-xl transition-colors group hover:bg-white/30 active:bg-white/40",
         type !== "toggle" && onClick && "cursor-pointer",
       )}
       onClick={type !== "toggle" ? onClick : undefined}
     >
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        {icon && <span className="text-icon-muted shrink-0">{icon}</span>}
+        {icon && <span className="text-[#09090B]/60 shrink-0">{icon}</span>}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground truncate">
             {label}

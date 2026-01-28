@@ -33,10 +33,10 @@ const links = [
     content: faqData,
     additional_content: () => (
       <div className="flex flex-col justify-center items-center gap-2 py-[20px]">
-        <p className="text-center text-gray-500">Still have questions?</p>
+        <p className="text-center text-white/50">Still have questions?</p>
         <Link
           href="/faq"
-          className="p-[4px_8px] text-[16px] w-fit bg-primary/20 text-primary rounded-[10px] hover:bg-primary hover:text-white duration-300 font-bold cursor-pointer"
+          className="px-4 py-2 text-[16px] w-fit bg-white/80 backdrop-blur-xl text-[#09090B] rounded-[12px] hover:bg-white/90 duration-300 font-medium cursor-pointer border border-white/50 shadow-sm"
         >
           See more
         </Link>
@@ -184,103 +184,114 @@ const Page = () => {
       title="More"
       description="Additional information that might be useful"
     >
-      <ul className="h-full">
-        {links.map((link) => {
-          const isExpanded = expandedBlockId === link.id;
-          return (
-            <li
-              key={link.id}
-              className="border-b border-border overflow-hidden"
-            >
-              <button
-                onClick={() => handleClickBlock(link.id)}
-                className="flex items-center justify-between text-base py-8 px-4 leading-6 w-full cursor-pointer"
-              >
-                {link.label}
-                <motion.div
-                  variants={arrowVariants}
-                  initial="collapsed"
-                  animate={isExpanded ? "expanded" : "collapsed"}
+      {/* FAQ Section */}
+      <div className="px-4 mt-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 shadow-lg overflow-hidden"
+        >
+          <ul className="h-full">
+            {links.map((link) => {
+              const isExpanded = expandedBlockId === link.id;
+              return (
+                <li
+                  key={link.id}
+                  className="border-b border-white/20 last:border-b-0 overflow-hidden"
                 >
-                  <ChevronRight />
-                </motion.div>
-              </button>
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    variants={contentContainerVariants}
-                    initial="collapsed"
-                    animate="expanded"
-                    exit="collapsed"
-                    className="overflow-hidden"
+                  <button
+                    onClick={() => handleClickBlock(link.id)}
+                    className="flex items-center justify-between text-base py-4 px-4 leading-6 w-full cursor-pointer text-white font-medium"
                   >
+                    {link.label}
                     <motion.div
-                      variants={contentInnerVariants}
+                      variants={arrowVariants}
                       initial="collapsed"
-                      animate="expanded"
-                      exit="collapsed"
+                      animate={isExpanded ? "expanded" : "collapsed"}
+                      className="text-white/50"
                     >
+                      <ChevronRight />
+                    </motion.div>
+                  </button>
+                  <div
+                    className="grid transition-all duration-300 ease-in-out"
+                    style={{
+                      gridTemplateRows: isExpanded ? "1fr" : "0fr",
+                    }}
+                  >
+                    <div className="overflow-hidden">
                       <AccordionContent
                         title={link.title || ""}
                         list={link.content}
                         additional_content={link?.additional_content}
                       />
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="p-4">
-        <div className="flex flex-col gap-2">
-          <p>Contact info</p>
-          <ul className="text-sm text-muted-foreground">
-            <li className="border-b border-border px-6 py-6">
-              <p className="text-sm text-base leading-6 text-foreground text-muted-foreground">
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </motion.div>
+      </div>
+
+      {/* Contact Info Section */}
+      <div className="px-4 mt-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 shadow-lg p-4"
+        >
+          <p className="text-white font-semibold mb-3">Contact info</p>
+          <div className="space-y-3">
+            <div className="bg-white/10 rounded-xl p-4">
+              <p className="text-sm leading-6 text-white/70">
                 Email:
                 <a
                   href="mailto:access@myfinishline.io"
-                  className="ml-1 font-medium text-primary hover:underline text-black"
+                  className="ml-1 font-medium text-white hover:underline"
                 >
                   access@myfinishline.io
                 </a>
               </p>
-
-              <p className="mt-2 text-xs text-muted-foreground">
-                MyFinishLine <span className="text-black">v1.0.0</span>
+              <p className="mt-2 text-xs text-white/50">
+                MyFinishLine <span className="text-white/70 font-medium">v1.0.0</span>
               </p>
-            </li>
+            </div>
 
-            <li className="px-6 py-6">
-              <p className="font-medium text-foreground">
+            <div className="bg-white/10 rounded-xl p-4">
+              <p className="font-medium text-white/80">
                 © Fortem Group Limited
               </p>
-
-              <p className="mt-4 text-xl uppercase tracking-wide text-muted-foreground">
+              <p className="mt-3 text-lg uppercase tracking-wide text-white/50">
                 Virtual Sports Quests
               </p>
-
-              <address className="mt-4 not-italic space-y-1 text-sm text-muted-foreground">
+              <address className="mt-3 not-italic space-y-0.5 text-sm text-white/50">
                 <p>Unit E01, 10/F, Wong King Ind Building</p>
                 <p>2–4 Tai Yau Street</p>
                 <p>San Po Kong</p>
                 <p>Hong Kong</p>
               </address>
-            </li>
-          </ul>
-          <Button className="w-fit" onClick={handleOpenContactMenu}>
-            <MessageCircleIcon className="h-5 w-5 md:h-8 md:w-8" />
-            Send feedback
-          </Button>
-        </div>
+            </div>
+          </div>
+          <button
+            className="relative w-full mt-4 flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold text-white overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-90 shadow-lg"
+            onClick={handleOpenContactMenu}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-[#5170D5] to-[#66af69]" />
+            <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
+            <div className="absolute inset-[1px] rounded-[11px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+            <MessageCircleIcon className="relative z-10 h-5 w-5" />
+            <span className="relative z-10">Send feedback</span>
+          </button>
+        </motion.div>
       </div>
       <SheetContainer isOpen={isContactMeOpen} onClose={handleCloseContactMenu}>
         <div className="max-w-4xl mx-auto px-4 pb-20 flex items-center justify-center">
           {isSent ? (
-            <div className="flex items-enter justify-center p-[20px_40px] rounded-[4px]">
-              <p className="text-black">
+            <div className="flex items-center justify-center p-[20px_40px] rounded-[4px]">
+              <p className="text-white/90">
                 Thank you for sending your information!
               </p>
             </div>

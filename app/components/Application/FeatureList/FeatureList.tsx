@@ -1,6 +1,6 @@
 import Feature from "./Feature/Feature";
 import { IContract } from "@/app/types";
-import { AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { memo } from "react";
 
 interface IFeatureListProps {
@@ -24,9 +24,16 @@ const areEqual = (
 
 const FeatureList = memo(({ features }: IFeatureListProps) => {
   return (
-    <ul className="bg-linear-to-b from-[#CEE9D8] via-white to-[#CEE9D8] p-4 rounded-xl">
-      {features.map((feature) => (
-        <Feature key={feature.id} {...feature} />
+    <ul className="grid grid-cols-2 gap-3 p-2">
+      {features.map((feature, index) => (
+        <motion.div
+          key={feature.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: index * 0.08 }}
+        >
+          <Feature {...feature} />
+        </motion.div>
       ))}
     </ul>
   );

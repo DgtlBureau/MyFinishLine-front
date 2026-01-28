@@ -479,3 +479,64 @@ html.theme-transition::view-transition-new(root) {
 .animate-gradient-shift {
   animation: gradient-shift 3s ease-in-out infinite;
 }
+
+/* Progress bar shimmer slide animation */
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide 1.5s ease-in-out infinite;
+}
+
+/* Gold shine animation for completed progress */
+@keyframes gold-shine {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+
+.animate-gold-shine {
+  animation: gold-shine 2s ease-in-out infinite;
+}
+
+/* Wheel picker overrides */
+[data-rwp-option-item] {
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-weight: 500 !important;
+}
+
+[data-rwp-highlight] {
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+/* Safari-specific glass effect support */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Safari touch handling for draggable elements */
+.touch-draggable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}

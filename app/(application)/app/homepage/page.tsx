@@ -1,10 +1,10 @@
 "use client";
 
-import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
+import { setChallenge, updateChallenge } from "@/app/lib/features/challenge/challengeSlice";
 import { getUserActiveChallenge } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Clouds from "@/app/components/Map/Clouds/Clouds";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Map from "@/app/components/Map/Map";
 import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
 import LoadingScreen from "@/app/components/Application/LoadingScreen/LoadingScreen";
@@ -13,47 +13,69 @@ import { AnimatePresence } from "framer-motion";
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
   const dispatch = useAppDispatch();
+  const hasFetched = useRef(false);
 
-  const [isFetching, setIsFetching] = useState(true);
+  const hasCachedChallenge = challenge?.id > 0;
+
+  const [isFetching, setIsFetching] = useState(!hasCachedChallenge);
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  const handleLoadChallenge = async () => {
-    setIsFetching(true);
-    try {
-      const data = await getUserActiveChallenge();
-      if (data) {
-        dispatch(setChallenge(data));
-      }
-    } catch (error) {
-      console.error("Failed to load challenge:", error);
-    } finally {
-      sessionStorage.setItem("clouds_seen", "true");
-      setIsFetching(false);
-    }
-  };
-
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const hasSeenClouds = sessionStorage.getItem("clouds_seen");
 
-    if (hasSeenClouds) {
-      setIsFetching(false);
-      setShouldAnimate(false);
-    } else {
+    if (!hasCachedChallenge && !hasSeenClouds) {
       setShouldAnimate(true);
     }
 
-    handleLoadChallenge();
-  }, [dispatch]);
+    const loadChallenge = async () => {
+      if (!hasCachedChallenge) {
+        setIsFetching(true);
+      }
+
+      try {
+        const data = await getUserActiveChallenge();
+        if (data) {
+          if (hasCachedChallenge) {
+            // Background update — only update dynamic fields
+            dispatch(updateChallenge({
+              user_distance: data.user_distance,
+              user_distance_mile: data.user_distance_mile,
+              steps: data.steps,
+              is_completed: data.is_completed,
+              completed_at: data.completed_at,
+            }));
+          } else {
+            dispatch(setChallenge(data));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load challenge:", error);
+      } finally {
+        sessionStorage.setItem("clouds_seen", "true");
+        setIsFetching(false);
+      }
+    };
+
+    loadChallenge();
+  }, []);
 
   const isActive = challenge?.status.type === "active";
+  const showMap = (hasCachedChallenge || !isFetching) && isActive;
 
   return (
     <>
       <AnimatePresence mode="wait">
-        {isFetching && !shouldAnimate && <LoadingScreen isVisible={true} />}
+        {isFetching && !shouldAnimate && !hasCachedChallenge && (
+          <LoadingScreen isVisible={true} />
+        )}
       </AnimatePresence>
-      {shouldAnimate && <Clouds isVisible={isFetching} />}
-      {!isFetching && isActive ? (
+      {shouldAnimate && !hasCachedChallenge && (
+        <Clouds isVisible={isFetching} />
+      )}
+      {showMap ? (
         <>
           <MapHeader
             challengeName={challenge.name}
@@ -66,7 +88,7 @@ const Page = () => {
           <Map {...challenge} />
         </>
       ) : (
-        !isFetching && (
+        !isFetching && !hasCachedChallenge && (
           <div className="fixed w-full h-full bg-neutral-900 text-white flex items-center justify-center">
             No active challenge found
           </div>
