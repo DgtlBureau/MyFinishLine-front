@@ -65,23 +65,20 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
           quantity: 1,
         },
       ],
-      // customer: {
-      //   email: values.email,
-      //   address: {
-      //     countryCode: "US",
-      //   },
-      // },
-      // customData: {
-      //   firstName: values.firstName,
-      //   lastName: values.lastName,
-      //   challengeId: product.challenge_info?.id,
-      // },
-      // settings: {
-      //   displayMode: "overlay",
-      //   theme: "light",
-      //   locale: "en",
-      //   successUrl: `${window.location.origin}/payment/success`,
-      // },
+      customer: {
+        email: values.email,
+      },
+      customData: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        challengeId: product.challenge_info?.id,
+      },
+      settings: {
+        displayMode: "overlay",
+        theme: "light",
+        locale: "en",
+        successUrl: `${window.location.origin}/payment/success`,
+      },
     });
 
     setIsLoading(false);
