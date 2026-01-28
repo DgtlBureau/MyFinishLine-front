@@ -36,10 +36,11 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
       if (paddleInstance) {
         setPaddle(paddleInstance);
       }
-    });
+    }).catch(error => {
+      console.log('Paddle js:error', error)
+    })
   }, []);
 
-  console.log(product)
 
   const openCheckout = () => {
     if (!paddle) {
