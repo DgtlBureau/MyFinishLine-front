@@ -2,8 +2,9 @@ import { IContract } from "@/app/types";
 import { motion } from "motion/react";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { cn } from "@/app/lib/utils";
+import CustomModal from "@/app/components/Shared/CustomModal/CustomModal";
 
 const areEqual = (prevProps: IContract, nextProps: IContract) => {
   return prevProps.id === nextProps.id;
@@ -73,6 +74,7 @@ const Feature = memo(
     rare,
   }: IContract) => {
     const rewards = [...badges, ...banners, ...frames, ...skins];
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const handleGetDays = () => {
       if (end_date) {
@@ -92,7 +94,7 @@ const Feature = memo(
         style={handleGetStyle(is_completed, rare.type)}
         className="bg-white mt-1 rounded-xl cursor-pointer overflow-hidden border border-border"
       >
-        <div className="flex flex-col h-[284px] gap-4 justify-between">
+        <div className="flex flex-col h-[320px] justify-between">
           <div className="flex gap-4 px-4 pt-4">
             <div>
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-white shrink-0 border border-[#F4E8FD]">
@@ -131,22 +133,23 @@ const Feature = memo(
                     {reward.image_url && (
                       <div
                         className={cn(
-                          "relative flex items-center justify-center",
+                          "relative flex items-center justify-center cursor-pointer",
                           !is_completed ? "grayscale-100" : "",
                         )}
+                        onClick={() => setSelectedImage(reward.image_url)}
                       >
                         <Image
-                          className="w-34 h-full absolute rounded-lg object-cover"
+                          className="w-[156px] h-[148px] absolute rounded-lg object-cover"
                           src="/images/application/common.png"
                           width={771}
                           height={1280}
                           alt="Cover"
                         />
                         <Image
-                          className="m-1 w-32 h-full object-cover shrink-0 rounded-lg relative z-10"
+                          className="m-1 w-[148px] h-[140px] object-contain shrink-0 rounded-lg relative z-10"
                           src={reward.image_url}
-                          width={128}
-                          height={128}
+                          width={148}
+                          height={140}
                           alt="Reward"
                         />
                       </div>
@@ -162,6 +165,22 @@ const Feature = memo(
             ""
           )}
         </div>
+        <CustomModal
+          isOpen={!!selectedImage}
+          onClose={() => setSelectedImage(null)}
+        >
+          <div className="flex items-center justify-center p-1">
+            {selectedImage && (
+              <Image
+                src={selectedImage}
+                alt="Reward preview"
+                width={400}
+                height={400}
+                className="object-contain max-h-[80vh]"
+              />
+            )}
+          </div>
+        </CustomModal>
       </motion.li>
     );
   },

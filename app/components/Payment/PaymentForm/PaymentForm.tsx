@@ -1,18 +1,10 @@
 import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import { Select } from "../../ui/select";
-import {
-  formatCardNumber,
-  formatExpiryDate,
-  numberRegex,
-} from "@/app/lib/utils/regex";
-import { CustomSelect } from "../../ui/customSect/CustomSelect";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { useEffect, useState } from "react";
 import { IProduct } from "@/app/types";
-import axios from "axios";
 
 const PaymentForm = ({ product }: { product: IProduct }) => {
   const {
@@ -21,59 +13,76 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     errors,
     setFieldValue,
     handleSubmit,
-    setFieldTouched,
     handleBlur,
   } = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       email: "",
-      cardNumber: "",
-      expirityCardDate: "",
-      cvc: "",
-      country: "",
-      promocode: "",
     },
     validate,
     onSubmit: (values) => {
-      handleOrder();
+      openCheckout();
     },
   });
   const [paddle, setPaddle] = useState<Paddle>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOrder = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post("/api/payment/order", {
-        stripe_price_id: product.prices?.[0].stripe_price_id,
-      });
-      window.location.href = data.payment_url;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    initializePaddle({
+      environment: "production",
+      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN!,
+    }).then((paddleInstance: Paddle | undefined) => {
+      if (paddleInstance) {
+        setPaddle(paddleInstance);
+      }
+    }).catch(error => {
+      console.log('Paddle js:error', error)
+    })
+  }, []);
+
+
+  const openCheckout = () => {
+    if (!paddle) {
+      console.error("Paddle is not initialized");
+      return;
     }
+
+    const paddlePriceId = product.prices?.paddle_price_id;
+
+    if (!paddlePriceId) {
+      console.error("Paddle price ID is missing from product");
+      alert("Unable to process payment. Please contact support.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    paddle.Checkout.open({
+      items: [
+        {
+          priceId: paddlePriceId,
+          quantity: 1,
+        },
+      ],
+      customer: {
+        email: values.email,
+      },
+      customData: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        challengeId: product.challenge_info?.id,
+      },
+      settings: {
+        displayMode: "overlay",
+        theme: "light",
+        locale: "en",
+        successUrl: `${window.location.origin}/payment/success`,
+      },
+    });
+
+    setIsLoading(false);
   };
-
-  // useEffect(() => {
-  //   initializePaddle({
-  //     environment: "production",
-  //     token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN!,
-  //   }).then((paddleInstance: Paddle | undefined) => {
-  //     if (paddleInstance) {
-  //       setPaddle(paddleInstance);
-  //     }
-  //   });
-  // }, []);
-
-  // const openCheckout = () => {
-  //   if (!paddle) return;
-
-  //   paddle.Checkout.open({
-  //     items: [{ priceId: product.prices.paddle_price_id, quantity: 1 }],
-  //   });
-  // };
 
   return (
     <>
@@ -119,14 +128,18 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
             <span className="w-[50%]" />
           </div>
         </div>
-        <Button className="w-full mt-4 uppercase text-2xl py-6" type="submit">
+        <Button
+          className="w-full mt-4 uppercase text-2xl py-6"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? (
             <>
               <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
-              Forming order link...
+              Opening checkout...
             </>
           ) : (
-            "Order"
+            "Proceed to Payment"
           )}
         </Button>
       </form>

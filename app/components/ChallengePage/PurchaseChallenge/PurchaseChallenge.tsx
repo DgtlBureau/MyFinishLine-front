@@ -9,7 +9,7 @@ import { Button } from "../../ui/button";
 import amazoniaImage from '@/public/images/landing/level-amazonia.webp'
 
 interface IPurchaseChallengeProps {
-  id: number;
+  id: string | number;
   imageSrc: string;
   title: string;
   price: IPrice;

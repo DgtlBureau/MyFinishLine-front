@@ -25,7 +25,9 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
   const challengeId = searchParams.get("challenge_id");
   const [selectedChallenge, setSelectedChallenge] = useState<IProduct>(
     products?.find(
-      (product) => product.challenge_info.id === Number(challengeId),
+      (product) =>
+        product.paddle_product_id === challengeId ||
+        product.challenge_info?.id === Number(challengeId),
     ) || products?.[0],
   );
   const [isAddonChecked, setIsAddonChecked] = useState<boolean>(false);
@@ -60,7 +62,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
   // };
 
   const totalChallengeCost =
-    selectedChallenge.prices?.[0].amount * Number(orderAmount);
+    (Number(selectedChallenge.prices?.amount) / 100) * Number(orderAmount);
   const total = useMemo(
     () => totalChallengeCost + (isAddonChecked ? addon.price : 0),
     [totalChallengeCost, isAddonChecked],
@@ -70,7 +72,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
   //   setIsLoading(true);
   //   try {
   //     const { data } = await axios.post("/api/payment/order", {
-  //       stripe_price_id: selectedChallenge.prices?.[0].stripe_price_id,
+  //       stripe_price_id: selectedChallenge.prices?.stripe_price_id,
   //     });
   //     window.location.href = data.payment_url;
   //   } catch (error) {
@@ -103,10 +105,10 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
                 selectedChallenge?.challenge_info.id ===
                 product.challenge_info.id
               }
-              currency={product.prices?.[0].currency}
+              currency={product.prices?.currency}
               value={product.name}
-              imageSrc={product.main_image}
-              price={product.prices?.[0].amount}
+              imageSrc={product.main_image || product.images}
+              price={Number(product.prices?.amount) / 100}
               onChange={() => setSelectedChallenge(product)}
             />
           );
@@ -156,7 +158,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
               {selectedChallenge.name}
             </span>
             <span className="text-sm">
-              {CurrencieSymbols[selectedChallenge.prices?.[0].currency]}
+              {CurrencieSymbols[selectedChallenge.prices?.currency as keyof typeof CurrencieSymbols] || '$'}
               {totalChallengeCost?.toFixed(2)}
             </span>
           </section>
@@ -164,7 +166,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
             <section className="border-t border-neutral-300 p-4 flex justify-between items-center">
               <span className="font-semibold">{addon.title}</span>
               <span className="text-sm">
-                {CurrencieSymbols[selectedChallenge.prices?.[0].currency]}
+                {CurrencieSymbols[selectedChallenge.prices?.currency as keyof typeof CurrencieSymbols] || '$'}
                 {addon.price}
               </span>
             </section>
@@ -172,8 +174,8 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
           <section className="border-t border-neutral-300 p-4 flex justify-between items-center">
             <span className="font-bold">Total</span>
             <span className="font-bold">
-              {selectedChallenge.prices?.[0].currency}{" "}
-              {CurrencieSymbols[selectedChallenge.prices?.[0].currency]}
+              {selectedChallenge.prices?.currency}{" "}
+              {CurrencieSymbols[selectedChallenge.prices?.currency as keyof typeof CurrencieSymbols] || '$'}
               {total?.toFixed(2)}
             </span>
           </section>

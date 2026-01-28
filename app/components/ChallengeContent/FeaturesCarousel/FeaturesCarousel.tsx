@@ -66,7 +66,7 @@ export default function FeaturesCarousel() {
     },
   };
 
-  const handleChooseQuest = (questId: number) => {
+  const handleChooseQuest = (questId: string | number) => {
     router.push(`/challenges/${questId}`);
   };
 
@@ -134,24 +134,28 @@ export default function FeaturesCarousel() {
               className="cursor-grab"
             >
               <CarouselContent className="h-full mt-10">
-                {products?.map((product) => {
+                {products?.map((product, idx) => {
                   return (
                     <CarouselItem
-                      key={product.challenge_info.id}
+                      key={product.challenge_info?.id || idx}
                       className="h-full w-full"
                     >
                       <div className="relative flex flex-col rounded-2xl md:rounded-3xl p-5 sm:p-7 lg:p-9 w-full overflow-hidden aspect-[4/5] sm:aspect-[3/2] lg:aspect-[2/1]">
-                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6"><Route width={20} height={20} /> {product.challenge_info.total_distance} km</p>
+                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6"><Route width={20} height={20} /> {product.challenge_info?.total_distance} km</p>
                         <div className="mt-auto z-10">
                           <h3 className="text-lg sm:text-xl lg:text-[24px] font-semibold leading-7 lg:leading-8">{product.name}</h3>
                           <p className="text-xs sm:text-[14px] leading-5 sm:leading-6">{product.description}</p>
                         </div>
                         <div className="flex items-center justify-between mt-4 lg:mt-[35px] z-10">
-                          <Button onClick={() => handleChooseQuest(product?.challenge_info?.id)} className="py-2 px-4 sm:py-[10px] sm:px-5 rounded-full text-xs sm:text-sm leading-5">
+                          <Button
+                            onClick={() => product?.paddle_product_id && handleChooseQuest(product.paddle_product_id)}
+                            disabled={!product?.paddle_product_id}
+                            className="py-2 px-4 sm:py-[10px] sm:px-5 rounded-full text-xs sm:text-sm leading-5"
+                          >
                             Choose a Quest
                             <ArrowRight width={16} height={16} />
                           </Button>
-                          <p className="text-2xl sm:text-3xl lg:text-[36px] font-semibold text-black">${product.prices[0].amount}</p>
+                          <p className="text-2xl sm:text-3xl lg:text-[36px] font-semibold text-black">${(Number(product.prices?.amount) / 100).toFixed(2)}</p>
                         </div>
                         <Image src={questImage} fill alt={product.name} className="object-cover object-center -z-10" />
                         <div

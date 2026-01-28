@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const Map = ({
   background_images,
@@ -103,6 +104,20 @@ const Map = ({
 
       // Sort by index (lowest first) so user sees them in order
       const sortedSteps = newlyCompletedSteps.sort((a, b) => a.index - b.index);
+
+      // Send GTM events for each completed step
+      sortedSteps.forEach((step) => {
+        sendGTMEvent({
+          event: "step_completed",
+          step_number: step.index,
+          step_id: step.id,
+          step_title: step.title,
+          challenge_id: step.challenge_id,
+          page_location: window.location.href,
+          page_path: window.location.pathname,
+          page_title: document.title,
+        });
+      });
 
       // Show the first one immediately, queue the rest
       const [firstStep, ...remainingSteps] = sortedSteps;
@@ -323,23 +338,33 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full min-h-screen bg-slate-900">
-        <div className="fixed inset-0 -z-10">
-          {background_images.map((image, index) => (
-            <div
-              key={`blur-bg-${index}`}
-              className="w-full h-auto blur-2xl opacity-40"
-            >
+      <div className="relative w-full min-h-screen">
+        {/* Full-screen blurred background */}
+        <div className="fixed inset-0 z-0 overflow-hidden">
+          {/* Base color */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e]" />
+          {/* Blurred map image */}
+          {background_images[0] && (
+            <div className="absolute inset-0">
               <img
-                src={image.image_url}
-                className="w-full h-auto object-cover"
+                src={background_images[0].image_url}
+                className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
                 alt=""
               />
             </div>
-          ))}
+          )}
+          {/* Color overlay to blend with map theme */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
+          {/* Soft vignette */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
+            }}
+          />
         </div>
 
-        <div className="relative mx-auto overflow-x-auto">
+        <div className="relative z-10 mx-auto overflow-x-auto">
           <div
             className="relative mx-auto"
             style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
