@@ -23,6 +23,9 @@ import {
 import { useMediaQuery } from "@/app/hooks/use-media-query";
 import { cn } from "@/app/lib/utils";
 import Logo from "../Logo/Logo";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { setProducts } from "@/app/lib/features/products/productsSlice";
+import axios from "axios";
 
 interface NavLinks {
   label: string;
@@ -31,10 +34,24 @@ interface NavLinks {
   subitems?: any[];
 }
 
+// Static nav links for Footer and SSR (without dynamic challenge link)
 export const NAV_LINKS: NavLinks[] = [
   {
     label: "Amazonia Route",
-    href: "/challenges/1",
+    href: "/#challenges",
+    isChallenge: true,
+  },
+  { label: "Challenges", href: "/#challenges" },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Blog", href: "/blog" },
+  { label: "FAQ", href: "/faq" },
+];
+
+// Dynamic nav links with real challenge ID
+const getNavLinks = (firstChallengeId?: string): NavLinks[] => [
+  {
+    label: "Amazonia Route",
+    href: firstChallengeId ? `/challenges/${firstChallengeId}` : "/#challenges",
     isChallenge: true,
   },
   { label: "Challenges", href: "/#challenges" },
@@ -57,9 +74,28 @@ const Navbar = ({
   const { isAtLeast } = useMediaQuery();
   const pathname = usePathname();
   const [isBannerVisible, setIsBannerVisible] = useState(initialBannerVisible);
+  const { products } = useAppSelector((state) => state.products);
+  const dispatch = useAppDispatch();
   const hideNavbar = ["/login", "/signup", "/not-found", "/verify"].some(
     (route) => pathname.includes(route),
   );
+
+  const firstChallengeId = products[0]?.paddle_product_id;
+  const dynamicNavLinks = getNavLinks(firstChallengeId);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!products.length) {
+        try {
+          const { data } = await axios.get("/api/payment/products");
+          dispatch(setProducts(data));
+        } catch (error) {
+          console.error("Failed to load products:", error);
+        }
+      }
+    };
+    loadProducts();
+  }, [products.length, dispatch]);
 
   useEffect(() => {
     const handleBannerDismiss = () => {
@@ -120,7 +156,7 @@ const Navbar = ({
         <div className="flex items-center gap-8">
           <NavigationMenu viewport={false} className="hidden lg:block">
             <NavigationMenuList className="">
-              {NAV_LINKS.map((item) => (
+              {dynamicNavLinks.map((item) => (
                 <NavigationMenuItem key={item.label}>
                   {item.subitems ? (
                     <>
@@ -246,7 +282,7 @@ const Navbar = ({
               className="inline-block w-full max-w-none py-10"
             >
               <NavigationMenuList className="w-full flex-col items-start gap-0">
-                {NAV_LINKS.map((item) => (
+                {dynamicNavLinks.map((item) => (
                   <NavigationMenuItem key={item.label} className="w-full py-2">
                     {item.subitems ? (
                       <Accordion type="single" collapsible className="">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CurrencieSymbols, IPrice } from "@/app/types";
 
 interface IPurchaseChallengeProps {
-  id: number;
+  id: string | number;
   imageSrc: string;
   title: string;
   price: IPrice;
@@ -43,8 +43,8 @@ const PurchaseChallenge = ({
         </li>
       </ul>
       <span className="block text-2xl mx-auto text-center font-medium mt-2">
-        {CurrencieSymbols[price.currency]}
-        {price.amount}
+        {CurrencieSymbols[price.currency as keyof typeof CurrencieSymbols] || '$'}
+        {(Number(price.amount) / 100).toFixed(2)}
       </span>
       <Link
         href={"/payment?challenge_id=" + id}

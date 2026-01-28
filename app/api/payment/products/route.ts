@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const { data } = await instance.get("stripe/products");
+    const { data } = await instance.get("paddle/products");
 
     return NextResponse.json(data);
   } catch (error: any) {

@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const Map = ({
   background_images,
@@ -103,6 +104,20 @@ const Map = ({
 
       // Sort by index (lowest first) so user sees them in order
       const sortedSteps = newlyCompletedSteps.sort((a, b) => a.index - b.index);
+
+      // Send GTM events for each completed step
+      sortedSteps.forEach((step) => {
+        sendGTMEvent({
+          event: "step_completed",
+          step_number: step.index,
+          step_id: step.id,
+          step_title: step.title,
+          challenge_id: step.challenge_id,
+          page_location: window.location.href,
+          page_path: window.location.pathname,
+          page_title: document.title,
+        });
+      });
 
       // Show the first one immediately, queue the rest
       const [firstStep, ...remainingSteps] = sortedSteps;

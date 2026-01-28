@@ -7,59 +7,25 @@ import PurchaseChallenge from "@/app/components/ChallengePage/PurchaseChallenge/
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
 import { cn } from "@/app/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { useParams } from "next/navigation";
-import { Currencies, IProduct } from "@/app/types";
-import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { IProduct } from "@/app/types";
+import { useEffect, useState } from "react";
 import { setProducts } from "@/app/lib/features/products/productsSlice";
 import axios from "axios";
+import Loader from "@/app/components/Shared/Loader/Loader";
 
 const page = () => {
   const { challengeId } = useParams();
   const { products } = useAppSelector((state) => state.products);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const product: IProduct = products.find(
-    (product) => product.challenge_info.id === Number(challengeId),
-  ) || {
-    name: "",
-    description: "",
-    images: [],
-    main_image: "",
-    content: [],
-    prices: [
-      {
-        amount: 0,
-        currency: Currencies.EUR,
-        stripe_price_id: "",
-      },
-    ],
-
-    paddle_product_id: "",
-    challenge_info: {
-      completed_at: "",
-      is_completed: false,
-      background_images: [
-        {
-          id: 0,
-          image_url: "",
-          challenge_id: 0,
-        },
-      ],
-      description: "",
-      id: 0,
-      name: "",
-      status: {
-        id: null,
-        name: "",
-        type: "",
-      },
-      status_id: 0,
-      steps: [],
-      total_distance: "",
-      activate_date: "",
-      user_distance: 0,
-    },
-  };
+  const product = products.find(
+    (product) =>
+      product.paddle_product_id === challengeId ||
+      product.challenge_info?.id === Number(challengeId)
+  );
 
   const handleLoadProducts = async () => {
     try {
@@ -69,28 +35,51 @@ const page = () => {
       dispatch(setProducts(data));
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     if (!products.length) {
       handleLoadProducts();
+    } else {
+      setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    // If products are loaded and product is not found, redirect to home
+    if (!isLoading && !product) {
+      router.push("/");
+    }
+  }, [isLoading, product, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <>
       <LumenBackgroundBlock>
         <ChallengeHero
-          id={product?.challenge_info.id}
+          id={product.challenge_info?.id || 0}
           title={product.name}
           description={product.description}
-          image={product.main_image}
-          distance={product.name}
+          image={product.main_image || product.images}
+          distance={product.challenge_info?.total_distance || product.name}
         />
       </LumenBackgroundBlock>
       <section className="mt-40">
-        <ChallengeContent content={product.content} />
+        <ChallengeContent content={product.content || []} />
       </section>
 
       <section className="section-padding relative overflow-hidden">
@@ -111,9 +100,9 @@ const page = () => {
         <div className="relative w-full py-10 flex items-center justify-center">
           <PurchaseChallenge
             title={product.name}
-            price={product.prices?.[0]}
-            id={product.challenge_info.id}
-            imageSrc={product.main_image}
+            price={product.prices}
+            id={product.paddle_product_id}
+            imageSrc={product.main_image || product.images}
           />
         </div>
       </section>
