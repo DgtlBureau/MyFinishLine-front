@@ -18,6 +18,10 @@ const RewardsSwiper = () => {
     (contract) => !contract.is_completed,
   );
 
+  if (!contractsStillToGet.length) {
+    return null;
+  }
+
   const handleGoNext = () => {
     if (swiperRef.current) {
       swiperRef.current.slideNext();
@@ -86,7 +90,7 @@ const RewardsSwiper = () => {
           ))}
         </Swiper>
         <Link
-          href="/app/contracts/all"
+          href="/app/contracts/still-to-get"
           className="underline block p-4 text-right text-sm text-[#71717A]"
         >
           See All
