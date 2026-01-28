@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import logoImage from '@/public/images/logo-line-black.webp'
 
 import { cn } from "@/app/lib/utils";
 interface LogoProps {
@@ -38,17 +39,16 @@ const Logo: React.FC<LogoProps> = ({
     <div className={cn(``, wrapperClassName)}>
       <Link
         href="/"
-        className={cn(`relative flex items-center gap-2 h-6 w-25`, className)}
+        className={cn(`relative flex items-center gap-2`, className)}
       >
         <Image
-          src="/layout/logo.svg"
+          src={logoImage}
           alt="Lumen Logo"
-          width={24}
-          height={24}
+          width={1000}
+          height={600}
           priority
-          className="object-contain dark:invert"
+          className="object-contain dark:invert w-auto h-4 md:h-6 lg:h-7"
         />
-        <h1 className="text-xl">MyFinishLine</h1>
       </Link>
     </div>
   );

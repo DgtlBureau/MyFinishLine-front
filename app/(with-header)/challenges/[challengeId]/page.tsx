@@ -5,7 +5,6 @@ import LumenBackgroundBlock from "@/app/components/Shared/LumenBackgroundBlock/L
 import ChallengeContent from "@/app/components/ChallengePage/ChallengePage";
 import PurchaseChallenge from "@/app/components/ChallengePage/PurchaseChallenge/PurchaseChallenge";
 import FAQSection from "@/app/components/ChallengeContent/FAQSection/FAQSection";
-import { cn } from "@/app/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { useParams } from "next/navigation";
 import { Currencies, IProduct } from "@/app/types";
@@ -80,35 +79,20 @@ const page = () => {
 
   return (
     <>
-      <LumenBackgroundBlock>
+      <LumenBackgroundBlock className="!p-0 mb-20">
         <ChallengeHero
-          id={product?.challenge_info.id}
           title={product.name}
           description={product.description}
           image={product.main_image}
-          distance={product.name}
+          distance={product.challenge_info.total_distance}
         />
       </LumenBackgroundBlock>
-      <section className="mt-40">
+      <section className="section-padding bg-gradient-to-b from-white from-10% via-indigo-300/90 via-70% to-white-50">
         <ChallengeContent content={product.content} />
       </section>
 
-      <section className="section-padding relative overflow-hidden">
-        <div className="absolute size-full mask-t-from-50% mask-t-to-100% mask-b-from-50% mask-b-to-90%">
-          <div
-            className={cn(
-              "bg-chart-2 absolute size-full rounded-full blur-3xl will-change-transform",
-              "top-0 left-0 -translate-y-1/3 md:-translate-x-1/3 md:translate-y-0",
-            )}
-          />
-          <div
-            className={cn(
-              "bg-chart-3 absolute size-full rounded-full blur-3xl will-change-transform",
-              "right-0 bottom-0 translate-y-1/3 md:top-0 md:translate-x-1/3 md:translate-y-0",
-            )}
-          />
-        </div>
-        <div className="relative w-full py-10 flex items-center justify-center">
+      <section className="section-padding relative overflow-hidden bg-gradient-to-b from-white from-10% via-green-300/20 via-30% to-white-50">
+        <div className="relative w-full py-10 flex items-center justify-center px-4 md:px-2">
           <PurchaseChallenge
             title={product.name}
             price={product.prices?.[0]}

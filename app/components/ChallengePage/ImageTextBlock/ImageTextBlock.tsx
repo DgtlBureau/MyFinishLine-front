@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "motion/react";
 import Image from "next/image";
 
@@ -14,59 +16,57 @@ const ImageTextBlock = ({
   paragraphs,
   reversed,
 }: IImageTextBlockProps) => {
+  const containerVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 25,
+        duration: 0.6,
+      },
+    },
+  };
+
   return (
-    <li
-      className={`flex flex-col gap-12 md:flex-row list-none ${
-        reversed && "md:flex-row-reverse"
-      }`}
+    <motion.li
+      className={`flex flex-col overflow-hidden rounded-2xl border border-[#B7B9E2] bg-white md:flex-row md:rounded-3xl ${reversed ? "md:flex-row-reverse" : ""
+        }`}
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
     >
-      <motion.div
-        className="h-full relative max-h-140 flex-1"
-        whileInView={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: -30 }}
-        transition={{
-          type: "spring" as const,
-          stiffness: 100,
-          damping: 25,
-          mass: 1,
-          duration: 0.6,
-        }}
-        viewport={{ once: true }}
-      >
+      <div className="relative aspect-[4/3] w-full md:aspect-[37/32] md:w-1/2">
         <Image
-          className="rounded-xl object-cover h-full max-h-140"
           src={image}
-          alt={"Challenge " + title}
-          width={1350}
-          height={1688}
+          alt={title}
+          fill
+          className="object-cover"
         />
-      </motion.div>
-      <motion.section
-        whileInView={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: -30 }}
-        transition={{
-          type: "spring" as const,
-          stiffness: 100,
-          damping: 25,
-          mass: 1,
-          duration: 0.6,
-        }}
-        viewport={{ once: true }}
-        className="text-left flex-1"
-      >
-        <h2 className="text-2xl leading-tight tracking-tight md:text-5xl lg:text-6xl">
-          {title}
+      </div>
+
+      <div className="flex w-full flex-col justify-center gap-4 px-5 py-6 md:w-1/2 md:gap-6 md:p-8 lg:p-12">
+        <h2 className="text-xl font-semibold leading-tight tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
+          <span className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent">
+            {title}
+          </span>
         </h2>
-        {paragraphs.map((p) => (
-          <p
-            key={p.id}
-            className="text-muted-foreground my-2 text-sm md:my-4 md:text-lg lg:my-6 lg:text-xl"
-          >
-            {p.text}
-          </p>
-        ))}
-      </motion.section>
-    </li>
+
+        <div className="space-y-3 md:space-y-4">
+          {paragraphs.map((p) => (
+            <p
+              key={p.id}
+              className="text-sm leading-relaxed text-muted-foreground md:text-base lg:text-lg"
+            >
+              {p.text}
+            </p>
+          ))}
+        </div>
+      </div>
+    </motion.li>
   );
 };
 
