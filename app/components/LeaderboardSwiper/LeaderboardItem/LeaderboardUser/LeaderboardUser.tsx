@@ -85,7 +85,7 @@ const LeaderboardUser = ({
       transition={{
         delay: position * 0.08,
         duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.25, 0.46, 0.45, 0.94] as const
       }}
       whileTap={{ scale: 0.98, backgroundColor: "rgba(255,255,255,0.7)" }}
       key={id}
