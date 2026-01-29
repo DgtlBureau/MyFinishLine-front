@@ -12,8 +12,8 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
         <div>
           <p className="text-lg text-white/80 leading-7 font-medium">{product.name}</p>
           <span className="font-bold text-5xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
-            {CurrencieSymbols[product.prices?.[0].currency]}
-            {product.prices?.[0].amount}
+            {CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || '$'}
+            {priceAmount}
           </span>
         </div>
         <div className="border-4 border-[#EEDFBA] w-50 h-50 rounded-full overflow-hidden flex items-center justify-center shadow-lg">
@@ -34,13 +34,13 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
           <div className="flex justify-between border-b border-white/15 p-3 px-5">
             <p className="font-medium">{product.name} Challenge</p>
             <p className="font-medium">
-              {product.prices?.[0].amount}{" "}
-              {CurrencieSymbols[product.prices?.[0].currency]}
+              {priceAmount}{" "}
+              {CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || '$'}
             </p>
           </div>
           <div className="flex justify-between border-b border-white/15 p-3 px-5">
             <p className="text-white/70">Shipping</p>
-            <p className="text-white/70">0 {CurrencieSymbols[product.prices?.[0].currency]}</p>
+            <p className="text-white/70">0 {CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || '$'}</p>
           </div>
           <div className="flex justify-between p-3 px-5 text-base font-bold">
             <p>Total</p>

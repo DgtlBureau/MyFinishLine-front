@@ -21,20 +21,18 @@ const page = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const product: IProduct = products.find(
-    (product) => product.challenge_info.id === Number(challengeId),
+    (product) => product.challenge_info?.id === Number(challengeId),
   ) || {
     name: "",
     description: "",
-    images: [],
+    images: "",
     main_image: "",
     content: [],
-    prices: [
-      {
-        amount: 0,
-        currency: Currencies.EUR,
-        stripe_price_id: "",
-      },
-    ],
+    prices: {
+      amount: "",
+      currency: "EUR" as const,
+      paddle_price_id: "",
+    },
 
     paddle_product_id: "",
     challenge_info: {

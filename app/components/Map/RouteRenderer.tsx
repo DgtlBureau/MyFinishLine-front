@@ -68,13 +68,6 @@ const RouteSegment = memo(
       return pointsToSmoothPath(points, mapHeight);
     }, [points, mapHeight]);
 
-    // Notify parent when path is ready (for active segment)
-    useLayoutEffect(() => {
-      if (isActive && progressPathRef.current && pathD && onPathReady) {
-        onPathReady(progressPathRef.current, segmentId);
-      }
-    }, [isActive, pathD, onPathReady, segmentId]);
-
     // Apply progress animation using stroke-dashoffset
     useLayoutEffect(() => {
       const applyProgress = (pathElement: SVGPathElement | null) => {

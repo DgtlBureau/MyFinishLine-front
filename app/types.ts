@@ -41,10 +41,6 @@ export interface IStep {
   user_distance_reach: string;
   user_distance_reach_mile?: number;
   is_viewed: boolean;
-  distance_by_next_step_mile?: number;
-  user_distance_mile?: number;
-  distance_to_reach_step_mile?: number;
-  user_distance_reach_mile?: number;
 }
 
 export interface IRoutePoint {
@@ -84,8 +80,6 @@ export interface IActiveChallenge {
   reward?: IReward;
   reward_ticket?: IRewardTicket;
   route_data?: IRouteData;
-  total_distance_mile?: number;
-  user_distance_mile?: number;
 }
 
 export interface IActivity {
@@ -220,7 +214,6 @@ export interface ILeaderboard {
   user_id: number;
   user: IUser;
   position: number;
-  total_progress_mile?: number;
 }
 
 export interface IShipmentStatus extends Omit<IStatus, "type"> {

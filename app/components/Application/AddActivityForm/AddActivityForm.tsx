@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
+import { getSmallDistanceUnit } from "@/app/lib/utils/convertData";
 import axios from "axios";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
@@ -139,8 +140,6 @@ const AddActivitityForm = () => {
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [isStartTimeModalOpen, setIsStartTimeModalOpen] = useState(false);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
   const { checkNotifications } = useNotifications();
 
   const handleOpenTimeModal = () => {

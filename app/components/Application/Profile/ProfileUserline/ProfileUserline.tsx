@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { handleConvertDistance } from "@/app/lib/utils/convertData";
+import { handleConvertDistance, getDistanceUnit } from "@/app/lib/utils/convertData";
 import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";

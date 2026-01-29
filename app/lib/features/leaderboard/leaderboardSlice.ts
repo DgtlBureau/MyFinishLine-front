@@ -48,7 +48,6 @@ const initialState: {
         month: 0,
         day: 0,
       },
-      measure: "km",
     },
   },
 };
