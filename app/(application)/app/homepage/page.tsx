@@ -4,7 +4,7 @@ import { setChallenge, updateChallenge } from "@/app/lib/features/challenge/chal
 import { getUserActiveChallenge } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import Clouds from "@/app/components/Map/Clouds/Clouds";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Map from "@/app/components/Map/Map";
 import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
 import LoadingScreen from "@/app/components/Application/LoadingScreen/LoadingScreen";
@@ -19,6 +19,11 @@ const Page = () => {
 
   const [isFetching, setIsFetching] = useState(!hasCachedChallenge);
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+
+  const handleMapReady = useCallback(() => {
+    setMapReady(true);
+  }, []);
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -65,27 +70,31 @@ const Page = () => {
   const isActive = challenge?.status.type === "active";
   const showMap = (hasCachedChallenge || !isFetching) && isActive;
 
+  const showSplash = !mapReady && showMap;
+
   return (
     <>
       <AnimatePresence mode="wait">
-        {isFetching && !shouldAnimate && !hasCachedChallenge && (
+        {(isFetching || showSplash) && !shouldAnimate && (
           <LoadingScreen isVisible={true} />
         )}
       </AnimatePresence>
       {shouldAnimate && !hasCachedChallenge && (
-        <Clouds isVisible={isFetching} />
+        <Clouds isVisible={isFetching || showSplash} />
       )}
       {showMap ? (
         <>
-          <MapHeader
-            challengeName={challenge.name}
-            startDate={challenge.activate_date}
-            totalDistance={challenge.user_distance}
-            totalDistanceMile={challenge.user_distance_mile}
-            distance={challenge.total_distance}
-            distanceMile={challenge.total_distance_mile}
-          />
-          <Map {...challenge} />
+          {mapReady && (
+            <MapHeader
+              challengeName={challenge.name}
+              startDate={challenge.activate_date}
+              totalDistance={challenge.user_distance}
+              totalDistanceMile={challenge.user_distance_mile}
+              distance={challenge.total_distance}
+              distanceMile={challenge.total_distance_mile}
+            />
+          )}
+          <Map {...challenge} onMapReady={handleMapReady} />
         </>
       ) : (
         !isFetching && !hasCachedChallenge && (

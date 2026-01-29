@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
 const heroMapImg = "/images/hero-map.png";
-const raccoonImg = "/images/card3-sage.png";
+const raccoonImg = "/images/mascot.png";
 const speechBubbleImg = "";
 
 // Images to preload
@@ -104,7 +104,7 @@ export default function Hero() {
         </div>
 
         {/* Map Image Section */}
-        <div className="relative w-full max-w-[1440px] h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="relative w-full max-w-[1440px] h-[220px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
           {/* Map Image with animation */}
           <div
             className="absolute inset-0 overflow-hidden transition-all duration-1000 ease-out"
@@ -116,7 +116,7 @@ export default function Hero() {
             <img
               src={heroMapImg}
               alt="South America Adventure Map"
-              className="absolute h-[124%] w-full sm:w-[90%] md:w-[77%] left-0 sm:left-[5%] md:left-[11%] top-0 object-cover"
+              className="absolute h-full sm:h-[124%] w-full sm:w-[90%] md:w-[77%] left-0 sm:left-[5%] md:left-[11%] top-0 object-cover object-center"
               loading="eager"
               decoding="async"
             />

@@ -127,7 +127,7 @@ const page = () => {
       fallback={
         <section>
           <div className="max-w-4xl mx-auto">
-            <div className="mt-10 h-9 w-40 mx-auto rounded bg-gray-200 animate-shimmer" />
+            <div className="mt-10 h-9 w-40 mx-auto rounded bg-white/15 animate-pulse" />
             <div className="my-8 px-4">
               <ChallengeCardSkeleton />
             </div>

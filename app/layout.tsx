@@ -32,6 +32,12 @@ export default function RootLayout({
       <GoogleTagManager gtmId="G-LYKSZRTMBX" />
       <head>
         <script src="https://accounts.google.com/gsi/client" async defer />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="MyFinishLine" />
+        <meta name="theme-color" content="#000000" />
       </head>
       <body
         className={`${inter.variable} [--header-height:calc(var(--spacing)*14)] lg:[--header-height:calc(var(--spacing)*23)] antialiased bg-black`}
@@ -39,7 +45,9 @@ export default function RootLayout({
         <VisibilityHandler />
         <QueryProvider>
           <StoreProvider>
-            <LanguageProvider>{children}</LanguageProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
           </StoreProvider>
         </QueryProvider>
       </body>

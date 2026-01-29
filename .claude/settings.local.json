@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git rm:*)",
+      "Bash(gh pr create --repo DgtlBureau/MyFinishLine-front --base main --head feature/artiom-fog-and-landing --title \"feat: UI improvements, auth integrations, and shared components\" --body \"$\\(cat <<''EOF''\n## Summary\n- Add shared components: BackButton, PolicyFooter, PolicyPageTransition\n- Update login/signup pages, payment flow, landing navbar, and policy pages with Glass UI\n- Add Fitbit/Strava auth integrations with logo icons\n- Merge latest main changes with conflict resolution\n\n## Test plan\n- [ ] Verify login and signup flows work correctly\n- [ ] Check payment page and challenge info display\n- [ ] Test Fitbit and Strava OAuth callbacks\n- [ ] Verify policy pages render with new transitions\n- [ ] Confirm landing page navbar works\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\nEOF\n\\)\")",
+      "Bash(gh pr merge:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(sudo chown:*)",
+      "Bash(gh pr create:*)",
+      "Bash(unzip:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

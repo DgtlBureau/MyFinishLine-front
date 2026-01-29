@@ -9,7 +9,6 @@ import {
   HowItWorks,
   Participation,
   FAQ,
-  CTA,
   Testimonials,
   Footer,
 } from "@/app/components/Landing";
@@ -31,7 +30,6 @@ export default async function Home() {
       <HowItWorks />
       <Participation />
       <FAQ />
-      <CTA />
       <Testimonials />
       <Footer />
     </main>

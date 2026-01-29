@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCreative, Autoplay } from "swiper/modules";
@@ -93,13 +93,58 @@ const ChallengeCard = ({ product }: { product: IProduct }) => {
   );
 };
 
+const AnimatedClock = () => {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const secondAngle = (seconds % 60) * 6;
+  const minuteAngle = ((seconds / 60) % 60) * 6;
+
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="text-white/70"
+    >
+      <circle cx="12" cy="12" r="10" />
+      {/* Minute hand */}
+      <line
+        x1="12"
+        y1="12"
+        x2={12 + 4 * Math.sin((minuteAngle * Math.PI) / 180)}
+        y2={12 - 4 * Math.cos((minuteAngle * Math.PI) / 180)}
+      />
+      {/* Second hand */}
+      <line
+        x1="12"
+        y1="12"
+        x2={12 + 5.5 * Math.sin((secondAngle * Math.PI) / 180)}
+        y2={12 - 5.5 * Math.cos((secondAngle * Math.PI) / 180)}
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
 const ComingSoonCard = () => {
   return (
     <div className="relative w-full h-full min-h-svh overflow-hidden bg-gradient-to-br from-[#3B5CC6]/40 via-[#5C9BB8]/30 to-[#4DA67A]/40">
       <div className="absolute inset-0 backdrop-blur-xl bg-white/10" />
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
         <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center">
-          <Clock className="w-7 h-7 text-white/70" />
+          <AnimatedClock />
         </div>
         <span className="text-white/80 font-bold text-xl tracking-tight">Coming Soon</span>
         <span className="text-white/50 text-sm font-medium">New quests are on the way</span>

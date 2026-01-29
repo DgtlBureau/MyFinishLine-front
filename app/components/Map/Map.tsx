@@ -24,7 +24,8 @@ const Map = ({
   is_completed,
   route_data,
   reward,
-}: IActiveChallenge) => {
+  onMapReady,
+}: IActiveChallenge & { onMapReady?: () => void }) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
@@ -450,6 +451,7 @@ const Map = ({
                 className="absolute inset-0 w-full h-full"
                 style={{ objectFit: "fill" }}
                 draggable={false}
+                onLoad={onMapReady}
               />
             )}
 

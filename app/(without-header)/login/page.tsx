@@ -13,6 +13,7 @@ import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
 import Image from "next/image";
 import { getFitbitAuthUrl } from "@/app/lib/utils/authWithFitbit";
 import { motion } from "motion/react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ export default function Login() {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState("");
@@ -140,7 +142,7 @@ export default function Login() {
   };
 
   const glassInputClassName =
-    "w-full py-5 px-6 text-lg rounded-2xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] placeholder:text-[#1a1a2e]/40 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)] transition-all";
+    "w-full py-4 px-5 text-base rounded-xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] placeholder:text-[#1a1a2e]/40 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)] transition-all";
 
   return (
     <div className={`flex items-center justify-center px-6 py-12 min-h-svh transition-all duration-400 ${leaving ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
@@ -191,26 +193,51 @@ export default function Login() {
               onSubmit={handleLogin}
               className="mt-10 space-y-5"
             >
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className={glassInputClassName}
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className={glassInputClassName}
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-1.5">Email:</label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className={glassInputClassName}
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-1.5">Password:</label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className={glassInputClassName}
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    whileTap={{ scale: 0.85 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200 cursor-pointer"
+                  >
+                    <motion.span
+                      key={showPassword ? "off" : "on"}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.15 }}
+                      className="block"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </motion.span>
+                  </motion.button>
+                </div>
+              </div>
               {formData.error && (
                 <span className="block text-sm text-center text-red-200 mt-1">
                   {formData.error}
@@ -221,7 +248,7 @@ export default function Login() {
                 type="submit"
                 variant="ghost"
                 disabled={formData.isLoading}
-                className={`group relative w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 rounded-2xl overflow-hidden bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white shadow-xl backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)] hover:bg-gradient-to-r hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99]
+                className={`group relative w-full py-4 px-5 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 rounded-xl overflow-hidden bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white shadow-xl backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)] hover:bg-gradient-to-r hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99]
                 ${formData.isLoading && "opacity-70 cursor-not-allowed"}
               `}
               >
@@ -261,27 +288,29 @@ export default function Login() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.65, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-              className="space-y-4"
+              className="space-y-3"
             >
               <Button
                 variant="ghost"
                 onClick={handleStravaLogin}
                 disabled={formData.isLoading || !!loadingProvider}
-                className={`w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)] hover:bg-white/30 hover:shadow-lg hover:text-white
+                className={`w-full py-3.5 px-5 text-base font-medium cursor-pointer transition-all duration-300 flex items-center justify-center gap-2.5 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:bg-white/30 hover:shadow-lg hover:text-white
                 ${(formData.isLoading || loadingProvider) && "opacity-70 cursor-not-allowed"}
               `}
               >
-                {loadingProvider === "strava" ? (
-                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                ) : (
-                  <Image
-                    src="/icons/strava-logo.png"
-                    width={36}
-                    height={36}
-                    alt="Strava"
-                    className="w-9 h-9 shrink-0 rounded-lg"
-                  />
-                )}
+                <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                  {loadingProvider === "strava" ? (
+                    <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                  ) : (
+                    <Image
+                      src="/icons/strava-logo.png"
+                      width={28}
+                      height={28}
+                      alt="Strava"
+                      className="w-7 h-7 rounded-md"
+                    />
+                  )}
+                </div>
                 Sign in with Strava
               </Button>
 
@@ -289,21 +318,23 @@ export default function Login() {
                 variant="ghost"
                 onClick={() => navigateWithFade("fitbit", getFitbitAuthUrl())}
                 disabled={formData.isLoading || !!loadingProvider}
-                className={`w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)] hover:bg-white/30 hover:shadow-lg hover:text-white
+                className={`w-full py-3.5 px-5 text-base font-medium cursor-pointer transition-all duration-300 flex items-center justify-center gap-2.5 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:bg-white/30 hover:shadow-lg hover:text-white
                 ${(formData.isLoading || loadingProvider) && "opacity-70 cursor-not-allowed"}
               `}
               >
-                {loadingProvider === "fitbit" ? (
-                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                ) : (
-                  <Image
-                    src="/icons/fitbit-logo.png"
-                    width={36}
-                    height={36}
-                    alt="Fitbit"
-                    className="w-9 h-9 shrink-0 rounded-lg"
-                  />
-                )}
+                <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                  {loadingProvider === "fitbit" ? (
+                    <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                  ) : (
+                    <Image
+                      src="/icons/fitbit-logo.png"
+                      width={28}
+                      height={28}
+                      alt="Fitbit"
+                      className="w-7 h-7 rounded-md"
+                    />
+                  )}
+                </div>
                 Sign in with FitBit
               </Button>
 
