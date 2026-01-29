@@ -15,7 +15,7 @@ const GoogleLogin = ({
 }) => {
   return (
     <Button
-      className={`w-full py-4 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)] hover:bg-white/30 hover:shadow-lg hover:text-white
+      className={`w-full py-3.5 px-5 text-base font-medium cursor-pointer transition-all duration-300 flex items-center justify-center gap-2.5 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:bg-white/30 hover:shadow-lg hover:text-white
         ${disabled && "opacity-70 cursor-not-allowed"}
       `}
       variant="ghost"
@@ -30,15 +30,15 @@ const GoogleLogin = ({
       }}
     >
       {loading ? (
-        <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+        <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
       ) : (
-        <div className="w-9 h-9 flex items-center justify-center shrink-0">
+        <div className="w-7 h-7 flex items-center justify-center shrink-0">
           <Image
-            width={24}
-            height={24}
+            width={20}
+            height={20}
             src="/icons/google.svg"
             alt="Google"
-            className="w-6 h-6"
+            className="w-5 h-5"
           />
         </div>
       )}

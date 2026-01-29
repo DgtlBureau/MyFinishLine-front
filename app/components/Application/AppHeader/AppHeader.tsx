@@ -2,6 +2,7 @@
 
 import { ChevronLeft, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 const links = [
   {
@@ -92,8 +93,15 @@ const AppHeader = () => {
             <ChevronLeft />
           </button>
         ) : (
-          <div className="h-14" />
+          <div className="flex-1 h-14" />
         )}
+        <Image
+          src="/images/logo-header.png"
+          width={160}
+          height={28}
+          alt="MyFinishLine"
+          className="h-7 w-auto"
+        />
         <button
           className="flex flex-1 items-center justify-end gap-2"
           onClick={handleGoToEdit}

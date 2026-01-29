@@ -23,7 +23,7 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
         backgroundPosition: "center",
       }}
     >
-      <div className="flex items-center">
+      <div className="flex items-end">
         <Image
           src="/images/loading/logo-state-1.png"
           width={220}
@@ -31,7 +31,7 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
           alt="MyFinishLine"
         />
         <motion.div
-          className="w-3 h-3 rounded-full bg-[#CEE9D8] -ml-1"
+          className="w-2 h-2 rounded-full bg-[#CEE9D8] -ml-1 mb-[1px]"
           initial={{ opacity: 0, scale: 0 }}
           animate={{
             opacity: [0, 1, 0.3, 1, 0.3, 1],

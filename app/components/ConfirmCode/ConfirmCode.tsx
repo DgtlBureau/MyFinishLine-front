@@ -115,7 +115,7 @@ const ConfirmCode = () => {
       await axios.post("/api/auth/logout");
       dispatch(clearUser());
       localStorage.removeItem("persist:root");
-      router.replace("/");
+      router.replace("/login");
     } catch (error) {
       console.error("Error logging out: ", error);
     }
@@ -123,13 +123,13 @@ const ConfirmCode = () => {
 
   const handleClickLink = () => {
     handleLogout();
-    router.push("/#challenges");
+    router.push("/login");
   };
 
   return (
     <div className="fixed z-9999 w-screen h-screen top-0 left-0 bg-gradient-to-br from-[#3B5CC6] via-[#5C9BB8] via-50% to-[#4DA67A] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white/30 backdrop-blur-2xl backdrop-saturate-200 border border-white/40 rounded-3xl p-8 shadow-2xl shadow-black/10">
+        <div className="bg-white/15 backdrop-blur-3xl backdrop-saturate-150 border border-white/30 rounded-3xl p-8 shadow-2xl shadow-black/10 ring-1 ring-inset ring-white/20">
           <h1 className="block text-center text-3xl font-bold text-white drop-shadow-sm tracking-tight">
             Enter your challenge code below
           </h1>

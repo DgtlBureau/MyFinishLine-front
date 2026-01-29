@@ -12,6 +12,10 @@ import { ShipmentStatuses } from "@/app/types";
 import { setUserProfieChallenges } from "@/app/lib/features/profile/profileSlice";
 import { useMeasure } from "@/app/hooks/useMeasure";
 
+const challengeLogoMap: Record<string, string> = {
+  "Amazonia Route": "/images/amazonia-route-logo.png",
+};
+
 const getTimePassed = (
   startDate: string,
   endDate: string | Date = new Date(),
@@ -100,11 +104,10 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
       {/* Content */}
       <div className="relative z-10">
       {/* Challenge Logo/Title */}
-      {challenge.image_url ? (
+      {challenge.image_url || challengeLogoMap[challenge.name] ? (
         <div className="flex justify-center mb-2">
           <Image
-            /*@ts-ignore */
-            src={challenge.image_url}
+            src={challenge.image_url || challengeLogoMap[challenge.name]}
             alt={challenge.name}
             width={220}
             height={90}

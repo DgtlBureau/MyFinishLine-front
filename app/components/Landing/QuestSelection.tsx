@@ -3,7 +3,7 @@
 import { ArrowRight, Clock } from "lucide-react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCreative } from "swiper/modules";
+import { EffectCreative, Autoplay } from "swiper/modules";
 import { useEffect } from "react";
 import axios from "axios";
 import { setProducts } from "@/app/lib/features/products/productsSlice";
@@ -14,21 +14,31 @@ import Link from "next/link";
 import "swiper/css";
 import "swiper/css/effect-creative";
 
+const formatPrice = (amount: string, currency: string) => {
+  const num = Number(amount) / 100;
+  const symbol = currency === "USD" ? "$" : currency === "EUR" ? "\u20AC" : currency;
+  return `${symbol}${num.toFixed(num % 1 === 0 ? 0 : 2)}`;
+};
+
 const QuestCard = ({ product }: { product: IProduct }) => {
   const price = product.prices;
   const challenge = product.challenge_info;
-
-  if (!challenge) return null;
+  const name = challenge?.name || product.name;
+  const imageUrl = product.main_image || product.images || "";
 
   return (
-    <div className="relative w-full h-[350px] sm:h-[400px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden">
-      <Image
-        src={product.main_image || ""}
-        alt={challenge.name}
-        fill
-        className="object-cover"
-        quality={85}
-      />
+    <div className="relative w-full h-[450px] sm:h-[480px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={name}
+          fill
+          className="object-cover"
+          quality={85}
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A]" />
+      )}
 
       {/* Gradient overlay */}
       <div
@@ -40,11 +50,11 @@ const QuestCard = ({ product }: { product: IProduct }) => {
       />
 
       {/* Challenge Logo */}
-      {challenge.image_url && (
+      {challenge?.image_url && (
         <div className="absolute top-4 md:top-9 right-4 md:right-9 w-[120px] sm:w-[160px] md:w-[200px]">
           <Image
             src={challenge.image_url}
-            alt={challenge.name}
+            alt={name}
             width={200}
             height={90}
             className="w-full h-auto object-contain"
@@ -53,25 +63,27 @@ const QuestCard = ({ product }: { product: IProduct }) => {
       )}
 
       {/* Distance Badge */}
-      <div className="absolute top-4 md:top-9 left-4 md:left-9 flex items-center gap-1.5 bg-white/20 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/30">
-        <span className="font-medium text-xs md:text-sm text-white">
-          {challenge.total_distance} km
-        </span>
-      </div>
+      {challenge?.total_distance && (
+        <div className="absolute top-4 md:top-9 left-4 md:left-9 flex items-center gap-1.5 bg-white/20 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/30">
+          <span className="font-medium text-xs md:text-sm text-white">
+            {challenge.total_distance} km
+          </span>
+        </div>
+      )}
 
       {/* Bottom Content */}
       <div className="absolute left-4 md:left-9 right-4 md:right-9 bottom-4 md:bottom-9 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
         <div className="flex flex-col gap-4 md:gap-6 max-w-full sm:max-w-[405px]">
           <div className="flex flex-col gap-1 md:gap-1.5 text-white">
             <h3 className="font-semibold text-lg sm:text-xl md:text-2xl leading-tight">
-              {challenge.name}
+              {name}
             </h3>
             <p className="text-white/80 text-xs sm:text-sm leading-5 md:leading-6 line-clamp-2">
               {product.description}
             </p>
           </div>
           <Link
-            href={"/challenges/" + challenge.id}
+            href={"/challenges/" + (challenge?.id || 1)}
             className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-white bg-white/20 backdrop-blur-xl border border-white/30 rounded-md w-fit hover:bg-white/30 transition-colors"
           >
             Choose a Quest
@@ -80,7 +92,7 @@ const QuestCard = ({ product }: { product: IProduct }) => {
         </div>
         {price && (
           <span className="font-semibold text-2xl sm:text-3xl md:text-4xl text-white tracking-[-1.44px] leading-none">
-            ${price.amount}
+            {formatPrice(price.amount, price.currency)}
           </span>
         )}
       </div>
@@ -89,10 +101,18 @@ const QuestCard = ({ product }: { product: IProduct }) => {
 };
 
 const ComingSoonCard = () => (
-  <div className="relative w-full h-[350px] sm:h-[400px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300">
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-      <Clock className="w-8 h-8 text-gray-400" />
-      <span className="text-gray-500 font-semibold text-lg">Coming Soon</span>
+  <div className="relative w-full h-[450px] sm:h-[480px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group active:scale-[0.97] transition-transform duration-200">
+    <Image
+      src="/images/coming-soon.png"
+      alt="Coming Soon"
+      fill
+      className="object-cover blur-sm scale-105 group-active:blur-md transition-all duration-200"
+      quality={75}
+    />
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-xs group-active:bg-black/50 transition-colors duration-200" />
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+      <Clock className="w-10 h-10 text-white/70 group-active:scale-110 transition-transform duration-200" />
+      <span className="text-white font-semibold text-xl tracking-wide group-active:scale-105 transition-transform duration-200">Coming Soon</span>
     </div>
   </div>
 );
@@ -150,7 +170,7 @@ export default function QuestSelection() {
         {/* Swiper with quest cards */}
         <div className="w-full max-w-[1020px] px-4 md:px-20">
           <Swiper
-            modules={[EffectCreative]}
+            modules={[EffectCreative, Autoplay]}
             effect="creative"
             creativeEffect={{
               prev: {
@@ -165,13 +185,19 @@ export default function QuestSelection() {
               },
               limitProgress: 2,
             }}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop
             slidesPerView={1}
             speed={500}
             grabCursor
             className="w-full"
           >
-            {products.map((product) => (
-              <SwiperSlide key={product.challenge_info?.id}>
+            {products.map((product, index) => (
+              <SwiperSlide key={product.challenge_info?.id || product.paddle_product_id || index}>
                 <QuestCard product={product} />
               </SwiperSlide>
             ))}
