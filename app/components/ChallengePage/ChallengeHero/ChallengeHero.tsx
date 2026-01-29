@@ -1,21 +1,19 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { Route } from "lucide-react";
 import { motion } from "motion/react";
 import usePrefersReducedMotion from "@/app/hooks/usePrefersReducedMotion";
 import Image from "next/image";
-import { Button } from "../../ui/button";
+import challengeImage from "@/public/images/landing/quest.webp";
 
 interface IChallengeProps {
-  id: number;
   title: string;
   description: string;
-  distance: string;
+  distance?: string | undefined;
   image: string;
 }
 
 const ChallengeHero = ({
-  id,
   title,
   description,
   image,
@@ -23,7 +21,6 @@ const ChallengeHero = ({
 }: IChallengeProps) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,112 +52,39 @@ const ChallengeHero = ({
     },
   };
 
-  const overlayVariants = {
-    hidden: {
-      opacity: 0,
-      y: -50,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring" as const,
-        stiffness: 120,
-        damping: 20,
-        duration: 0.8,
-      },
-    },
-  };
-
-  const imageVariants = {
-    hidden: {
-      opacity: 0,
-      y: 40,
-      scale: 0.95,
-      filter: "blur(3px)",
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      transition: {
-        type: "spring" as const,
-        stiffness: 80,
-        damping: 20,
-        delay: 0.4,
-        duration: 0.8,
-      },
-    },
-  };
-
-  const handlePressSignUp = () => {
-    const block = document.getElementById("challenge-pricing");
-    block?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-  };
-
   return (
-    <>
-      <motion.div
-        className="z-1 container text-center"
-        variants={containerVariants}
-        initial={prefersReducedMotion ? "visible" : "hidden"}
-        animate="visible"
+    <motion.div
+      className="relative px-4 md:px-2 pt-30 flex flex-col gap-6 items-center z-1 text-center rounded-sm overflow-hidden aspect-[1/2] sm:aspect-[1/1] md:aspect-[16/9] w-full"
+      variants={containerVariants}
+      initial={prefersReducedMotion ? "visible" : "hidden"}
+      animate="visible"
+    >
+      <Image src={title.toLocaleLowerCase() === 'amazonia route' ? challengeImage : image} width={1000} height={800} alt="challenge" className="absolute top-0 left-0 object-cover w-full h-full" />
+      <div className="absolute w-full h-full bg-gradient-to-b from-white/20 to-black/20" />
+      {distance && <motion.div
+        variants={itemVariants}
+        className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm"
       >
-        <motion.h1
-          variants={itemVariants}
-          className="text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl"
-        >
-          {title}
-        </motion.h1>
+        <Route className="size-4" />
+        <span>{distance}</span>
+      </motion.div>}
 
-        <motion.p
-          variants={itemVariants}
-          className="text-muted-foreground my-2 text-sm md:my-4 md:text-lg lg:my-6 lg:text-xl"
-        >
-          {distance} km
-        </motion.p>
+      <motion.h1
+        variants={itemVariants}
+        className="text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl"
+      >
+        {title}
+      </motion.h1>
 
-        <motion.p
-          variants={itemVariants}
-          className="text-muted-foreground my-2 text-sm md:my-4 md:text-lg lg:my-6 lg:text-xl"
-        >
-          {description}
-        </motion.p>
+      <motion.p
+        variants={itemVariants}
+        className="mx-auto my-3 max-w-2xl text-md md:my-5 md:text-lg lg:my-6 lg:text-xl"
+      >
+        {description}
+      </motion.p>
 
-        <motion.div variants={itemVariants}>
-          <Button
-            size="lg"
-            className="mt-2 rounded-full pl-5.5! before:rounded-full"
-            onClick={handlePressSignUp}
-          >
-            Sign up now
-            <div className="bg-background/15 border-background/10 grid size-5.5 place-items-center rounded-full border">
-              <ChevronRight className="size-4" />
-            </div>
-          </Button>
-        </motion.div>
-
-        <motion.div
-          variants={imageVariants}
-          className="bg-background/45 border-background relative mt-10 justify-self-end overflow-hidden rounded-t-xl border p-2 md:mt-20 md:rounded-t-3xl md:p-4 lg:mt-25 mx-auto"
-        >
-          {image && (
-            <Image
-              src={image}
-              alt={"Challenge image"}
-              width={800}
-              height={600}
-              priority
-              className="border-background/45 max-h-100 rounded-t-sm md:rounded-t-xl w-full"
-            />
-          )}
-        </motion.div>
-      </motion.div>
-    </>
+      <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background to-transparent" />
+    </motion.div>
   );
 };
 

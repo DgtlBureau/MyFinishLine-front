@@ -7,11 +7,12 @@ interface SettingItemProps {
   icon?: React.ReactNode;
   label: string;
   description?: string;
-  type?: "link" | "toggle" | "info";
+  type?: "link" | "toggle" | "info" | "segment";
   value?: boolean | string;
-  onToggle?: (value: boolean) => void;
+  onToggle?: (value: any) => void;
   onClick?: () => void;
   delay?: number;
+  segmentOptions?: { value: any; label: string }[];
 }
 
 const SettingItem = ({
@@ -23,6 +24,7 @@ const SettingItem = ({
   onToggle,
   onClick,
   delay = 0,
+  segmentOptions,
 }: SettingItemProps) => {
   return (
     <motion.div
@@ -33,7 +35,7 @@ const SettingItem = ({
         "flex items-center justify-between py-3 px-1 rounded-xl transition-colors group hover:bg-white/30 active:bg-white/40",
         type !== "toggle" && onClick && "cursor-pointer",
       )}
-      onClick={type !== "toggle" ? onClick : undefined}
+      onClick={type !== "toggle" && type !== "segment" ? onClick : undefined}
     >
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {icon && <span className="text-[#09090B]/60 shrink-0">{icon}</span>}
@@ -52,6 +54,24 @@ const SettingItem = ({
       <div className="flex items-center gap-2 shrink-0">
         {type === "toggle" && (
           <Switch checked={value as boolean} onCheckedChange={onToggle} />
+        )}
+        {type === "segment" && segmentOptions && (
+          <div className="flex items-center bg-muted rounded-lg p-1 gap-1">
+            {segmentOptions.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => onToggle?.(option.value)}
+                className={cn(
+                  "px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer",
+                  value === option.value
+                    ? "bg-black text-white shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         )}
         {type === "info" && typeof value === "string" && (
           <span className="text-sm text-muted-foreground">{value}</span>

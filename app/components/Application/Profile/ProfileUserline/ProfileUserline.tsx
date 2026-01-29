@@ -15,6 +15,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
   const { profile } = useAppSelector((state) => state.profile);
 
   const currentUser = userId ? profile : user;
+  const distanceUnit = getDistanceUnit(user.measure);
+  const isMiles = user.measure === "mile";
+  const displayDistance = isMiles ? currentUser.total_distance_mile : currentUser.total_distance;
 
   return (
     <section className="flex flex-col items-center px-4 pt-12 pb-4 relative max-w-4xl mx-auto">

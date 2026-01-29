@@ -4,7 +4,6 @@ import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
 import { useState } from "react";
 import { IProduct } from "@/app/types";
-import axios from "axios";
 
 const PaymentForm = ({ product }: { product: IProduct }) => {
   const {
@@ -13,38 +12,74 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     errors,
     setFieldValue,
     handleSubmit,
-    setFieldTouched,
     handleBlur,
   } = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       email: "",
-      cardNumber: "",
-      expirityCardDate: "",
-      cvc: "",
-      country: "",
-      promocode: "",
     },
     validate,
     onSubmit: (values) => {
-      handleOrder();
+      openCheckout();
     },
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOrder = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post("/api/payment/order", {
-        stripe_price_id: product.prices?.[0].stripe_price_id,
-      });
-      window.location.href = data.payment_url;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    initializePaddle({
+      environment: "production",
+      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN!,
+    }).then((paddleInstance: Paddle | undefined) => {
+      if (paddleInstance) {
+        setPaddle(paddleInstance);
+      }
+    }).catch(error => {
+      console.log('Paddle js:error', error)
+    })
+  }, []);
+
+
+  const openCheckout = () => {
+    if (!paddle) {
+      console.error("Paddle is not initialized");
+      return;
     }
+
+    const paddlePriceId = product.prices?.paddle_price_id;
+
+    if (!paddlePriceId) {
+      console.error("Paddle price ID is missing from product");
+      alert("Unable to process payment. Please contact support.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    paddle.Checkout.open({
+      items: [
+        {
+          priceId: paddlePriceId,
+          quantity: 1,
+        },
+      ],
+      customer: {
+        email: values.email,
+      },
+      customData: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        challengeId: product.challenge_info?.id,
+      },
+      settings: {
+        displayMode: "overlay",
+        theme: "light",
+        locale: "en",
+        successUrl: `${window.location.origin}/payment/success`,
+      },
+    });
+
+    setIsLoading(false);
   };
 
   const glassInputClassName =

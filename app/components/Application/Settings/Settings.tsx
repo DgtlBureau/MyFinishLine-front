@@ -47,6 +47,25 @@ const Settings = () => {
     }
   };
 
+  const handleDistanceUnitChange = async (unit: "km" | "mile") => {
+    const previousUnit = measure;
+    dispatch(setDistanceUnit(unit));
+
+    try {
+      const formData = new FormData();
+      formData.append("measure", unit);
+
+      const response = await axios.post("/api/user/update-user", formData);
+
+      if (response.status !== 200) {
+        dispatch(setDistanceUnit(previousUnit));
+      }
+    } catch (error) {
+      console.error("Error updating distance unit: ", error);
+      dispatch(setDistanceUnit(previousUnit));
+    }
+  };
+
   return (
     <>
       <SettingSection title={t.settings.account} delay={1}>

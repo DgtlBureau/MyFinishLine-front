@@ -16,6 +16,7 @@ import {
 import { useNotifications } from "@/app/contexts/NotificationContext";
 import Link from "next/link";
 import Image from "next/image";
+import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,8 +141,8 @@ const Page = () => {
       </div>
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className="flex justify-center items-center mt-8">
-            <Loader2 width={48} height={48} className="animate-spin" />
+          <div className="mt-8">
+            <ActivitiesListShimmer rows={5} />
           </div>
         ) : activities?.length > 0 ? (
           <div className="mt-8">

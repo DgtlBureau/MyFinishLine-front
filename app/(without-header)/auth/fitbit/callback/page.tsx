@@ -53,7 +53,7 @@ const FitBitCallbackPage = () => {
 
   return (
     <section className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex items-center justify-center flex-col">
+      <div className="px-2 flex items-center justify-center flex-col">
         <h1 className="text-2xl font-bold mb-4">Fitbit Authorization</h1>
         <p>{status}</p>
         {status.includes("successfully") && (
@@ -61,7 +61,7 @@ const FitBitCallbackPage = () => {
             <p className="block mt-4 text-gray-600">
               Redirecting to homepage...
             </p>
-            <p className="block mt-4 text-gray-600">
+            <p className="block mt-4 text-gray-600 text-center">
               If you are not being redirected automatically, click{" "}
               <Link href="/app/homepage" className="underline">
                 here

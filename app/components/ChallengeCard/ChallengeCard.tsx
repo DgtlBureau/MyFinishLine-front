@@ -37,7 +37,7 @@ const getTimePassed = (
 const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const { challenges } = useAppSelector((state) => state.user);
+  const { challenges, user } = useAppSelector((state) => state.user);
   const { challenges: anotherCahallenges } = useAppSelector(
     (state) => state.profile,
   );

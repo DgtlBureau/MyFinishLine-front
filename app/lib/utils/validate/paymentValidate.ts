@@ -4,11 +4,6 @@ interface IValuesProps {
   firstName: string;
   lastName: string;
   email: string;
-  cardNumber: string;
-  expirityCardDate: string;
-  cvc: string;
-  country: string;
-  promocode: string;
 }
 
 type Errors = Partial<IValuesProps>;
@@ -36,35 +31,6 @@ export const validate = (values: IValuesProps) => {
   } else if (values.email && !emailRegex(values.email)) {
     errors.email = "Incorrect email";
   }
-
-  // // CardNumber
-  // if (!values.cardNumber) {
-  //   errors.cardNumber = "Add card number";
-  // } else if (values.cardNumber && values.cardNumber.length < 16) {
-  //   errors.cardNumber = "Card number is too short";
-  // }
-
-  // // expirityCardDate
-  // if (!values.expirityCardDate) {
-  //   errors.expirityCardDate = "Add expirity card date";
-  // } else if (
-  //   values.expirityCardDate &&
-  //   values.expirityCardDate.replace("/", "").length < 4
-  // ) {
-  //   errors.expirityCardDate = "Incorrect experity data";
-  // }
-
-  // //CVC
-  // if (!values.cvc) {
-  //   errors.cvc = "CVC is required";
-  // } else if (values.cvc && values.cvc.length < 3) {
-  //   errors.cvc = "CVC is too short";
-  // }
-
-  // //Country
-  // if (!values.country) {
-  //   errors.country = "Choose the country";
-  // }
 
   return errors;
 };

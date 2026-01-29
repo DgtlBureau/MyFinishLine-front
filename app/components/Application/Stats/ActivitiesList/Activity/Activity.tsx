@@ -5,6 +5,7 @@ import {
   handleConvertDate,
   handleConvertDistance,
   handleConvertTimeShort,
+  getDistanceUnit,
 } from "@/app/lib/utils/convertData";
 import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
 import { ActivityImage } from "./ActivityImage";
@@ -14,9 +15,11 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
   delay,
   activity_name,
   progress,
+  progress_mile,
   activity_time,
   activity_date,
   pace,
+  pace_mile,
   from,
   sport_type,
 }, ref) => {
@@ -53,7 +56,7 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
             width={16}
             height={16}
           />
-          {Number(pace.toFixed(2))} km/min
+          {Number(displayPace?.toFixed(2))} {distanceUnit}/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">

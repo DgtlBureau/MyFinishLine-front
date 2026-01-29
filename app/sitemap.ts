@@ -24,10 +24,12 @@ export const revalidate = 86400;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const challenges = await getPublicChallenges();
 
-  const challengePages = challenges.map((item) => ({
-    url: `${SITE_URL}/challenges/${item.challenge_info.id}`,
-    lastModified: new Date(),
-  }));
+  const challengePages = challenges
+    .filter((item) => item.paddle_product_id)
+    .map((item) => ({
+      url: `${SITE_URL}/challenges/${item.paddle_product_id}`,
+      lastModified: new Date(),
+    }));
 
   const staticPages = [
     "",

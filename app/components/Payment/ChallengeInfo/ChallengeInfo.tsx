@@ -3,6 +3,9 @@ import { IProduct } from "@/app/types";
 import Image from "next/image";
 
 export const ChallengeInfo = ({ product }: { product: IProduct }) => {
+  const priceAmount = (Number(product.prices?.amount) / 100).toFixed(2);
+  const currency = product.prices?.currency || "USD";
+
   return (
     <div className="flex flex-col gap-6 justify-between p-6 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 shadow-lg md:w-[40%] w-full">
       <div className="flex gap-6 items-start justify-between">
@@ -15,7 +18,7 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
         </div>
         <div className="border-4 border-[#EEDFBA] w-50 h-50 rounded-full overflow-hidden flex items-center justify-center shadow-lg">
           <Image
-            src={product.main_image}
+            src={product.main_image || product.images}
             width={200}
             height={200}
             alt="product image"
@@ -42,8 +45,7 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
           <div className="flex justify-between p-3 px-5 text-base font-bold">
             <p>Total</p>
             <p>
-              {product.prices?.[0].amount}{" "}
-              {CurrencieSymbols[product.prices?.[0].currency]}
+              {priceAmount} {CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || '$'}
             </p>
           </div>
         </div>

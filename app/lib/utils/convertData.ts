@@ -1,9 +1,17 @@
 export const handleConvertDistance = (distanceInMeters: number) => {
   if (!distanceInMeters) return "0 m";
   if (distanceInMeters >= 1000) {
-    return `${(distanceInMeters / 1000).toFixed(2)} km`;
+    return `${(distanceInMeters / 1000).toFixed(2)}`;
   }
   return `${distanceInMeters.toFixed(0)} m`;
+};
+
+export const getDistanceUnit = (measure: "km" | "mile" = "km") => {
+  return measure === "km" ? "km" : "mi";
+};
+
+export const getSmallDistanceUnit = (measure: "km" | "mile" = "km") => {
+  return measure === "km" ? "m" : "ft";
 };
 
 export const handleConvertTime = (

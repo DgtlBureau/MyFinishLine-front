@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import logoImage from '@/public/images/logo-line-black.webp'
 
 import { cn } from "@/app/lib/utils";
 interface LogoProps {

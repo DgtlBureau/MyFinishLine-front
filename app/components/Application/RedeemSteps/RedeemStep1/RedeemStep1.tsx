@@ -10,6 +10,14 @@ import { motion } from "framer-motion";
 import { useMemo } from "react";
 import countryList from "react-select-country-list";
 
+interface FormErrors {
+  [key: string]: string | undefined;
+}
+
+interface FormTouched {
+  [key: string]: boolean | undefined;
+}
+
 interface IRedeemStep1Props {
   first_name: string;
   last_name: string;
@@ -17,7 +25,10 @@ interface IRedeemStep1Props {
   dial_code: string;
   phone: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   handleUpdateCountry: (value: string) => void;
+  errors: FormErrors;
+  touched: FormTouched;
 }
 
 const RedeemStep1 = ({
@@ -27,7 +38,10 @@ const RedeemStep1 = ({
   dial_code,
   phone,
   handleChange,
+  handleBlur,
   handleUpdateCountry,
+  errors,
+  touched,
 }: IRedeemStep1Props) => {
   const options = useMemo(() => countryList().getLabels(), []);
 
@@ -40,6 +54,9 @@ const RedeemStep1 = ({
         delay={0}
         value={first_name}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.first_name}
+        touched={touched.first_name}
       />
       <RedeemInput
         id="last_name"
@@ -48,19 +65,22 @@ const RedeemStep1 = ({
         delay={0.1}
         value={last_name}
         onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.last_name}
+        touched={touched.last_name}
       />
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-2"
+        className="space-y-1"
       >
         <label className="text-sm font-medium text-foreground">
-          Shipping Country
+          Shipping Country<span className="text-gray-400">*</span>
         </label>
-        <div className="mt-2">
+        <div className="mt-1">
           <Select value={country} onValueChange={handleUpdateCountry} required>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className={`w-full ${touched.country && errors.country ? 'border-red-500' : ''}`}>
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
             <SelectContent>
@@ -72,9 +92,12 @@ const RedeemStep1 = ({
             </SelectContent>
           </Select>
         </div>
+        {touched.country && errors.country && (
+          <p className="text-red-500 text-[11px] leading-tight">{errors.country}</p>
+        )}
       </motion.div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         <RedeemInput
           id="dial_code"
           label="Dial code"
@@ -82,6 +105,9 @@ const RedeemStep1 = ({
           delay={0.25}
           value={dial_code}
           onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.dial_code}
+          touched={touched.dial_code}
         />
         <RedeemInput
           id="phone"
@@ -90,6 +116,9 @@ const RedeemStep1 = ({
           delay={0.3}
           value={phone}
           onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.phone}
+          touched={touched.phone}
         />
       </div>
     </>

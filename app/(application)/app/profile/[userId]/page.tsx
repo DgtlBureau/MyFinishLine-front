@@ -1,7 +1,8 @@
 "use client";
 
 import { ProfileById } from "@/app/components/Application/Profile/ProfileById/ProfileById";
-import Loader from "@/app/components/Shared/Loader/Loader";
+import ChallengesShimmer from "@/app/components/Shared/Shimmer/ChallengesShimmer/ChallengesShimmer";
+import ProfileUserlineShimmer from "@/app/components/Shared/Shimmer/ProfileUserlineShimmer/ProfileUserlineShimmer";
 import { setUserProfile } from "@/app/lib/features/profile/profileSlice";
 import { useAppDispatch } from "@/app/lib/hooks";
 import axios from "axios";

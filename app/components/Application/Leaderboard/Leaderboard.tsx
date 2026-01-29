@@ -9,6 +9,8 @@ import { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import CustomModal from "../../Shared/CustomModal/CustomModal";
 import { motion } from "motion/react";
+import { useAppSelector } from "@/app/lib/hooks";
+import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
 export interface IRunner {
   id: number;
@@ -124,6 +126,8 @@ const Leaderboard = () => {
     isConnected: false,
   });
   const [clickedUserInfo, setClickedUserInfo] = useState<IRunner | null>(null);
+  const { user } = useAppSelector((state) => state.user);
+  const distanceUnit = getDistanceUnit(user.measure);
 
   const swiperRef = useRef<SwiperType | null>(null);
 
@@ -232,7 +236,7 @@ const Leaderboard = () => {
 
                       <div className="text-right">
                         <span className="text-sm font-medium text-foreground">
-                          {runner.distance.toLocaleString()} km
+                          {runner.distance.toLocaleString()} {distanceUnit}
                         </span>
                         {isTopThree && runner.time && (
                           <span className="text-sm text-muted-foreground ml-2">
@@ -269,7 +273,7 @@ const Leaderboard = () => {
                     </span>
 
                     <span className="text-sm font-medium text-foreground">
-                      0 km
+                      0 {distanceUnit}
                     </span>
                   </div>
                 </div>

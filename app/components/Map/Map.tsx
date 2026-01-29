@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const Map = ({
   background_images,
@@ -59,6 +60,88 @@ const Map = ({
     }
   }, []);
 
+  // Track previous steps to detect newly completed ones
+  const previousStepsRef = useRef<IStep[]>([]);
+  const isInitialLoadRef = useRef(true);
+  const CELEBRATED_STEPS_KEY = "celebrated_steps";
+
+  // Detect when steps are newly completed and queue award modals
+  useEffect(() => {
+    if (steps.length === 0) return;
+
+    // Get already celebrated steps from sessionStorage
+    let celebratedSteps: number[] = [];
+    try {
+      const stored = sessionStorage.getItem(CELEBRATED_STEPS_KEY);
+      if (stored) {
+        celebratedSteps = JSON.parse(stored);
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+
+    const previousSteps = previousStepsRef.current;
+    const newlyCompletedSteps: IStep[] = [];
+
+    // On initial load, find steps completed since last session
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+
+      for (const step of steps) {
+        if (step.completed && !celebratedSteps.includes(step.id)) {
+          newlyCompletedSteps.push(step);
+          celebratedSteps.push(step.id);
+        }
+      }
+    } else {
+      // For subsequent updates, detect steps that just became completed
+      for (const step of steps) {
+        if (step.completed && !celebratedSteps.includes(step.id)) {
+          const prevStep = previousSteps.find((s) => s.id === step.id);
+          const wasNotCompletedBefore = prevStep && !prevStep.completed;
+
+          if (wasNotCompletedBefore) {
+            newlyCompletedSteps.push(step);
+            celebratedSteps.push(step.id);
+          }
+        }
+      }
+    }
+
+    // If there are newly completed steps, queue them for celebration
+    if (newlyCompletedSteps.length > 0) {
+      sessionStorage.setItem(CELEBRATED_STEPS_KEY, JSON.stringify(celebratedSteps));
+
+      // Sort by index (lowest first) so user sees them in order
+      const sortedSteps = newlyCompletedSteps.sort((a, b) => a.index - b.index);
+
+      // Send GTM events for each completed step
+      sortedSteps.forEach((step) => {
+        sendGTMEvent({
+          event: "step_completed",
+          step_number: step.index,
+          step_id: step.id,
+          step_title: step.title,
+          challenge_id: step.challenge_id,
+          page_location: window.location.href,
+          page_path: window.location.pathname,
+          page_title: document.title,
+        });
+      });
+
+      // Show the first one immediately, queue the rest
+      const [firstStep, ...remainingSteps] = sortedSteps;
+      setActiveStep(firstStep);
+      setIsAwardOpen(true);
+      if (remainingSteps.length > 0) {
+        setAwardQueue(remainingSteps);
+      }
+    }
+
+    // Update previous steps ref
+    previousStepsRef.current = steps;
+  }, [steps]);
+
   const stepsAmount = steps.length;
 
   const MAP_WIDTH = 672;
@@ -90,14 +173,8 @@ const Map = ({
     route_data.routes.length > 0 &&
     route_data.routes.some((r) => r.points && r.points.length >= 2);
 
-  const handleScrollToActiveStep = (animate: boolean = true) => {
-    const behavior = animate ? "smooth" : "instant";
-
-    // Find ALL user circles
+  const findVisibleUserCircle = (): Element | null => {
     const userCircles = document.querySelectorAll("#user-progress-icon");
-
-    // Find the first circle that's actually visible (not display: none, opacity > 0)
-    let visibleCircle = null;
 
     for (const circle of userCircles) {
       const style = window.getComputedStyle(circle);
@@ -124,10 +201,18 @@ const Map = ({
       }
 
       if (isVisible && parentVisible) {
-        visibleCircle = circle;
-        break;
+        return circle;
       }
     }
+    return null;
+  };
+
+  const handleScrollToActiveStep = (animate: boolean = true, retryCount: number = 0) => {
+    const behavior = animate ? "smooth" : "instant";
+    const MAX_RETRIES = 5;
+    const RETRY_DELAY = 100;
+
+    const visibleCircle = findVisibleUserCircle();
 
     if (visibleCircle) {
       visibleCircle.scrollIntoView({
@@ -138,7 +223,15 @@ const Map = ({
       return;
     }
 
-    // If no visible circle, fallback to active step
+    // Retry a few times to wait for RouteRenderer avatar to become visible
+    if (retryCount < MAX_RETRIES) {
+      setTimeout(() => {
+        handleScrollToActiveStep(animate, retryCount + 1);
+      }, RETRY_DELAY);
+      return;
+    }
+
+    // If still no visible circle after retries, fallback to active step
     const activeStep = steps.find((step) => step.active);
     if (activeStep) {
       const stepElement = document.getElementById(`step-${activeStep.index}`);
@@ -276,11 +369,24 @@ const Map = ({
     setIsAwardOpen(false);
     if (activeStep?.story?.length) {
       setIsStoriesOpen(true);
+    } else {
+      // No stories, check if there are more steps in queue
+      showNextQueuedAward();
+    }
+  };
+
+  const showNextQueuedAward = () => {
+    if (awardQueue.length > 0) {
+      const [nextStep, ...remainingSteps] = awardQueue;
+      setActiveStep(nextStep);
+      setAwardQueue(remainingSteps);
+      setIsAwardOpen(true);
+    } else {
+      setActiveStep(null);
     }
   };
 
   const handleCloseStories = () => {
-    setActiveStep(null);
     setIsStoriesOpen(false);
     setZoomScale(1);
     setIsZooming(false);
@@ -296,12 +402,21 @@ const Map = ({
               className="w-full h-auto blur-2xl opacity-40"
             >
               <img
-                src={image.image_url}
-                className="w-full h-auto object-cover"
+                src={background_images[0].image_url}
+                className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
                 alt=""
               />
             </div>
-          ))}
+          )}
+          {/* Color overlay to blend with map theme */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
+          {/* Soft vignette */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
+            }}
+          />
         </div>
 
         <div
@@ -426,6 +541,11 @@ const Map = ({
                         userDistanceReached={
                           +step.distance_to_reach_step -
                           +step.user_distance_reach
+                        }
+                        userDistanceReachedMile={
+                          step.distance_to_reach_step_mile && step.user_distance_reach_mile
+                            ? +step.distance_to_reach_step_mile - +step.user_distance_reach_mile
+                            : undefined
                         }
                         x={step.x_coordinate}
                         distanceLeft={1}

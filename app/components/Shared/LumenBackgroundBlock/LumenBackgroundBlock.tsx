@@ -35,7 +35,7 @@ const LumenBackgroundBlock = ({
 
   return (
     <section
-      className={`section-padding border-none min-h-[752px] relative flex flex-col items-center bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat pb-0! dark:bg-[url(/images/gradient-dark.webp)] ${className}`}
+      className={`section-padding relative border-none relative flex flex-col items-center bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat pb-0! dark:bg-[url(/images/gradient-dark.webp)] ${className}`}
     >
       <motion.div
         variants={overlayVariants}
