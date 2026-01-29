@@ -68,7 +68,7 @@ export default function Register() {
             setFieldValue("error", error.response.data.message);
             console.error("Registration error:", error);
           } finally {
-            setLoading(false);
+            setIsLoading(false);
           }
         } else {
           handleSendCode();

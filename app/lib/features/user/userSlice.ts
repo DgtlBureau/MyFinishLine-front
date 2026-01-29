@@ -104,7 +104,6 @@ export const {
   updateUserSex,
   updateUserMeasure,
   setUserChallenges,
-  setDistanceUnit,
   clearUser,
 } = userSlice.actions;
 export default userSlice.reducer;

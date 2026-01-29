@@ -175,22 +175,6 @@ const Feature = memo(
             {description}
           </p>
         </div>
-        <CustomModal
-          isOpen={!!selectedImage}
-          onClose={() => setSelectedImage(null)}
-        >
-          <div className="flex items-center justify-center p-1">
-            {selectedImage && (
-              <Image
-                src={selectedImage}
-                alt="Reward preview"
-                width={400}
-                height={400}
-                className="object-contain max-h-[80vh]"
-              />
-            )}
-          </div>
-        </CustomModal>
       </motion.li>
     );
   },

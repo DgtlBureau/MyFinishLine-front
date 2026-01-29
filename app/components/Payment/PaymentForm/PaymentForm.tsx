@@ -2,8 +2,9 @@ import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IProduct } from "@/app/types";
+import { initializePaddle, Paddle } from "@paddle/paddle-js";
 
 const PaymentForm = ({ product }: { product: IProduct }) => {
   const {
@@ -25,6 +26,7 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
 
   useEffect(() => {
     initializePaddle({

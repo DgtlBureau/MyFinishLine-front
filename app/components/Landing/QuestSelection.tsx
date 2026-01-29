@@ -15,13 +15,15 @@ import "swiper/css";
 import "swiper/css/effect-creative";
 
 const QuestCard = ({ product }: { product: IProduct }) => {
-  const price = product.prices?.find((p) => p.currency === "USD");
+  const price = product.prices;
   const challenge = product.challenge_info;
+
+  if (!challenge) return null;
 
   return (
     <div className="relative w-full h-[350px] sm:h-[400px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden">
       <Image
-        src={product.main_image}
+        src={product.main_image || ""}
         alt={challenge.name}
         fill
         className="object-cover"
@@ -169,7 +171,7 @@ export default function QuestSelection() {
             className="w-full"
           >
             {products.map((product) => (
-              <SwiperSlide key={product.challenge_info.id}>
+              <SwiperSlide key={product.challenge_info?.id}>
                 <QuestCard product={product} />
               </SwiperSlide>
             ))}

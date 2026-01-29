@@ -33,6 +33,7 @@ const Map = ({
   const [isZooming, setIsZooming] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
+  const [awardQueue, setAwardQueue] = useState<IStep[]>([]);
   const [scale, setScale] = useState(() => {
     if (typeof window !== 'undefined') {
       return Math.min(1, window.innerWidth / 672);
@@ -407,7 +408,7 @@ const Map = ({
                 alt=""
               />
             </div>
-          )}
+          ))}
           {/* Color overlay to blend with map theme */}
           <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
           {/* Soft vignette */}

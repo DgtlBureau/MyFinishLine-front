@@ -5,11 +5,11 @@ import {
   handleConvertDate,
   handleConvertDistance,
   handleConvertTimeShort,
-  getDistanceUnit,
 } from "@/app/lib/utils/convertData";
 import { Clock, Route, Activity as ActivityIcon } from "lucide-react";
 import { ActivityImage } from "./ActivityImage";
 import { forwardRef } from "react";
+import { useMeasure } from "@/app/hooks/useMeasure";
 
 const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
   delay,
@@ -23,6 +23,8 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
   from,
   sport_type,
 }, ref) => {
+  const { pace: formatPace, label: distanceUnit } = useMeasure();
+  const displayPace = formatPace(Number(pace), Number(pace_mile));
   return (
     <motion.li
       ref={ref}
@@ -56,7 +58,7 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
             width={16}
             height={16}
           />
-          {Number(displayPace?.toFixed(2))} {distanceUnit}/min
+          {displayPace} {distanceUnit}/min
         </div>
       </div>
       <div className="pt-2 px-2 sm:px-6 pb-6">

@@ -10,7 +10,7 @@ import { useState } from "react";
 import Integrations from "../Integrations/Integrations";
 import axios from "axios";
 import { useAppDispatch } from "@/app/lib/hooks";
-import { clearUser } from "@/app/lib/features/user/userSlice";
+import { clearUser, updateUserMeasure } from "@/app/lib/features/user/userSlice";
 import { useMeasure } from "@/app/hooks/useMeasure";
 import { useTranslation } from "@/app/contexts/LanguageContext";
 import { MeasureUnit } from "@/app/types/user";
@@ -49,7 +49,7 @@ const Settings = () => {
 
   const handleDistanceUnitChange = async (unit: "km" | "mile") => {
     const previousUnit = measure;
-    dispatch(setDistanceUnit(unit));
+    dispatch(updateUserMeasure(unit));
 
     try {
       const formData = new FormData();
@@ -58,11 +58,11 @@ const Settings = () => {
       const response = await axios.post("/api/user/update-user", formData);
 
       if (response.status !== 200) {
-        dispatch(setDistanceUnit(previousUnit));
+        dispatch(updateUserMeasure(previousUnit));
       }
     } catch (error) {
       console.error("Error updating distance unit: ", error);
-      dispatch(setDistanceUnit(previousUnit));
+      dispatch(updateUserMeasure(previousUnit));
     }
   };
 

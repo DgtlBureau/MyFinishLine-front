@@ -8,6 +8,7 @@ import { useAppDispatch } from "@/app/lib/hooks";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loader from "@/app/components/Shared/Loader/Loader";
 
 export default function UserProfile() {
     const pathname = usePathname();
