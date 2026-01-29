@@ -19,8 +19,7 @@ interface RouteSegmentProps {
   progress: number;
   isCompleted: boolean;
   isActive: boolean;
-  segmentId: string;
-  onPathReady?: (path: SVGPathElement, segmentId: string) => void;
+  segmentIndex: number;
 }
 
 // Convert points to smooth SVG path using Catmull-Rom splines
@@ -60,8 +59,9 @@ function pointsToSmoothPath(
 
 // Individual route segment with progress animation
 const RouteSegment = memo(
-  ({ points, mapHeight, progress, isCompleted, isActive, segmentId, onPathReady }: RouteSegmentProps) => {
+  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex }: RouteSegmentProps) => {
     const progressPathRef = useRef<SVGPathElement>(null);
+    const glowPathRef = useRef<SVGPathElement>(null);
 
     // Build smooth SVG path
     const pathD = useMemo(() => {
@@ -77,42 +77,105 @@ const RouteSegment = memo(
 
     // Apply progress animation using stroke-dashoffset
     useLayoutEffect(() => {
-      if (progressPathRef.current && pathD) {
-        const path = progressPathRef.current;
-        const length = path.getTotalLength();
-        const validatedProgress = Math.max(0, Math.min(100, progress));
+      const applyProgress = (pathElement: SVGPathElement | null) => {
+        if (pathElement && pathD) {
+          const length = pathElement.getTotalLength();
+          const validatedProgress = Math.max(0, Math.min(100, progress));
 
-        path.style.strokeDasharray = `${length} ${length}`;
-        const offset = length * (1 - validatedProgress / 100);
-        path.style.strokeDashoffset = offset.toString();
-        path.style.transition = "stroke-dashoffset 0.5s ease-out";
-      }
+          pathElement.style.strokeDasharray = `${length} ${length}`;
+          const offset = length * (1 - validatedProgress / 100);
+          pathElement.style.strokeDashoffset = offset.toString();
+          pathElement.style.transition = "stroke-dashoffset 0.8s ease-out";
+        }
+      };
+
+      applyProgress(progressPathRef.current);
+      applyProgress(glowPathRef.current);
     }, [progress, pathD]);
 
     if (!pathD) return null;
 
+    const filterId = `glow-${segmentIndex}`;
+    const gradientId = `progress-gradient-${segmentIndex}`;
+
     return (
       <g>
-        {/* Background dashed line (gray) */}
+        {/* Filter for glow effect */}
+        <defs>
+          <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="50%" stopColor="#06B6D4" />
+            <stop offset="100%" stopColor="#10B981" />
+          </linearGradient>
+        </defs>
+
+        {/* Background path - uncompleted (dimmed, dashed) */}
         <path
           d={pathD}
           fill="none"
-          stroke="gray"
-          strokeWidth={4}
-          strokeDasharray="8 4"
+          stroke="rgba(255, 255, 255, 0.15)"
+          strokeWidth={6}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Progress colored line - no strokeDasharray here, it's set by JS for animation */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke="rgba(139, 92, 246, 0.25)"
+          strokeWidth={4}
+          strokeDasharray="12 8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Progress glow effect (behind the main line) */}
+        {(isActive || isCompleted) && (
+          <path
+            ref={glowPathRef}
+            d={pathD}
+            fill="none"
+            stroke={isCompleted ? "#8B5CF6" : "#06B6D4"}
+            strokeWidth={12}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter={`url(#${filterId})`}
+            opacity={0.5}
+          />
+        )}
+
+        {/* Progress colored line - completed/in-progress portion */}
         <path
           ref={progressPathRef}
           d={pathD}
           fill="none"
-          stroke={isCompleted ? "#8D5DF8" : "#6d63ff"}
-          strokeWidth={4}
+          stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
+          strokeWidth={5}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+
+        {/* Highlight line on top for extra shine */}
+        {(isActive || isCompleted) && progress > 0 && (
+          <path
+            d={pathD}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.4)"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              strokeDasharray: progressPathRef.current ? `${progressPathRef.current.getTotalLength()} ${progressPathRef.current.getTotalLength()}` : undefined,
+              strokeDashoffset: progressPathRef.current ? (progressPathRef.current.getTotalLength() * (1 - progress / 100)).toString() : undefined,
+            }}
+          />
+        )}
       </g>
     );
   }
@@ -157,7 +220,8 @@ const RouteRenderer = ({
 
   // Scale and render each route
   const scaledRoutes = useMemo(() => {
-    return routeData.routes.map((route) => {
+    return routeData.routes.map((route, index) => {
+      // Find the step for this route to get progress info
       const step = steps.find((s) => s.index === route.from_step_index);
       const scaledPoints = route.points.map((point) => ({
         x: point.x * scaleX,
@@ -172,8 +236,8 @@ const RouteRenderer = ({
         scaledPoints,
         progress: step?.user_distance_percent || 0,
         isCompleted: step?.completed || false,
-        isActive,
-        segmentId,
+        isActive: step?.active || false,
+        segmentIndex: index,
       };
     });
   }, [routeData.routes, steps, scaleX, scaleY, activeRouteInfo]);
@@ -311,81 +375,24 @@ const RouteRenderer = ({
   }, []);
 
   return (
-    <div className="absolute inset-0" style={{ zIndex: 5 }}>
-      <svg
-        ref={svgRef}
-        className="absolute inset-0 pointer-events-none"
-        width={mapWidth}
-        height={mapHeight}
-        style={{ overflow: "visible" }}
-      >
-        {scaledRoutes.map((route) => (
-          <RouteSegment
-            key={route.segmentId}
-            points={route.scaledPoints}
-            mapHeight={mapHeight}
-            progress={route.progress}
-            isCompleted={route.isCompleted}
-            isActive={route.isActive}
-            segmentId={route.segmentId}
-            onPathReady={handlePathReady}
-          />
-        ))}
-      </svg>
-
-      {/* User Avatar */}
-      {activeRouteInfo && (
-        <div
-          id="user-progress-icon"
-          ref={avatarRef}
-          className="absolute pr-2 flex items-center gap-2 bg-black/50 rounded-full pointer-events-none"
-          style={{
-            opacity: 0,
-            display: "none",
-            transform: `translate(-${CIRCLE_RADIUS}px, -${CIRCLE_RADIUS}px)`,
-            willChange: "left, top, opacity",
-            zIndex: 20,
-          }}
-        >
-          <div
-            className="border-white border-2 shrink-0"
-            style={{
-              width: CIRCLE_RADIUS * 2,
-              height: CIRCLE_RADIUS * 2,
-              borderRadius: "50%",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-            }}
-          >
-            {user.full_avatar_url ? (
-              <Image
-                className="w-full h-full rounded-full"
-                src={user.full_avatar_url}
-                width={30}
-                height={30}
-                alt="User"
-              />
-            ) : user.avatar_symbol ? (
-              <div
-                style={{ backgroundColor: user.avatar_color }}
-                className="rounded-full w-full h-full flex items-center justify-center text-sm"
-              >
-                {user.avatar_symbol}
-              </div>
-            ) : (
-              <div
-                style={{ backgroundColor: user.avatar_color || "#6d63ff" }}
-                className="rounded-full w-full h-full flex items-center justify-center text-sm"
-              >
-                <User width={14} />
-              </div>
-            )}
-          </div>
-          <span className="text-white text-sm">
-            {user.username || user.first_name}
-          </span>
-        </div>
-      )}
-    </div>
+    <svg
+      className="absolute inset-0 pointer-events-none"
+      width={mapWidth}
+      height={mapHeight}
+      style={{ overflow: "visible", zIndex: 5 }}
+    >
+      {scaledRoutes.map((route) => (
+        <RouteSegment
+          key={`route-${route.from_step_index}-${route.to_step_index}`}
+          points={route.scaledPoints}
+          mapHeight={mapHeight}
+          progress={route.progress}
+          isCompleted={route.isCompleted}
+          isActive={route.isActive}
+          segmentIndex={route.segmentIndex}
+        />
+      ))}
+    </svg>
   );
 };
 

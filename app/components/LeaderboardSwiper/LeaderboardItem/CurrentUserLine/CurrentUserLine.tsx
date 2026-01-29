@@ -1,8 +1,10 @@
-import { handleConvertTimeShort, getDistanceUnit } from "@/app/lib/utils/convertData";
+"use client";
+
+import { handleConvertTimeShort } from "@/app/lib/utils/convertData";
 import { IUser } from "@/app/types/user";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import { useAppSelector } from "@/app/lib/hooks";
+import { useMeasure } from "@/app/hooks/useMeasure";
 
 const CurrentUserLine = ({
   username,
@@ -12,10 +14,7 @@ const CurrentUserLine = ({
   total_moving_time_hours,
   position,
 }: IUser & { position: number }) => {
-  const { user } = useAppSelector((state) => state.user);
-  const distanceUnit = getDistanceUnit(user.measure);
-  const isMiles = user.measure === "mile";
-  const displayDistance = isMiles ? total_distance_mile : total_distance;
+  const { label, isMile } = useMeasure();
   return (
     <div className="flex items-center justify-between p-4 border-b border-[#DADADA]">
       <div className="flex items-center gap-2">
@@ -33,7 +32,7 @@ const CurrentUserLine = ({
             alt="User image"
           />
         ) : (
-          <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#F4E8FD] bg-white">
+          <div className="rounded-lg w-10 h-10 flex items-center justify-center shrink-0 border border-[#CEE9D8] bg-white">
             <Star />
           </div>
         )}
@@ -44,7 +43,7 @@ const CurrentUserLine = ({
       </div>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {displayDistance} {distanceUnit}
+          {isMile ? total_distance_mile : total_distance} {label}
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
           {handleConvertTimeShort(total_moving_time_hours)}

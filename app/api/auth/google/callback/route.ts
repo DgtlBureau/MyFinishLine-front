@@ -10,6 +10,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No code provided" }, { status: 400 });
     }
 
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
+
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -17,7 +19,7 @@ export async function POST(req: Request) {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-        redirect_uri: "https://dev.myfinishline.io/auth/google/callback",
+        redirect_uri: redirectUri,
         grant_type: "authorization_code",
       }),
     });

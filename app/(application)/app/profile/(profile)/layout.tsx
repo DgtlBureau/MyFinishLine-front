@@ -76,13 +76,34 @@ const page = ({
   }, []);
 
   return (
-    <main className="pt-14 mx-auto">
-      <ProfileUserline />
-      <div className="mt-4 px-4 max-w-4xl mx-auto">
-        <ProfileTabs links={profileLinks} layoutId="profile-tab-navigation" />
-      </div>
-      <div className="mt-4">{children}</div>
-    </main>
+    <div className="min-h-screen" style={{
+      background: `linear-gradient(to bottom,
+        #5170D5 0%,
+        #5575D5 8%,
+        #5A7AD6 15%,
+        #6080D6 22%,
+        #6888D4 28%,
+        #7090D0 34%,
+        #7A9BC8 40%,
+        #85A6C4 46%,
+        #8FAEC0 52%,
+        #99B6BC 58%,
+        #A3BEB8 64%,
+        #ADC6B4 70%,
+        #B7CEB0 76%,
+        #C1D6AC 82%,
+        #CBDEA8 88%,
+        #CEE9D8 100%
+      )`
+    }}>
+      <main className="pt-14 mx-auto">
+        <ProfileUserline />
+        <div className="mt-4 px-4 max-w-4xl mx-auto">
+          <ProfileTabs links={profileLinks} layoutId="profile-tab-navigation" />
+        </div>
+        <div className="mt-4">{children}</div>
+      </main>
+    </div>
   );
 };
 

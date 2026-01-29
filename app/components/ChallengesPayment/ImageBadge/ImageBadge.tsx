@@ -15,7 +15,7 @@ const ImageBadge = ({ imageSrc, text }: IImageBadgeProps) => {
         height={38}
         alt="Badge"
       />
-      <p className="text-center text-xs text-neutral-600 mt-2">{text}</p>
+      <p className="text-center text-xs text-white/60 mt-2">{text}</p>
     </div>
   );
 };

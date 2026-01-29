@@ -31,12 +31,40 @@ import BirthDateWheelPicker from "@/app/components/Shared/WheelDateBirthPicker/W
 import CustomWheelPicker from "@/app/components/Shared/CustomWheelPicker/CustomWheelPicker";
 import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
+
+const glassInputClassName =
+  "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)]";
 
 const sexOptions = [
   { label: "Male", value: "M" },
   { label: "Female", value: "F" },
   { label: "Prefer not to say", value: null },
 ];
+
+const formItemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.4 + i * 0.08,
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
+    },
+  }),
+};
+
+const getCountryFlag = (countryName: string): string => {
+  const cl = countryList();
+  const code = cl.getValue(countryName);
+  if (!code) return "";
+  return code
+    .toUpperCase()
+    .split("")
+    .map((c: string) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+    .join("");
+};
 
 const page = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -158,143 +186,250 @@ const page = () => {
         title="Edit account"
         description="Edit your account information"
       >
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="px-4">
-            <div className="mt-8 w-full leading-0">
-              <label className="block w-full">
-                <span className="text-sm">First Name</span>
-                <Input
-                  name="first_name"
-                  className="mt-px"
-                  placeholder="John"
-                  value={data.first_name}
-                  onChange={handleChange}
-                />
-              </label>
-              <label className="block w-full mt-2">
-                <span className="text-sm">Last Name</span>
-                <Input
-                  name="last_name"
-                  className="mt-px"
-                  placeholder="Doe"
-                  value={data.last_name}
-                  onChange={handleChange}
-                />
-              </label>
-              <label className="block mt-2 w-full">
-                <span className="text-sm">Username</span>
-                <div className="relative flex items-center">
-                  <Input
-                    containerClassName="w-full"
-                    name="username"
-                    className="mt-px pl-7 w-full"
-                    placeholder="John.doe"
-                    value={data.username}
-                    onChange={handleChange}
-                  />
-                  <span className="absolute left-3 text-neutral-400">@</span>
-                </div>
-              </label>
-              <label className="block mt-2 w-full">
-                <span className="text-sm">Birth Date</span>
-                <Button
-                  className="block w-full text-left hover:bg-transparent"
-                  variant="outline"
-                  type="button"
-                  onClick={handleOpenBirthDateSheet}
+        {/* Profile Photo Section - Sticky */}
+        <div className="sticky top-0 z-20 pt-4 pb-6">
+          <div className="flex flex-col items-center">
+            <div className="relative w-36 h-36 flex items-center justify-center">
+              {/* Frame - animated scale from center */}
+              {user.selected_frame && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: 0.3,
+                    duration: 0.6,
+                    ease: [0.34, 1.56, 0.64, 1],
+                  }}
+                  className="absolute left-0 top-0 h-full w-full z-20 pointer-events-none"
                 >
-                  {birthDate.month < 10
-                    ? "0" + birthDate.month
-                    : birthDate.month}
-                  .{birthDate.day < 10 ? "0" + birthDate.day : birthDate.day}.
-                  {birthDate.year}
-                </Button>
-              </label>
+                  <Image
+                    src={user.selected_frame?.image_url}
+                    alt="Frame"
+                    fill
+                  />
+                </motion.div>
+              )}
+
+              {/* Avatar - fade in */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 0.1,
+                  duration: 0.5,
+                  ease: [0.25, 0.46, 0.45, 0.94] as const,
+                }}
+                className="relative z-10 flex items-center justify-center w-32 h-32"
+              >
+                {file ? (
+                  <div className="relative w-32 h-32">
+                    <Image
+                      className="rounded-full object-cover w-32 h-32"
+                      src={URL.createObjectURL(file)}
+                      alt="Profile Picture"
+                      width={128}
+                      height={128}
+                      loading="eager"
+                    />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/40 via-white/5 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-transparent to-black/10 pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1)] pointer-events-none" />
+                  </div>
+                ) : !imageError && data.full_avatar_url ? (
+                  <div className="relative w-32 h-32">
+                    <Image
+                      className="rounded-full object-cover w-32 h-32"
+                      src={data.full_avatar_url}
+                      alt="Profile Picture"
+                      width={128}
+                      height={128}
+                      quality={75}
+                      loading="eager"
+                      onError={() => setImageError(true)}
+                    />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/40 via-white/5 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-transparent to-black/10 pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1)] pointer-events-none" />
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center relative">
+                    <Upload className="w-8 h-8 text-gray-400" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/40 via-white/5 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1)] pointer-events-none" />
+                  </div>
+                )}
+              </motion.div>
+
+              {/* Upload overlay */}
+              <div className="absolute inset-0 z-30 flex items-center justify-center">
+                <div className="w-32 h-32 rounded-full flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                  <Upload className="w-8 h-8 text-white" />
+                </div>
+                <input
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full opacity-0 cursor-pointer"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleChangeFile}
+                />
+              </div>
             </div>
-            <label className="block mt-2 w-full">
-              <span className="text-sm">Gender</span>
+
+            {/* Name and Username - animated */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              className="mt-3 text-center"
+            >
+              <span className="font-semibold text-lg text-white block">
+                {data.first_name} {data.last_name}
+              </span>
+              <span className="block font-medium text-white/60 text-sm">
+                @{data.username}
+              </span>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Form with staggered animations */}
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto px-4 pb-24">
+          <div className="space-y-4">
+            <motion.label
+              className="block w-full"
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">First Name</span>
+              <Input
+                name="first_name"
+                className={`mt-1 ${glassInputClassName}`}
+                placeholder="John"
+                value={data.first_name}
+                onChange={handleChange}
+              />
+            </motion.label>
+
+            <motion.label
+              className="block w-full"
+              custom={1}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Last Name</span>
+              <Input
+                name="last_name"
+                className={`mt-1 ${glassInputClassName}`}
+                placeholder="Doe"
+                value={data.last_name}
+                onChange={handleChange}
+              />
+            </motion.label>
+
+            <motion.label
+              className="block w-full"
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Username</span>
+              <div className="relative flex items-center mt-1">
+                <Input
+                  containerClassName="w-full"
+                  name="username"
+                  className={`pl-7 w-full ${glassInputClassName}`}
+                  placeholder="John.doe"
+                  value={data.username}
+                  onChange={handleChange}
+                />
+                <span className="absolute left-3 text-white/40">@</span>
+              </div>
+            </motion.label>
+
+            <motion.label
+              className="block w-full"
+              custom={3}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Birth Date</span>
               <Button
-                className="block w-full text-left hover:bg-transparent"
+                className={`mt-1 block w-full text-left hover:bg-white/30 ${glassInputClassName}`}
+                variant="outline"
+                type="button"
+                onClick={handleOpenBirthDateSheet}
+              >
+                {birthDate.month < 10 ? "0" + birthDate.month : birthDate.month}.
+                {birthDate.day < 10 ? "0" + birthDate.day : birthDate.day}.
+                {birthDate.year}
+              </Button>
+            </motion.label>
+
+            <motion.label
+              className="block w-full"
+              custom={4}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Gender</span>
+              <Button
+                className={`mt-1 block w-full text-left hover:bg-white/30 ${glassInputClassName}`}
                 variant="outline"
                 type="button"
                 onClick={handleOpenGenderSheet}
               >
                 {sexOptions.find((option) => option.value === data.sex)?.label}
               </Button>
-            </label>
+            </motion.label>
 
-            <div className="mt-2">
-              <span className="font-medium text-sm text-[#09090B]">
-                Upload photo
-              </span>
-              <div className="mt-1 group relative w-15 h-15 flex items-center justify-center border rounded-xl overflow-hidden shrink-0">
-                {file ? (
-                  <Image
-                    className="object-cover rounded-lg"
-                    src={URL.createObjectURL(file)}
-                    alt="Profile Picture"
-                    loading="eager"
-                    width={60}
-                    height={60}
-                  />
-                ) : !imageError && data.full_avatar_url ? (
-                  <Image
-                    className="object-cover w-full h-full rounded-lg"
-                    src={data.full_avatar_url}
-                    alt="Profile Picture"
-                    loading="eager"
-                    width={60}
-                    height={60}
-                    onError={() => {
-                      setImageError(true);
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Upload />
-                  </div>
-                )}
-
-                <Upload
-                  width={32}
-                  height={32}
-                  className="absolute text-white bg-gray-700/80 rounded-lg p-1"
-                />
-
-                <input
-                  className="absolute top-0 left-0 w-full h-full opacity-0 z-10 cursor-pointer"
-                  type="file"
-                  onChange={handleChangeFile}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="px-4">
-            <label className="block mt-2">
-              <span className="text-sm">Phone</span>
+            <motion.label
+              className="block"
+              custom={5}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Phone</span>
               <Input
                 name="phone"
-                className="mt-px"
+                className={`mt-1 ${glassInputClassName}`}
                 value={data.phone}
                 onChange={handleChange}
                 placeholder="+1 234 567 8901"
-                defaultValue="+1 234 567 8901"
               />
-            </label>
-            <label className="block mt-2">
-              <span className="text-sm">Email</span>
+            </motion.label>
+
+            <motion.label
+              className="block"
+              custom={6}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Email</span>
               <Input
                 name="email"
-                className="mt-px"
+                className={`mt-1 ${glassInputClassName}`}
                 placeholder="Email Address"
                 value={data.email}
                 onChange={handleChange}
               />
-            </label>
+            </motion.label>
 
-            <label htmlFor="country" className="block mt-2">
-              <span className="text-sm">Country</span>
+            <motion.label
+              htmlFor="country"
+              className="block"
+              custom={7}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <span className="text-sm font-semibold text-white/80 tracking-wide">Country</span>
               <Select
                 name="country"
                 value={data.country || ""}
@@ -303,35 +438,50 @@ const page = () => {
                 }}
                 required
               >
-                <SelectTrigger className="w-full mt-1">
+                <SelectTrigger className={`w-full mt-1 !h-14 ${glassInputClassName}`}>
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
                   {options.map((country) => (
                     <SelectItem
-                      className="w-full flex items-center justify-between"
+                      className="w-full flex items-center"
                       key={country}
                       value={country}
                     >
-                      <div className="w-full flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{getCountryFlag(country)}</span>
                         {country}
                       </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </label>
+            </motion.label>
 
-            <Button className="mt-6 w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
-                  Saving updates...
-                </>
-              ) : (
-                "Save updates"
-              )}
-            </Button>
+            <motion.div
+              custom={8}
+              initial="hidden"
+              animate="visible"
+              variants={formItemVariants}
+            >
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="relative mt-6 w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-4 font-semibold text-white text-base overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-90 active:scale-[0.98] shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#5170D5] to-[#66af69]" />
+                <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
+                <div className="absolute inset-[1px] rounded-[15px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+                {isLoading ? (
+                  <>
+                    <div className="relative z-10 w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span className="relative z-10">Saving updates...</span>
+                  </>
+                ) : (
+                  <span className="relative z-10">Save updates</span>
+                )}
+              </button>
+            </motion.div>
           </div>
         </form>
         <SheetContainer

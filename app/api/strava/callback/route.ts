@@ -6,17 +6,19 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const error = searchParams.get("error");
+  const state = searchParams.get("state");
+  const returnPath = state ? decodeURIComponent(state) : "/login";
 
   console.log("Callback received - code:", code, "error:", error);
 
   if (error) {
     console.log("Auth error:", error);
-    redirect("/app/integrations?status=auth_denied");
+    redirect(returnPath);
   }
 
   if (!code) {
     console.log("No code received");
-    redirect("/app/integrations?status=no_code");
+    redirect(returnPath);
   }
 
   let redirectUrl: string | null = null;

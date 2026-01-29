@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronLeft, Settings } from "lucide-react";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
@@ -82,30 +81,19 @@ const AppHeader = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-foreground">
-      <div className="flex items-center justify-between max-w-4xl mx-auto px-4">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white/15 backdrop-blur-2xl border-b border-white/30 shadow-lg">
+      <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+      <div className="relative flex items-center justify-between max-w-4xl mx-auto px-4">
         {isCurrentLinkNested ? (
           <button
             onClick={handleGoBack}
-            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-background"
+            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-white"
           >
             <ChevronLeft />
           </button>
         ) : (
           <div className="h-14" />
         )}
-        {/* {currentLink?.title && (
-          <p className="text-white text-xl font-semibold text-center flex-1">
-            {currentLink.title}
-          </p>
-        )} */}
-        <Image
-          className="max-h-5 w-fit "
-          src="/images/logo-line.png"
-          width={957}
-          height={489}
-          alt="Logo"
-        />
         <button
           className="flex flex-1 items-center justify-end gap-2"
           onClick={handleGoToEdit}

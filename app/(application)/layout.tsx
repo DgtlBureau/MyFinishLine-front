@@ -3,6 +3,9 @@ import AppHeader from "../components/Application/AppHeader/AppHeader";
 import { Slide, ToastContainer } from "react-toastify";
 import RedirectComponent from "../components/RedirectComponent/RedirectComponent";
 import { buildSeo } from "../lib/utils/buildSeo";
+import PageTransition from "../components/Application/PageTransition/PageTransition";
+import { NotificationProvider } from "../contexts/NotificationContext";
+import NotificationChecker from "../components/Application/NotificationChecker/NotificationChecker";
 
 export const metadata = buildSeo({
   title: "MyFinishLine",
@@ -17,13 +20,14 @@ export default function ApplicationLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <NotificationProvider>
+      <NotificationChecker />
       <RedirectComponent />
-      <div className="min-h-screen h-full">
+      <div className="min-h-screen bg-white">
         <div className="min-h-screen flex flex-col">
           <AppHeader />
-          <main className="min-h-screen pb-15.75 bg-white rounded-tl-2xl rounded-tr-2xl">
-            <div className="min-h-full">{children}</div>
+          <main className="min-h-screen pb-15.75 bg-transparent rounded-tl-2xl rounded-tr-2xl">
+            <PageTransition>{children}</PageTransition>
           </main>
           <Navbar />
         </div>
@@ -35,6 +39,6 @@ export default function ApplicationLayout({
           className="z-110"
         />
       </div>
-    </>
+    </NotificationProvider>
   );
 }

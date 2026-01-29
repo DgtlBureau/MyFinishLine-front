@@ -13,6 +13,7 @@ import {
   getUserActivities,
   updateUserStravaActivities,
 } from "@/app/lib/utils/userService";
+import { useNotifications } from "@/app/contexts/NotificationContext";
 import Link from "next/link";
 import Image from "next/image";
 import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
@@ -24,6 +25,7 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isAdditionalLoading, setIsAdditionalLoading] = useState(false);
+  const { checkNotifications } = useNotifications();
 
   const isLoadingRef = useRef(false);
   const hasMoreRef = useRef(true);
@@ -36,6 +38,7 @@ const Page = () => {
     setIsUpdating(true);
     try {
       await updateUserStravaActivities();
+      await checkNotifications();
     } catch (error) {
       console.error("Error fetching activities:", error);
     } finally {
@@ -51,7 +54,7 @@ const Page = () => {
       }
 
       try {
-        const data = await getUserActivities({ perPage: 10, page });
+        const data = await getUserActivities({ perPage: 5, page });
 
         if (page === 1) {
           setActivities(data.data);
@@ -82,15 +85,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      if (!isLoaded) {
-        await handleGetActivitiesFromStrava();
-      }
-
-      await handleLoadActivities(1);
-    };
-
-    loadInitialData();
+    handleLoadActivities(1);
   }, []);
 
   useEffect(() => {
@@ -120,20 +115,21 @@ const Page = () => {
         <div className="flex justify-end">
           <Button
             onClick={handleLoadAllActivities}
-            className="ml-auto mr-0 rounded-full w-10 h-10"
+            className="ml-auto mr-0 rounded-full w-10 h-10 bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80"
+            variant="ghost"
             disabled={isUpdating || isLoading}
           >
-            <div className={`${isUpdating && "animate-spin"}`}>
-              <RefreshCw />
+            <div className={`${isUpdating && "animate-spin"} text-gray-600`}>
+              <RefreshCw strokeWidth={2.5} />
             </div>
           </Button>
         </div>
-        <h4 className="text-3xl text-center font-medium leading-9 text-[#09090B] flex-1">
+        <h4 className="text-3xl text-center font-medium leading-9 text-white flex-1">
           Recent Activities
         </h4>
         <Link
           href="/app/activities/new"
-          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center p-2.5"
+          className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80 flex items-center justify-center p-2.5 transition-colors"
         >
           <Image
             src="/icons/navigation-add.svg"
@@ -150,22 +146,11 @@ const Page = () => {
           </div>
         ) : activities?.length > 0 ? (
           <div className="mt-8">
-            <ActivitiesList activities={activities} />
-            {isAdditionalLoading ? (
+            <ActivitiesList activities={activities} loadMoreRef={inViewRef} />
+            {isAdditionalLoading && (
               <div className="flex justify-center items-center mt-8">
                 <Loader2 width={48} height={48} className="animate-spin" />
               </div>
-            ) : (
-              <>
-                {hasMoreRef.current && (
-                  <div
-                    ref={inViewRef}
-                    className="block text-center mt-2 text-xs text-neutral-400"
-                  >
-                    Scroll down to see more
-                  </div>
-                )}
-              </>
             )}
           </div>
         ) : (

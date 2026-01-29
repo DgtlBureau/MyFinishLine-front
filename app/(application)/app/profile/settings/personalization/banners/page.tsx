@@ -1,12 +1,11 @@
 "use client";
 
 import PersonalizationList from "@/app/components/PersonalizationList/PersonalizationList";
-import PersonalizationListShimmer from "@/app/components/Shared/Shimmer/PersonalizationListShimmer/PersonalizationListShimmer";
+import PersonalizationSkeleton from "@/app/components/PersonalizationList/PersonalizationSkeleton";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserBanners } from "@/app/lib/utils/userService";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -63,12 +62,10 @@ const page = () => {
   }
 
   if (isLoading) {
-    return (
-      <PersonalizationListShimmer />
-    );
+    return <PersonalizationSkeleton />;
   }
 
-  return <span className="block text-center mt-2">No banners available</span>;
+  return <span className="block text-center mt-8 text-white/50 text-sm">No banners available</span>;
 };
 
 export default page;

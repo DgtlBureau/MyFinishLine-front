@@ -195,7 +195,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
           text="Award winning service"
         />
       </section>
-      <section className="mt-4 border-t border-neutral-200 pt-4 w-full gap-4">
+      <section className="mt-4 border-t border-white/20 pt-4 w-full gap-4">
         <div className="flex flex-col max-w-fit mx-auto gap-4">
           <div className="flex gap-2">
             <Image
@@ -203,11 +203,11 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
               width={24}
               height={24}
               alt="Email"
-              color="bg-accent"
+              className="brightness-0 invert opacity-70"
             />
             <div>
-              <p className="text-xs font-bold">Email support</p>
-              <a className="block text-xs" href="mailto:myfinishline@gmail.com">
+              <p className="text-xs font-bold text-white/80">Email support</p>
+              <a className="block text-xs text-white/60 hover:text-white/80 transition-colors" href="mailto:myfinishline@gmail.com">
                 myfinishline@gmail.com
               </a>
             </div>

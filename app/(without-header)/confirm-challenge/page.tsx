@@ -47,14 +47,7 @@ const Content = () => {
     handleLogin();
   }, [code, router]);
 
-  return (
-    <section className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex items-center justify-center">
-        <ConfirmCode />
-      </div>
-      <div className="relative hidden bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat lg:block dark:bg-[url(/images/gradient-dark.webp)]"></div>
-    </section>
-  );
+  return <ConfirmCode />;
 };
 
 const page = () => {

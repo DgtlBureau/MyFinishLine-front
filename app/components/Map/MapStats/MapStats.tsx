@@ -64,7 +64,7 @@ const MapStats = ({
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <motion.div
-              className="bg-linear-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+              className="bg-linear-to-r from-blue-500 to-emerald-400 h-2 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}

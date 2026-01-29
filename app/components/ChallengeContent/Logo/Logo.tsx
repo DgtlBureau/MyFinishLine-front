@@ -39,15 +39,15 @@ const Logo: React.FC<LogoProps> = ({
     <div className={cn(``, wrapperClassName)}>
       <Link
         href="/"
-        className={cn(`relative flex items-center gap-2`, className)}
+        className={cn(`relative flex items-center h-6`, className)}
       >
         <Image
-          src={logoImage}
-          alt="Lumen Logo"
-          width={1000}
-          height={600}
+          src="/images/mfl-logo-new.png"
+          alt="MyFinishLine Logo"
+          width={140}
+          height={24}
           priority
-          className="object-contain dark:invert w-auto h-4 md:h-6 lg:h-7"
+          className="object-contain h-5 w-auto"
         />
       </Link>
     </div>

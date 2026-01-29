@@ -40,8 +40,15 @@ const FitBitCallbackPage = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const returnPath = state ? decodeURIComponent(state) : "/login";
 
-    exchangeCodeForToken(code!);
+    if (!code) {
+      router.push(returnPath);
+      return;
+    }
+
+    exchangeCodeForToken(code);
   }, []);
 
   return (

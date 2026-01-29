@@ -5,39 +5,39 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sendGTMEvent } from "@/app/lib/utils/sendEvent";
-
-const navLinks = [
+import { useTranslation } from "@/app/contexts/LanguageContext";
+const navLinksConfig = [
   {
     id: 1,
-    name: "Rating",
+    key: "rating" as const,
     href: "/app/leaderboard",
     parent: "leaderboard",
     Icon: Trophy,
   },
   {
     id: 2,
-    name: "Contracts",
+    key: "contracts" as const,
     href: "/app/contracts",
     parent: "contracts",
     Icon: BookCheck,
   },
   {
     id: 3,
-    name: "Journey",
+    key: "journey" as const,
     href: "/app/homepage",
     parent: "homepage",
     Icon: Map,
   },
   {
     id: 4,
-    name: "Profile",
+    key: "profile" as const,
     href: "/app/profile/journey",
     parent: "profile",
     Icon: User,
   },
   {
     id: 5,
-    name: "More",
+    key: "more" as const,
     href: "/app/more",
     parent: "more",
     Icon: MoreHorizontal,
@@ -46,6 +46,12 @@ const navLinks = [
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const navLinks = navLinksConfig.map((link) => ({
+    ...link,
+    name: t.nav[link.key],
+  }));
 
   const isActive = (link: (typeof navLinks)[0]) => {
     if (link.href === "/") {
@@ -66,61 +72,173 @@ const Navbar = () => {
   };
 
   return (
-    <motion.div className="fixed bottom-0 left-0 right-0 z-40">
-      <div className="bg-background border-t border-navbar-border">
-        <nav className="flex items-stretch max-w-4xl mx-auto py-1 px-2">
+    <div className="fixed bottom-0 left-0 right-0 z-40">
+      <div className="bg-gradient-to-b from-white/40 to-white/30 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]">
+        <nav className="flex items-end max-w-4xl mx-auto py-2 px-3">
           {navLinks.map((link) => {
             const active = isActive(link);
-            return (
-              <Link
-                onClick={handleClickLink}
-                key={link.id}
-                href={link.href}
-                scroll={false}
-                className="relative flex-1 flex flex-col items-center justify-center py-2 rounded-lg nav-transition group"
-              >
-                <AnimatePresence>
-                  {active && (
-                    <motion.div
-                      style={{ originY: "0px" }}
-                      layoutId="navbar-active-indicator"
-                      className="absolute inset-0 bg-sidebar-border rounded-lg"
-                      transition={{
-                        type: "spring",
-                        stiffness: 200,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
+            const isCenter = link.id === 3;
 
-                <div className="relative z-10 flex flex-col items-center gap-0.5">
-                  <link.Icon
-                    className={`w-5 h-5 nav-transition ${
-                      active
-                        ? "text-navbar-text-active"
-                        : "text-navbar-text group-hover:text-navbar-text-active"
-                    }`}
-                    strokeWidth={active ? 2 : 1.5}
-                  />
-                  <span
-                    className={`text-[11px] font-medium nav-transition ${
-                      active
-                        ? "text-navbar-text-active"
-                        : "text-navbar-text group-hover:text-navbar-text-active"
+            if (isCenter) {
+              return (
+                <Link
+                  onClick={handleClickLink}
+                  key={link.id}
+                  href={link.href}
+                  scroll={false}
+                  className="relative flex-1 flex flex-col items-center justify-center -mt-5 group"
+                >
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      scale: 1,
+                      background: active
+                        ? "linear-gradient(to bottom right, #5170D5, #CEE9D8)"
+                        : "linear-gradient(to bottom right, #374151, #111827)",
+                    }}
+                    whileHover={{
+                      scale: 1.08,
+                      background: "linear-gradient(to bottom right, #5170D5, #CEE9D8)",
+                      boxShadow: "0 10px 40px -10px rgba(139, 92, 246, 0.5)",
+                    }}
+                    whileTap={{ scale: 0.92 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                      mass: 0.8,
+                    }}
+                    className={`p-4 rounded-full shadow-lg ${
+                      active ? "shadow-emerald-300/50" : "shadow-gray-400/30"
                     }`}
                   >
+                    <motion.div
+                      animate={{ rotate: active ? 0 : 0 }}
+                      whileHover={{ rotate: [0, -10, 10, 0] }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                    >
+                      <link.Icon
+                        className="w-8 h-8 text-white"
+                        strokeWidth={2}
+                      />
+                    </motion.div>
+                  </motion.div>
+                  <motion.span
+                    animate={{
+                      color: active ? "#5170D5" : "#9ca3af",
+                    }}
+                    whileHover={{ color: "#5170D5" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="mt-1 text-[10px] font-semibold tracking-wide"
+                  >
                     {link.name}
-                  </span>
-                </div>
-              </Link>
+                  </motion.span>
+                </Link>
+              );
+            }
+
+            return (
+              <motion.div
+                key={link.id}
+                className="relative flex-1"
+                whileHover="hover"
+                initial="rest"
+                animate="rest"
+              >
+                <Link
+                  onClick={handleClickLink}
+                  href={link.href}
+                  scroll={false}
+                  className="relative flex flex-col items-center justify-center py-2 rounded-2xl"
+                >
+                  <AnimatePresence>
+                    {active && (
+                      <motion.div
+                        style={{ originY: "0px" }}
+                        layoutId="navbar-active-indicator"
+                        className="absolute inset-1 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-2xl shadow-sm"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  <div className="relative z-10 flex flex-col items-center gap-1">
+                    <motion.div
+                      variants={{
+                        rest: {
+                          scale: 1,
+                          backgroundColor: active
+                            ? "transparent"
+                            : "transparent",
+                        },
+                        hover: {
+                          scale: 1.1,
+                          backgroundColor: active
+                            ? "transparent"
+                            : "rgba(243, 244, 246, 1)",
+                        },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
+                      className={`p-1.5 rounded-xl ${
+                        active
+                          ? "bg-gradient-to-br from-blue-500 to-emerald-600 shadow-md shadow-emerald-200"
+                          : ""
+                      }`}
+                    >
+                      <motion.div
+                        variants={{
+                          rest: { y: 0 },
+                          hover: { y: -2 },
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 17,
+                        }}
+                      >
+                        <link.Icon
+                          className={`w-6 h-6 transition-colors duration-300 ${
+                            active ? "text-white" : "text-gray-500"
+                          }`}
+                          strokeWidth={active ? 2.5 : 1.5}
+                        />
+                      </motion.div>
+                    </motion.div>
+                    <motion.span
+                      variants={{
+                        rest: {
+                          color: active ? "#5170D5" : "#9ca3af",
+                        },
+                        hover: {
+                          color: active ? "#5170D5" : "#4b5563",
+                        },
+                      }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className="text-[10px] font-semibold tracking-wide"
+                    >
+                      {link.name}
+                    </motion.span>
+                  </div>
+                </Link>
+              </motion.div>
             );
           })}
         </nav>
       </div>
 
-      <div className="h-[env(safe-area-inset-bottom)] bg-navbar" />
-    </motion.div>
+      <div className="h-[env(safe-area-inset-bottom)] bg-white/30 backdrop-blur-3xl" />
+    </div>
   );
 };
 

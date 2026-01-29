@@ -267,7 +267,7 @@ const Navbar = ({
         {/*  Mobile Menu Navigation */}
         <div
           className={cn(
-            "bg-background/95 text-accent-foreground fixed inset-0 -z-10 flex flex-col justify-between tracking-normal backdrop-blur-md transition-all duration-500 ease-out lg:hidden",
+            "fixed inset-0 -z-10 flex flex-col justify-between tracking-normal backdrop-blur-2xl transition-all duration-500 ease-out lg:hidden",
             isBannerVisible
               ? "pt-[calc(var(--header-height)+3rem)]"
               : "pt-(--header-height)",
@@ -275,6 +275,14 @@ const Navbar = ({
               ? "translate-x-0 opacity-100"
               : "pointer-events-none translate-x-full opacity-0",
           )}
+          style={{
+            background: `linear-gradient(to bottom,
+              rgba(81, 112, 213, 0.95) 0%,
+              rgba(90, 122, 214, 0.95) 30%,
+              rgba(122, 155, 200, 0.95) 60%,
+              rgba(173, 198, 180, 0.95) 100%
+            )`
+          }}
         >
           <div className="container">
             <NavigationMenu
@@ -287,7 +295,7 @@ const Navbar = ({
                     {item.subitems ? (
                       <Accordion type="single" collapsible className="">
                         <AccordionItem value={item.label}>
-                          <AccordionTrigger className="flex w-full cursor-pointer items-center justify-between px-2 py-3 text-base font-normal hover:no-underline">
+                          <AccordionTrigger className="flex w-full cursor-pointer items-center justify-between px-2 py-3 text-base font-normal text-white/90 hover:text-white hover:no-underline">
                             {item.label}
                           </AccordionTrigger>
                           <AccordionContent className="pb-0">
@@ -316,8 +324,8 @@ const Navbar = ({
                       <NavigationMenuLink
                         href={item.href}
                         className={cn(
-                          "hover:text-foreground text-base transition-colors",
-                          pathname === item.href && "font-semibold",
+                          "text-white/90 hover:text-white text-base transition-colors",
+                          pathname === item.href && "font-semibold text-white",
                         )}
                         onClick={() => setIsMenuOpen(false)}
                         suppressHydrationWarning
@@ -331,21 +339,24 @@ const Navbar = ({
             </NavigationMenu>
           </div>
 
-          <div className="flex flex-col gap-4.5 border-t px-6 py-4">
-            {ACTION_BUTTONS.map((button) => (
-              <Button
-                key={button.label}
-                variant={
-                  button.variant === "ghost" ? "outline" : button.variant
-                }
-                asChild
-                className="h-12 flex-1 rounded-sm shadow-sm"
-              >
-                <Link href={button.href} onClick={() => setIsMenuOpen(false)}>
-                  {button.label}
-                </Link>
-              </Button>
-            ))}
+          <div className="flex flex-col gap-4 border-t border-white/20 px-6 py-6 mb-6">
+            <Button
+              variant="ghost"
+              asChild
+              className="h-14 text-lg flex-1 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 text-white font-semibold hover:bg-white/25 hover:text-white shadow-sm"
+            >
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                Sign in
+              </Link>
+            </Button>
+            <Button
+              asChild
+              className="h-14 text-lg flex-1 rounded-2xl bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white font-semibold border border-white/30 shadow-lg hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90"
+            >
+              <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
+                Get started
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

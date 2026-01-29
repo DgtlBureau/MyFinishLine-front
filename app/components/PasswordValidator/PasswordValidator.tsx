@@ -53,7 +53,7 @@ const PasswordValidator: React.FC<Props> = ({ password }) => {
   return (
     <div className={`space-y-4`}>
       <div className="space-y-2">
-        <p className="text-xs font-medium text-gray-700">
+        <p className="text-xs font-medium text-white/70">
           Password must contain:
         </p>
         <ul className="space-y-1">
@@ -67,13 +67,13 @@ const PasswordValidator: React.FC<Props> = ({ password }) => {
                   </div>
                 ) : (
                   <div className="w-4">
-                    <div className="w-1 h-1 bg-neutral-300 rounded-full" />
+                    <div className="w-1 h-1 bg-white/40 rounded-full" />
                   </div>
                 )}
                 <span
                   className={`
                   text-xs
-                  ${status === "valid" ? "text-green-600" : "text-gray-600"}
+                  ${status === "valid" ? "text-green-300" : "text-white/50"}
                 `}
                 >
                   {rule.label}

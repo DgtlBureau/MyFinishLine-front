@@ -28,6 +28,7 @@ const initialState: {
     strava_id: null,
     total_activities_count: 0,
     total_distance: 0,
+    total_distance_mile: 0,
     total_moving_time_hours: 0,
     updated_at: "",
     username: "",
@@ -85,7 +86,7 @@ const userSlice = createSlice({
     ) => {
       state.personalization = action.payload;
     },
-    setDistanceUnit: (state, action: PayloadAction<"km" | "mile">) => {
+    updateUserMeasure: (state, action: PayloadAction<"km" | "mile">) => {
       state.user.measure = action.payload;
     },
     clearUser: () => {
@@ -101,6 +102,7 @@ export const {
   setUserCompletedContracts,
   updatePersonalization,
   updateUserSex,
+  updateUserMeasure,
   setUserChallenges,
   setDistanceUnit,
   clearUser,

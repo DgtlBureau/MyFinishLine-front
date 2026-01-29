@@ -3,7 +3,7 @@ interface ILoaderProps {
   color?: string;
 }
 
-const Loader = ({ size = 24, color = "#F4E8FD" }: ILoaderProps) => {
+const Loader = ({ size = 24, color = "#CEE9D8" }: ILoaderProps) => {
   return (
     <div
       style={{

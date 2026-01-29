@@ -23,14 +23,24 @@ const Map = ({
   steps,
   is_completed,
   route_data,
+  reward,
 }: IActiveChallenge) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const [awardQueue, setAwardQueue] = useState<IStep[]>([]);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
+  const [isZooming, setIsZooming] = useState(false);
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
+  const [scale, setScale] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Math.min(1, window.innerWidth / 672);
+    }
+    return 1;
+  });
   const dispatch = useAppDispatch();
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const handleLoadOnboarding = async () => {
     try {
@@ -142,6 +152,20 @@ const Map = ({
       ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
       : 0;
   const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+
+  // Calculate scale to fit map in viewport
+  useLayoutEffect(() => {
+    const calculateScale = () => {
+      const viewportWidth = window.innerWidth;
+      // Scale based on width (fit horizontally)
+      const widthScale = Math.min(1, viewportWidth / MAP_WIDTH);
+      setScale(widthScale);
+    };
+
+    calculateScale();
+    window.addEventListener("resize", calculateScale);
+    return () => window.removeEventListener("resize", calculateScale);
+  }, []);
 
   const hasRouteData =
     route_data &&
@@ -302,10 +326,42 @@ const Map = ({
 
   const handleStepClick = (clickedStep: IStep) => {
     if (!clickedStep.completed && !clickedStep.active) return;
+
+    // If clicking the same step while zoomed, zoom out
+    if (isZooming && activeStep?.id === clickedStep.id) {
+      setZoomScale(1);
+      setIsZooming(false);
+      return;
+    }
+
     setActiveStep(clickedStep);
 
+    // First scroll to center the step smoothly
+    const stepElement = document.getElementById(`step-${clickedStep.index}`);
+    if (stepElement) {
+      stepElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+
+    // Calculate zoom origin based on step position
+    const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
+    const yPercent = 100 - (Number(clickedStep.y_coordinate) / MAP_HEIGHT) * 100;
+
+    // Delay zoom to let scroll complete first
+    setTimeout(() => {
+      setZoomOrigin({ x: xPercent, y: yPercent });
+      setZoomScale(1.8);
+      setIsZooming(true);
+    }, 300);
+
+    // Open stories after zoom animation
     if (clickedStep.story?.length) {
-      setIsStoriesOpen(true);
+      setTimeout(() => {
+        setIsStoriesOpen(true);
+      }, 1000);
     }
   };
 
@@ -332,20 +388,19 @@ const Map = ({
 
   const handleCloseStories = () => {
     setIsStoriesOpen(false);
-    // After closing stories, show next queued award if any
-    showNextQueuedAward();
+    setZoomScale(1);
+    setIsZooming(false);
   };
 
   return (
     <>
-      <div className="relative w-full min-h-screen">
-        {/* Full-screen blurred background */}
-        <div className="fixed inset-0 z-0 overflow-hidden">
-          {/* Base color */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e]" />
-          {/* Blurred map image */}
-          {background_images[0] && (
-            <div className="absolute inset-0">
+      <div className="relative w-full min-h-screen bg-slate-900 overflow-x-hidden">
+        <div className="fixed inset-0 -z-10">
+          {background_images.map((image, index) => (
+            <div
+              key={`blur-bg-${index}`}
+              className="w-full h-auto blur-2xl opacity-40"
+            >
               <img
                 src={background_images[0].image_url}
                 className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
@@ -364,11 +419,29 @@ const Map = ({
           />
         </div>
 
-        <div className="relative z-10 mx-auto overflow-x-auto">
+        <div
+          ref={mapContainerRef}
+          className="relative w-full overflow-hidden"
+        >
           <div
-            className="relative mx-auto"
-            style={{ width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px` }}
+            style={{
+              width: `${MAP_WIDTH * scale}px`,
+              height: `${MAP_HEIGHT * scale}px`,
+              margin: "0 auto",
+            }}
           >
+            <div
+              className="relative"
+              style={{
+                width: `${MAP_WIDTH}px`,
+                height: `${MAP_HEIGHT}px`,
+                transform: `scale(${scale * zoomScale})`,
+                transformOrigin: isZooming ? `${zoomOrigin.x}% ${zoomOrigin.y}%` : "top left",
+                transition: isZooming
+                  ? "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  : "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              }}
+            >
             {background_images[0] && (
               <img
                 src={background_images[0].image_url}
@@ -487,6 +560,7 @@ const Map = ({
               </Xwrapper>
             </div>
           </div>
+          </div>
         </div>
 
         <div className="fixed bottom-18 left-2 z-30">
@@ -501,7 +575,12 @@ const Map = ({
       </div>
 
       <AnimatePresence>
-        {isAwardOpen && <AwardModal onCloseClick={handleContinueAwards} />}
+        {isAwardOpen && (
+          <AwardModal
+            onCloseClick={handleContinueAwards}
+            medalImage={reward?.image_url || undefined}
+          />
+        )}
       </AnimatePresence>
       <AnimatePresence>
         {isStoriesOpen && (

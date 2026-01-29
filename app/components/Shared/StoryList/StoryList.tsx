@@ -150,12 +150,16 @@ const StoryList = ({
   }, [activeStoryIndex]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       onPointerDown={handlePauseAnimation}
       onPointerUp={handleResumeAnimation}
       onPointerLeave={handlePointerLeave}
       onContextMenu={(e) => e.preventDefault()}
-      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-black select-none"
+      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-gradient-to-b from-[#5170D5]/80 via-black/90 to-[#CEE9D8]/80 select-none"
     >
       <AnimatePresence>{showShadow && <StoryShadow />}</AnimatePresence>
       {currentStory && (
@@ -235,7 +239,7 @@ const StoryList = ({
           text={currentStory.content}
         />
       )} */}
-    </div>
+    </motion.div>
   );
 };
 

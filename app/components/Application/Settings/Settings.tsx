@@ -2,25 +2,37 @@
 
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
-import { Shield, Globe, LogOut, Mail, User, UserCog, Route } from "lucide-react";
-import { Separator } from "@/app/components/ui/separator";
+import LanguageBottomSheet from "@/app/components/Application/Settings/LanguageBottomSheet/LanguageBottomSheet";
+import { Shield, Globe, LogOut, Mail, User, UserCog, Ruler } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Integrations from "../Integrations/Integrations";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { clearUser, setDistanceUnit } from "@/app/lib/features/user/userSlice";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { clearUser } from "@/app/lib/features/user/userSlice";
+import { useMeasure } from "@/app/hooks/useMeasure";
+import { useTranslation } from "@/app/contexts/LanguageContext";
+import { MeasureUnit } from "@/app/types/user";
 
 const Settings = () => {
   const [emailUpdates, setEmailUpdates] = useState(false);
+  const [isChangingMeasure, setIsChangingMeasure] = useState(false);
+  const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const user = useAppSelector((state) => state.user.user);
-  const measure = user.measure || "km";
+  const { measure, setMeasure } = useMeasure();
+  const { language, setLanguage, getCurrentLanguage, languages, t } = useTranslation();
 
   const handleGoTo = (link: string) => {
     router.push(link);
+  };
+
+  const handleChangeMeasure = async (newMeasure: MeasureUnit) => {
+    if (newMeasure === measure || isChangingMeasure) return;
+    setIsChangingMeasure(true);
+    const success = await setMeasure(newMeasure);
+    setIsChangingMeasure(false);
   };
 
   const handleLogout = async () => {
@@ -56,68 +68,93 @@ const Settings = () => {
 
   return (
     <>
-      <SettingSection title="Account" delay={1}>
+      <SettingSection title={t.settings.account} delay={1}>
         <SettingItem
           icon={<User className="w-4 h-4" />}
-          label="Edit account"
-          description="Edit your account information"
+          label={t.settings.editAccount}
+          description={t.settings.editAccountDesc}
           onClick={() => handleGoTo("/app/profile/settings/edit-account")}
           delay={1}
         />
         <SettingItem
           icon={<UserCog className="w-4 h-4" />}
-          label="Customize profile"
-          description="Customize your profile visuals"
+          label={t.settings.customizeProfile}
+          description={t.settings.customizeProfileDesc}
           onClick={() => handleGoTo("/app/profile/settings/personalization")}
           delay={1}
         />
         <Integrations />
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
-      <SettingSection title="Security" delay={2}>
+      <SettingSection title={t.settings.security} delay={2}>
         <SettingItem
           icon={<Shield className="w-4 h-4" />}
-          label="Password"
-          description="Change your account password"
+          label={t.settings.password}
+          description={t.settings.passwordDesc}
           delay={2}
         />
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
-      <SettingSection title="Preferences" delay={3}>
+      <SettingSection title={t.settings.preferences} delay={3}>
         <SettingItem
           icon={<Globe className="w-4 h-4" />}
-          label="Language"
+          label={t.settings.language}
           type="info"
-          value="English"
-          onClick={() => {}}
+          value={getCurrentLanguage().nativeName}
+          onClick={() => setIsLanguageSheetOpen(true)}
           delay={3}
         />
-        <SettingItem
-          icon={<Route className="w-4 h-4" />}
-          label="Distance unit"
-          description="Choose your preferred distance measurement"
-          type="segment"
-          value={measure}
-          onToggle={(value) => handleDistanceUnitChange(value as "km" | "mile")}
-          segmentOptions={[
-            { value: "km", label: "km" },
-            { value: "mile", label: "mi" },
-          ]}
-          delay={3}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3 * 0.03, duration: 0.2 }}
+          className="flex items-center justify-between py-3 rounded-md"
+        >
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <span className="text-white/70 shrink-0">
+              <Ruler className="w-4 h-4" />
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">
+                {t.settings.distanceUnit}
+              </p>
+              <p className="text-xs text-white/60 truncate mt-0.5">
+                {t.settings.distanceUnitDesc}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 bg-white/30 backdrop-blur-xl rounded-lg p-1 border border-white/40">
+            <button
+              onClick={() => handleChangeMeasure("km")}
+              disabled={isChangingMeasure}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                measure === "km"
+                  ? "bg-white/80 text-[#09090B] shadow-sm"
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              km
+            </button>
+            <button
+              onClick={() => handleChangeMeasure("mile")}
+              disabled={isChangingMeasure}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                measure === "mile"
+                  ? "bg-white/80 text-[#09090B] shadow-sm"
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              mi
+            </button>
+          </div>
+        </motion.div>
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
-      <SettingSection title="Notifications" delay={4}>
+      <SettingSection title={t.settings.notifications} delay={4}>
         <SettingItem
           icon={<Mail className="w-4 h-4" />}
-          label="Email updates"
-          description="Weekly digest and announcements"
+          label={t.settings.emailUpdates}
+          description={t.settings.emailUpdatesDesc}
           type="toggle"
           value={emailUpdates}
           onToggle={setEmailUpdates}
@@ -125,28 +162,35 @@ const Settings = () => {
         />
       </SettingSection>
 
-      <Separator className="my-6 bg-border" />
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.25 }}
+        className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-3"
       >
         <SettingItem
           icon={<LogOut className="w-4 h-4" />}
-          label="Sign out"
+          label={t.settings.signOut}
           onClick={handleLogout}
           delay={5}
         />
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-xs text-muted-foreground text-center mt-2"
-        >
-          Version 1.0.0
-        </motion.p>
       </motion.div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="text-xs text-white/60 text-center mt-4"
+      >
+        {t.settings.version} 1.0.0
+      </motion.p>
+
+      <LanguageBottomSheet
+        isOpen={isLanguageSheetOpen}
+        onClose={() => setIsLanguageSheetOpen(false)}
+        languages={languages}
+        currentLanguage={language}
+        onSelectLanguage={setLanguage}
+      />
     </>
   );
 };

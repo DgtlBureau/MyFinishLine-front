@@ -23,7 +23,11 @@ import Link from "next/link";
 import { getUserActiveChallenge } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
-import { getSmallDistanceUnit } from "@/app/lib/utils/convertData";
+import { useNotifications } from "@/app/contexts/NotificationContext";
+import { motion } from "framer-motion";
+
+const glassInput =
+  "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20";
 
 enum ActivityType {
   Walk = "Walk",
@@ -87,6 +91,19 @@ const convertObjectToSeconds = (timeObject: ITime): number => {
   return timeObject.hours * 3600 + timeObject.minutes * 60 + timeObject.seconds;
 };
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
+    },
+  }),
+};
+
 const AddActivitityForm = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -122,6 +139,9 @@ const AddActivitityForm = () => {
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [isStartTimeModalOpen, setIsStartTimeModalOpen] = useState(false);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { checkNotifications } = useNotifications();
 
   const handleOpenTimeModal = () => {
     setIsTimeModalOpen(true);
@@ -190,6 +210,7 @@ const AddActivitityForm = () => {
       });
       toast.success("Manual activity successfully added");
       await handleLoadChallenge();
+      await checkNotifications();
       router.push("/app/profile/activities");
     } catch (error: any) {
       toast.error(
@@ -202,21 +223,35 @@ const AddActivitityForm = () => {
   };
 
   return (
-    <form className="px-2" onSubmit={handleSubmit}>
-      <label>
-        <span className="text-sm">Name</span>
+    <form className="px-4 space-y-4" onSubmit={handleSubmit}>
+      <motion.label
+        className="block"
+        custom={0}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+      >
+        <span className="text-sm font-semibold text-white/80 tracking-wide">Name</span>
         <Input
           name="name"
+          className={`mt-1 ${glassInput}`}
           placeholder="Quick run"
           value={activityData.name}
           onChange={handleChange}
         />
-      </label>
-      <div className="mt-2 flex gap-2">
+      </motion.label>
+
+      <motion.div
+        className="flex gap-3"
+        custom={1}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+      >
         <label className="w-full">
-          <span className="text-sm">Start Date</span>
+          <span className="text-sm font-semibold text-white/80 tracking-wide">Start Date</span>
           <Button
-            className="block w-full text-left hover:bg-transparent"
+            className={`mt-1 block w-full text-left hover:bg-white/30 ${glassInput}`}
             variant="outline"
             type="button"
             onClick={handleOpenDateModal}
@@ -226,9 +261,9 @@ const AddActivitityForm = () => {
           </Button>
         </label>
         <label className="w-full">
-          <span className="text-sm">Start Time</span>
+          <span className="text-sm font-semibold text-white/80 tracking-wide">Start Time</span>
           <Button
-            className="block w-full text-left hover:bg-transparent"
+            className={`mt-1 block w-full text-left hover:bg-white/30 ${glassInput}`}
             variant="outline"
             type="button"
             onClick={handleOpenStartTimeModal}
@@ -240,11 +275,18 @@ const AddActivitityForm = () => {
                 : `${date.hour < 10 ? "0" + date.hour : date.hour}:${date.minute < 10 ? "0" + date.minute : date.minute} ${date.meridiem}`}
           </Button>
         </label>
-      </div>
-      <label className="block mt-2 w-full">
-        <span className="text-sm">Time elapsed</span>
+      </motion.div>
+
+      <motion.label
+        className="block w-full"
+        custom={2}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+      >
+        <span className="text-sm font-semibold text-white/80 tracking-wide">Time elapsed</span>
         <Button
-          className="block w-full text-left hover:bg-transparent"
+          className={`mt-1 block w-full text-left hover:bg-white/30 ${glassInput}`}
           variant="outline"
           type="button"
           onClick={handleOpenTimeModal}
@@ -253,9 +295,16 @@ const AddActivitityForm = () => {
             ? "Select time"
             : `${time.hours < 10 ? "0" + time.hours : time.hours}:${time.minutes < 10 ? "0" + time.minutes : time.minutes}:${time.seconds < 10 ? "0" + time.seconds : time.seconds}`}
         </Button>
-      </label>
-      <label className="block mt-2">
-        <span className="text-sm">Activity type</span>
+      </motion.label>
+
+      <motion.label
+        className="block"
+        custom={3}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+      >
+        <span className="text-sm font-semibold text-white/80 tracking-wide">Activity type</span>
         <Select
           name="type"
           value={activityData.type || ""}
@@ -267,7 +316,7 @@ const AddActivitityForm = () => {
           }}
           required
         >
-          <SelectTrigger className="w-full mt-1">
+          <SelectTrigger className={`w-full mt-1 ${glassInput}`}>
             <SelectValue placeholder="Select activity type" />
           </SelectTrigger>
           <SelectContent>
@@ -284,41 +333,57 @@ const AddActivitityForm = () => {
             ))}
           </SelectContent>
         </Select>
-      </label>
-      <label className="block mt-2 w-full">
-        <span className="text-sm">Distance</span>
-        <div className="relative flex items-center w-full">
+      </motion.label>
+
+      <motion.label
+        className="block w-full"
+        custom={4}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+      >
+        <span className="text-sm font-semibold text-white/80 tracking-wide">Distance</span>
+        <div className="relative flex items-center w-full mt-1">
           <Input
             name="distance"
             type="number"
             containerClassName="w-full"
-            className="w-full pr-8 placeholder:opacity-25"
-            placeholder={smallDistanceUnit === "m" ? "1000" : "3280"}
+            className={`w-full pr-8 ${glassInput}`}
+            placeholder="1000"
             value={activityData.distance}
             onChange={handleChange}
           />
-          <span className="absolute right-3.5 text-sm text-[#71717A]">{smallDistanceUnit}</span>
+          <span className="absolute right-3.5 text-sm text-white/50 font-medium">m</span>
         </div>
-      </label>
-      <Button
-        className="mt-2 w-full flex items-center justify-center"
-        type="submit"
+      </motion.label>
+
+      <motion.div
+        custom={5}
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+        className="space-y-2 pt-2"
       >
-        {isLoading ? (
-          <div className="flex justify-center items-center">
-            <Loader2 width={48} height={48} className="animate-spin" />
-          </div>
-        ) : (
-          "Submit activity"
-        )}
-      </Button>
-      <Link
-        href="/app/profile/activities"
-        className="mt-2 w-full flex items-center justify-center border border-[#E4E4E7] py-1.5 rounded-lg text-sm font-medium color-[#09090B]"
-        type="button"
-      >
-        Cancel
-      </Link>
+        <Button
+          className="w-full h-14 text-base rounded-2xl flex items-center justify-center"
+          type="submit"
+        >
+          {isLoading ? (
+            <div className="flex justify-center items-center">
+              <Loader2 width={48} height={48} className="animate-spin" />
+            </div>
+          ) : (
+            "Submit activity"
+          )}
+        </Button>
+        <Link
+          href="/app/profile/activities"
+          className={`block w-full text-center hover:bg-white/30 ${glassInput} leading-[3.5rem]`}
+        >
+          Cancel
+        </Link>
+      </motion.div>
+
       <SheetContainer isOpen={isDateModalOpen} onClose={handleCloseDateModal}>
         <div className="max-w-4xl mx-auto pb-20 pt-4">
           <DateWheelPicker value={date} onChange={setDate} />

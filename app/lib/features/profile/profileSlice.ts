@@ -42,6 +42,7 @@ const initialState: {
         total_moving_time_hours: 0,
         total_activities_count: 0,
         total_distance: 0,
+        total_distance_mile: 0,
         avatar_symbol: '',
         avatar_url: '',
         email: '',

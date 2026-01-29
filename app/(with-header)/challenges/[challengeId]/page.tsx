@@ -20,11 +20,50 @@ const page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  const product = products.find(
-    (product) =>
-      product.paddle_product_id === challengeId ||
-      product.challenge_info?.id === Number(challengeId)
-  );
+  const product: IProduct = products.find(
+    (product) => product.challenge_info.id === Number(challengeId),
+  ) || {
+    name: "",
+    description: "",
+    images: [],
+    main_image: "",
+    content: [],
+    prices: [
+      {
+        amount: 0,
+        currency: Currencies.EUR,
+        stripe_price_id: "",
+      },
+    ],
+
+    paddle_product_id: "",
+    challenge_info: {
+      completed_at: "",
+      is_completed: false,
+      background_images: [
+        {
+          id: 0,
+          image_url: "",
+          challenge_id: 0,
+        },
+      ],
+      description: "",
+      id: 0,
+      name: "",
+      status: {
+        id: null,
+        name: "",
+        type: "",
+      },
+      status_id: 0,
+      steps: [],
+      total_distance: "",
+      total_distance_mile: 0,
+      activate_date: "",
+      user_distance: 0,
+      user_distance_mile: 0,
+    },
+  };
 
   const handleLoadProducts = async () => {
     try {

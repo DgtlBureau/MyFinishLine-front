@@ -75,7 +75,7 @@ export const ActivityImage = ({ sport_type }: { sport_type: string }) => {
 
     return (
 
-        <div className="w-[80px] min-w-[80px] h-[80px] p-[10px] flex items-center bg-linear-to-b from-[#F4E8FD] to-[#C3B7E2] justify-center rounded-[12px]">
+        <div className="w-[80px] min-w-[80px] h-[80px] p-[10px] flex items-center bg-linear-to-b from-[#CEE9D8] to-[#5170D5] justify-center rounded-[12px]">
             {currentIcon ? <Image src={currentIcon} width={100} height={100} alt={sport_type} className="w-auto h-full" />
                 :
                 <ActivityIcon width={40} height={40} />}

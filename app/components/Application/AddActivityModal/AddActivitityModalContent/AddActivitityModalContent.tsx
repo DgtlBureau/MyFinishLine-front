@@ -23,6 +23,7 @@ import { format, parse } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
+import { useNotifications } from "@/app/contexts/NotificationContext";
 
 enum ActivityType {
   Walk = "Walk",
@@ -56,6 +57,7 @@ const AddActivitityModalContent = ({
   onClose: () => void;
   handleAddActivity: (activity: IActivity) => void;
 }) => {
+  const { checkNotifications } = useNotifications();
   const [activityData, setActivityData] = useState<IManualActivity>({
     name: "",
     start_date: new Date(),
@@ -101,6 +103,7 @@ const AddActivitityModalContent = ({
       });
       toast.success("Manual activity successfully added");
       handleAddActivity(data);
+      await checkNotifications();
       onClose();
     } catch (error: any) {
       toast.error(

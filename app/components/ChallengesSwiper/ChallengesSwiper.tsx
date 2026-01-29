@@ -1,38 +1,110 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCreative, Autoplay } from "swiper/modules";
 import Image from "next/image";
-import { motion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 
 import "swiper/css";
+import "swiper/css/effect-creative";
 import Link from "next/link";
 import axios from "axios";
 import { setProducts } from "@/app/lib/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { IProduct } from "@/app/types";
 
-const challenges = [
-  {
-    id: 1,
-    title: "Say Goodbye to Hollywood",
-    image: "/images/application/challenge-bg-1.png",
-  },
-  {
-    id: 2,
-    title: "Marathoner",
-    image: "/images/application/challenge-bg-2.jpg",
-  },
-  {
-    id: 3,
-    title: "Great Wall Runner",
-    image: "/images/application/challenge-bg-3.jpg",
-  },
-  {
-    id: 4,
-    title: "Mountain Conqueror",
-    image: "/images/application/challenge-bg-4.webp",
-  },
-];
+const ChallengeCard = ({ product }: { product: IProduct }) => {
+  const price = product.prices?.find((p) => p.currency === "USD");
+  const challenge = product.challenge_info;
+
+  return (
+    <div className="relative w-full h-full min-h-svh overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src={product.main_image}
+        alt={challenge.name}
+        fill
+        className="object-cover"
+        quality={85}
+      />
+
+      {/* Gradient Overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%)",
+        }}
+      />
+
+      {/* Challenge Logo */}
+      {challenge.image_url && (
+        <div className="absolute top-8 right-8 w-[140px] lg:w-[180px]">
+          <Image
+            src={challenge.image_url}
+            alt={challenge.name}
+            width={180}
+            height={80}
+            className="w-full h-auto object-contain"
+          />
+        </div>
+      )}
+
+      {/* Distance Badge */}
+      <div className="absolute top-8 left-8 flex items-center gap-1.5 bg-white/20 backdrop-blur-xl rounded-full px-4 py-2.5 border border-white/30">
+        <span className="font-bold text-sm text-white tracking-wide">
+          {challenge.total_distance} km
+        </span>
+      </div>
+
+      {/* Bottom Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 flex flex-col gap-5">
+        <div className="bg-white/15 backdrop-blur-2xl rounded-2xl border border-white/20 p-5 lg:p-6">
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-2 flex-1">
+              <h3 className="font-bold text-2xl lg:text-3xl text-white leading-tight tracking-tight">
+                {challenge.name}
+              </h3>
+              <p className="text-white/70 text-sm lg:text-base leading-relaxed line-clamp-2 font-medium">
+                {product.description}
+              </p>
+            </div>
+            {price && (
+              <span className="font-bold text-3xl lg:text-4xl text-white tracking-tight shrink-0">
+                ${price.amount}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <Link
+          href={"/challenges/" + challenge.id}
+          className="flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold text-white bg-white/25 backdrop-blur-xl border border-white/30 rounded-2xl w-full hover:bg-white/35 transition-all tracking-wide"
+        >
+          Choose a Quest
+          <ArrowRight size={16} />
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const ComingSoonCard = () => {
+  return (
+    <div className="relative w-full h-full min-h-svh overflow-hidden bg-gradient-to-br from-[#3B5CC6]/40 via-[#5C9BB8]/30 to-[#4DA67A]/40">
+      <div className="absolute inset-0 backdrop-blur-xl bg-white/10" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+        <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center">
+          <Clock className="w-7 h-7 text-white/70" />
+        </div>
+        <span className="text-white/80 font-bold text-xl tracking-tight">Coming Soon</span>
+        <span className="text-white/50 text-sm font-medium">New quests are on the way</span>
+      </div>
+    </div>
+  );
+};
 
 const ChallengesSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -47,54 +119,56 @@ const ChallengesSwiper = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     handleLoadChallenges();
   }, []);
 
+  const hasProducts = products.length > 0;
+
   return (
     <Swiper
+      modules={[EffectCreative, Autoplay]}
+      effect="creative"
+      creativeEffect={{
+        prev: {
+          translate: ["-20%", 0, -200],
+          opacity: 0,
+        },
+        next: {
+          translate: ["20%", 0, -200],
+          opacity: 0,
+        },
+        limitProgress: 2,
+      }}
+      autoplay={{
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      }}
+      loop
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
       }}
-      className="mt-8 challenges-swiper w-full"
-      spaceBetween={8}
-      slidesPerView={1.3}
-      speed={700}
-      centeredSlides={true}
+      className="w-full h-full"
+      spaceBetween={0}
+      slidesPerView={1}
+      speed={800}
+      grabCursor
     >
-      {products.map((product, idx) => (
-        <SwiperSlide key={product.challenge_info?.id || idx} className="px-0 w-full">
-          <motion.div className="w-full h-full bg-white/30 py-4 rounded-2xl">
-            <Image
-              className="object-cover w-full h-full h-130 rounded-4xl"
-              src={product.main_image || product.images}
-              alt={product.challenge_info?.name || product.name}
-              width={400}
-              height={700}
-              loading="eager"
-              quality={75}
-            />
-            <span className="block text-center mt-6 font-medium text-xl tracking-[-4%]">
-              {product.challenge_info?.name || product.name}
-            </span>
-            {product.paddle_product_id ? (
-              <Link
-                href={"/challenges/" + product.paddle_product_id}
-                className="mx-auto mt-7 flex items-center gap-2 rounded-full py-2 px-4 bg-primary font-medium text-sm leading-5 text-primary-foreground w-fit"
-              >
-                Go to challenge <ArrowUpRight />
-              </Link>
-            ) : (
-              <button
-                disabled
-                className="mx-auto mt-7 flex items-center gap-2 rounded-full py-2 px-4 bg-gray-300 font-medium text-sm leading-5 text-gray-500 w-fit cursor-not-allowed"
-              >
-                Coming Soon
-              </button>
-            )}
-          </motion.div>
-        </SwiperSlide>
-      ))}
+      {hasProducts &&
+        products.map((product) => (
+          <SwiperSlide key={product.challenge_info.id}>
+            <ChallengeCard product={product} />
+          </SwiperSlide>
+        ))}
+      {/* Coming Soon placeholders */}
+      <SwiperSlide>
+        <ComingSoonCard />
+      </SwiperSlide>
+      <SwiperSlide>
+        <ComingSoonCard />
+      </SwiperSlide>
     </Swiper>
   );
 };

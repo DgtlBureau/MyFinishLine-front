@@ -5,6 +5,8 @@ import "./globals.css";
 import { buildSeo } from "./lib/utils/buildSeo";
 import { pageMetadata } from "./data/pagesMetadata";
 import VisibilityHandler from "./components/Shared/VisibilityHandler/VisibilityHandler";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import QueryProvider from "./providers/QueryProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,7 +37,11 @@ export default function RootLayout({
         className={`${inter.variable} [--header-height:calc(var(--spacing)*14)] lg:[--header-height:calc(var(--spacing)*23)] antialiased bg-black`}
       >
         <VisibilityHandler />
-        <StoreProvider>{children}</StoreProvider>
+        <QueryProvider>
+          <StoreProvider>
+            <LanguageProvider>{children}</LanguageProvider>
+          </StoreProvider>
+        </QueryProvider>
       </body>
     </html>
   );

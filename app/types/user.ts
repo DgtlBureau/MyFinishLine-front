@@ -1,3 +1,5 @@
+export type MeasureUnit = "km" | "mile";
+
 export interface IUser {
   avatar_url: string | null;
   country: string | null;
@@ -13,6 +15,7 @@ export interface IUser {
   strava_id: string | null;
   total_activities_count: number;
   total_distance: number;
+  total_distance_mile?: number;
   total_moving_time_hours: number;
   updated_at: string;
   username: string;
@@ -29,6 +32,5 @@ export interface IUser {
     month: number;
     day: number;
   };
-  measure: "km" | "mile";
-  total_distance_mile?: number;
+  measure?: MeasureUnit;
 }
