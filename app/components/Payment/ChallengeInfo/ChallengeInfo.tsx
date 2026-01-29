@@ -4,16 +4,16 @@ import Image from "next/image";
 
 export const ChallengeInfo = ({ product }: { product: IProduct }) => {
   return (
-    <div className="flex flex-col gap-7.5 justify-between p-[20px_30px] pb-7.5 rounded-3xl border-1px bg-linear-to-b from-[#5170D5] to-[#3D5AAF] md:w-[40%] w-full">
-      <div className="flex gap-7.25 items-start justify-between">
+    <div className="flex flex-col gap-6 justify-between p-6 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 shadow-lg md:w-[40%] w-full">
+      <div className="flex gap-6 items-start justify-between">
         <div>
-          <p className="text-lg text-white leading-7">{product.name}</p>
-          <span className="font-semibold text-5xl text-white">
+          <p className="text-lg text-white/80 leading-7 font-medium">{product.name}</p>
+          <span className="font-bold text-5xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
             {CurrencieSymbols[product.prices?.[0].currency]}
             {product.prices?.[0].amount}
           </span>
         </div>
-        <div className="border-4 border-[#EEDFBA] w-50 h-50 rounded-full overflow-hidden flex items-center justify-center">
+        <div className="border-4 border-[#EEDFBA] w-50 h-50 rounded-full overflow-hidden flex items-center justify-center shadow-lg">
           <Image
             src={product.main_image}
             width={200}
@@ -23,22 +23,24 @@ export const ChallengeInfo = ({ product }: { product: IProduct }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-3.5 font-bold text-[22px] text-white">
-        <p className="text-[22px] text-bold">Order Summary</p>
-        <div className="rounded-[12px] bg-white font-medium border text-[14px] text-black border-[#E4E4E7]">
-          <div className="flex justify-between border-b border-[#E4E4E7] p-[10px_20px] w-full">
-            <p>{product.name} Challenge</p>
-            <p>
+      <div className="flex flex-col gap-3.5">
+        <p className="text-xl font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+          Order Summary
+        </p>
+        <div className="rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-sm text-white overflow-hidden">
+          <div className="flex justify-between border-b border-white/15 p-3 px-5">
+            <p className="font-medium">{product.name} Challenge</p>
+            <p className="font-medium">
               {product.prices?.[0].amount}{" "}
               {CurrencieSymbols[product.prices?.[0].currency]}
             </p>
           </div>
-          <div className="flex justify-between border-b border-[#E4E4E7] p-[10px_20px]">
-            <p>Shipping</p>
-            <p>0 {CurrencieSymbols[product.prices?.[0].currency]}</p>
+          <div className="flex justify-between border-b border-white/15 p-3 px-5">
+            <p className="text-white/70">Shipping</p>
+            <p className="text-white/70">0 {CurrencieSymbols[product.prices?.[0].currency]}</p>
           </div>
-          <div className="flex justify-between p-[10px_20px] text-[16px]">
-            <p className="">Total</p>
+          <div className="flex justify-between p-3 px-5 text-base font-bold">
+            <p>Total</p>
             <p>
               {product.prices?.[0].amount}{" "}
               {CurrencieSymbols[product.prices?.[0].currency]}

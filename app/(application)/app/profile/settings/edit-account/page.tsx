@@ -34,7 +34,7 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 
 const glassInputClassName =
-  "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20";
+  "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)]";
 
 const sexOptions = [
   { label: "Male", value: "M" },

@@ -1,16 +1,8 @@
 import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import { Select } from "../../ui/select";
-import {
-  formatCardNumber,
-  formatExpiryDate,
-  numberRegex,
-} from "@/app/lib/utils/regex";
-import { CustomSelect } from "../../ui/customSect/CustomSelect";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IProduct } from "@/app/types";
 import axios from "axios";
 
@@ -39,7 +31,6 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
       handleOrder();
     },
   });
-  const [paddle, setPaddle] = useState<Paddle>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOrder = async () => {
@@ -56,38 +47,24 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
     }
   };
 
-  // useEffect(() => {
-  //   initializePaddle({
-  //     environment: "production",
-  //     token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN!,
-  //   }).then((paddleInstance: Paddle | undefined) => {
-  //     if (paddleInstance) {
-  //       setPaddle(paddleInstance);
-  //     }
-  //   });
-  // }, []);
-
-  // const openCheckout = () => {
-  //   if (!paddle) return;
-
-  //   paddle.Checkout.open({
-  //     items: [{ priceId: product.prices.paddle_price_id, quantity: 1 }],
-  //   });
-  // };
+  const glassInputClassName =
+    "w-full py-4 px-5 text-base rounded-2xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] placeholder:text-[#1a1a2e]/40 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all";
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-7.5 w-full">
-        <div className="flex flex-col gap-3 p-6 rounded-3xl border border-[#5170D5] bg-white">
-          <p className="font-bold text-[22px]">Your details</p>
-          <div className="flex gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 shadow-lg">
+          <p className="font-bold text-xl text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+            Your details
+          </p>
+          <div className="flex gap-4">
             <label className="w-[50%]">
               <Input
                 name="firstName"
                 value={values.firstName}
                 placeholder="First Name"
                 onChange={(e) => setFieldValue("firstName", e.target.value)}
-                className="h-10 placeholder-[#71717A] text-primary"
+                className={glassInputClassName}
                 onBlur={handleBlur}
                 error={touched.firstName ? errors.firstName : undefined}
               />
@@ -98,20 +75,20 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
                 value={values.lastName}
                 placeholder="Last Name"
                 onChange={(e) => setFieldValue("lastName", e.target.value)}
-                className="h-10 placeholder-[#71717A] text-primary"
+                className={glassInputClassName}
                 onBlur={handleBlur}
                 error={touched.lastName ? errors.lastName : undefined}
               />
             </label>
           </div>
-          <div className="flex gap-5">
+          <div className="flex gap-4">
             <label className="w-[50%]">
               <Input
                 name="email"
                 value={values.email}
                 placeholder="E-mail"
                 onChange={(e) => setFieldValue("email", e.target.value)}
-                className="h-10 placeholder-[#71717A] text-primary"
+                className={glassInputClassName}
                 onBlur={handleBlur}
                 error={touched.email ? errors.email : undefined}
               />
@@ -119,14 +96,18 @@ const PaymentForm = ({ product }: { product: IProduct }) => {
             <span className="w-[50%]" />
           </div>
         </div>
-        <Button className="w-full mt-4 uppercase text-2xl py-6" type="submit">
+        <Button
+          className="group relative w-full py-6 px-6 text-xl font-bold uppercase cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 rounded-2xl overflow-hidden bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white shadow-xl backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)] hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99]"
+          type="submit"
+        >
+          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
           {isLoading ? (
             <>
-              <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
-              Forming order link...
+              <div className="relative z-10 w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+              <span className="relative z-10">Forming order link...</span>
             </>
           ) : (
-            "Order"
+            <span className="relative z-10">Order</span>
           )}
         </Button>
       </form>

@@ -2,20 +2,21 @@
 
 import GoogleLogin from "@/app/components/Shared/GoogleLogin/GoogleLogin";
 import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
-import { authWithStrava } from "@/app/lib/utils/authWithStrava";
+import { getStravaAuthUrl } from "@/app/lib/utils/authWithStrava";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useAppDispatch } from "@/app/lib/hooks";
 import { useRouter } from "next/navigation";
 import { validate } from "./validate";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import axios from "axios";
 import PasswordValidator from "@/app/components/PasswordValidator/PasswordValidator";
 import { setUser } from "@/app/lib/features/user/userSlice";
-import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
+import { getFitbitAuthUrl } from "@/app/lib/utils/authWithFitbit";
 import Image from "next/image";
+import { motion } from "motion/react";
 
 interface IFormik {
   email: string;
@@ -26,11 +27,20 @@ interface IFormik {
 }
 
 export default function Register() {
-  const [loading, setLoading] = useState(false);
+  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+  const [leaving, setLeaving] = useState(false);
   const [isCodeRevealed, setIsCodeRevealed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const navigateWithFade = useCallback((provider: string, url: string) => {
+    setLoadingProvider(provider);
+    setLeaving(true);
+    setTimeout(() => {
+      window.location.href = url;
+    }, 400);
+  }, []);
 
   const { values, errors, touched, handleSubmit, handleBlur, setFieldValue } =
     useFormik<IFormik>({
@@ -86,176 +96,237 @@ export default function Register() {
     }
   };
 
+  const glassInputClassName =
+    "w-full py-5 px-6 text-lg rounded-2xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] placeholder:text-[#1a1a2e]/40 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)] transition-all";
+
   return (
-    <section className="grid min-h-svh lg:grid-cols-2">
-      <section className="flex items-center justify-center px-2">
-        <div className="max-w-125 w-full flex flex-col mx-auto">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-center">
-            Create Account
-          </h1>
-          <p className="mt-2 text-sm sm:text-base text-center">
-            Sign up to get started
-          </p>
-
-          <form onSubmit={handleSubmit} className="mt-6">
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              disabled={isCodeRevealed}
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.email ? errors.email : ""}
-            />
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              className="mt-2"
-              placeholder="Create a password"
-              disabled={isCodeRevealed}
-              value={values.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.password ? errors.password : ""}
-            />
-            {!isCodeRevealed && (
-              <div className="mt-2">
-                <PasswordValidator password={values.password} />
-              </div>
-            )}
-            <Input
-              id="repeatPassword"
-              name="repeatPassword"
-              type="password"
-              className="mt-2"
-              placeholder="Repeat your password"
-              disabled={isCodeRevealed}
-              value={values.repeatPassword}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.repeatPassword ? errors.repeatPassword : ""}
-            />
-            {isCodeRevealed && (
-              <label className="block mt-1" htmlFor="code">
-                <Input
-                  id="code"
-                  name="code"
-                  className="w-full py-3 px-4"
-                  placeholder="123456"
-                  value={values.code}
-                  onChange={handleChange}
-                />
-                <span className="block mt-2 leading-4 text-xs">
-                  Enter code that was send to your email
-                </span>
-              </label>
-            )}
-            {isCodeRevealed && (
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className={`mt-2 w-full border-none py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
-              ${isLoading && "opacity-70 cursor-not-allowed"}
-            `}
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Creating Account...
-                  </>
-                ) : (
-                  "Create Account"
-                )}
-              </Button>
-            )}
-            {values.error && (
-              <span className="text-red-400 text-xs leading-0">
-                {values.error}
-              </span>
-            )}
-            {!isCodeRevealed && (
-              <Button
-                variant="outline"
-                type="submit"
-                disabled={isLoading}
-                className={`mt-2 w-full py-3 px-6 text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2
-              ${isLoading && "opacity-70 cursor-not-allowed"}
-            `}
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Sending code...
-                  </>
-                ) : (
-                  "Send code"
-                )}
-              </Button>
-            )}
-          </form>
-          <div className="mt-2">
-            <TermsLine />
-          </div>
-
-          <div className="relative flex items-center my-6">
-            <div className="grow border-t border-gray-600"></div>
-            <span className="shrink mx-4 text-gray-400 text-sm">or</span>
-            <div className="grow border-t border-gray-600"></div>
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={() => {
-              setLoading(true);
-              authWithStrava();
-            }}
-            disabled={loading}
-            className={`w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
-            ${loading && "opacity-70 cursor-not-allowed"}
-          `}
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
-            </svg>
-            Sign up with Strava
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={linkFitbit}
-            className={`mt-2 w-full py-3 px-6 font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3
-                    `}
+    <div className={`flex items-center justify-center px-6 py-12 min-h-svh transition-all duration-400 ${leaving ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
+      <div className="max-w-xl lg:max-w-2xl w-full">
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+            className="hidden lg:flex justify-center mb-8"
           >
             <Image
-              src="/icons/fitbit.svg"
-              width={16}
-              height={16}
-              alt="Fitbit icon"
+              src="/images/logo-line.png"
+              width={957}
+              height={489}
+              alt="MyFinishLine"
+              className="h-10 w-auto drop-shadow-lg"
             />
-            Sign up with FitBit
-          </Button>
+          </motion.div>
 
-          <GoogleLogin type="sign-up" />
-
-          <div className="mt-6 space-y-3 text-sm">
-            <Link
-              href="/login"
-              className="block text-orange-400 hover:text-[#e44302] transition-colors text-center"
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+            className="bg-white/30 backdrop-blur-2xl backdrop-saturate-200 border border-white/40 rounded-3xl p-8 sm:p-10 lg:p-14 shadow-2xl shadow-black/10"
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+              className="text-4xl lg:text-5xl font-bold text-white text-center drop-shadow-sm tracking-tight"
             >
-              Already have an account? Sign in
-            </Link>
-          </div>
+              Create Account
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="mt-4 text-lg lg:text-xl text-white/70 text-center font-light"
+            >
+              Sign up to get started
+            </motion.p>
 
-          <p className="text-gray-400 text-xs mt-4 text-center">
-            By creating an account, you agree to our Terms of Service and
-            Privacy Policy
-          </p>
-        </div>
-      </section>
-      <div className="relative hidden bg-[url(/images/gradient.webp)] bg-cover bg-center bg-no-repeat lg:block dark:bg-[url(/images/gradient-dark.webp)]"></div>
-    </section>
+            <motion.form
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.45, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+              onSubmit={handleSubmit}
+              className="mt-10 space-y-5"
+            >
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                className={glassInputClassName}
+                placeholder="Enter your email"
+                disabled={isCodeRevealed}
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.email ? errors.email : ""}
+              />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                className={glassInputClassName}
+                placeholder="Create a password"
+                disabled={isCodeRevealed}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.password ? errors.password : ""}
+              />
+              {!isCodeRevealed && (
+                <div>
+                  <PasswordValidator password={values.password} />
+                </div>
+              )}
+              <Input
+                id="repeatPassword"
+                name="repeatPassword"
+                type="password"
+                className={glassInputClassName}
+                placeholder="Repeat your password"
+                disabled={isCodeRevealed}
+                value={values.repeatPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.repeatPassword ? errors.repeatPassword : ""}
+              />
+              {isCodeRevealed && (
+                <div>
+                  <Input
+                    id="code"
+                    name="code"
+                    className={glassInputClassName}
+                    placeholder="123456"
+                    value={values.code}
+                    onChange={handleChange}
+                  />
+                  <span className="block mt-2 leading-4 text-xs text-white/60">
+                    Enter code that was sent to your email
+                  </span>
+                </div>
+              )}
+              {values.error && (
+                <span className="block text-sm text-center text-red-200 mt-1">
+                  {values.error}
+                </span>
+              )}
+
+              <Button
+                type="submit"
+                variant="ghost"
+                disabled={isLoading}
+                className={`group relative w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 rounded-2xl overflow-hidden bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white shadow-xl backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)] hover:bg-gradient-to-r hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99]
+                ${isLoading && "opacity-70 cursor-not-allowed"}
+              `}
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+                {isLoading ? (
+                  <>
+                    <div className="relative z-10 w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                    <span className="relative z-10">
+                      {isCodeRevealed ? "Creating Account..." : "Sending code..."}
+                    </span>
+                  </>
+                ) : (
+                  <span className="relative z-10">
+                    {isCodeRevealed ? "Create Account" : "Send code"}
+                  </span>
+                )}
+              </Button>
+            </motion.form>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.55 }}
+              className="mt-4"
+            >
+              <TermsLine />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="relative flex items-center my-8"
+            >
+              <div className="grow border-t border-white/25"></div>
+              <span className="shrink mx-4 text-white/50 text-base tracking-wide uppercase">or</span>
+              <div className="grow border-t border-white/25"></div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.65, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+              className="space-y-4"
+            >
+              <Button
+                variant="ghost"
+                onClick={() => navigateWithFade("strava", getStravaAuthUrl())}
+                disabled={!!loadingProvider}
+                className={`w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)] hover:bg-white/30 hover:shadow-lg hover:text-white
+                ${loadingProvider && "opacity-70 cursor-not-allowed"}
+              `}
+              >
+                {loadingProvider === "strava" ? (
+                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                ) : (
+                  <Image
+                    src="/icons/strava-logo.png"
+                    width={36}
+                    height={36}
+                    alt="Strava"
+                    className="w-9 h-9 shrink-0 rounded-lg"
+                  />
+                )}
+                Sign up with Strava
+              </Button>
+
+              <Button
+                variant="ghost"
+                onClick={() => navigateWithFade("fitbit", getFitbitAuthUrl())}
+                disabled={!!loadingProvider}
+                className={`w-full py-5 px-6 text-lg font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-3 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)] hover:bg-white/30 hover:shadow-lg hover:text-white
+                ${loadingProvider && "opacity-70 cursor-not-allowed"}
+              `}
+              >
+                {loadingProvider === "fitbit" ? (
+                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                ) : (
+                  <Image
+                    src="/icons/fitbit-logo.png"
+                    width={36}
+                    height={36}
+                    alt="Fitbit"
+                    className="w-9 h-9 shrink-0 rounded-lg"
+                  />
+                )}
+                Sign up with FitBit
+              </Button>
+
+              <GoogleLogin
+                type="sign-up"
+                loading={loadingProvider === "google"}
+                disabled={!!loadingProvider}
+                onNavigate={(url) => navigateWithFade("google", url)}
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.75 }}
+              className="mt-8 space-y-4 text-lg"
+            >
+              <Link
+                href="/login"
+                className="block text-white/80 hover:text-white transition-colors text-center font-medium"
+              >
+                Already have an account? <span className="underline underline-offset-2">Sign in</span>
+              </Link>
+            </motion.div>
+          </motion.div>
+      </div>
+    </div>
   );
 }

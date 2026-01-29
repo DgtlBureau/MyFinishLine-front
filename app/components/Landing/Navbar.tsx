@@ -18,7 +18,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="w-full bg-white border-b border-gray-100">
+    <nav className="w-full sticky top-0 z-50 bg-[#2a3a6b]/40 backdrop-blur-xl border-b border-white/20 shadow-lg">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="flex justify-between items-center h-[60px] md:h-[72px]">
           {/* Logo */}
@@ -27,7 +27,7 @@ export default function Navbar() {
               <img
                 src={logoImg}
                 alt="MyFinishLine"
-                className="h-5 md:h-6 w-auto"
+                className="h-5 md:h-6 w-auto drop-shadow-md"
               />
             </Link>
           </div>
@@ -38,7 +38,7 @@ export default function Navbar() {
               <a
                 key={index}
                 href={link.href}
-                className="text-sm font-medium text-[#09090b] hover:text-gray-600 transition-colors whitespace-nowrap"
+                className="text-sm font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:text-white/80 transition-colors whitespace-nowrap"
               >
                 {link.name}
               </a>
@@ -49,13 +49,13 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm font-medium text-[#09090b] hover:text-black transition-colors"
+              className="text-sm font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:text-white/80 transition-colors"
             >
               Sign in
             </Link>
             <a
               href="#level-up"
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#18181b] rounded-full hover:bg-[#27272a] transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-white/20 backdrop-blur-xl border border-white/30 rounded-full hover:bg-white/30 transition-all drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
             >
               Get started
             </a>
@@ -65,7 +65,7 @@ export default function Navbar() {
           <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="p-2 rounded-lg text-white hover:text-white hover:bg-white/20 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -74,29 +74,29 @@ export default function Navbar() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-100">
+          <div className="lg:hidden py-4 border-t border-white/20">
             <div className="flex flex-col space-y-2">
               {navLinks.map((link, index) => (
                 <a
                   key={index}
                   href={link.href}
-                  className="px-4 py-2 text-sm font-medium text-[#09090b] hover:bg-gray-50 rounded-md"
+                  className="px-4 py-3 text-base font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:bg-white/15 rounded-xl transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="pt-4 flex flex-col space-y-2 border-t border-gray-100">
+              <div className="pt-4 flex flex-col space-y-3 border-t border-white/20">
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-sm font-medium text-[#09090b]"
+                  className="mx-4 px-4 py-3 text-base font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl text-center hover:bg-white/25 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign in
                 </Link>
                 <a
                   href="#level-up"
-                  className="mx-4 px-4 py-2 text-sm font-medium text-white bg-[#18181b] rounded-full text-center"
+                  className="mx-4 px-4 py-3 text-base font-semibold text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] border border-white/30 rounded-2xl text-center shadow-lg hover:shadow-xl transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Get started
