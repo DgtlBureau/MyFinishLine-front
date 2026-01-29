@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 // Images - use local files
 const imgYoungPeople = "/images/young-people.png";
 const imgSportBeginners = "/images/sport-beginners.png";
@@ -85,8 +89,12 @@ export default function Participation() {
         {/* Sections */}
         <div className="flex flex-col gap-4 md:gap-8">
           {sections.map((section, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               className={`flex flex-col md:flex-row items-center gap-0 md:gap-8 min-h-[400px] md:h-[512px] border border-[#b7b9e2] rounded-xl overflow-hidden ${
                 section.imagePosition === "right" ? "md:flex-row-reverse" : ""
               }`}
@@ -133,7 +141,7 @@ export default function Participation() {
                   </ul>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

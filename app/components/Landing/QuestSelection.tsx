@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCreative, Autoplay } from "swiper/modules";
@@ -33,7 +33,7 @@ const QuestCard = ({ product }: { product: IProduct }) => {
           src={imageUrl}
           alt={name}
           fill
-          className="object-cover"
+          className="object-cover object-top"
           quality={85}
         />
       ) : (
@@ -99,23 +99,6 @@ const QuestCard = ({ product }: { product: IProduct }) => {
     </div>
   );
 };
-
-const ComingSoonCard = () => (
-  <div className="relative w-full h-[450px] sm:h-[480px] md:h-[525px] rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group active:scale-[0.97] transition-transform duration-200">
-    <Image
-      src="/images/coming-soon.png"
-      alt="Coming Soon"
-      fill
-      className="object-cover blur-sm scale-105 group-active:blur-md transition-all duration-200"
-      quality={75}
-    />
-    <div className="absolute inset-0 bg-black/40 backdrop-blur-xs group-active:bg-black/50 transition-colors duration-200" />
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-      <Clock className="w-10 h-10 text-white/70 group-active:scale-110 transition-transform duration-200" />
-      <span className="text-white font-semibold text-xl tracking-wide group-active:scale-105 transition-transform duration-200">Coming Soon</span>
-    </div>
-  </div>
-);
 
 export default function QuestSelection() {
   const { products } = useAppSelector((state) => state.products);
@@ -201,12 +184,6 @@ export default function QuestSelection() {
                 <QuestCard product={product} />
               </SwiperSlide>
             ))}
-            <SwiperSlide>
-              <ComingSoonCard />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ComingSoonCard />
-            </SwiperSlide>
           </Swiper>
         </div>
       </div>

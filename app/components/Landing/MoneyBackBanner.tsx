@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function MoneyBackBanner() {
   return (
     <section className="flex justify-center py-6 md:py-12 w-full px-4 md:px-8">
@@ -9,13 +13,19 @@ export default function MoneyBackBanner() {
         }}
       >
         {/* Money Back Guarantee Badge */}
-        <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[120px] md:h-[120px]">
+        <motion.div
+          className="flex-shrink-0 w-[100px] h-[100px] md:w-[120px] md:h-[120px]"
+          initial={{ scale: 2.5, rotate: -25, opacity: 0 }}
+          whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        >
           <img
             src="/images/money-back-badge.svg"
             alt="Money Back Guarantee"
             className="w-full h-full"
           />
-        </div>
+        </motion.div>
 
         {/* Text Content */}
         <div className="flex flex-col gap-2 md:gap-3 text-center md:text-left">
