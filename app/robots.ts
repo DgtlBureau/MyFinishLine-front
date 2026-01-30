@@ -3,7 +3,7 @@ import { MetadataRoute } from "next";
 const SITE_URL =
   process.env.NODE_ENV === "production"
     ? "https://myfinishline.io"
-    : "https://dev.myfinishline.io";
+    : "https://myfinishline.io";
 
 export default function robots(): MetadataRoute.Robots {
   return {

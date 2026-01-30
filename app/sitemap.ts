@@ -4,7 +4,7 @@ import { IProduct } from "@/app/types";
 const SITE_URL =
   process.env.NODE_ENV === "production"
     ? "https://myfinishline.io"
-    : "https://dev.myfinishline.io";
+    : "https://myfinishline.io";
 
 async function getPublicChallenges(): Promise<IProduct[]> {
   try {

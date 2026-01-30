@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "dev.myfinishline.io",
+        hostname: "myfinishline.io",
         port: "",
         pathname: "/**",
       },

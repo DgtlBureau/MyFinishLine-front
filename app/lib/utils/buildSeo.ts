@@ -22,7 +22,7 @@ interface ISeoProps {
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://myfinishline.io"
-    : "https://dev.myfinishline.io";
+    : "https://myfinishline.io";
 
 const SITE_NAME = "MyFinishLine";
 
