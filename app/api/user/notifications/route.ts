@@ -22,7 +22,7 @@ export const GET = async () => {
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Notifications API error:", error);
+    console.error("Notifications API error:", error?.message || error);
 
     if (error.response) {
       return NextResponse.json(
@@ -34,9 +34,19 @@ export const GET = async () => {
       );
     }
 
+    if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND" || error.code === "ETIMEDOUT") {
+      return NextResponse.json(
+        {
+          message: "Backend service is unavailable",
+          error: "service_unavailable",
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       {
-        message: "Internal server error",
+        message: error?.message || "Internal server error",
         error: "internal_error",
       },
       { status: 500 }

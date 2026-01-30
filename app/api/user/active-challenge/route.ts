@@ -2,6 +2,16 @@ import instance from "@/app/lib/utils/instance";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+const BACKEND_ORIGIN = (
+  process.env.BACKEND_URL || "https://dev.myfinishline.io/back/api"
+).replace(/\/api\/?$/, "");
+
+function prefixStorageUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("/storage/")) return BACKEND_ORIGIN + url;
+  return url;
+}
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -20,6 +30,19 @@ export async function GET() {
         "Content-Type": "multipart/form-data",
       },
     });
+
+    if (data) {
+      data.image_url = prefixStorageUrl(data.image_url);
+      data.logo_url = prefixStorageUrl(data.logo_url);
+      if (data.background_images) {
+        data.background_images = data.background_images.map(
+          (img: { image_url: string; [key: string]: unknown }) => ({
+            ...img,
+            image_url: prefixStorageUrl(img.image_url) || img.image_url,
+          })
+        );
+      }
+    }
 
     return NextResponse.json(data);
   } catch (error: any) {

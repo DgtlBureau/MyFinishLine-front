@@ -69,7 +69,7 @@ const RewardsSwiper = () => {
             Contracts in Progress
           </h4>
           <Link
-            href="/app/contracts/all"
+            href="/app/contracts"
             className="text-sm text-white/60 hover:text-white/90 transition-colors"
           >
             See All

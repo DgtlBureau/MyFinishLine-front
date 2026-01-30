@@ -17,10 +17,13 @@ import { useNotifications } from "@/app/contexts/NotificationContext";
 import Link from "next/link";
 import Image from "next/image";
 import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
+import { MapPin } from "lucide-react";
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoaded } = useAppSelector((state) => state.activities);
+  const { challenges } = useAppSelector((state) => state.user);
+  const hasActiveChallenge = challenges && challenges.length > 0;
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -109,6 +112,33 @@ const Page = () => {
     isLoading,
   ]);
 
+  if (!hasActiveChallenge) {
+    return (
+      <main className="relative px-4 max-w-4xl mx-auto">
+        <div className="mt-10">
+          <h4 className="text-3xl text-center font-medium leading-9 text-white">
+            Recent Activities
+          </h4>
+        </div>
+        <div className="mt-12 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4">
+            <MapPin className="w-8 h-8 text-white/70" />
+          </div>
+          <h3 className="text-xl font-bold text-white">No active challenge</h3>
+          <p className="mt-2 text-sm text-white/70 max-w-xs">
+            Start a challenge to track your activities and see your progress
+          </p>
+          <Link
+            href="/payment"
+            className="inline-block mt-5 px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
+          >
+            Choose a Quest →
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="relative px-4 max-w-4xl mx-auto">
       <div className="mt-10 flex items-center justify-between">
@@ -154,9 +184,22 @@ const Page = () => {
             )}
           </div>
         ) : (
-          <div className="text-center text-sm py-10">
-            No activities found. Connect your Strava account to see your
-            activities here.
+          <div className="flex flex-col items-center text-center py-16">
+            <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-white/90">No activities yet</h3>
+            <p className="mt-2 text-base text-white/60 max-w-[280px]">
+              Connect your Strava or Fitbit account to sync your activities
+            </p>
+            <Link
+              href="/app/profile/journey"
+              className="inline-block mt-5 px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
+            >
+              Connect Account →
+            </Link>
           </div>
         )}
       </AnimatePresence>

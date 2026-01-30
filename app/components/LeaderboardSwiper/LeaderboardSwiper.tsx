@@ -21,6 +21,7 @@ const LeaderboardSwiper = ({
   const [isLastSlide, setIsLastSlide] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const handleGoNext = () => {
     swiperRef?.current?.slideNext();
@@ -44,7 +45,7 @@ const LeaderboardSwiper = ({
         {!!challenges.length && (
           <>
             {/* Header with title and navigation */}
-            <div className="flex items-center justify-between px-8 mb-4">
+            <div className={`flex items-center justify-between px-8 mb-4 ${isEmpty ? "hidden" : ""}`}>
               <AnimatePresence mode="wait">
                 <motion.h4
                   key={activeIndex}
@@ -86,7 +87,7 @@ const LeaderboardSwiper = ({
             </div>
 
             {/* Progress dots */}
-            {challenges.length > 1 && (
+            {challenges.length > 1 && !isEmpty && (
               <div className="flex items-center justify-center gap-2 mb-4">
                 {challenges.map((_, index) => (
                   <motion.button
@@ -145,7 +146,7 @@ const LeaderboardSwiper = ({
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    <LeaderboardItem challengeId={item.id} />
+                    <LeaderboardItem challengeId={item.id} onEmpty={setIsEmpty} />
                   </motion.div>
                 </SwiperSlide>
               ))}

@@ -35,14 +35,21 @@ const Map = ({
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const [awardQueue, setAwardQueue] = useState<IStep[]>([]);
-  const [scale, setScale] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return Math.min(1, window.innerWidth / 672);
-    }
-    return 1;
-  });
+  const [scale, setScale] = useState(1);
   const dispatch = useAppDispatch();
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Responsive scale based on container width
+  useEffect(() => {
+    const updateScale = () => {
+      const container = mapContainerRef.current;
+      const width = container ? container.clientWidth : window.innerWidth;
+      setScale(Math.min(1, width / 672));
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   const handleLoadOnboarding = async () => {
     try {

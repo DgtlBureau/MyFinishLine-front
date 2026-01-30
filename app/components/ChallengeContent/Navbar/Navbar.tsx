@@ -145,10 +145,10 @@ const Navbar = ({
     >
       <div
         className={cn(
-          "bg-background navbar-container relative z-50 flex h-(--header-height) items-center justify-between gap-4 transition-all duration-300 ease-in-out",
+          "bg-background/70 backdrop-blur-xl navbar-container relative z-50 flex h-(--header-height) items-center justify-between gap-4 transition-all duration-300 ease-in-out",
           isScrolled &&
             isAtLeast("lg") &&
-            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-sm backdrop-blur-md",
+            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-sm",
         )}
       >
         <Logo className="" />

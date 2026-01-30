@@ -26,6 +26,7 @@ const MapHeader = ({
   distanceMile,
 }: IMapHeaderProps) => {
   const { user } = useAppSelector((state) => state.user);
+  const challenge = useAppSelector((state) => state.challenge);
   const { label, isMile } = useMeasure();
   const isHidden = useScrollHide();
 
@@ -60,7 +61,11 @@ const MapHeader = ({
             transparent 100%
           )`
         }}>
-        <Image src="/images/logo-line.png" width={957} height={489} alt="Logo" className="absolute top-2 left-0 h-8 w-auto" />
+        {challenge.logo_url ? (
+          <img src={challenge.logo_url} alt={challengeName} className="absolute top-2 left-0 h-8 w-auto object-contain" />
+        ) : (
+          <Image src="/images/logo-line.png" width={957} height={489} alt="Logo" className="absolute top-2 left-0 h-8 w-auto" />
+        )}
         <div className="mt-24 flex justify-between items-start">
           <div>
             <div className="flex items-start gap-8">

@@ -77,6 +77,7 @@ export interface IActiveChallenge {
   is_completed: boolean;
   completed_at: string;
   image_url?: string | null;
+  logo_url?: string | null;
   reward?: IReward;
   reward_ticket?: IRewardTicket;
   route_data?: IRouteData;

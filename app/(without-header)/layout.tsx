@@ -37,7 +37,7 @@ export default function WithoutHeaderLayout({
       )`
     }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-sm lg:hidden">
+      <header className="sticky top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-sm">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-center relative">
           <BackButton />
           <Link href="/" className="block">

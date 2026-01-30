@@ -111,13 +111,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/app/contracts",
-        destination: "/app/contracts/all",
-        permanent: true,
-      },
-      {
-        source: "/app/profile/settings/personalization",
-        destination: "/app/profile/settings/personalization/frames",
+        source: "/app/contracts/:tab",
+        destination: "/app/contracts",
         permanent: true,
       },
     ];

@@ -23,7 +23,7 @@ export default function ApplicationLayout({
     <NotificationProvider>
       <NotificationChecker />
       <RedirectComponent />
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gradient-to-b from-[#5170D5] via-[#8BA3E0] via-25% to-[#CEE9D8]">
         <div className="min-h-screen flex flex-col">
           <AppHeader />
           <main className="min-h-screen pb-15.75 bg-transparent rounded-tl-2xl rounded-tr-2xl">

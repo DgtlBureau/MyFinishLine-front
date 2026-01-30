@@ -5,6 +5,7 @@ import Navbar from "@/app/components/ChallengeContent/Navbar/Navbar";
 import {
   Hero,
   LogoCloud,
+  CTA,
   QuestSelection,
   HowItWorks,
   Participation,
@@ -26,6 +27,7 @@ export default async function Home() {
       <Navbar initialBannerVisible={false} />
       <Hero />
       <LogoCloud />
+      <CTA />
       <QuestSelection />
       <HowItWorks />
       <Participation />

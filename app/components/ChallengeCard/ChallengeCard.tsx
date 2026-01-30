@@ -85,11 +85,19 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
 
   if (!challenge) {
     return (
-      <div className="p-6 border border-white/30 rounded-2xl bg-gradient-to-b from-[#5170D5]/60 via-white/40 to-[#CEE9D8]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-lg">
-        <span className="block text-center">No active challenge available</span>
+      <div className="p-8 border border-white/30 rounded-2xl bg-gradient-to-b from-[#5170D5]/60 via-white/40 to-[#CEE9D8]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-lg text-center">
+        <h3 className="text-xl font-bold text-white">
+          No active challenge
+        </h3>
+        <p className="mt-2 text-sm text-white/70">
+          Start your adventure and track your progress on an interactive map
+        </p>
         {!userId && (
-          <Link className="block text-center mt-2 underline" href="/payment">
-            Purchase one here
+          <Link
+            href="/payment"
+            className="inline-block mt-5 px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
+          >
+            Choose a Quest →
           </Link>
         )}
       </div>

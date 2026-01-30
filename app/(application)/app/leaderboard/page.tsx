@@ -5,7 +5,7 @@ import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import LeaderboardSkeleton from "@/app/components/LeaderboardSwiper/LeaderboardItem/LeaderboardSkeleton";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
@@ -16,6 +16,8 @@ const page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const { challenges } = useAppSelector((state) => state.user);
+  const challenge = useAppSelector((state) => state.challenge);
+  const hasActiveChallenge = challenge?.id > 0;
   const dispatch = useAppDispatch();
 
   const handleLoadChallenges = async () => {
@@ -35,23 +37,83 @@ const page = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
+  if (!mounted || (!hasActiveChallenge && isLoading)) {
+    return (
+      <PageContainer title="Leaderboard" description="Keep up the great work!">
+        <div className="px-4 mt-8">
+          <LeaderboardSkeleton count={7} />
+        </div>
+      </PageContainer>
+    );
   }
 
   return (
     <PageContainer title="Leaderboard" description="Keep up the great work!">
-      {challenges.length > 0 ? (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <LeaderboardSwiper challenges={challenges} />
-        </motion.div>
-      ) : isLoading ? (
-        <div className="px-4 mt-8">
-          <LeaderboardSkeleton count={7} />
-        </div>
-      ) : (
-        <span className="block text-center text-gray-500 mt-8">No challenges found</span>
-      )}
+      <AnimatePresence mode="wait">
+        {!hasActiveChallenge ? (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col items-center justify-center gap-5 min-h-[50vh]"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="flex items-center justify-center w-24 h-24 rounded-full bg-white/20 backdrop-blur-xl"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+              </svg>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="flex flex-col items-center gap-2"
+            >
+              <p className="text-xl font-semibold text-white/90">No active challenge</p>
+              <p className="text-base text-white/60 text-center max-w-[280px]">Join a challenge to see the leaderboard</p>
+            </motion.div>
+          </motion.div>
+        ) : challenges.length > 0 ? (
+          <motion.div
+            key="leaderboard"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <LeaderboardSwiper challenges={challenges} />
+          </motion.div>
+        ) : isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="px-4 mt-8"
+          >
+            <LeaderboardSkeleton count={7} />
+          </motion.div>
+        ) : (
+          <motion.span
+            key="no-challenges"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="block text-center text-gray-500 mt-8"
+          >
+            No challenges found
+          </motion.span>
+        )}
+      </AnimatePresence>
     </PageContainer>
   );
 };

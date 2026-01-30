@@ -286,7 +286,36 @@ html.theme-transition::view-transition-new(root) {
   max-width: 500px;
   font-family: "Inter";
   font-weight: 500;
-  font-size: 14;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 16px !important;
+  color: white !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+.Toastify__toast-container--top-center .Toastify__toast--error {
+  background: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(255, 100, 100, 0.3) !important;
+}
+
+.Toastify__toast-container--top-center .Toastify__toast--success {
+  background: rgba(34, 197, 94, 0.2) !important;
+  border-color: rgba(100, 255, 150, 0.3) !important;
+}
+
+.Toastify__toast-container--top-center .Toastify__toast-body {
+  color: white !important;
+}
+
+.Toastify__toast-container--top-center .Toastify__progress-bar {
+  display: none !important;
+}
+
+.Toastify__toast-container--top-center .Toastify__toast-icon svg {
+  fill: white !important;
 }
 
 .challenges-swiper .swiper-slide {
