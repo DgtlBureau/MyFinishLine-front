@@ -47,19 +47,19 @@ const Step = memo(
 
     const getStepColor = () => {
       if (isNext) {
-        return "bg-white text-[#5170D5] border-3 border-[#5170D5]";
+        return "bg-white/30 text-white border-2 border-white/50 shadow-lg shadow-black/20";
       }
       if (completed) {
-        return `animate-gradient-shift bg-[length:200%_200%] bg-gradient-to-br from-[#5170D5] via-[#CEE9D8] to-[#5170D5] text-white ${
+        return `bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A] text-white border-[3px] border-white/60 shadow-lg shadow-black/30 ${
           isViewed ? "" : "ring-[#BFC0CC] ring-2"
         }`;
       }
       if (isActive) {
-        return `animate-gradient-shift bg-[length:200%_200%] bg-gradient-to-br from-[#5170D5] via-[#CEE9D8] to-[#5170D5] text-white ${
+        return `bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A] text-white border-[3px] border-white/60 shadow-lg shadow-black/30 ${
           isViewed ? "" : "ring-[#BFC0CC] ring-2"
         }`;
       }
-      return "bg-[#F4F4F5] text-[#DADADA]";
+      return "bg-white/20 text-white/40 border-2 border-white/30 shadow-md shadow-black/15";
     };
 
     return (
@@ -71,12 +71,12 @@ const Step = memo(
           <>
             {/* Outer soft glow */}
             <div
-              className="absolute w-40 h-40 rounded-full -z-10"
+              className="absolute w-20 h-20 rounded-full -z-10"
               style={{ background: 'radial-gradient(circle, rgba(252,211,77,0.4) 0%, rgba(251,191,36,0.1) 50%, transparent 70%)' }}
             />
             {/* Sunburst rays */}
             <div
-              className="absolute w-36 h-36 -z-10 animate-spin-slow opacity-60"
+              className="absolute w-16 h-16 -z-10 animate-spin-slow opacity-60"
               style={{
                 background: `conic-gradient(
                   from 0deg,
@@ -160,7 +160,7 @@ const Step = memo(
             />
             {/* Inner warm glow */}
             <div
-              className="absolute w-24 h-24 rounded-full -z-10 blur-sm"
+              className="absolute w-12 h-12 rounded-full -z-10 blur-sm"
               style={{ background: 'radial-gradient(circle, rgba(253,224,71,0.5) 0%, rgba(251,191,36,0.2) 50%, transparent 70%)' }}
             />
           </>
@@ -169,13 +169,15 @@ const Step = memo(
           <div
             className={`
             ${getStepColor()}
-            rounded-full flex w-20 h-20 items-center justify-center
-            font-bold text-5xl
+            rounded-full flex w-10 h-10 items-center justify-center
+            font-bold text-sm
             transition-all duration-300
             ${completed ? "cursor-pointer" : "cursor-default"}
           `}
           >
-            {index}
+            {index > 0 && index}
+            {/* Inner highlight for 3D effect */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/25 to-transparent pointer-events-none" style={{ height: '50%' }} />
           </div>
           {/* Viewed overlay */}
           {isViewed && (completed || isActive) && (
@@ -183,35 +185,30 @@ const Step = memo(
           )}
         </div>
 
-        {(completed || isActive) && (
+        {(completed || index === 0) && (
           <div
             style={
               +x > 336
-                ? { right: "100%", transform: "translateX(-8px)" }
-                : { left: "100%", transform: "translateX(8px)" }
+                ? { right: "100%", transform: "translateX(-4px)" }
+                : { left: "100%", transform: "translateX(4px)" }
             }
             className="absolute z-30"
           >
             <div className="relative">
               <div
                 className={`
-            text-base font-semibold whitespace-nowrap px-6 py-4 rounded-full
+            text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-full
             ${
               completed
-                ? "bg-gradient-to-r from-[#5170D5] to-[#CEE9D8] text-white"
+                ? "bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white"
                 : isActive
-                  ? "bg-gradient-to-r from-[#5170D5] to-[#CEE9D8] text-white"
-                  : "bg-[#F4F4F5] text-[#DADADA]"
+                  ? "bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white"
+                  : "bg-white/10 text-white/30"
             }
             transition-all duration-300
           `}
               >
                 {title}
-                {!!userDistanceReached && (
-                  <div className="text-white/50 text-center">
-                    {userDistanceReached} km
-                  </div>
-                )}
               </div>
               {/* Viewed overlay */}
               {isViewed && (
@@ -221,18 +218,18 @@ const Step = memo(
           </div>
         )}
 
-        {isNext && (
+        {(isNext || isActive) && index > 0 && (
           <div
             style={
-              +x > 312
-                ? { right: "100%", transform: "translateX(-8px)" }
-                : { left: "100%", transform: "translateX(8px)" }
+              +x > 336
+                ? { right: "100%", transform: "translateX(-4px)" }
+                : { left: "100%", transform: "translateX(4px)" }
             }
             className="absolute z-30"
           >
             <div
               className={`
-          text-base font-semibold whitespace-nowrap px-6 py-4 rounded-full bg-gradient-to-r from-[#5170D5] to-[#CEE9D8]
+          text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-full bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]
         `}
             >
               <div className="text-white">
@@ -257,7 +254,7 @@ const Step = memo(
             <div className="relative z-20">
               <ProgressArrow
                 dashness
-                color={completed ? "#5170D5" : "#5170D5"}
+                color={completed ? "#3B5CC6" : "#3B5CC6"}
                 start={"step-" + index}
                 end={"step-" + (index + 1)}
                 showHead={false}

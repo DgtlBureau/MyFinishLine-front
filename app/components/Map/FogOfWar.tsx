@@ -7,15 +7,21 @@ interface FogOfWarProps {
   steps: IStep[];
   mapHeight: number;
   isCompleted: boolean;
+  yOffset?: number;
 }
 
-const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
+const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarProps) => {
+  // Detect challenge direction early so it's available in useMemo
+  const sortedForDir = [...steps].sort((a, b) => a.index - b.index);
+  const goesUpward = sortedForDir.length >= 2
+    ? Number(sortedForDir[sortedForDir.length - 1].y_coordinate) > Number(sortedForDir[0].y_coordinate)
+    : true;
   const fogPosition = useMemo(() => {
     const sortedSteps = [...steps].sort((a, b) => a.index - b.index);
 
     if (isCompleted) {
       return sortedSteps.length > 0
-        ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + 200
+        ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + yOffset + 200
         : mapHeight;
     }
 
@@ -25,12 +31,12 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
     let currentY: number;
 
     if (activeStep) {
-      const activeY = Number(activeStep.y_coordinate);
+      const activeY = Number(activeStep.y_coordinate) + yOffset;
       const progress = activeStep.user_distance_percent || 0;
       currentY = activeY;
 
       if (nextStep && progress > 0) {
-        const nextY = Number(nextStep.y_coordinate);
+        const nextY = Number(nextStep.y_coordinate) + yOffset;
         currentY = activeY + ((nextY - activeY) * progress) / 100;
       }
 
@@ -38,19 +44,31 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
     } else {
       const firstIncomplete = sortedSteps.find((s) => !s.completed);
       if (firstIncomplete) {
-        currentY = Number(firstIncomplete.y_coordinate);
+        currentY = Number(firstIncomplete.y_coordinate) + yOffset;
       } else {
         return sortedSteps.length > 0
-          ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + 200
+          ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + yOffset + 200
           : mapHeight;
       }
     }
 
     return currentY;
-  }, [steps, mapHeight, isCompleted]);
+  }, [steps, mapHeight, isCompleted, yOffset]);
 
-  const fogStartFromTop = mapHeight - fogPosition;
-  const fogStartPercent = Math.max(0, Math.min(100, (fogStartFromTop / mapHeight) * 100));
+  // fogPosition = y coordinate from bottom of the active step
+  // Convert to percentage from top where the fog edge is
+  const fogEdgeFromTop = Math.max(0, Math.min(100, ((mapHeight - fogPosition) / mapHeight) * 100));
+  // For upward challenges: fog covers top (0%) → fogEdgeFromTop%
+  // For downward challenges: fog covers fogEdgeFromTop% → bottom (100%)
+  const fogStartPercent = fogEdgeFromTop;
+
+  // Helper: generates mask gradient based on direction
+  const fogMask = (offsetBefore: number, offsetAfter: number) => {
+    if (goesUpward) {
+      return `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - offsetBefore)}%, transparent ${fogStartPercent + offsetAfter}%)`;
+    }
+    return `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - offsetAfter)}%, black ${fogStartPercent + offsetBefore}%, black 100%)`;
+  };
 
   return (
     <>
@@ -82,10 +100,10 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent + 2}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent + 2}%)`,
+            maskImage: fogMask(5, 2),
+            WebkitMaskImage: fogMask(5, 2),
             background: `linear-gradient(
-              180deg,
+              ${goesUpward ? '180deg' : '0deg'},
               rgba(185, 175, 220, 1) 0%,
               rgba(190, 180, 225, 1) 30%,
               rgba(195, 185, 228, 0.98) 50%,
@@ -101,10 +119,10 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-1"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent + 1}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent + 1}%)`,
+            maskImage: fogMask(6, 1),
+            WebkitMaskImage: fogMask(6, 1),
             background: `linear-gradient(
-              180deg,
+              ${goesUpward ? '180deg' : '0deg'},
               rgba(200, 192, 235, 0.95) 0%,
               rgba(205, 198, 238, 0.9) 40%,
               rgba(215, 208, 245, 0.8) 70%,
@@ -118,8 +136,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-2"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 4)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 4)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(4, 0),
+            WebkitMaskImage: fogMask(4, 0),
             background: `
               radial-gradient(ellipse 100% 60% at 0% 0%, rgba(255,255,255,0.95) 0%, rgba(245,240,255,0.7) 30%, rgba(220,215,245,0.3) 60%, transparent 85%),
               radial-gradient(ellipse 100% 55% at 50% 5%, rgba(255,255,255,0.9) 0%, rgba(248,245,255,0.65) 30%, rgba(225,220,248,0.25) 60%, transparent 85%),
@@ -132,8 +150,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-3"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(5, 0),
+            WebkitMaskImage: fogMask(5, 0),
             background: `
               radial-gradient(ellipse 90% 50% at 15% 25%, rgba(255,255,255,0.88) 0%, rgba(250,247,255,0.6) 35%, rgba(230,225,250,0.2) 65%, transparent 90%),
               radial-gradient(ellipse 85% 48% at 60% 30%, rgba(255,255,255,0.85) 0%, rgba(248,245,255,0.55) 35%, rgba(228,223,248,0.18) 65%, transparent 90%),
@@ -146,8 +164,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-1"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(6, 0),
+            WebkitMaskImage: fogMask(6, 0),
             background: `
               radial-gradient(ellipse 80% 45% at 5% 50%, rgba(255,255,255,0.85) 0%, rgba(248,245,255,0.55) 35%, rgba(225,220,248,0.18) 65%, transparent 90%),
               radial-gradient(ellipse 85% 47% at 40% 55%, rgba(255,255,255,0.82) 0%, rgba(246,243,255,0.52) 35%, rgba(223,218,246,0.15) 65%, transparent 90%),
@@ -161,8 +179,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-2"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 7)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 7)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(7, 0),
+            WebkitMaskImage: fogMask(7, 0),
             background: `
               radial-gradient(ellipse 75% 42% at 20% 70%, rgba(255,255,255,0.82) 0%, rgba(246,243,255,0.5) 35%, rgba(222,217,246,0.15) 65%, transparent 90%),
               radial-gradient(ellipse 80% 44% at 55% 75%, rgba(255,255,255,0.8) 0%, rgba(244,241,255,0.48) 35%, rgba(220,215,244,0.13) 65%, transparent 90%),
@@ -175,8 +193,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-3"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 8)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 8)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(8, 0),
+            WebkitMaskImage: fogMask(8, 0),
             background: `
               radial-gradient(ellipse 70% 38% at 10% 85%, rgba(255,255,255,0.8) 0%, rgba(245,242,255,0.48) 35%, rgba(220,215,245,0.13) 65%, transparent 90%),
               radial-gradient(ellipse 75% 40% at 45% 88%, rgba(255,255,255,0.78) 0%, rgba(243,240,255,0.46) 35%, rgba(218,213,243,0.11) 65%, transparent 90%),
@@ -189,8 +207,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-1"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 5)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(5, 0),
+            WebkitMaskImage: fogMask(5, 0),
             background: `
               radial-gradient(ellipse 40% 25% at 8% 10%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 80%),
               radial-gradient(ellipse 35% 22% at 35% 15%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.45) 50%, transparent 80%),
@@ -214,8 +232,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 4)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 4)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(4, 0),
+            WebkitMaskImage: fogMask(4, 0),
             background: `
               radial-gradient(ellipse 50% 20% at 25% 20%, rgba(160,150,195,0.35) 0%, transparent 70%),
               radial-gradient(ellipse 55% 22% at 65% 35%, rgba(155,145,190,0.3) 0%, transparent 70%),
@@ -232,8 +250,8 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-2"
           style={{
-            maskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent}%)`,
-            WebkitMaskImage: `linear-gradient(to bottom, black 0%, black ${Math.max(0, fogStartPercent - 6)}%, transparent ${fogStartPercent}%)`,
+            maskImage: fogMask(6, 0),
+            WebkitMaskImage: fogMask(6, 0),
             background: `
               radial-gradient(ellipse 60% 35% at 20% 20%, rgba(255,235,250,0.2) 0%, transparent 70%),
               radial-gradient(ellipse 55% 32% at 70% 35%, rgba(250,238,255,0.18) 0%, transparent 70%),
@@ -248,20 +266,12 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted }: FogOfWarProps) => {
         <div
           className="absolute inset-0 float-3"
           style={{
-            maskImage: `linear-gradient(to bottom,
-              transparent 0%,
-              transparent ${Math.max(0, fogStartPercent - 15)}%,
-              black ${Math.max(0, fogStartPercent - 8)}%,
-              black ${Math.max(0, fogStartPercent - 3)}%,
-              transparent ${fogStartPercent + 2}%
-            )`,
-            WebkitMaskImage: `linear-gradient(to bottom,
-              transparent 0%,
-              transparent ${Math.max(0, fogStartPercent - 15)}%,
-              black ${Math.max(0, fogStartPercent - 8)}%,
-              black ${Math.max(0, fogStartPercent - 3)}%,
-              transparent ${fogStartPercent + 2}%
-            )`,
+            maskImage: goesUpward
+              ? `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, fogStartPercent - 15)}%, black ${Math.max(0, fogStartPercent - 8)}%, black ${Math.max(0, fogStartPercent - 3)}%, transparent ${fogStartPercent + 2}%)`
+              : `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - 2)}%, black ${fogStartPercent + 3}%, black ${fogStartPercent + 8}%, transparent ${Math.min(100, fogStartPercent + 15)}%, transparent 100%)`,
+            WebkitMaskImage: goesUpward
+              ? `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, fogStartPercent - 15)}%, black ${Math.max(0, fogStartPercent - 8)}%, black ${Math.max(0, fogStartPercent - 3)}%, transparent ${fogStartPercent + 2}%)`
+              : `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - 2)}%, black ${fogStartPercent + 3}%, black ${fogStartPercent + 8}%, transparent ${Math.min(100, fogStartPercent + 15)}%, transparent 100%)`,
             background: `
               radial-gradient(ellipse 30% 80% at 0% 50%, rgba(255,255,255,0.9) 0%, rgba(248,245,255,0.5) 50%, transparent 85%),
               radial-gradient(ellipse 28% 75% at 18% 45%, rgba(255,255,255,0.85) 0%, rgba(245,242,255,0.45) 50%, transparent 85%),

@@ -490,6 +490,7 @@ const Map = ({
                   steps={steps}
                   mapWidth={CONTENT_WIDTH}
                   mapHeight={MAP_HEIGHT}
+                  yOffset={yOffset}
                 />
               )}
 

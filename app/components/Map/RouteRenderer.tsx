@@ -11,6 +11,7 @@ interface RouteRendererProps {
   steps: IStep[];
   mapWidth: number;
   mapHeight: number;
+  yOffset?: number;
 }
 
 interface RouteSegmentProps {
@@ -183,6 +184,7 @@ const RouteRenderer = ({
   steps,
   mapWidth,
   mapHeight,
+  yOffset = 0,
 }: RouteRendererProps) => {
   const { user } = useAppSelector((state) => state.user);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -192,9 +194,9 @@ const RouteRenderer = ({
   const [svgReady, setSvgReady] = useState(false);
   const previousProgressRef = useRef<number | null>(null);
 
-  // Calculate scale factors if map dimensions differ from base
+  // Scale factors based on base dimensions (not mapHeight which includes yOffset)
   const scaleX = mapWidth / routeData.base_width;
-  const scaleY = mapHeight / routeData.base_height;
+  const scaleY = mapWidth / routeData.base_width; // uniform scale based on width
 
   // Find active route (progress > 0 and < 100)
   const activeRouteInfo = useMemo(() => {
@@ -218,7 +220,7 @@ const RouteRenderer = ({
       const step = steps.find((s) => s.index === route.from_step_index);
       const scaledPoints = route.points.map((point) => ({
         x: point.x * scaleX,
-        y: point.y * scaleY,
+        y: (point.y + yOffset) * scaleY,
       }));
 
       const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
