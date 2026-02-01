@@ -186,8 +186,8 @@ const page = () => {
         title="Edit account"
         description="Edit your account information"
       >
-        {/* Profile Photo Section - Sticky */}
-        <div className="sticky top-0 z-20 pt-4 pb-6">
+        {/* Profile Photo Section */}
+        <div className="pt-4 pb-6">
           <div className="flex flex-col items-center">
             <div className="relative w-36 h-36 flex items-center justify-center">
               {/* Frame - animated scale from center */}
@@ -469,7 +469,7 @@ const page = () => {
                 disabled={isLoading}
                 className="relative mt-6 w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-4 font-semibold text-white text-base overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-90 active:scale-[0.98] shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#5170D5] to-[#66af69]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]" />
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
                 <div className="absolute inset-[1px] rounded-[15px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                 {isLoading ? (

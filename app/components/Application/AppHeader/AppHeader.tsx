@@ -100,7 +100,7 @@ const AppHeader = () => {
           width={240}
           height={44}
           alt="MyFinishLine"
-          className="h-18 w-auto"
+          className="h-20 w-auto"
         />
         <button
           className="flex flex-1 items-center justify-end gap-2"

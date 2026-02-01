@@ -279,7 +279,7 @@ const Page = () => {
             className="relative w-full mt-4 flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold text-white overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-90 shadow-lg"
             onClick={handleOpenContactMenu}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#5170D5] to-[#66af69]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]" />
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
             <div className="absolute inset-[1px] rounded-[11px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
             <MessageCircleIcon className="relative z-10 h-5 w-5" />

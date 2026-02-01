@@ -19,10 +19,11 @@ import Image from "next/image";
 import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
 import { MapPin } from "lucide-react";
 
-const Page = () => {
+export const ActivitiesTab = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoaded } = useAppSelector((state) => state.activities);
-  const { challenges } = useAppSelector((state) => state.user);
+  const { challenges, user } = useAppSelector((state) => state.user);
+  const hasTracker = user.has_strava_connect || user.has_fitbit_connect;
   const hasActiveChallenge = challenges && challenges.length > 0;
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -145,9 +146,9 @@ const Page = () => {
         <div className="flex justify-end">
           <Button
             onClick={handleLoadAllActivities}
-            className="ml-auto mr-0 rounded-full w-10 h-10 bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80"
+            className={`ml-auto mr-0 rounded-full w-10 h-10 bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80 ${!hasTracker ? "opacity-30 pointer-events-none" : ""}`}
             variant="ghost"
-            disabled={isUpdating || isLoading}
+            disabled={!hasTracker || isUpdating || isLoading}
           >
             <div className={`${isUpdating && "animate-spin"} text-gray-600`}>
               <RefreshCw strokeWidth={2.5} />
@@ -157,17 +158,28 @@ const Page = () => {
         <h4 className="text-3xl text-center font-medium leading-9 text-white flex-1">
           Recent Activities
         </h4>
-        <Link
-          href="/app/activities/new"
-          className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80 flex items-center justify-center p-2.5 transition-colors"
-        >
-          <Image
-            src="/icons/navigation-add.svg"
-            width={24}
-            height={24}
-            alt="Add activity"
-          />
-        </Link>
+        {hasTracker ? (
+          <Link
+            href="/app/activities/new"
+            className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-md hover:bg-white/80 flex items-center justify-center p-2.5 transition-colors"
+          >
+            <Image
+              src="/icons/navigation-add.svg"
+              width={24}
+              height={24}
+              alt="Add activity"
+            />
+          </Link>
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-md flex items-center justify-center p-2.5 opacity-30 pointer-events-none">
+            <Image
+              src="/icons/navigation-add.svg"
+              width={24}
+              height={24}
+              alt="Add activity"
+            />
+          </div>
+        )}
       </div>
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -207,4 +219,6 @@ const Page = () => {
   );
 };
 
-export default Page;
+// Route page renders nothing — content is handled by the layout
+const page = () => null;
+export default page;

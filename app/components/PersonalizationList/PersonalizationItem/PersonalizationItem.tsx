@@ -90,7 +90,7 @@ const PersonalizationItem = ({
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          <Check className="w-4 h-4 text-[#5170D5]" strokeWidth={3} />
+          <Check className="w-4 h-4 text-[#7B9AE8]" strokeWidth={3} />
         </motion.div>
       )}
 

@@ -27,7 +27,7 @@ const ContractPage = () => {
 
   if (!contract) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#5170D5] via-[#8BA3E0] via-25% to-[#CEE9D8]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a]">
         <p className="text-white/70">Contract not found</p>
       </div>
     );
@@ -44,13 +44,13 @@ const ContractPage = () => {
   const contractImageUrl = contract.image_url;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#5170D5] via-[#8BA3E0] via-25% to-[#CEE9D8]">
+    <div className="min-h-screen bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a]">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-white/40 to-white/30 backdrop-blur-3xl backdrop-saturate-200 border-b border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-3xl backdrop-saturate-200 border-b border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]">
         <div className="flex items-center justify-between max-w-4xl mx-auto px-4">
           <button
             onClick={() => router.back()}
-            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-gray-800"
+            className="flex flex-1 gap-1 font-medium py-4 cursor-pointer text-white"
           >
             <ChevronLeft />
           </button>
@@ -65,7 +65,7 @@ const ContractPage = () => {
             className="flex flex-1 items-center justify-end gap-2"
             onClick={() => router.push("/app/profile/settings")}
           >
-            <Settings color="#374151" />
+            <Settings color="#ffffff" />
           </button>
         </div>
       </header>
@@ -88,7 +88,7 @@ const ContractPage = () => {
 
         {/* Contract card */}
         <motion.div
-          className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-3xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-5 mx-auto max-w-md"
+          className="bg-white/10 backdrop-blur-xl backdrop-saturate-200 rounded-3xl border border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] p-5 mx-auto max-w-md"
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
@@ -110,7 +110,7 @@ const ContractPage = () => {
                 onError={() => setImageError(true)}
               />
             ) : (
-              <div className="w-full aspect-[2/1] flex items-center justify-center bg-white/40 rounded-2xl">
+              <div className="w-full aspect-[2/1] flex items-center justify-center bg-white/10 rounded-2xl">
                 <Image
                   src="/icons/myfinishline-placeholder.png"
                   alt="MyFinishLine"
@@ -124,7 +124,7 @@ const ContractPage = () => {
 
           {/* Contract name */}
           <motion.h2
-            className="font-semibold text-xl text-[#09090B] mb-2"
+            className="font-semibold text-xl text-white mb-2"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.45, ease: "easeOut" }}
@@ -134,7 +134,7 @@ const ContractPage = () => {
 
           {/* Description */}
           <motion.p
-            className="text-sm text-[#71717A] leading-5 mb-5"
+            className="text-sm text-white/60 leading-5 mb-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.55, ease: "easeOut" }}
@@ -150,7 +150,7 @@ const ContractPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
             >
-              <div className="w-20 h-20 rounded-xl bg-white/60 backdrop-blur-md border border-white/50 shadow-sm flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-20 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center overflow-hidden">
                 <Image
                   src={rewardImageUrl}
                   alt={firstReward?.title || "Reward"}

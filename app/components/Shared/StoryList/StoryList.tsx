@@ -159,7 +159,7 @@ const StoryList = ({
       onPointerUp={handleResumeAnimation}
       onPointerLeave={handlePointerLeave}
       onContextMenu={(e) => e.preventDefault()}
-      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-gradient-to-b from-[#5170D5]/80 via-black/90 to-[#CEE9D8]/80 select-none"
+      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-gradient-to-b from-[#1a2a4a]/90 via-black/90 to-[#1a3a3a]/90 select-none"
     >
       <AnimatePresence>{showShadow && <StoryShadow />}</AnimatePresence>
       {currentStory && (

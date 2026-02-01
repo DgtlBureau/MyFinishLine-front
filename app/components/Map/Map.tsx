@@ -28,6 +28,13 @@ const Map = ({
 }: IActiveChallenge & { onMapReady?: () => void }) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
+
+  // If no background images, signal map ready immediately
+  useEffect(() => {
+    if (!background_images || background_images.length === 0) {
+      onMapReady?.();
+    }
+  }, [background_images, onMapReady]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -160,7 +167,13 @@ const Map = ({
     steps.length > 0
       ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
       : 0;
-  const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+  const minYCoordinate =
+    steps.length > 0
+      ? Math.min(...steps.map((s) => Number(s.y_coordinate)))
+      : 0;
+  // If any step has negative y, extend map downward and shift all steps up
+  const yOffset = minYCoordinate < 0 ? Math.abs(minYCoordinate) + 100 : 0;
+  const MAP_HEIGHT = Math.max(maxYCoordinate + yOffset + 200, DEFAULT_MAP_HEIGHT + yOffset);
 
   // Calculate scale to fit map in viewport
   useLayoutEffect(() => {
@@ -357,7 +370,7 @@ const Map = ({
 
     // Calculate zoom origin based on step position
     const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
-    const yPercent = 100 - (Number(clickedStep.y_coordinate) / MAP_HEIGHT) * 100;
+    const yPercent = 100 - ((Number(clickedStep.y_coordinate) + yOffset) / MAP_HEIGHT) * 100;
 
     // Delay zoom to let scroll complete first
     setTimeout(() => {
@@ -403,7 +416,7 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full min-h-screen bg-slate-900 overflow-x-hidden">
+      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
         <div className="fixed inset-0 -z-10">
           {background_images.map((image, index) => (
             <div
@@ -459,6 +472,7 @@ const Map = ({
                 style={{ objectFit: "fill" }}
                 draggable={false}
                 onLoad={onMapReady}
+                onError={onMapReady}
               />
             )}
 
@@ -466,33 +480,8 @@ const Map = ({
               steps={steps}
               mapHeight={MAP_HEIGHT}
               isCompleted={is_completed}
+              yOffset={yOffset}
             />
-
-            <div className="absolute left-0 top-40" style={{ zIndex: 30 }}>
-              <div className="fixed flex gap-2 items-start">
-                <Image
-                  src="/images/application/map-racoon.png"
-                  width={100}
-                  height={100}
-                  alt="Map racoon"
-                />
-                {(!user.has_fitbit_connect || !user.has_fitbit_connect) && (
-                  <div className="relative bg-white p-2 px-4 rounded-xl shadow-lg max-w-xs ml-2">
-                    <div className="text-sm font-medium text-gray-800 italic">
-                      Connect your Strava or FitBit account to track your
-                      progress!
-                    </div>
-                    <div
-                      className="absolute -left-1 bottom-0 w-0 h-0 
-                      border-t-8 border-t-transparent
-                      border-r-12 border-r-white
-                      border-b-8 border-b-transparent
-                      rotate-95"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
 
             <div className="absolute inset-0 z-10 px-4 sm:px-8">
               {hasRouteData && route_data && (
@@ -512,7 +501,7 @@ const Map = ({
                     className="absolute transform -translate-x-1/2 -translate-y-1/2"
                     style={{
                       left: `${step.x_coordinate}px`,
-                      bottom: `${step.y_coordinate}px`,
+                      bottom: `${Number(step.y_coordinate) + yOffset}px`,
                       zIndex: 10,
                     }}
                   >

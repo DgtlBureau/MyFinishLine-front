@@ -34,10 +34,10 @@ const LanguageBottomSheet = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="max-h-[85vh]">
-        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-2 mt-4" />
+      <DrawerContent className="max-h-[85vh] bg-[#1a2a4a] border-white/20">
+        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-white/30 mb-2 mt-4" />
         <DrawerHeader>
-          <DrawerTitle className="text-center text-xl font-semibold">
+          <DrawerTitle className="text-center text-xl font-semibold text-white">
             {t.settings.selectLanguage}
           </DrawerTitle>
         </DrawerHeader>
@@ -56,8 +56,8 @@ const LanguageBottomSheet = ({
                     onClick={() => handleSelect(lang.code)}
                     className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${
                       isSelected
-                        ? "bg-blue-100 border-2 border-blue-500"
-                        : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+                        ? "bg-white/15 border-2 border-white/40"
+                        : "bg-white/5 border-2 border-transparent hover:bg-white/10"
                     }`}
                   >
                     <div className="flex items-center gap-4">
@@ -65,19 +65,19 @@ const LanguageBottomSheet = ({
                       <div className="text-left">
                         <p
                           className={`font-semibold ${
-                            isSelected ? "text-blue-700" : "text-gray-900"
+                            isSelected ? "text-white" : "text-white/80"
                           }`}
                         >
                           {lang.nativeName}
                         </p>
-                        <p className="text-sm text-gray-500">{lang.name}</p>
+                        <p className="text-sm text-white/50">{lang.name}</p>
                       </div>
                     </div>
                     {isSelected && (
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center"
+                        className="w-6 h-6 rounded-full bg-[#3B5CC6] flex items-center justify-center"
                       >
                         <Check className="w-4 h-4 text-white" />
                       </motion.div>

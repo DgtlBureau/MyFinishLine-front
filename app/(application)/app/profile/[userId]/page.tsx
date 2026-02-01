@@ -36,22 +36,22 @@ export default function UserProfile() {
     return (
         <div className="min-h-screen pt-14" style={{
             background: `linear-gradient(to bottom,
-                #5170D5 0%,
-                #5575D5 8%,
-                #5A7AD6 15%,
-                #6080D6 22%,
-                #6888D4 28%,
-                #7090D0 34%,
-                #7A9BC8 40%,
-                #85A6C4 46%,
-                #8FAEC0 52%,
-                #99B6BC 58%,
-                #A3BEB8 64%,
-                #ADC6B4 70%,
-                #B7CEB0 76%,
-                #C1D6AC 82%,
-                #CBDEA8 88%,
-                #CEE9D8 100%
+                #1a2a4a 0%,
+                #1e2f4e 8%,
+                #213352 15%,
+                #243856 22%,
+                #273c5a 28%,
+                #2a405e 34%,
+                #2a4a6a 40%,
+                #284a64 46%,
+                #264a5e 52%,
+                #244a58 58%,
+                #224a52 64%,
+                #204a4c 70%,
+                #1e4446 76%,
+                #1c4040 82%,
+                #1a3c3c 88%,
+                #1a3a3a 100%
             )`
         }}>
             {isLoad ? <ProfileById userId={userId} /> : <div className="flex items-center justify-center w-full min-h-screen"><Loader /></div>}

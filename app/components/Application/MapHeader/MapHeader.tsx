@@ -42,30 +42,30 @@ const MapHeader = ({
     >
       <div className="max-w-2xl p-4 pt-6 pr-6 mx-auto w-full overflow-visible relative" style={{
           background: `linear-gradient(to bottom,
-            #5170D5 0%,
-            #5575D5 10%,
-            #5A7AD6 18%,
-            #6080D6 25%,
-            #6888D4 32%,
-            #7090D0 38%,
-            #7A9BC8 44%,
-            #85A6C4 50%,
-            #90B0C2 56%,
-            #9BBAC0 62%,
-            #A6C4C4 68%,
-            #B1CEC8 74%,
-            #BCD8CE 80%,
-            #C8E2D4 86%,
-            rgba(206, 233, 216, 0.8) 92%,
-            rgba(206, 233, 216, 0.4) 96%,
+            #1a2a4a 0%,
+            #1e3050 10%,
+            #213656 18%,
+            #243c5c 25%,
+            #274260 32%,
+            #2a4864 38%,
+            #2a4a6a 44%,
+            #274860 50%,
+            #244556 56%,
+            #21424e 62%,
+            #1e3f48 68%,
+            #1c3c42 74%,
+            #1a3a3a 80%,
+            rgba(26, 58, 58, 0.8) 92%,
+            rgba(26, 58, 58, 0.4) 96%,
             transparent 100%
           )`
         }}>
-        {challenge.logo_url ? (
-          <img src={challenge.logo_url} alt={challengeName} className="absolute top-2 left-0 h-8 w-auto object-contain" />
-        ) : (
-          <Image src="/images/logo-line.png" width={957} height={489} alt="Logo" className="absolute top-2 left-0 h-8 w-auto" />
-        )}
+        <img
+          src={challenge.logo_url || "/images/logo-line.png"}
+          alt={challengeName}
+          className="absolute top-2 left-2 h-20 w-auto object-contain"
+          onError={(e) => { (e.target as HTMLImageElement).src = "/images/logo-line.png"; }}
+        />
         <div className="mt-24 flex justify-between items-start">
           <div>
             <div className="flex items-start gap-8">
@@ -77,7 +77,7 @@ const MapHeader = ({
                   You / Quest
                 </span>
                 <span className="font-bold text-[18px] text-white whitespace-nowrap">
-                  {Number(userDist).toFixed(1).replace('.', ',')} / {Number(totalDist).toFixed(1).replace('.', ',')} km
+                  {(Number(userDist) / 1000).toFixed(1).replace('.', ',')} / {(Number(totalDist) / 1000).toFixed(1).replace('.', ',')} {label}
                 </span>
               </div>
               <TimeCounter startDate={startDate} />
@@ -145,7 +145,7 @@ const MapHeader = ({
                 />
               </motion.div>
               <motion.div
-                className="relative bg-white/90 backdrop-blur-sm py-2 px-3 rounded-xl shadow-lg mb-4"
+                className="relative bg-white/15 backdrop-blur-xl border border-white/25 py-2 px-3 rounded-xl shadow-lg mb-4"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{
@@ -159,10 +159,10 @@ const MapHeader = ({
                 <div
                   className="absolute -left-1.5 bottom-3 w-0 h-0
                   border-t-6 border-t-transparent
-                  border-r-6 border-r-white/90
+                  border-r-6 border-r-white/15
                   border-b-6 border-b-transparent"
                 />
-                <p className="text-[12px] font-medium text-gray-700 leading-tight">
+                <p className="text-[12px] font-medium text-white/80 leading-tight">
                   Connect <span className="text-blue-500 font-semibold">Strava</span> or <span className="text-teal-500 font-semibold">Fitbit</span>
                 </p>
               </motion.div>

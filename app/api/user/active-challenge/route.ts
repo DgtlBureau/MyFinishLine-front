@@ -8,7 +8,9 @@ const BACKEND_ORIGIN = (
 
 function prefixStorageUrl(url: string | null | undefined): string | null {
   if (!url) return null;
-  if (url.startsWith("/storage/")) return BACKEND_ORIGIN + url;
+  // Extract /storage/... path and serve via Next.js rewrite proxy
+  const storageMatch = url.match(/\/storage\/.+$/);
+  if (storageMatch) return storageMatch[0];
   return url;
 }
 
