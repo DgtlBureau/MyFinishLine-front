@@ -25,6 +25,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { useNotifications } from "@/app/contexts/NotificationContext";
 
+import { logger } from "@/app/lib/logger";
 enum ActivityType {
   Walk = "Walk",
   Run = "Run",
@@ -109,7 +110,7 @@ const AddActivitityModalContent = ({
       toast.error(
         "Error adding manual activity. " + error.response.data.message,
       );
-      console.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }

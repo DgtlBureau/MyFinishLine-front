@@ -10,6 +10,7 @@ import { IStory } from "@/app/types";
 import Image from "next/image";
 import axios from "axios";
 
+import { logger } from "@/app/lib/logger";
 const StoryList = ({
   stories,
   stepId,
@@ -39,7 +40,7 @@ const StoryList = ({
       await axios.post("/api/user/view-story", { step_id: stepId });
       dispatch(setViewedStory(stepId));
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 

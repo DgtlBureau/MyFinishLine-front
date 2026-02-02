@@ -17,7 +17,9 @@ import { setUser } from "@/app/lib/features/user/userSlice";
 import { getFitbitAuthUrl } from "@/app/lib/utils/authWithFitbit";
 import Image from "next/image";
 import { motion } from "motion/react";
+import ChallengePromo from "@/app/components/Shared/ChallengePromo/ChallengePromo";
 
+import { logger } from "@/app/lib/logger";
 interface IFormik {
   email: string;
   password: string;
@@ -66,7 +68,7 @@ export default function Register() {
             router.replace("/app");
           } catch (error: any) {
             setFieldValue("error", error.response.data.message);
-            console.error("Registration error:", error);
+            logger.error("Registration error:", error);
           } finally {
             setIsLoading(false);
           }
@@ -89,7 +91,7 @@ export default function Register() {
       });
       setIsCodeRevealed(true);
     } catch (error: any) {
-      console.log(error);
+      logger.log(error);
       setFieldValue("error", error.response.data.message);
     } finally {
       setIsLoading(false);
@@ -148,49 +150,59 @@ export default function Register() {
               onSubmit={handleSubmit}
               className="mt-10 space-y-5"
             >
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                className={glassInputClassName}
-                placeholder="Enter your email"
-                disabled={isCodeRevealed}
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.email ? errors.email : ""}
-              />
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                className={glassInputClassName}
-                placeholder="Create a password"
-                disabled={isCodeRevealed}
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.password ? errors.password : ""}
-              />
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-1.5">Email</label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className={glassInputClassName}
+                  placeholder="Enter your email"
+                  disabled={isCodeRevealed}
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.email ? errors.email : ""}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-1.5">Password</label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className={glassInputClassName}
+                  placeholder="Create a password"
+                  disabled={isCodeRevealed}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.password ? errors.password : ""}
+                />
+              </div>
               {!isCodeRevealed && (
                 <div>
                   <PasswordValidator password={values.password} />
                 </div>
               )}
-              <Input
-                id="repeatPassword"
-                name="repeatPassword"
-                type="password"
-                className={glassInputClassName}
-                placeholder="Repeat your password"
-                disabled={isCodeRevealed}
-                value={values.repeatPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.repeatPassword ? errors.repeatPassword : ""}
-              />
+              <div>
+                <label htmlFor="repeatPassword" className="block text-sm font-medium text-white/80 mb-1.5">Repeat Password</label>
+                <Input
+                  id="repeatPassword"
+                  name="repeatPassword"
+                  type="password"
+                  className={glassInputClassName}
+                  placeholder="Repeat your password"
+                  disabled={isCodeRevealed}
+                  value={values.repeatPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.repeatPassword ? errors.repeatPassword : ""}
+                />
+              </div>
               {isCodeRevealed && (
                 <div>
+                  <label htmlFor="code" className="block text-sm font-medium text-white/80 mb-1.5">Verification Code</label>
                   <Input
                     id="code"
                     name="code"
@@ -326,6 +338,8 @@ export default function Register() {
               </Link>
             </motion.div>
           </motion.div>
+
+          <ChallengePromo />
       </div>
     </div>
   );

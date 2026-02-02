@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export const GET = async (req: NextRequest) => {
     try {
         const cookieStore = await cookies();
@@ -17,7 +18,7 @@ export const GET = async (req: NextRequest) => {
 
         return NextResponse.json(data);
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 };

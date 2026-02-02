@@ -2,12 +2,13 @@ import { STRAVA_CONFIG } from "@/app/lib/strava";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  console.log("Callback received:", { code, error });
+  logger.log("Callback received:", { code, error });
 
   if (error) {
     return NextResponse.redirect(new URL("/?error=auth_denied", request.url));
@@ -34,13 +35,13 @@ export async function GET(request: Request) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      console.error("Token exchange failed:", tokenData);
+      logger.error("Token exchange failed:", tokenData);
       return NextResponse.redirect(
         new URL("/?error=token_failed", request.url)
       );
     }
 
-    console.log("Token exchange successful");
+    logger.log("Token exchange successful");
 
     const cookieStore = await cookies();
 
@@ -63,10 +64,10 @@ export async function GET(request: Request) {
       path: "/",
     });
 
-    console.log("Cookies set, redirecting to homepage");
+    logger.log("Cookies set, redirecting to homepage");
     return NextResponse.redirect(new URL("/homepage", request.url));
   } catch (error) {
-    console.error("Callback error:", error);
+    logger.error("Callback error:", error);
     return NextResponse.redirect(new URL("/?error=auth_failed", request.url));
   }
 }

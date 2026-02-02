@@ -18,6 +18,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ActivitiesListShimmer from "@/app/components/Shared/Shimmer/ActivitiesListShimmer/ActivitiesListShimmer";
 import { MapPin } from "lucide-react";
+import { logger } from "@/app/lib/logger";
 
 export const ActivitiesTab = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +45,7 @@ export const ActivitiesTab = () => {
       await updateUserStravaActivities();
       await checkNotifications();
     } catch (error) {
-      console.error("Error fetching activities:", error);
+      logger.error("Error fetching activities:", error);
     } finally {
       setIsUpdating(false);
     }
@@ -72,7 +73,7 @@ export const ActivitiesTab = () => {
 
         hasMoreRef.current = data.last_page ? page < data.last_page : false;
       } catch (error) {
-        console.error("Error fetching activities:", error);
+        logger.error("Error fetching activities:", error);
       } finally {
         setIsLoading(false);
         setIsAdditionalLoading(false);

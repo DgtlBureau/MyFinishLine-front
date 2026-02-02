@@ -10,6 +10,7 @@ import LeaderboardSkeleton from "@/app/components/LeaderboardSwiper/LeaderboardI
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 import Link from "next/link";
+import { logger } from "@/app/lib/logger";
 
 const generalChallengeInfo = { ...initialState, name: "General" };
 
@@ -32,7 +33,7 @@ const page = () => {
       const data = await getUserChallenges();
       dispatch(setUserChallenges([generalChallengeInfo, ...data.data]));
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     } finally {
       setIsLoading(false);
     }

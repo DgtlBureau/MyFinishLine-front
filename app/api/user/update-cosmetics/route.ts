@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
@@ -23,7 +24,7 @@ export const POST = async (req: NextRequest) => {
 
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error("Error fetching user rewards:", error);
+    logger.error("Error fetching user rewards:", error);
 
     // Handle different types of errors
     let errorMessage = "An unexpected error occurred";

@@ -8,6 +8,7 @@ import Image from "next/image";
 import axios from "axios";
 import { Button } from "../ui/button";
 
+import { logger } from "@/app/lib/logger";
 interface IChallengesPaymentProps {
   products: IProduct[];
   handleUpdateTotal: (total: number) => void;
@@ -76,7 +77,7 @@ const Content = ({ products, handleUpdateTotal }: IChallengesPaymentProps) => {
   //     });
   //     window.location.href = data.payment_url;
   //   } catch (error) {
-  //     console.log(error);
+  //     logger.log(error);
   //   } finally {
   //     setIsLoading(false);
   //   }

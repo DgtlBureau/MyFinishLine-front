@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export const GET = async (req: NextRequest) => {
   try {
     const searchParams = req.nextUrl.searchParams;
@@ -20,7 +21,7 @@ export const GET = async (req: NextRequest) => {
     );
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("API error:", error);
+    logger.error("API error:", error);
 
     if (error.response) {
       return NextResponse.json(

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const TermsLine = () => {
   return (
-    <p className="text-xs leading-4 text-[#71717A] text-center">
+    <p className="text-xs leading-4 text-white/50 text-center">
       By countinuing, you agreee to{" "}
       <Link href="/terms-of-service" className="underline">
         Terms of Service

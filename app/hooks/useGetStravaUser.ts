@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { IAthlete } from "../types";
 
+import { logger } from "@/app/lib/logger";
 const useGetStravaUser = () => {
   const [state, setState] = useState<{
     athlete: IAthlete | null;
@@ -26,7 +27,7 @@ const useGetStravaUser = () => {
         isLoading: false,
       }));
     } catch (error) {
-      console.error("Error fetching Strava user data:", error);
+      logger.error("Error fetching Strava user data:", error);
       setState((prev) => ({
         ...prev,
         athlete: null,

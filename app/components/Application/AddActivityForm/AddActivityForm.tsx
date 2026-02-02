@@ -27,6 +27,7 @@ import { setChallenge } from "@/app/lib/features/challenge/challengeSlice";
 import { useNotifications } from "@/app/contexts/NotificationContext";
 import { motion } from "framer-motion";
 
+import { logger } from "@/app/lib/logger";
 const glassInput =
   "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20";
 
@@ -194,7 +195,7 @@ const AddActivitityForm = () => {
         dispatch(setChallenge(data));
       }
     } catch (error) {
-      console.error("Failed to load challenge:", error);
+      logger.error("Failed to load challenge:", error);
     }
   };
 
@@ -215,7 +216,7 @@ const AddActivitityForm = () => {
       toast.error(
         "Error adding manual activity. " + error.response.data.message,
       );
-      console.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }

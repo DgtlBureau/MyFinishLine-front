@@ -18,7 +18,8 @@ import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSke
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
-const Journey = () => {
+import { logger } from "@/app/lib/logger";
+export const Journey = () => {
   const { completedContracts, challenges } = useAppSelector((state) => state.user);
   const { user } = useAppSelector((state) => state.user);
   const hasActiveChallenge = challenges && challenges.length > 0;
@@ -40,9 +41,9 @@ const Journey = () => {
       try {
         parsedData = JSON.parse(decodeURIComponent(dataParam));
         dispatch(setUser(parsedData));
-        router.replace("/app/profile/journey");
+        router.replace("/app/profile");
       } catch (e) {
-        console.error("Failed to parse data param", e);
+        logger.error("Failed to parse data param", e);
         return;
       }
     }
@@ -155,25 +156,6 @@ const Journey = () => {
   );
 };
 
-const page = () => {
-  return (
-    <Suspense
-      fallback={
-        <section>
-          <div className="max-w-4xl mx-auto">
-            <div className="mt-10 h-9 w-40 mx-auto rounded bg-white/15 animate-pulse" />
-            <div className="my-8 px-4">
-              <ChallengeCardSkeleton />
-            </div>
-          </div>
-          <RewardsSwiperSkeleton />
-          <ConnectButtonsSkeleton />
-        </section>
-      }
-    >
-      <Journey />
-    </Suspense>
-  );
-};
-
+// Route page renders nothing — content is handled by the layout
+const page = () => null;
 export default page;

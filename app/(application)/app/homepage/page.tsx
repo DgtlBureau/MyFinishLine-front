@@ -10,6 +10,7 @@ import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
 import LoadingScreen from "@/app/components/Application/LoadingScreen/LoadingScreen";
 import StartJourney from "@/app/components/Application/StartJourney/StartJourney";
 import { AnimatePresence, motion } from "framer-motion";
+import { logger } from "@/app/lib/logger";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -22,6 +23,8 @@ const Page = () => {
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [questStarted, setQuestStarted] = useState(true);
+
+  const mapWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleMapReady = useCallback(() => {
     setMapReady(true);
@@ -61,20 +64,10 @@ const Page = () => {
       try {
         const data = await getUserActiveChallenge();
         if (data) {
-          if (hasCachedChallenge) {
-            dispatch(updateChallenge({
-              user_distance: data.user_distance,
-              user_distance_mile: data.user_distance_mile,
-              steps: data.steps,
-              is_completed: data.is_completed,
-              completed_at: data.completed_at,
-            }));
-          } else {
-            dispatch(setChallenge(data));
-          }
+          dispatch(setChallenge(data));
         }
       } catch (error) {
-        console.error("Failed to load challenge:", error);
+        logger.error("Failed to load challenge:", error);
       } finally {
         sessionStorage.setItem("clouds_seen", "true");
         setIsFetching(false);
@@ -88,6 +81,20 @@ const Page = () => {
   const showMap = (hasCachedChallenge || !isFetching) && isActive;
 
   const showSplash = !mapReady && showMap;
+
+  // Scroll map to bottom when quest not started (user starts from bottom of map)
+  useEffect(() => {
+    if (mapReady && !questStarted && mapWrapperRef.current) {
+      mapWrapperRef.current.scrollTop = mapWrapperRef.current.scrollHeight;
+    }
+  }, [mapReady, questStarted]);
+
+  // Safety timeout: force mapReady after 5s to prevent infinite loading
+  useEffect(() => {
+    if (!showMap || mapReady) return;
+    const timer = setTimeout(() => setMapReady(true), 5000);
+    return () => clearTimeout(timer);
+  }, [showMap, mapReady]);
 
   return (
     <>
@@ -112,7 +119,8 @@ const Page = () => {
             />
           )}
           <div
-            className="transition-[filter] duration-1000 ease-out"
+            ref={mapWrapperRef}
+            className={`transition-[filter] duration-1000 ease-out ${!questStarted ? "h-dvh overflow-hidden" : ""}`}
             style={{ filter: questStarted ? "none" : "blur(20px)" }}
           >
             <Map {...challenge} onMapReady={handleMapReady} />

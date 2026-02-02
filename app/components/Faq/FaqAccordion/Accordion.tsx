@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { motion } from "motion/react";
 import { AnswerComponent } from "./AnswerComponent";
 
 interface FaqAccordionProps {
@@ -35,26 +36,29 @@ export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
   return (
     <div className="accordion accordion-arrow accordion-bordered flex w-full flex-col gap-2">
       {filteredItems.length > 0 ? (
-        filteredItems.map((item) => {
+        filteredItems.map((item, index) => {
           const isOpen = openItems.includes(item.id);
           return (
-            <div
+            <motion.div
               key={item.id}
-              className="overflow-hidden rounded-md bg-white p-4 shadow-md transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+              className="overflow-hidden rounded-md bg-white/15 backdrop-blur-xl border border-white/30 p-4 transition-all duration-300"
             >
               <button
                 type="button"
                 className="flex w-full cursor-pointer items-center justify-between"
                 onClick={() => handleClick(item.id)}
               >
-                <h2 className="text-md text-left font-medium text-gray-700">
+                <h2 className="text-md text-left font-medium text-white">
                   {item.question}
                 </h2>
                 <div>
                   <ChevronDown
                     width={16}
                     height={16}
-                    className={`transition-all transition-transform duration-300 ${
+                    className={`text-white transition-all transition-transform duration-300 ${
                       isOpen ? "-rotate-180" : ""
                     }`}
                   />
@@ -66,18 +70,18 @@ export const FaqAccordion = ({ items, search }: FaqAccordionProps) => {
                   isOpen ? "mt-2 max-h-40 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="text-md text-gray-500 [&_a]:text-blue-600 [&_a]:hover:text-blue-700">
+                <div className="text-md text-white/70 [&_a]:text-blue-300 [&_a]:hover:text-blue-200">
                   <AnswerComponent
                     answer={item.answer}
                     sub_answer={item.sub_answer}
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })
       ) : (
-        <div className="text-center text-gray-500">Not found</div>
+        <div className="text-center text-white/60">Not found</div>
       )}
     </div>
   );

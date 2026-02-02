@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+import { logger } from "@/app/lib/logger";
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
 }
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
       currency: currency || "usd",
     });
 
-    console.log("Payment intent created:", paymentIntent.id);
+    logger.log("Payment intent created:", paymentIntent.id);
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       status: paymentIntent.status,
     });
   } catch (error: any) {
-    console.error("Error creating payment intent:", error);
+    logger.error("Error creating payment intent:", error);
     return NextResponse.json(
       { error: error.message || "Internal server error" },
       { status: 500 }

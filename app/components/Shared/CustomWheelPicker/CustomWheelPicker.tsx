@@ -1,6 +1,7 @@
 "use client";
 
 import { SetStateAction } from "react";
+import { logger } from "@/app/lib/logger";
 import {
   WheelPicker,
   WheelPickerOption,
@@ -19,14 +20,14 @@ export const createArray = (
     };
   });
 
-const CustomWheelPicker = ({
+const CustomWheelPicker = <T,>({
   options,
   value,
   onChange,
 }: {
-  options: any;
-  value: any;
-  onChange: (value: SetStateAction<any>) => void;
+  options: WheelPickerOption<T>[];
+  value: T;
+  onChange: (value: SetStateAction<T>) => void;
 }) => {
   return (
     <WheelPickerWrapper>
@@ -34,7 +35,7 @@ const CustomWheelPicker = ({
         options={options}
         value={value}
         onValueChange={(value) => {
-          console.log(value);
+          logger.log(value);
           onChange(value);
         }}
       />

@@ -17,6 +17,7 @@ import PageContainer from "@/app/components/Application/PageContainer/PageContai
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { IActiveChallenge } from "@/app/types";
 
+import { logger } from "@/app/lib/logger";
 interface FormValues {
   first_name: string;
   last_name: string;
@@ -128,7 +129,7 @@ const Content = () => {
       );
       setChallenge(data);
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 

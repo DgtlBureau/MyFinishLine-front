@@ -41,17 +41,17 @@ const testimonials = [
 
 function TestimonialCard({ testimonial }: { testimonial: { name: string; role: string; quote: string; avatar: string } }) {
   return (
-    <div className="bg-white border border-[#e4e4e7] rounded-2xl p-6 md:p-10 shadow-sm flex-shrink-0 w-[360px] md:w-[480px] min-h-[180px] md:min-h-[220px]">
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 md:p-10 shadow-sm flex-shrink-0 w-[360px] md:w-[480px] min-h-[180px] md:min-h-[220px]">
       <div className="flex gap-4 md:gap-5 items-center pb-5 md:pb-6">
         <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden flex-shrink-0">
           <img src={testimonial.avatar} alt={testimonial.name} className="w-full h-full object-cover" />
         </div>
-        <div className="flex flex-col text-base md:text-lg text-[#71717a]">
-          <span className="font-medium leading-6 md:leading-7">{testimonial.name}</span>
+        <div className="flex flex-col text-base md:text-lg text-white/60">
+          <span className="font-medium leading-6 md:leading-7 text-white/80">{testimonial.name}</span>
           <span className="font-normal leading-6 md:leading-7">{testimonial.role}</span>
         </div>
       </div>
-      <p className="font-normal text-lg md:text-xl text-[#0a0a0a] leading-7 md:leading-8">
+      <p className="font-normal text-lg md:text-xl text-white/90 leading-7 md:leading-8">
         &quot;{testimonial.quote}&quot;
       </p>
     </div>
@@ -67,20 +67,17 @@ export default function Testimonials() {
     <section
       id="blog"
       className="flex flex-col items-center py-12 md:py-24 w-full overflow-hidden"
-      style={{
-        background: "linear-gradient(to bottom, white 0%, #cee9d8 50%, white 100%)",
-      }}
     >
       <div className="w-full">
         <div className="flex flex-col gap-8 md:gap-[60px] items-center">
           {/* Header */}
           <div className="flex flex-col gap-2 md:gap-3 items-center w-full px-4 md:px-8">
             <div className="pb-1 md:pb-2 w-full">
-              <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-black leading-tight md:leading-none">
+              <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-white leading-tight md:leading-none">
                 Trusted by athletes worldwide
               </h2>
             </div>
-            <p className="font-normal text-sm md:text-base text-center text-[#71717a] leading-5 md:leading-6 max-w-[640px]">
+            <p className="font-normal text-sm md:text-base text-center text-white/60 leading-5 md:leading-6 max-w-[640px]">
               Join thousands of marathoners, casual joggers, and fitness enthusiasts who rely on MyFinishLine to plan, track, and achieve their running goals.
             </p>
           </div>
@@ -114,8 +111,7 @@ export default function Testimonials() {
 
           {/* Money-Back Guarantee Banner */}
           <div
-            className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-[70px] w-full md:w-[1100px] max-w-[calc(100%-2rem)] mx-4 md:mx-auto px-8 md:px-[90px] py-10 md:py-12 rounded-2xl md:rounded-3xl border border-[#b7b9e2] shadow-[0px_0px_12px_0px_rgba(18,53,167,0.24)]"
-            style={{ background: "#5170d5" }}
+            className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-[70px] w-full md:w-[1100px] max-w-[calc(100%-2rem)] mx-4 md:mx-auto px-8 md:px-[90px] py-10 md:py-12 rounded-2xl md:rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl"
           >
             {/* Badge */}
             <div className="w-[150px] h-[125px] md:w-[200px] md:h-[167px] flex-shrink-0">

@@ -1,5 +1,6 @@
 import instance from "@/app/lib/utils/instance";
 import { NextRequest, NextResponse } from "next/server";
+import { handleApiError } from "@/app/lib/api-error-handler";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -12,16 +13,7 @@ export const POST = async (req: NextRequest) => {
       status: 200,
       message: "Password was successfully reset",
     });
-  } catch (error: any) {
-    if (error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
-
-    return NextResponse.json(
-      { message: "Service unavailable" },
-      { status: 503 },
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/auth/reset-password");
   }
 };

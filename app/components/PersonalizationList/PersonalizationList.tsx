@@ -1,4 +1,10 @@
 import PersonalizationItem from "./PersonalizationItem/PersonalizationItem";
+import { ICosmetic } from "@/app/types";
+
+interface PersonalizationItemType extends ICosmetic {
+  title: string;
+  description: string;
+}
 
 const PersonalizationList = ({
   items,
@@ -6,7 +12,7 @@ const PersonalizationList = ({
   selectedId,
   handleSelectItem,
 }: {
-  items: any[];
+  items: PersonalizationItemType[];
   type: "frames" | "skins" | "banners";
   selectedId: number | undefined;
   handleSelectItem: (item: {

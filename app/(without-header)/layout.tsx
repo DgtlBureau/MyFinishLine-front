@@ -16,42 +16,28 @@ export default function WithoutHeaderLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen" style={{
-      background: `linear-gradient(to bottom,
-        #5170D5 0%,
-        #5575D5 8%,
-        #5A7AD6 15%,
-        #6080D6 22%,
-        #6888D4 28%,
-        #7090D0 34%,
-        #7A9BC8 40%,
-        #85A6C4 46%,
-        #8FAEC0 52%,
-        #99B6BC 58%,
-        #A3BEB8 64%,
-        #ADC6B4 70%,
-        #B7CEB0 76%,
-        #C1D6AC 82%,
-        #CBDEA8 88%,
-        #CEE9D8 100%
-      )`
-    }}>
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-center relative">
-          <BackButton />
-          <Link href="/" className="block">
-            <Image
-              src="/images/logo-line.png"
-              alt="MyFinishLine"
-              width={957}
-              height={489}
-              className="h-5 sm:h-7 md:h-8 w-auto"
-            />
-          </Link>
-        </div>
-      </header>
-      <PolicyPageTransition>{children}</PolicyPageTransition>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a]">
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#3B5CC6]/30 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#4DA67A]/25 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[40%] right-[10%] w-[30%] h-[30%] rounded-full bg-[#5170D5]/20 blur-[100px] pointer-events-none" />
+      <div className="relative z-10">
+        {/* Header - mobile only */}
+        <header className="sticky top-0 z-50 bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-sm lg:hidden">
+          <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-center relative">
+            <BackButton />
+            <Link href="/" className="block">
+              <Image
+                src="/images/logo-line.png"
+                alt="MyFinishLine"
+                width={957}
+                height={489}
+                className="h-5 sm:h-7 md:h-8 w-auto"
+              />
+            </Link>
+          </div>
+        </header>
+        <PolicyPageTransition>{children}</PolicyPageTransition>
+      </div>
     </div>
   );
 }

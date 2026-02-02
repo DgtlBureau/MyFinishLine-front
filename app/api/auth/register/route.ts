@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import instance from "@/app/lib/utils/instance";
+import { ApiError, handleApiError, HttpStatus } from "@/app/lib/api-error-handler";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,23 +9,17 @@ export async function POST(request: NextRequest) {
     const { email, password, confirmPassword, code } = body;
 
     if (!email || !password || !confirmPassword || !code) {
-      return NextResponse.json(
-        { message: "All fields are required" },
-        { status: 400 }
-      );
+      throw new ApiError("All fields are required", HttpStatus.BAD_REQUEST);
     }
 
     if (password !== confirmPassword) {
-      return NextResponse.json(
-        { message: "Passwords do not match" },
-        { status: 400 }
-      );
+      throw new ApiError("Passwords do not match", HttpStatus.BAD_REQUEST);
     }
 
     if (password.length < 6) {
-      return NextResponse.json(
-        { message: "Password must be at least 6 characters" },
-        { status: 400 }
+      throw new ApiError(
+        "Password must be at least 6 characters",
+        HttpStatus.BAD_REQUEST
       );
     }
 
@@ -46,21 +41,14 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    console.log(error);
-    if (error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
-
-    return NextResponse.json(
-      { message: "Service unavailable" },
-      { status: 503 }
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/auth/register");
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
+  return NextResponse.json(
+    { message: "Method not allowed" },
+    { status: HttpStatus.METHOD_NOT_ALLOWED }
+  );
 }

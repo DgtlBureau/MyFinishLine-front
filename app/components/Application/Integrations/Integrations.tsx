@@ -5,6 +5,7 @@ import Image from "next/image";
 import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 import SwipeToUnlock from "../../Shared/SwipeToUnlock/SwipeToUnlock";
 
+import { logger } from "@/app/lib/logger";
 const Integrations = () => {
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ const Integrations = () => {
       const { data } = await axios.get("/api/user/disconnect-strava");
       dispatch(updateUser(data));
     } catch (error) {
-      console.error("Error disconnecting Strava:", error);
+      logger.error("Error disconnecting Strava:", error);
     }
   };
 
@@ -31,7 +32,7 @@ const Integrations = () => {
       const { data } = await axios.get("/api/user/disconnect-fitbit");
       dispatch(updateUser(data));
     } catch (error) {
-      console.error("Error disconnecting Fitbit:", error);
+      logger.error("Error disconnecting Fitbit:", error);
     }
   };
 
@@ -45,7 +46,7 @@ const Integrations = () => {
         isConnected={user.has_strava_connect}
         serviceName="Strava"
         icon={
-          <div className="p-2 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/50 shadow-sm">
+          <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-sm">
             <div className="w-14 h-14 relative rounded-xl overflow-hidden">
               <Image
                 src="/icons/strava.svg"
@@ -66,7 +67,7 @@ const Integrations = () => {
         isConnected={user.has_fitbit_connect}
         serviceName="Fitbit"
         icon={
-          <div className="p-2 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/50 shadow-sm">
+          <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-sm">
             <div className="w-14 h-14 relative rounded-xl overflow-hidden bg-[#00B0B9] flex items-center justify-center">
               <Image
                 src="/icons/fitbit.svg"

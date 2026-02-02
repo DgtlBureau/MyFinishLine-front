@@ -14,6 +14,7 @@ import { clearUser, updateUserMeasure } from "@/app/lib/features/user/userSlice"
 import { useMeasure } from "@/app/hooks/useMeasure";
 import { useTranslation } from "@/app/contexts/LanguageContext";
 import { MeasureUnit } from "@/app/types/user";
+import { logger } from "@/app/lib/logger";
 
 const Settings = () => {
   const [isChangingMeasure, setIsChangingMeasure] = useState(false);
@@ -40,7 +41,7 @@ const Settings = () => {
         dispatch(updateUserMeasure(previousMeasure));
       }
     } catch (error) {
-      console.error("Error updating measure:", error);
+      logger.error("Error updating measure:", error);
       dispatch(updateUserMeasure(previousMeasure));
     } finally {
       setIsChangingMeasure(false);
@@ -55,7 +56,7 @@ const Settings = () => {
       router.replace("/");
       dispatch;
     } catch (error) {
-      console.error("Error logging out: ", error);
+      logger.error("Error logging out: ", error);
     }
   };
 
@@ -73,7 +74,7 @@ const Settings = () => {
         dispatch(updateUserMeasure(previousUnit));
       }
     } catch (error) {
-      console.error("Error updating distance unit: ", error);
+      logger.error("Error updating distance unit: ", error);
       dispatch(updateUserMeasure(previousUnit));
     }
   };

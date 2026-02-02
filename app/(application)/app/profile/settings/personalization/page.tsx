@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 
+import { logger } from "@/app/lib/logger";
 type Tab = "frames" | "banners" | "skins";
 
 const tabs: { id: Tab; name: string }[] = [
@@ -47,7 +48,7 @@ const PersonalizationPage = () => {
       const data = await fetchMap[tab]();
       setItems(data.data);
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +89,7 @@ const PersonalizationPage = () => {
     } catch (error) {
       toast.error(`Error updating ${activeTab.slice(0, -1)}`);
       dispatch(updateUser({ [updateKey]: savedValue }));
-      console.log(error);
+      logger.log(error);
     }
   };
 

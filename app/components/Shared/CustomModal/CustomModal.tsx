@@ -34,7 +34,7 @@ const PortalModal = ({
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         className={cn(
-          "relative bg-white/60 backdrop-blur-2xl backdrop-saturate-150 p-4 box-border rounded-2xl z-10 max-w-3xl w-full border border-white/50 shadow-xl",
+          "relative bg-white/15 backdrop-blur-2xl backdrop-saturate-150 p-4 box-border rounded-2xl z-10 max-w-3xl w-full border border-white/20 shadow-xl",
           fullscreen ? "w-full h-full" : "",
           contentClassName,
         )}
@@ -42,7 +42,7 @@ const PortalModal = ({
         {children}
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 block cursor-pointer p-1.5 rounded-full bg-white/40 hover:bg-white/60 transition-colors text-[#09090B]/70 hover:text-[#09090B]"
+          className="absolute right-3 top-3 block cursor-pointer p-1.5 rounded-full bg-white/15 hover:bg-white/25 transition-colors text-white/70 hover:text-white"
         >
           <X size={18} />
         </button>

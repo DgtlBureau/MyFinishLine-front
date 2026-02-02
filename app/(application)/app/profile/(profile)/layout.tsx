@@ -22,6 +22,7 @@ import ChallengeCardSkeleton from "@/app/components/Skeletons/ChallengeCardSkele
 import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkeleton";
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
 
+import { logger } from "@/app/lib/logger";
 const JOURNEY_TAB = "journey";
 const ACTIVITIES_TAB = "activities";
 
@@ -54,7 +55,7 @@ const ProfileLayout = ({
       const data = await getCurrentUser();
       dispatch(setUser(data));
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 
@@ -65,7 +66,7 @@ const ProfileLayout = ({
         dispatch(setUserCompletedContracts(data.data));
       }
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 

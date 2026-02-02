@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -19,7 +20,7 @@ export async function GET() {
       isConnected: true,
     });
   } catch (error) {
-    console.error("Error getting user data:", error);
+    logger.error("Error getting user data:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

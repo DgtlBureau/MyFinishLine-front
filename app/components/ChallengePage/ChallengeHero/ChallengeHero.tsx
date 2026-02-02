@@ -10,7 +10,14 @@ interface IChallengeProps {
   title: string;
   description: string;
   distance?: string | undefined;
+  distanceMile?: number;
   image: string;
+}
+
+function useIsImperial() {
+  if (typeof navigator === "undefined") return false;
+  const lang = navigator.language || "";
+  return ["en-US", "en-GB", "en-MM", "en-LR"].some((l) => lang.startsWith(l));
 }
 
 const ChallengeHero = ({
@@ -18,6 +25,7 @@ const ChallengeHero = ({
   description,
   image,
   distance,
+  distanceMile,
 }: IChallengeProps) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -26,8 +34,8 @@ const ChallengeHero = ({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
       },
     },
   };
@@ -35,55 +43,61 @@ const ChallengeHero = ({
   const itemVariants = {
     hidden: {
       opacity: 0,
-      y: 30,
-      filter: "blur(2px)",
+      x: -60,
+      filter: "blur(4px)",
     },
     visible: {
       opacity: 1,
-      y: 0,
+      x: 0,
       filter: "blur(0px)",
       transition: {
         type: "spring" as const,
-        stiffness: 100,
-        damping: 25,
+        stiffness: 80,
+        damping: 20,
         mass: 1,
-        duration: 0.6,
+        duration: 0.7,
       },
     },
   };
 
   return (
     <motion.div
-      className="relative px-4 md:px-2 pt-30 flex flex-col gap-6 items-center z-1 text-center rounded-sm overflow-hidden aspect-[1/2] sm:aspect-[1/1] md:aspect-[16/9] w-full"
+      className="relative px-6 md:px-12 lg:px-16 pt-28 pb-12 flex flex-col gap-4 items-start z-1 text-left rounded-sm overflow-hidden aspect-[3/4] sm:aspect-[16/9] md:aspect-[2.5/1] w-full"
       variants={containerVariants}
       initial={prefersReducedMotion ? "visible" : "hidden"}
       animate="visible"
     >
-      <Image src={title.toLocaleLowerCase() === 'amazonia route' ? challengeImage : image} width={1000} height={800} alt="challenge" className="absolute top-0 left-0 object-cover w-full h-full" />
-      <div className="absolute w-full h-full bg-gradient-to-b from-white/20 to-black/20" />
-      {distance && <motion.div
-        variants={itemVariants}
-        className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm"
-      >
-        <Route className="size-4" />
-        <span>{distance}</span>
-      </motion.div>}
+      <Image src={title.toLocaleLowerCase() === 'amazonia route' ? challengeImage : image} width={1000} height={800} alt="challenge" className="absolute top-0 left-0 object-cover w-full h-full object-[center_35%]" />
 
-      <motion.h1
-        variants={itemVariants}
-        className="text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl"
-      >
-        {title}
-      </motion.h1>
+      {/* Edge blur overlays */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#1a2a4a]/70 via-transparent to-[#1a2a4a]/50" />
+      <div className="absolute top-0 left-0 right-0 h-[30%] bg-gradient-to-b from-[#1a2a4a]/60 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-[#1a2a4a] via-[#1a2a4a]/60 to-transparent" />
 
-      <motion.p
-        variants={itemVariants}
-        className="mx-auto my-3 max-w-2xl text-md md:my-5 md:text-lg lg:my-6 lg:text-xl"
-      >
-        {description}
-      </motion.p>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col gap-4 mt-auto max-w-2xl">
+        {distance && <motion.div
+          variants={itemVariants}
+          className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 px-4 py-1.5 text-sm text-white/80 w-fit"
+        >
+          <Route className="size-4" />
+          <span>{useIsImperial() && distanceMile ? `${Math.round(distanceMile)} mi` : `${(Number(distance) / 1000).toFixed(0)} km`}</span>
+        </motion.div>}
 
-      <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background to-transparent" />
+        <motion.h1
+          variants={itemVariants}
+          className="text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+        >
+          {title}
+        </motion.h1>
+
+        <motion.p
+          variants={itemVariants}
+          className="max-w-xl text-sm md:text-base lg:text-lg text-white/80 leading-relaxed"
+        >
+          {description}
+        </motion.p>
+      </div>
     </motion.div>
   );
 };

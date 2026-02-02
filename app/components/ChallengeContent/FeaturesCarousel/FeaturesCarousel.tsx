@@ -14,20 +14,34 @@ import {
 import usePrefersReducedMotion from "@/app/hooks/usePrefersReducedMotion";
 import content from "@/app/lib/content/landing/content";
 import axios from "axios";
-import { IProduct } from "@/app/types";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { setProducts } from "@/app/lib/features/products/productsSlice";
 import { Button } from "../../ui/button";
 import questImage from '@/public/images/landing/quest.webp'
 import { ArrowRight, Route } from 'lucide-react'
 import { useRouter } from "next/navigation";
 
+interface ChallengeItem {
+  id: number;
+  name: string;
+  description: string | null;
+  image_url: string | null;
+  price: number | null;
+  currency: string | null;
+  total_distance: number;
+  total_distance_mile: number;
+  status: { id: number; name: string; type: string };
+}
+
+function useIsImperial() {
+  if (typeof navigator === "undefined") return false;
+  const lang = navigator.language || "";
+  return ["en-US", "en-GB", "en-MM", "en-LR"].some((l) => lang.startsWith(l));
+}
+
 export default function FeaturesCarousel() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [api, setApi] = useState<CarouselApi>();
   const [activeIndex, setActiveIndex] = useState(0);
-  const { products } = useAppSelector((state) => state.products);
-  const dispatch = useAppDispatch();
+  const [challenges, setChallenges] = useState<ChallengeItem[]>([]);
   const router = useRouter();
 
   const headerVariants = {
@@ -70,21 +84,15 @@ export default function FeaturesCarousel() {
     router.push(`/challenges/${questId}`);
   };
 
-  const handleGetProducts = async () => {
-    try {
-      const data: { data: IProduct[] } = await axios.get(
-        "/api/payment/products",
-      );
-      if (data.data.length) {
-        dispatch(setProducts(data.data));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    handleGetProducts();
+    axios
+      .get("/api/challenges/list")
+      .then(({ data }) => {
+        if (Array.isArray(data)) {
+          setChallenges(data.filter((c: ChallengeItem) => c.status?.type === "active"));
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -110,14 +118,14 @@ export default function FeaturesCarousel() {
       <Noise />
 
       <div className="gap-8 lg:grid-cols-3">
-        <h2 className="px-[22px] text-balance flex flex-col text-center text-2xl leading-tight tracking-tight sm:text-3xl md:text-5xl lg:text-6xl">
+        <h2 className="px-[22px] text-balance flex flex-col text-center text-2xl leading-tight tracking-tight sm:text-3xl md:text-5xl lg:text-6xl text-white font-bold">
           Choose Your
-          <span className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent">Adventure Quest</span>
+          <span className="bg-gradient-to-r from-[#6B8BFF] to-[#7FD4A0] bg-clip-text text-transparent">Adventure Quest</span>
         </h2>
-        <p className="px-[22px] block mt-3 md:mt-4 text-muted-foreground text-base md:text-lg leading-snug text-center">
+        <p className="px-[22px] block mt-3 md:mt-4 text-white/70 text-base md:text-lg leading-snug text-center">
           {content.challenges.description}
         </p>
-        <div className="bg-gradient-to-b from-white from-10% via-indigo-300/90 via-70% to-white-50">
+        <div>
           <motion.div
             className="mt-4 container select-none lg:col-span-2"
             initial={prefersReducedMotion ? "visible" : "hidden"}
@@ -134,30 +142,32 @@ export default function FeaturesCarousel() {
               className="cursor-grab"
             >
               <CarouselContent className="h-full mt-10">
-                {products?.map((product, idx) => {
-                  return (
+                {challenges.map((challenge) => (
                     <CarouselItem
-                      key={product.challenge_info?.id || idx}
-                      className="h-full w-full"
+                      key={challenge.id}
+                      className="h-full basis-full"
                     >
-                      <div className="relative flex flex-col rounded-2xl md:rounded-3xl p-5 sm:p-7 lg:p-9 w-full overflow-hidden aspect-[4/5] sm:aspect-[3/2] lg:aspect-[2/1]">
-                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6"><Route width={20} height={20} /> {product.challenge_info?.total_distance} km</p>
+                      <div className="relative flex flex-col rounded-2xl md:rounded-3xl p-5 sm:p-7 lg:p-9 w-full overflow-hidden aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]">
+                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6 text-white/80"><Route width={20} height={20} /> {useIsImperial() ? `${Math.round(challenge.total_distance_mile)} mi` : `${(challenge.total_distance / 1000).toFixed(0)} km`}</p>
                         <div className="mt-auto z-10">
-                          <h3 className="text-lg sm:text-xl lg:text-[24px] font-semibold leading-7 lg:leading-8">{product.name}</h3>
-                          <p className="text-xs sm:text-[14px] leading-5 sm:leading-6">{product.description}</p>
+                          <h3 className="text-lg sm:text-xl lg:text-[24px] font-semibold leading-7 lg:leading-8 text-white">{challenge.name}</h3>
+                          {challenge.description && <p className="text-xs sm:text-[14px] leading-5 sm:leading-6 text-white/70">{challenge.description}</p>}
                         </div>
                         <div className="flex items-center justify-between mt-4 lg:mt-[35px] z-10">
                           <Button
-                            onClick={() => product?.paddle_product_id && handleChooseQuest(product.paddle_product_id)}
-                            disabled={!product?.paddle_product_id}
+                            onClick={() => handleChooseQuest(challenge.id)}
                             className="py-2 px-4 sm:py-[10px] sm:px-5 rounded-full text-xs sm:text-sm leading-5"
                           >
                             Choose a Quest
                             <ArrowRight width={16} height={16} />
                           </Button>
-                          <p className="text-2xl sm:text-3xl lg:text-[36px] font-semibold text-black">${(Number(product.prices?.amount) / 100).toFixed(2)}</p>
+                          {challenge.price != null && challenge.price > 0 && (
+                            <p className="text-2xl sm:text-3xl lg:text-[36px] font-semibold text-white">
+                              {challenge.currency === "EUR" ? "\u20AC" : "$"}{challenge.price}
+                            </p>
+                          )}
                         </div>
-                        <Image src={questImage} fill alt={product.name} className="object-cover object-center -z-10" />
+                        <Image src={questImage} fill alt={challenge.name} className="object-cover object-center -z-10" />
                         <div
                           className="absolute bottom-0 left-0 right-0 h-[60%] backdrop-blur-md z-0"
                           style={{
@@ -167,11 +177,10 @@ export default function FeaturesCarousel() {
                               "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%)",
                           }}
                         />
-                        <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-white/90 via-white/50 to-transparent z-0" />
+                        <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-black/70 via-black/30 to-transparent z-0" />
                       </div>
                     </CarouselItem>
-                  );
-                })}
+                ))}
               </CarouselContent>
             </Carousel>
 

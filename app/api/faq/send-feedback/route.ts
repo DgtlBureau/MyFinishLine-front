@@ -1,5 +1,6 @@
 import instance from "@/app/lib/utils/instance";
 import { NextRequest, NextResponse } from "next/server";
+import { handleApiError } from "@/app/lib/api-error-handler";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -13,10 +14,7 @@ export const POST = async (req: NextRequest) => {
     });
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    return NextResponse.json({
-      status: "error",
-      message: error.response?.data.message,
-    });
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/faq/send-feedback");
   }
 };

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function POST() {
   try {
     const fakeCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    console.log(`New verification code: ${fakeCode}`);
-    console.log("Email sent with verification code (in demo mode)");
+    logger.log(`New verification code: ${fakeCode}`);
+    logger.log("Email sent with verification code (in demo mode)");
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { handleApiError } from "@/app/lib/api-error-handler";
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -24,48 +25,7 @@ export const GET = async (req: NextRequest) => {
       },
     });
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("API error:", error);
-
-    if (error.response) {
-      return NextResponse.json(
-        {
-          message: error.response.data?.message || "Failed getting contracts",
-          error: error.response.data?.error || "authentication_error",
-          ...error.response.data,
-        },
-        { status: error.response.status }
-      );
-    }
-
-    if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND") {
-      return NextResponse.json(
-        {
-          message: "Cannot connect to backend service",
-          error: "service_unavailable",
-        },
-        { status: 503 }
-      );
-    }
-
-    // Handle timeout
-    if (error.code === "ECONNABORTED") {
-      return NextResponse.json(
-        {
-          message: "Request timeout. Please try again.",
-          error: "timeout_error",
-        },
-        { status: 408 }
-      );
-    }
-
-    // Default error
-    return NextResponse.json(
-      {
-        message: "Internal server error",
-        error: "internal_error",
-      },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "GET /api/user/contracts");
   }
 };

@@ -21,7 +21,7 @@ const SettingSection = ({
       <h2 className="text-xs font-medium text-white/70 uppercase tracking-wider mb-2 px-1">
         {title}
       </h2>
-      <div className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-3 space-y-0.5">
+      <div className="bg-white/10 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] p-3 space-y-0.5">
         {children}
       </div>
     </motion.div>

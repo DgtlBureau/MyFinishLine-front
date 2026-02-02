@@ -33,7 +33,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10" />
         </div>
       ) : currentUser.selected_banner && bannerError ? (
-        <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden bg-gradient-to-b from-[#5170D5] to-[#7A9BC8]">
+        <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden bg-gradient-to-b from-[#1a2a4a] to-[#2a4a6a]">
           <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
         </div>
       ) : null}

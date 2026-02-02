@@ -1,6 +1,7 @@
 import instance from "@/app/lib/utils/instance";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { ApiError, handleApiError, HttpStatus } from "@/app/lib/api-error-handler";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,10 +9,7 @@ export async function POST(request: NextRequest) {
     const token = cookieStore.get("auth_token")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { message: "Not authenticated" },
-        { status: 401 }
-      );
+      throw new ApiError("Not authenticated", HttpStatus.UNAUTHORIZED);
     }
 
     const body = await request.formData();
@@ -24,10 +22,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error.response?.data.message || "Error updating user" },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/user/update-user");
   }
 }

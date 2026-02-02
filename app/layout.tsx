@@ -2,11 +2,13 @@ import { Inter } from "next/font/google";
 import { StoreProvider } from "./StoreProvider";
 import { GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import { buildSeo } from "./lib/utils/buildSeo";
 import { pageMetadata } from "./data/pagesMetadata";
 import VisibilityHandler from "./components/Shared/VisibilityHandler/VisibilityHandler";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import QueryProvider from "./providers/QueryProvider";
+import { ToastContainerClient } from "./components/Shared/ToastContainerClient";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,11 +44,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} [--header-height:calc(var(--spacing)*14)] lg:[--header-height:calc(var(--spacing)*23)] antialiased bg-black`}
       >
-        <VisibilityHandler />
         <QueryProvider>
           <StoreProvider>
             <LanguageProvider>
               {children}
+              <ToastContainerClient />
             </LanguageProvider>
           </StoreProvider>
         </QueryProvider>

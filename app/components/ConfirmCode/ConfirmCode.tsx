@@ -9,7 +9,9 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
+import { logger } from "@/app/lib/logger";
 const ConfirmCode = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -77,7 +79,7 @@ const ConfirmCode = () => {
       dispatch(setChallenge(data));
       router.replace("/app");
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 
@@ -103,8 +105,12 @@ const ConfirmCode = () => {
         dispatch(updateUser({ has_activated_code: true }));
       }
       handleGetActiveChallenge();
-    } catch (error: any) {
-      setError(error.response?.data.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.message || "Failed to activate code");
+      } else {
+        setError("An unexpected error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -117,7 +123,7 @@ const ConfirmCode = () => {
       localStorage.removeItem("persist:root");
       router.replace("/login");
     } catch (error) {
-      console.error("Error logging out: ", error);
+      logger.error("Error logging out: ", error);
     }
   };
 
@@ -129,6 +135,15 @@ const ConfirmCode = () => {
   return (
     <div className="fixed z-9999 w-screen h-screen top-0 left-0 bg-gradient-to-br from-[#3B5CC6] via-[#5C9BB8] via-50% to-[#4DA67A] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
+        <div className="flex justify-center mb-6">
+          <Image
+            src="/images/logo-line.png"
+            width={957}
+            height={489}
+            alt="MyFinishLine"
+            className="h-10 w-auto drop-shadow-lg"
+          />
+        </div>
         <div className="bg-white/15 backdrop-blur-3xl backdrop-saturate-150 border border-white/30 rounded-3xl p-8 shadow-2xl shadow-black/10 ring-1 ring-inset ring-white/20">
           <h1 className="block text-center text-3xl font-bold text-white drop-shadow-sm tracking-tight">
             Enter your challenge code below

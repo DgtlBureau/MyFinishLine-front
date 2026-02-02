@@ -1,6 +1,7 @@
 import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { logger } from "@/app/lib/logger";
 
 export const GET = async () => {
   try {
@@ -22,7 +23,7 @@ export const GET = async () => {
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Notifications API error:", error?.message || error);
+    logger.error("Notifications API error:", error?.message || error);
 
     if (error.response) {
       return NextResponse.json(

@@ -12,6 +12,7 @@ import { ShipmentStatuses } from "@/app/types";
 import { setUserProfieChallenges } from "@/app/lib/features/profile/profileSlice";
 import { useMeasure } from "@/app/hooks/useMeasure";
 import { Play } from "lucide-react";
+import { logger } from "@/app/lib/logger";
 
 const challengeLogoMap: Record<string, string> = {
   "Amazonia Route": "/images/amazonia-route-logo.png",
@@ -77,7 +78,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         dispatch(setUserChallenges(data.data));
       }
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   };
 

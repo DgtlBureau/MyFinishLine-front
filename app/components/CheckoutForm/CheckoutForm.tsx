@@ -13,6 +13,7 @@ import Image from "next/image";
 import Loader from "../Shared/Loader/Loader";
 import { Input } from "../ui/input";
 
+import { logger } from "@/app/lib/logger";
 const PaymentForm = ({ total }: { total: number }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -101,7 +102,7 @@ const PaymentForm = ({ total }: { total: number }) => {
       }
     } catch (err) {
       setError("An unexpected error occurred");
-      console.error(err);
+      logger.error(err);
     }
 
     setLoading(false);

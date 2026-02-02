@@ -5,6 +5,7 @@ import { getLeaderboard } from "@/app/lib/utils/leaderboardService";
 import { setLeaderboard } from "@/app/lib/features/leaderboard/leaderboardSlice";
 import LeaderboardUser from "./LeaderboardUser/LeaderboardUser";
 import LeaderboardSkeleton from "./LeaderboardSkeleton";
+import { logger } from "@/app/lib/logger";
 
 interface ILeaderboardItemProps {
   challengeId: number;
@@ -22,6 +23,8 @@ const LeaderboardItem = ({ challengeId, onEmpty }: ILeaderboardItemProps) => {
   const { leaderboards, current_user } = useAppSelector(
     (state) => state.leaderboard,
   );
+  const challenge = useAppSelector((state) => state.challenge);
+  const hasActiveChallenge = challenge?.id > 0;
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -42,7 +45,7 @@ const LeaderboardItem = ({ challengeId, onEmpty }: ILeaderboardItemProps) => {
         sessionStorage.setItem(`${CACHE_KEY}_${challengeId}`, String(data.leaderboard.length));
       }
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +102,9 @@ const LeaderboardItem = ({ challengeId, onEmpty }: ILeaderboardItemProps) => {
     >
       <motion.ul initial="collapsed" className="overflow-hidden">
         <AnimatePresence>
-          {leaderboards?.map((item) => {
+          {leaderboards
+            ?.filter((item) => hasActiveChallenge || item.user_id !== current_user.user.id)
+            .map((item) => {
             return (
               <LeaderboardUser
                 key={item.user_id}

@@ -64,7 +64,7 @@ function ActiveCard({ ch }: { ch: ChallengeCard }) {
           </div>
           <div className="flex items-center justify-between">
             <Link href={`/challenges/${ch.id}`}>
-              <button className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-[#fafafa] bg-[#18181b] rounded-md hover:bg-[#27272a] transition-colors">
+              <button className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] rounded-md hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 transition-colors">
                 Choose a Quest
                 <ArrowRight size={14} className="md:w-4 md:h-4" />
               </button>
@@ -94,7 +94,7 @@ function ComingSoonCard({ ch }: { ch: ChallengeCard }) {
         <div className="w-full aspect-[4/5] bg-gradient-to-br from-[#5170D5] to-[#CEE9D8] blur-sm scale-105" />
       )}
 
-      <div className="absolute inset-0 bg-white/30" />
+      <div className="absolute inset-0 bg-black/30" />
 
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
         <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
@@ -157,14 +157,10 @@ export default function CTA() {
     <section
       id="level-up"
       className="flex flex-col items-center py-12 md:py-24 w-full"
-      style={{
-        background:
-          "linear-gradient(to bottom, white 18%, #b4c6ff 74%, white 100%)",
-      }}
     >
       <div className="max-w-[1280px] px-4 md:px-8 w-full">
         <div className="flex flex-col gap-8 md:gap-12 items-center">
-          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] tracking-[-1px] md:tracking-[-1.92px] text-black leading-tight md:leading-none text-center">
+          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] tracking-[-1px] md:tracking-[-1.92px] text-white leading-tight md:leading-none text-center">
             Level Up Your
             <br />
             Sports Experience

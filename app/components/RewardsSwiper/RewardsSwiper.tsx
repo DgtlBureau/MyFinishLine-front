@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
 
+import { logger } from "@/app/lib/logger";
 const RewardsSwiper = () => {
   const { contracts } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -19,7 +20,7 @@ const RewardsSwiper = () => {
           const data = await getUserContracts();
           dispatch(setUserContracts(data.data));
         } catch (error) {
-          console.log(error);
+          logger.log(error);
         } finally {
           setIsLoading(false);
         }

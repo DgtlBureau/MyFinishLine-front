@@ -169,7 +169,23 @@ export interface IReward {
   name: string;
   description: string;
   image_url: string | null;
+  condition_type?: "challenge_completed" | "step_reached" | "contract_completed";
+  challenge_step_id?: number | null;
+  step_condition?: "before_stories" | "after_stories" | null;
+  contract_id?: number | null;
 }
+
+export interface ICosmetic {
+  id: number;
+  name: string;
+  image_url: string | null;
+  contract_id: number;
+}
+
+export interface IBadge extends ICosmetic {}
+export interface IBanner extends ICosmetic {}
+export interface IFrame extends ICosmetic {}
+export interface ISkin extends ICosmetic {}
 
 export interface IContract {
   id: number;
@@ -177,13 +193,15 @@ export interface IContract {
   description: string;
   image_url: string | null;
   type: string;
-  badges: any[];
-  banners: any[];
-  frames: any[];
-  skins: any[];
+  badges: IBadge[];
+  banners: IBanner[];
+  frames: IFrame[];
+  skins: ISkin[];
   end_date: null | string;
   reward_type: "badge" | "frame" | "skin" | "banner";
   is_completed: boolean;
+  condition_group?: string | null;
+  condition_value?: Record<string, unknown> | null;
   rare: {
     id: number;
     name: string;

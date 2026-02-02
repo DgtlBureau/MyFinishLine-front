@@ -13,6 +13,7 @@ import {
 } from "@/app/lib/utils/distance";
 import { useCallback } from "react";
 
+import { logger } from "@/app/lib/logger";
 export function useMeasure() {
   const dispatch = useAppDispatch();
   const measure = useAppSelector((state) => state.user.user.measure) || "km";
@@ -35,7 +36,7 @@ export function useMeasure() {
         }
         return false;
       } catch (error) {
-        console.error("Failed to update measure:", error);
+        logger.error("Failed to update measure:", error);
         return false;
       }
     },

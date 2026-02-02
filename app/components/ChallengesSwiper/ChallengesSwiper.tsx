@@ -11,89 +11,97 @@ import "swiper/css";
 import "swiper/css/effect-creative";
 import Link from "next/link";
 import axios from "axios";
-import { setProducts } from "@/app/lib/features/products/productsSlice";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { IProduct } from "@/app/types";
 
-const ChallengeCard = ({ product }: { product: IProduct }) => {
-  const price = product.prices;
-  const challenge = product.challenge_info;
+interface ChallengeItem {
+  id: number;
+  name: string;
+  description: string | null;
+  image_url: string | null;
+  logo_url: string | null;
+  price: number | null;
+  currency: string | null;
+  total_distance: number;
+  status: { id: number; name: string; type: string };
+}
 
-  if (!challenge) return null;
+const ChallengeCard = ({ challenge }: { challenge: ChallengeItem }) => {
+  const isComingSoon = challenge.status?.type === "coming_soon";
 
   return (
     <div className="relative w-full h-full min-h-svh overflow-hidden">
-      {/* Background Image */}
-      <Image
-        src={product.main_image || ""}
-        alt={challenge?.name || ""}
-        fill
-        className="object-cover"
-        quality={85}
-      />
+      {challenge.image_url ? (
+        <Image
+          src={challenge.image_url}
+          alt={challenge.name}
+          fill
+          className={`object-cover object-top ${isComingSoon ? "blur-[12px] scale-105" : ""}`}
+          quality={85}
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A]" />
+      )}
 
-      {/* Gradient Overlay */}
       <div
         className="absolute inset-0"
         style={{
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%)",
+          background: isComingSoon
+            ? "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%)"
+            : "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%)",
         }}
       />
 
-      {/* Challenge Logo */}
-      {challenge.image_url && (
-        <div className="absolute top-8 right-8 w-[140px] lg:w-[180px]">
-          <Image
-            src={challenge.image_url}
-            alt={challenge.name}
-            width={180}
-            height={80}
-            className="w-full h-auto object-contain"
-          />
-        </div>
-      )}
-
-      {/* Distance Badge */}
-      <div className="absolute top-8 left-8 flex items-center gap-1.5 bg-white/20 backdrop-blur-xl rounded-full px-4 py-2.5 border border-white/30">
-        <span className="font-bold text-sm text-white tracking-wide">
-          {challenge.total_distance} km
-        </span>
-      </div>
-
-      {/* Bottom Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 flex flex-col gap-5">
-        <div className="bg-white/15 backdrop-blur-2xl rounded-2xl border border-white/20 p-5 lg:p-6">
-          <div className="flex items-end justify-between gap-4">
-            <div className="flex flex-col gap-2 flex-1">
-              <h3 className="font-bold text-2xl lg:text-3xl text-white leading-tight tracking-tight">
-                {challenge.name}
-              </h3>
-              <p className="text-white/70 text-sm lg:text-base leading-relaxed line-clamp-2 font-medium">
-                {product.description}
-              </p>
+      {isComingSoon ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-20 h-20 rounded-full bg-white/15 backdrop-blur-xl border border-white/25 flex items-center justify-center shadow-lg shadow-white/10">
+              <AnimatedClock size={44} />
             </div>
-            {price && (
-              <span className="font-bold text-3xl lg:text-4xl text-white tracking-tight shrink-0">
-                ${price.amount}
-              </span>
-            )}
+            <span className="text-white font-bold text-3xl lg:text-4xl tracking-tight drop-shadow-lg">
+              Coming Soon
+            </span>
+            <span className="text-white/50 text-sm font-medium tracking-wide">
+              New quests are on the way
+            </span>
           </div>
         </div>
-
-        <Link
-          href={"/challenges/" + challenge.id}
-          className="flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold text-white bg-white/25 backdrop-blur-xl border border-white/30 rounded-2xl w-full hover:bg-white/35 transition-all tracking-wide"
-        >
-          Choose a Quest
-          <ArrowRight size={16} />
-        </Link>
-      </div>
+      ) : (
+        <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-xl border-t border-white/20 rounded-t-3xl p-8 lg:p-10 flex flex-col gap-5">
+          <div className="flex flex-col gap-3">
+            <h3 className="font-bold text-3xl lg:text-4xl text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+              {challenge.name}
+            </h3>
+            {challenge.description && (
+              <p className="text-white/90 text-sm lg:text-base leading-relaxed line-clamp-2 font-medium">
+                {challenge.description}
+              </p>
+            )}
+            <div className="flex items-center gap-3 flex-wrap">
+              {challenge.price != null && challenge.price > 0 && (
+                <span className="bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 text-white font-bold text-sm">
+                  {challenge.currency === "EUR" ? "\u20AC" : "$"}{challenge.price}
+                </span>
+              )}
+              {challenge.total_distance > 0 && (
+                <span className="bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 text-white/80 font-medium text-sm">
+                  {(challenge.total_distance / 1000).toFixed(0)} km
+                </span>
+              )}
+            </div>
+          </div>
+          <Link
+            href={`/challenges/${challenge.id}`}
+            className="group flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold text-white bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl w-full hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 tracking-wide"
+          >
+            Explore
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
 
-const AnimatedClock = () => {
+const AnimatedClock = ({ size = 28 }: { size?: number }) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
@@ -108,8 +116,8 @@ const AnimatedClock = () => {
 
   return (
     <svg
-      width="28"
-      height="28"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -119,14 +127,12 @@ const AnimatedClock = () => {
       className="text-white/70"
     >
       <circle cx="12" cy="12" r="10" />
-      {/* Minute hand */}
       <line
         x1="12"
         y1="12"
         x2={12 + 4 * Math.sin((minuteAngle * Math.PI) / 180)}
         y2={12 - 4 * Math.cos((minuteAngle * Math.PI) / 180)}
       />
-      {/* Second hand */}
       <line
         x1="12"
         y1="12"
@@ -138,40 +144,27 @@ const AnimatedClock = () => {
   );
 };
 
-const ComingSoonCard = () => {
-  return (
-    <div className="relative w-full h-full min-h-svh overflow-hidden bg-gradient-to-br from-[#3B5CC6]/40 via-[#5C9BB8]/30 to-[#4DA67A]/40">
-      <div className="absolute inset-0 backdrop-blur-xl bg-white/10" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-        <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center">
-          <AnimatedClock />
-        </div>
-        <span className="text-white/80 font-bold text-xl tracking-tight">Coming Soon</span>
-        <span className="text-white/50 text-sm font-medium">New quests are on the way</span>
-      </div>
-    </div>
-  );
-};
 
 const ChallengesSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
-  const { products } = useAppSelector((state) => state.products);
-  const dispatch = useAppDispatch();
-
-  const handleLoadChallenges = async () => {
-    try {
-      const { data } = await axios.get("/api/payment/products");
-      dispatch(setProducts(data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [challenges, setChallenges] = useState<ChallengeItem[]>([]);
 
   useEffect(() => {
-    handleLoadChallenges();
+    axios
+      .get("/api/challenges/list")
+      .then(({ data }) => {
+        if (Array.isArray(data)) {
+          const filtered = data.filter(
+            (c: ChallengeItem) =>
+              c.status?.type === "active" || c.status?.type === "coming_soon",
+          );
+          setChallenges(filtered);
+        }
+      })
+      .catch(() => {});
   }, []);
 
-  const hasProducts = products.length > 0;
+  const hasChallenges = challenges.length > 0;
 
   return (
     <Swiper
@@ -189,11 +182,11 @@ const ChallengesSwiper = () => {
         limitProgress: 2,
       }}
       autoplay={{
-        delay: 3000,
+        delay: 5000,
         disableOnInteraction: false,
         pauseOnMouseEnter: true,
       }}
-      loop
+      loop={challenges.length > 1}
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
       }}
@@ -203,19 +196,12 @@ const ChallengesSwiper = () => {
       speed={800}
       grabCursor
     >
-      {hasProducts &&
-        products.map((product) => (
-          <SwiperSlide key={product.challenge_info?.id}>
-            <ChallengeCard product={product} />
+      {hasChallenges &&
+        challenges.map((challenge) => (
+          <SwiperSlide key={challenge.id}>
+            <ChallengeCard challenge={challenge} />
           </SwiperSlide>
         ))}
-      {/* Coming Soon placeholders */}
-      <SwiperSlide>
-        <ComingSoonCard />
-      </SwiperSlide>
-      <SwiperSlide>
-        <ComingSoonCard />
-      </SwiperSlide>
     </Swiper>
   );
 };

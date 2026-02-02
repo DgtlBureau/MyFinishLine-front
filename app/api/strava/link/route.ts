@@ -2,28 +2,29 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { logger } from "@/app/lib/logger";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  console.log("Callback received - code:", code, "error:", error);
+  logger.log("Callback received - code:", code, "error:", error);
 
   if (error) {
-    console.log("Auth error:", error);
+    logger.log("Auth error:", error);
     redirect("/app/profile/journey?status=auth_denied");
   }
 
   if (!code) {
-    console.log("No code received");
+    logger.log("No code received");
     redirect("/app/profile/journey?status=no_code");
   }
 
   let redirectUrl: string | null = null;
 
   try {
-    console.log("Client ID exists:", !!process.env.STRAVA_CLIENT_ID);
-    console.log("Client Secret exists:", !!process.env.STRAVA_CLIENT_SECRET);
+    logger.log("Client ID exists:", !!process.env.STRAVA_CLIENT_ID);
+    logger.log("Client Secret exists:", !!process.env.STRAVA_CLIENT_SECRET);
 
     const params = new URLSearchParams();
     params.append("client_id", process.env.STRAVA_CLIENT_ID!);
@@ -31,7 +32,7 @@ export async function GET(request: Request) {
     params.append("code", code);
     params.append("grant_type", "authorization_code");
 
-    console.log("Making request to Strava...");
+    logger.log("Making request to Strava...");
 
     const tokenResponse = await fetch("https://www.strava.com/oauth/token", {
       method: "POST",
@@ -42,19 +43,19 @@ export async function GET(request: Request) {
     });
 
     const responseText = await tokenResponse.text();
-    console.log("=== STRAVA RESPONSE ===");
-    console.log("Status:", tokenResponse.status);
-    console.log("Status Text:", tokenResponse.statusText);
-    console.log("Response length:", responseText.length);
-    console.log("First 500 chars:", responseText.substring(0, 500));
-    console.log("=== END RESPONSE ===");
+    logger.log("=== STRAVA RESPONSE ===");
+    logger.log("Status:", tokenResponse.status);
+    logger.log("Status Text:", tokenResponse.statusText);
+    logger.log("Response length:", responseText.length);
+    logger.log("First 500 chars:", responseText.substring(0, 500));
+    logger.log("=== END RESPONSE ===");
 
     if (
       responseText.trim().startsWith("<!DOCTYPE") ||
       responseText.trim().startsWith("<html")
     ) {
-      console.error("Strava returned HTML error page");
-      console.error("Full HTML response:", responseText);
+      logger.error("Strava returned HTML error page");
+      logger.error("Full HTML response:", responseText);
       return redirect("/app/profile/journey?status=strava_html_error");
     }
 
@@ -62,18 +63,18 @@ export async function GET(request: Request) {
     try {
       tokenData = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("JSON parse error:", parseError);
-      console.error("Response that failed to parse:", responseText);
+      logger.error("JSON parse error:", parseError);
+      logger.error("Response that failed to parse:", responseText);
       return redirect("/app/profile/journey?status=invalid_json");
     }
 
     if (tokenData.errors || !tokenResponse.ok) {
-      console.error("Strava API error:", tokenData);
+      logger.error("Strava API error:", tokenData);
       return redirect("/app/profile/journey?status=strava_api_error");
     }
 
     if (!tokenData.access_token) {
-      console.error("No access token in response:", tokenData);
+      logger.error("No access token in response:", tokenData);
       return redirect("/app/profile/journey?status=no_access_token");
     }
 
@@ -104,7 +105,7 @@ export async function GET(request: Request) {
       JSON.stringify(data)
     )}`;
   } catch (error) {
-    console.error("Callback error:", error);
+    logger.error("Callback error:", error);
     return redirect("/app/profile/journey?error=strava_callback_failed");
   }
 

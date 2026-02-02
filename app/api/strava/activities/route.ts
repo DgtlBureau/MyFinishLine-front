@@ -1,6 +1,7 @@
 import { STRAVA_CONFIG } from "@/app/lib/strava";
 import { cookies } from "next/headers";
 
+import { logger } from "@/app/lib/logger";
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -22,7 +23,7 @@ export async function GET() {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Activities API Error Response:", errorText);
+      logger.error("Activities API Error Response:", errorText);
 
       if (response.status === 401) {
         cookieStore.delete("strava_access_token");
@@ -38,7 +39,7 @@ export async function GET() {
       activities: activities,
     });
   } catch (error) {
-    console.error("Activities API error:", error);
+    logger.error("Activities API error:", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

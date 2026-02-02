@@ -6,11 +6,7 @@ export default function MoneyBackBanner() {
   return (
     <section className="flex justify-center py-6 md:py-12 w-full px-4 md:px-8">
       <div
-        className="max-w-[960px] w-full rounded-3xl px-6 md:px-[120px] py-6 md:py-9 flex flex-col md:flex-row items-center gap-6 md:gap-[60px] border border-[#b7b9e2]"
-        style={{
-          background: "linear-gradient(to bottom, #5170d5, #cee9d8)",
-          backdropFilter: "blur(6.131px)",
-        }}
+        className="max-w-[960px] w-full rounded-3xl px-6 md:px-[120px] py-6 md:py-9 flex flex-col md:flex-row items-center gap-6 md:gap-[60px] border border-white/20 bg-white/10 backdrop-blur-xl"
       >
         {/* Money Back Guarantee Badge */}
         <motion.div

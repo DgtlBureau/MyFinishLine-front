@@ -33,6 +33,7 @@ import SheetContainer from "@/app/components/SheetContainer/SheetContainer";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 
+import { logger } from "@/app/lib/logger";
 const glassInputClassName =
   "h-14 text-base bg-white/20 backdrop-blur-xl border-white/30 rounded-2xl shadow-lg text-white font-medium caret-white placeholder:text-white/40 placeholder:font-normal focus:border-white/50 focus:ring-white/20 focus:shadow-[0_0_15px_rgba(255,255,255,0.35)]";
 
@@ -121,7 +122,7 @@ const page = () => {
       dispatch(setUser(data));
       setData(data);
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   };
 
@@ -168,7 +169,7 @@ const page = () => {
       toast.success("Profile successfully updated");
     } catch (error: any) {
       toast.error(error.response?.data.message || error.response.data.error);
-      console.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }

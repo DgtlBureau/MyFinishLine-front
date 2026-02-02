@@ -74,14 +74,14 @@ const sections = [
 
 export default function Participation() {
   return (
-    <section id="about" className="bg-white flex flex-col items-center py-12 md:py-24 w-full">
+    <section id="about" className="flex flex-col items-center py-12 md:py-24 w-full">
       <div className="max-w-[1280px] px-4 md:px-8 w-full">
         {/* Header */}
         <div className="flex flex-col gap-2 md:gap-3 items-center mb-8 md:mb-16">
-          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] tracking-[-1px] md:tracking-[-1.92px] text-black leading-tight md:leading-none text-center">
+          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] tracking-[-1px] md:tracking-[-1.92px] text-white leading-tight md:leading-none text-center">
             Participation Is Open To Everyone
           </h2>
-          <p className="font-normal text-sm md:text-base text-center text-[#71717a] leading-5 md:leading-6">
+          <p className="font-normal text-sm md:text-base text-center text-white/60 leading-5 md:leading-6">
             Workout at your own pace. Suitable for all fitness levels. Choose the sports that suit you best.
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function Participation() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-              className={`flex flex-col md:flex-row items-center gap-0 md:gap-8 min-h-[400px] md:h-[512px] border border-[#b7b9e2] rounded-xl overflow-hidden ${
+              className={`flex flex-col md:flex-row items-center gap-0 md:gap-8 min-h-[400px] md:h-[512px] border border-white/20 rounded-xl overflow-hidden bg-white/5 backdrop-blur-sm ${
                 section.imagePosition === "right" ? "md:flex-row-reverse" : ""
               }`}
             >
@@ -130,11 +130,11 @@ export default function Participation() {
                     >
                       {section.title}
                     </span>
-                    <span className="text-[#09090b]">{section.subtitle}</span>
+                    <span className="text-white">{section.subtitle}</span>
                   </h3>
                   <ul className="list-disc ml-5 md:ml-7 space-y-0">
                     {section.points.map((point, pointIndex) => (
-                      <li key={pointIndex} className="text-sm md:text-lg text-[#71717a] leading-5 md:leading-7">
+                      <li key={pointIndex} className="text-sm md:text-lg text-white/60 leading-5 md:leading-7">
                         {point}
                       </li>
                     ))}

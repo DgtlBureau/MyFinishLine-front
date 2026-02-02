@@ -17,6 +17,7 @@ import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { logger } from "@/app/lib/logger";
 
 const Map = ({
   background_images,
@@ -66,7 +67,7 @@ const Map = ({
       dispatch(updateUser({ available_onboarding: false }));
     } catch (error) {
       toast.error("Error loading onboarding");
-      console.log(error);
+      logger.error(error);
     }
   };
 
