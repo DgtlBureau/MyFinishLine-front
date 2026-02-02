@@ -20,14 +20,15 @@ export const createArray = (
     };
   });
 
-const CustomWheelPicker = <T,>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomWheelPicker = ({
   options,
   value,
   onChange,
 }: {
-  options: WheelPickerOption<T>[];
-  value: T;
-  onChange: (value: SetStateAction<T>) => void;
+  options: WheelPickerOption<any>[];
+  value: any;
+  onChange: (value: any) => void;
 }) => {
   return (
     <WheelPickerWrapper>

@@ -18,7 +18,7 @@ const PersonalizationList = ({
   handleSelectItem: (item: {
     id: number;
     title: string;
-    image_url: string;
+    image_url: string | null;
     description: string;
   }) => void;
 }) => {

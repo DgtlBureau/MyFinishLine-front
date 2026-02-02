@@ -63,7 +63,7 @@ const PersonalizationPage = () => {
   const handleSetActive = async (item: {
     id: number;
     title: string;
-    image_url: string;
+    image_url: string | null;
     description: string;
   }) => {
     const updateKeyMap: Record<Tab, string> = {

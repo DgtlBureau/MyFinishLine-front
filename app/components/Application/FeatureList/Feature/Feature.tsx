@@ -153,7 +153,7 @@ const Feature = memo(
                 >
                   <Image
                     src={imageUrl!}
-                    alt={firstReward?.title || "Reward"}
+                    alt={firstReward?.name || "Reward"}
                     fill
                     className="object-cover rounded-2xl"
                     onError={() => setImageError(true)}

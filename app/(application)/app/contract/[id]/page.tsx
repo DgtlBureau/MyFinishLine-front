@@ -153,7 +153,7 @@ const ContractPage = () => {
               <div className="w-20 h-20 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center overflow-hidden">
                 <Image
                   src={rewardImageUrl}
-                  alt={firstReward?.title || "Reward"}
+                  alt={firstReward?.name || "Reward"}
                   width={72}
                   height={72}
                   className="object-contain"

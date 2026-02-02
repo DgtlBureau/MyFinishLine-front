@@ -7,7 +7,7 @@ import { useState } from "react";
 interface IPersonalizationItemProps {
   index: number;
   id: number;
-  image_url: string;
+  image_url: string | null;
   title: string;
   type: "frames" | "skins" | "banners";
   description: string;
@@ -15,7 +15,7 @@ interface IPersonalizationItemProps {
   handlePressSelect: (item: {
     id: number;
     title: string;
-    image_url: string;
+    image_url: string | null;
     description: string;
   }) => void;
 }
