@@ -1,31 +1,14 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "../ChallengeContent/Navbar/Navbar";
-import Noise from "../Shared/Noise/noise";
-import Logo from "../ChallengeContent/Logo/Logo";
 
-// Create footer sections from NAV_LINKS and add blog links
+const logoImg = "/images/mfl-logo-new.svg";
+
 const FOOTER_SECTIONS = [
   {
     title: "Navigation",
     links: NAV_LINKS.flatMap((link) => [{ name: link.label, href: link.href }]),
-  },
-
-  {
-    title: "Blog",
-    links: [
-      { name: "All Posts", href: "/blog" },
-      {
-        name: "Agile Project Management",
-        href: "/blog/agile-project-management-tips",
-      },
-      {
-        name: "Customer Onboarding",
-        href: "/blog/customer-onboarding-strategies",
-      },
-    ],
   },
   {
     title: "Resources",
@@ -38,29 +21,10 @@ const FOOTER_SECTIONS = [
 ];
 
 const SOCIAL_LINKS = [
-  {
-    name: "Follow on LinkedIn",
-    href: "https://linkedin.com",
-  },
-  {
-    name: "Follow on X",
-    href: "https://x.com",
-  },
-];
-
-const APP_STORE_BUTTONS = [
-  {
-    href: "#",
-    icon: "apple",
-    topText: "Download on the",
-    mainText: "App Store",
-  },
-  {
-    href: "#",
-    icon: "googlePlay",
-    topText: "GET IT ON",
-    mainText: "Google Play",
-  },
+  { name: "Follow on Instagram", href: "#" },
+  { name: "Follow on Facebook", href: "#" },
+  { name: "Follow on TikTok", href: "#" },
+  { name: "Follow on X", href: "https://x.com" },
 ];
 
 const Footer = () => {
@@ -73,79 +37,69 @@ const Footer = () => {
   if (hideFooter) return null;
 
   return (
-    <footer className="relative border-t py-12">
-      <Noise />
-
-      <div className="container">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {/* Left side - Footer sections */}
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 md:col-span-3">
+    <footer className="py-12 md:py-24 border-t border-white/15">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+        <div className="flex flex-col gap-12 md:gap-24">
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            {/* Navigation & Resources Columns */}
             {FOOTER_SECTIONS.map((section, index) => (
-              <div key={index}>
-                <h3 className="text-foreground mb-4 font-bold md:mb-8">
-                  {section.title}
-                </h3>
-                <ul className="space-y-3">
+              <div key={index} className="flex flex-col">
+                <div className="pb-3 md:pb-4">
+                  <h4 className="font-bold text-sm md:text-base text-white leading-5 md:leading-6">
+                    {section.title}
+                  </h4>
+                </div>
+                <div className="flex flex-col gap-3 md:gap-4">
                   {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex}>
-                      <Link
-                        href={link.href}
-                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                      >
-                        {link.name}
-                      </Link>
-                    </li>
+                    <Link
+                      key={linkIndex}
+                      href={link.href}
+                      className="font-medium text-sm md:text-base text-white/50 leading-5 md:leading-6 hover:text-white transition-colors"
+                    >
+                      {link.name}
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
-          </div>
 
-          {/* Right side - Lumen branding and social */}
-          <div className="flex w-fit flex-col items-start md:col-span-1">
-            <Logo />
-            <div className="mt-4 space-y-3 md:mt-8">
-              {SOCIAL_LINKS.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {/* Logo and Social Column */}
+            <div className="flex flex-col col-span-2 md:col-span-1 mt-4 md:mt-0">
+              <div className="pb-3 md:pb-4 h-8 md:h-10">
+                <img
+                  src={logoImg}
+                  alt="MyFinishLine"
+                  className="h-6 md:h-8 w-auto"
+                />
+              </div>
+              <div className="flex flex-col gap-3 md:gap-4">
+                {SOCIAL_LINKS.map((link, index) => (
+                  <Link
+                    key={index}
+                    href={link.href}
+                    className="font-medium text-sm md:text-base text-white/50 leading-5 md:leading-6 hover:text-white transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-15 flex flex-col items-center justify-between gap-4 md:mt-20 md:flex-row">
-          <div className="flex gap-6">
-            <Link
-              href="https://www.shadcnblocks.com"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              © {new Date().getFullYear()} Shadcnblocks.com
-            </Link>
-            <Link
-              href="/privacy"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              Terms
-            </Link>
-            <Link
-              href="/refund-policy"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              Refund Policy
-            </Link>
+          {/* Bottom Section */}
+          <div className="flex flex-col items-center border-t border-white/15 pt-6 md:pt-8">
+            <p className="font-medium text-xs md:text-sm text-white/50 leading-4 md:leading-5 text-center">
+              © {new Date().getFullYear()} MyFinishLine. All rights reserved.
+            </p>
+            <p className="font-medium text-xs md:text-sm text-white/50 leading-4 md:leading-5 text-center">
+              MyFinishLine is a project operated by Fortem Group Limited
+            </p>
+            <p className="font-medium text-xs md:text-sm text-white/50 leading-4 md:leading-5 text-center px-4">
+              (Company No. 78664854, Registered Address: Wong King IND Building, 2-4, Tai Yau st., San Po Kong Hong Kong).
+            </p>
           </div>
         </div>
       </div>

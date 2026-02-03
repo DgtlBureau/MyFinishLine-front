@@ -29,7 +29,7 @@ const challengeSlice = createSlice({
       state,
       action: PayloadAction<Partial<IActiveChallenge>>,
     ) => {
-      state = { ...state, ...action.payload };
+      return { ...state, ...action.payload };
     },
     setViewedStory: (state, action: PayloadAction<number>) => {
       state.steps = state.steps.map((step) => {

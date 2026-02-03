@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/app/lib/hooks";
 import { setUser } from "@/app/lib/features/user/userSlice";
 import Link from "next/link";
 
+import { logger } from "@/app/lib/logger";
 const FitBitCallbackPage = () => {
   const [status, setStatus] = useState<string>(
     "Processing Fitbit authorization...",
@@ -32,7 +33,7 @@ const FitBitCallbackPage = () => {
         }, 3000);
       }
     } catch (error: any) {
-      console.error("Failed to exchange code:", error.response.data.message);
+      logger.error("Failed to exchange code:", error.response.data.message);
       setStatus(`Error: ${error.response?.data?.message || error.message}`);
     }
   };

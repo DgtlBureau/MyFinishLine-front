@@ -1,20 +1,28 @@
 import PersonalizationItem from "./PersonalizationItem/PersonalizationItem";
+import { ICosmetic } from "@/app/types";
+
+interface PersonalizationItemType extends ICosmetic {
+  title: string;
+  description: string;
+}
 
 const PersonalizationList = ({
   items,
   type,
   selectedId,
   handleSelectItem,
+  viewOnly = false,
 }: {
-  items: any[];
-  type: "frames" | "skins" | "banners";
+  items: PersonalizationItemType[];
+  type: "frames" | "skins" | "banners" | "cards";
   selectedId: number | undefined;
   handleSelectItem: (item: {
     id: number;
     title: string;
-    image_url: string;
+    image_url: string | null;
     description: string;
   }) => void;
+  viewOnly?: boolean;
 }) => {
   return (
     <ul className="grid grid-cols-2 gap-3 mt-3 auto-rows-fr">
@@ -24,8 +32,9 @@ const PersonalizationList = ({
           type={type}
           {...item}
           index={index}
-          isSelected={item.id === selectedId}
-          handlePressSelect={handleSelectItem}
+          isSelected={!viewOnly && item.id === selectedId}
+          handlePressSelect={viewOnly ? undefined : handleSelectItem}
+          viewOnly={viewOnly}
         />
       ))}
     </ul>

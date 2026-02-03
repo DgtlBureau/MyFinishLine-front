@@ -51,11 +51,6 @@ const links = [
     title: "Activities",
   },
   {
-    id: 11,
-    link: "/profile/redeem",
-    title: "Claim medal",
-  },
-  {
     id: 12,
     link: "/app/activities/new",
     title: "Add Activity",
@@ -82,7 +77,7 @@ const AppHeader = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white/15 backdrop-blur-2xl border-b border-white/30 shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white/15 backdrop-blur-2xl border-b border-white/30 shadow-lg lg:hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
       <div className="relative flex items-center justify-between max-w-4xl mx-auto px-4">
         {isCurrentLinkNested ? (
@@ -96,11 +91,11 @@ const AppHeader = () => {
           <div className="flex-1 h-14" />
         )}
         <Image
-          src="/images/logo-header.png"
-          width={160}
-          height={28}
+          src="/images/logo-header.svg"
+          width={240}
+          height={44}
           alt="MyFinishLine"
-          className="h-7 w-auto"
+          className="h-20 w-auto"
         />
         <button
           className="flex flex-1 items-center justify-end gap-2"

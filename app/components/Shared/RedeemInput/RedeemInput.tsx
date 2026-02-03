@@ -35,8 +35,8 @@ const RedeemInput = ({
       transition={{ delay }}
       className="space-y-1 w-full"
     >
-      <label htmlFor={id} className="text-sm font-medium text-foreground">
-        {label}{required && <span className="text-gray-400">*</span>}
+      <label htmlFor={id} className="text-sm font-medium text-white">
+        {label}{required && <span className="text-white/50">*</span>}
       </label>
       <Input
         className={`mt-1 ${showError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}

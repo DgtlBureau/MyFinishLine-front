@@ -91,12 +91,33 @@ const nextConfig: NextConfig = {
         hostname: "example.com",
       },
       {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "myfinishline.io",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "www.figma.com",
         port: "",
         pathname: "/**",
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/storage/:path*",
+        destination: `${process.env.BACKEND_URL?.replace(/\/back\/api$/, '') || 'http://127.0.0.1'}/storage/:path*`,
+      },
+    ];
   },
   async redirects() {
     return [
@@ -106,18 +127,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/app/profile",
-        destination: "/app/profile/journey",
-        permanent: true,
-      },
-      {
-        source: "/app/contracts",
-        destination: "/app/contracts/all",
-        permanent: true,
-      },
-      {
-        source: "/app/profile/settings/personalization",
-        destination: "/app/profile/settings/personalization/frames",
+        source: "/app/contracts/:tab",
+        destination: "/app/contracts",
         permanent: true,
       },
     ];

@@ -32,19 +32,19 @@ const SettingItem = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay * 0.03, duration: 0.2 }}
       className={cn(
-        "flex items-center justify-between py-3 px-1 rounded-xl transition-colors group hover:bg-white/30 active:bg-white/40",
+        "flex items-center justify-between py-3 px-1 rounded-xl transition-colors group hover:bg-white/15 active:bg-white/20",
         type !== "toggle" && onClick && "cursor-pointer",
       )}
       onClick={type !== "toggle" && type !== "segment" ? onClick : undefined}
     >
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        {icon && <span className="text-[#09090B]/60 shrink-0">{icon}</span>}
+        {icon && <span className="text-white/60 shrink-0">{icon}</span>}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground truncate">
+          <p className="text-sm font-medium text-white truncate">
             {label}
           </p>
           {description && (
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
+            <p className="text-xs text-white/50 truncate mt-0.5">
               {description}
             </p>
           )}
@@ -64,8 +64,8 @@ const SettingItem = ({
                 className={cn(
                   "px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer",
                   value === option.value
-                    ? "bg-black text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white/20 text-white shadow-sm"
+                    : "text-white/50 hover:text-white/70"
                 )}
               >
                 {option.label}
@@ -74,10 +74,10 @@ const SettingItem = ({
           </div>
         )}
         {type === "info" && typeof value === "string" && (
-          <span className="text-sm text-muted-foreground">{value}</span>
+          <span className="text-sm text-white/50">{value}</span>
         )}
         {type === "link" && (
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          <ChevronRight className="w-4 h-4 text-white/50" />
         )}
       </div>
     </motion.div>

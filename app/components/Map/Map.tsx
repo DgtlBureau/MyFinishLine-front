@@ -17,6 +17,7 @@ import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
 import FogOfWar from "./FogOfWar";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { logger } from "@/app/lib/logger";
 
 const Map = ({
   background_images,
@@ -28,6 +29,13 @@ const Map = ({
 }: IActiveChallenge & { onMapReady?: () => void }) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
+
+  // If no background images, signal map ready immediately
+  useEffect(() => {
+    if (!background_images || background_images.length === 0) {
+      onMapReady?.();
+    }
+  }, [background_images, onMapReady]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -35,14 +43,21 @@ const Map = ({
   const { user } = useAppSelector((state) => state.user);
   const [onboardingSlides, setOnboardingSlides] = useState<IStory[]>([]);
   const [awardQueue, setAwardQueue] = useState<IStep[]>([]);
-  const [scale, setScale] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return Math.min(1, window.innerWidth / 672);
-    }
-    return 1;
-  });
+  const [scale, setScale] = useState(1);
   const dispatch = useAppDispatch();
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Responsive scale based on container width
+  useEffect(() => {
+    const updateScale = () => {
+      const container = mapContainerRef.current;
+      const width = container ? container.clientWidth : window.innerWidth;
+      setScale(Math.min(1, width / 672));
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   const handleLoadOnboarding = async () => {
     try {
@@ -52,7 +67,7 @@ const Map = ({
       dispatch(updateUser({ available_onboarding: false }));
     } catch (error) {
       toast.error("Error loading onboarding");
-      console.log(error);
+      logger.error(error);
     }
   };
 
@@ -90,6 +105,13 @@ const Map = ({
       isInitialLoadRef.current = false;
 
       for (const step of steps) {
+        // Skip step 0 (onboarding) - auto-mark as celebrated without showing modal
+        if (step.index === 0) {
+          if (!celebratedSteps.includes(step.id)) {
+            celebratedSteps.push(step.id);
+          }
+          continue;
+        }
         if (step.completed && !celebratedSteps.includes(step.id)) {
           newlyCompletedSteps.push(step);
           celebratedSteps.push(step.id);
@@ -98,6 +120,9 @@ const Map = ({
     } else {
       // For subsequent updates, detect steps that just became completed
       for (const step of steps) {
+        // Skip step 0 (onboarding)
+        if (step.index === 0) continue;
+
         if (step.completed && !celebratedSteps.includes(step.id)) {
           const prevStep = previousSteps.find((s) => s.id === step.id);
           const wasNotCompletedBefore = prevStep && !prevStep.completed;
@@ -153,7 +178,13 @@ const Map = ({
     steps.length > 0
       ? Math.max(...steps.map((s) => Number(s.y_coordinate)))
       : 0;
-  const MAP_HEIGHT = Math.max(maxYCoordinate + 200, DEFAULT_MAP_HEIGHT);
+  const minYCoordinate =
+    steps.length > 0
+      ? Math.min(...steps.map((s) => Number(s.y_coordinate)))
+      : 0;
+  // If any step has negative y, extend map downward and shift all steps up
+  const yOffset = minYCoordinate < 0 ? Math.abs(minYCoordinate) + 100 : 0;
+  const MAP_HEIGHT = Math.max(maxYCoordinate + yOffset + 200, DEFAULT_MAP_HEIGHT + yOffset);
 
   // Calculate scale to fit map in viewport
   useLayoutEffect(() => {
@@ -332,38 +363,44 @@ const Map = ({
     // If clicking the same step while zoomed, zoom out
     if (isZooming && activeStep?.id === clickedStep.id) {
       setZoomScale(1);
-      setIsZooming(false);
+      setTimeout(() => {
+        setIsZooming(false);
+      }, 400);
       return;
     }
 
     setActiveStep(clickedStep);
 
-    // First scroll to center the step smoothly
-    const stepElement = document.getElementById(`step-${clickedStep.index}`);
-    if (stepElement) {
-      stepElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
-    }
-
     // Calculate zoom origin based on step position
     const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
-    const yPercent = 100 - (Number(clickedStep.y_coordinate) / MAP_HEIGHT) * 100;
+    const yPercent = 100 - ((Number(clickedStep.y_coordinate) + yOffset) / MAP_HEIGHT) * 100;
 
-    // Delay zoom to let scroll complete first
+    // Set zoom origin first (before scrolling)
+    setZoomOrigin({ x: xPercent, y: yPercent });
+    setIsZooming(true);
+
+    // Small delay to let origin settle, then scroll
     setTimeout(() => {
-      setZoomOrigin({ x: xPercent, y: yPercent });
-      setZoomScale(1.8);
-      setIsZooming(true);
-    }, 300);
+      const stepElement = document.getElementById(`step-${clickedStep.index}`);
+      if (stepElement) {
+        stepElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      }
+    }, 50);
 
-    // Open stories after zoom animation
+    // Start zoom after scroll begins
+    setTimeout(() => {
+      setZoomScale(1.8);
+    }, 400);
+
+    // Open stories after zoom animation completes
     if (clickedStep.story?.length) {
       setTimeout(() => {
         setIsStoriesOpen(true);
-      }, 1000);
+      }, 1200);
     }
   };
 
@@ -391,12 +428,15 @@ const Map = ({
   const handleCloseStories = () => {
     setIsStoriesOpen(false);
     setZoomScale(1);
-    setIsZooming(false);
+    // Delay resetting isZooming to allow smooth zoom-out animation
+    setTimeout(() => {
+      setIsZooming(false);
+    }, 700);
   };
 
   return (
     <>
-      <div className="relative w-full min-h-screen bg-slate-900 overflow-x-hidden">
+      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
         <div className="fixed inset-0 -z-10">
           {background_images.map((image, index) => (
             <div
@@ -440,8 +480,8 @@ const Map = ({
                 transform: `scale(${scale * zoomScale})`,
                 transformOrigin: isZooming ? `${zoomOrigin.x}% ${zoomOrigin.y}%` : "top left",
                 transition: isZooming
-                  ? "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
-                  : "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  ? "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out"
+                  : "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out",
               }}
             >
             {background_images[0] && (
@@ -452,6 +492,7 @@ const Map = ({
                 style={{ objectFit: "fill" }}
                 draggable={false}
                 onLoad={onMapReady}
+                onError={onMapReady}
               />
             )}
 
@@ -459,33 +500,8 @@ const Map = ({
               steps={steps}
               mapHeight={MAP_HEIGHT}
               isCompleted={is_completed}
+              yOffset={yOffset}
             />
-
-            <div className="absolute left-0 top-40" style={{ zIndex: 30 }}>
-              <div className="fixed flex gap-2 items-start">
-                <Image
-                  src="/images/application/map-racoon.png"
-                  width={100}
-                  height={100}
-                  alt="Map racoon"
-                />
-                {(!user.has_fitbit_connect || !user.has_fitbit_connect) && (
-                  <div className="relative bg-white p-2 px-4 rounded-xl shadow-lg max-w-xs ml-2">
-                    <div className="text-sm font-medium text-gray-800 italic">
-                      Connect your Strava or FitBit account to track your
-                      progress!
-                    </div>
-                    <div
-                      className="absolute -left-1 bottom-0 w-0 h-0 
-                      border-t-8 border-t-transparent
-                      border-r-12 border-r-white
-                      border-b-8 border-b-transparent
-                      rotate-95"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
 
             <div className="absolute inset-0 z-10 px-4 sm:px-8">
               {hasRouteData && route_data && (
@@ -494,6 +510,7 @@ const Map = ({
                   steps={steps}
                   mapWidth={CONTENT_WIDTH}
                   mapHeight={MAP_HEIGHT}
+                  yOffset={yOffset}
                 />
               )}
 
@@ -505,7 +522,7 @@ const Map = ({
                     className="absolute transform -translate-x-1/2 -translate-y-1/2"
                     style={{
                       left: `${step.x_coordinate}px`,
-                      bottom: `${step.y_coordinate}px`,
+                      bottom: `${Number(step.y_coordinate) + yOffset}px`,
                       zIndex: 10,
                     }}
                   >

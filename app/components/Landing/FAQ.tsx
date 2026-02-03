@@ -34,16 +34,16 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="bg-white flex flex-col items-center py-12 md:py-24 w-full">
+    <section id="faq" className="flex flex-col items-center py-12 md:py-24 w-full">
       <div className="max-w-[1280px] px-4 md:px-8 w-full">
         <div className="flex flex-col gap-8 md:gap-14 items-center justify-center w-full">
           {/* Title */}
-          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-black leading-tight md:leading-none w-full">
+          <h2 className="font-semibold text-2xl sm:text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-white leading-tight md:leading-none w-full">
             Frequently asked questions:
           </h2>
 
           {/* FAQ Items */}
-          <div className="bg-white border-2 border-[#f7f7f7] rounded-2xl md:rounded-[35px] px-3 md:px-[17px] py-3 md:py-[18px] w-full max-w-[1216px]">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-2xl md:rounded-[35px] px-3 md:px-[17px] py-3 md:py-[18px] w-full max-w-[1216px]">
             <div className="flex flex-col gap-2 md:gap-2.5">
               {faqs.map((faq, index) => {
                 const isOpen = openIndex === index;
@@ -53,14 +53,14 @@ export default function FAQ() {
                     onClick={() => toggleFAQ(index)}
                     className="w-full text-left"
                   >
-                    <div className="bg-[#fafafa] rounded-xl md:rounded-2xl px-3 md:px-5 py-4 md:py-[22px] w-full">
+                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl md:rounded-2xl px-3 md:px-5 py-4 md:py-[22px] w-full transition-all duration-300 hover:bg-white/15 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)]">
                       <div className="flex items-center justify-between w-full">
-                        <span className="font-medium text-sm md:text-base text-black leading-5 md:leading-none">
+                        <span className="font-medium text-sm md:text-base text-white leading-5 md:leading-none">
                           {faq.question}
                         </span>
                         <ChevronDown
                           size={16}
-                          className={`text-[#18181b] transition-transform duration-200 flex-shrink-0 ml-2 md:ml-4 ${
+                          className={`text-white/70 transition-transform duration-200 flex-shrink-0 ml-2 md:ml-4 ${
                             isOpen ? "rotate-180" : ""
                           }`}
                         />
@@ -71,7 +71,7 @@ export default function FAQ() {
                         }`}
                       >
                         <div className="overflow-hidden">
-                          <div className="text-xs md:text-sm text-[#666] leading-relaxed pr-4 md:pr-8">
+                          <div className="text-xs md:text-sm text-white/60 leading-relaxed pr-4 md:pr-8">
                             {faq.answer}
                           </div>
                         </div>

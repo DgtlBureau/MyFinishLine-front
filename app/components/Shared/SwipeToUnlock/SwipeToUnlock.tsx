@@ -107,14 +107,14 @@ const SwipeToUnlock = ({
 
   return (
     <div className="pb-2">
-      <div className="rounded-2xl bg-white/60 backdrop-blur-xl p-2 border border-white/60">
+      <div className="rounded-2xl bg-white/10 backdrop-blur-xl p-2 border border-white/20">
         <div
           ref={containerRef}
-          className="relative h-[72px] rounded-xl overflow-hidden bg-gray-100/50"
+          className="relative h-[72px] rounded-xl overflow-hidden bg-white/5"
         >
           {/* Progress fill background */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-[#5170D5]/30 to-[#66af69]/30 rounded-xl"
+            className="absolute inset-0 bg-gradient-to-r from-[#3B5CC6]/30 to-[#4DA67A]/30 rounded-xl"
             style={{
               width: progressWidth,
               opacity: progressOpacity
@@ -152,18 +152,18 @@ const SwipeToUnlock = ({
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <Loader2 className="w-4 h-4 text-[#5170D5] animate-spin" />
-                <span className="text-[#5170D5] text-[11px] font-medium select-none">
+                <Loader2 className="w-4 h-4 text-[#7B9AE8] animate-spin" />
+                <span className="text-[#7B9AE8] text-[11px] font-medium select-none">
                   {processingLabel}
                 </span>
               </motion.div>
             ) : (
               <>
-                <span className="text-gray-500 text-[11px] font-medium select-none ml-16 whitespace-nowrap">
+                <span className="text-white/70 text-[11px] font-medium select-none ml-16 whitespace-nowrap">
                   {displayLabel}
                 </span>
                 <motion.span
-                  className="ml-1 text-gray-400 text-[11px]"
+                  className="ml-1 text-white/50 text-[11px]"
                   animate={{ x: [0, 4, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 >
@@ -210,12 +210,12 @@ const SwipeToUnlock = ({
               {/* Success/Processing overlay */}
               {showSuccess && (
                 <motion.div
-                  className="absolute inset-0 bg-[#5170D5]/20 rounded-xl z-20 flex items-center justify-center"
+                  className="absolute inset-0 bg-[#3B5CC6]/20 rounded-xl z-20 flex items-center justify-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
                   <motion.div
-                    className="w-full h-full rounded-xl border-2 border-[#5170D5]"
+                    className="w-full h-full rounded-xl border-2 border-[#3B5CC6]"
                     animate={{
                       scale: [1, 1.1, 1],
                       opacity: [1, 0.5, 1]

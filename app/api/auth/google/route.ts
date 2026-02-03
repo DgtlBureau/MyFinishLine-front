@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function POST(req: Request) {
   try {
     const { code } = await req.json();
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
       });
       return NextResponse.json({ success: true, from_auth: true, ...data });
     } catch (axiosErr: any) {
-      console.error(
+      logger.error(
         "Backend /social-login error:",
         axiosErr.response?.data || axiosErr.message,
       );
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
       );
     }
   } catch (err: any) {
-    console.error("Route error:", err);
+    logger.error("Route error:", err);
     return NextResponse.json(
       { error: err.message || "Server error" },
       { status: 500 },

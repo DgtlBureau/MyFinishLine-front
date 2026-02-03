@@ -23,9 +23,7 @@ import {
 import { useMediaQuery } from "@/app/hooks/use-media-query";
 import { cn } from "@/app/lib/utils";
 import Logo from "../Logo/Logo";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { setProducts } from "@/app/lib/features/products/productsSlice";
-import axios from "axios";
+import { fetchChallengesList } from "@/app/lib/utils/challengesCache";
 
 interface NavLinks {
   label: string;
@@ -61,8 +59,8 @@ const getNavLinks = (firstChallengeId?: string): NavLinks[] => [
 ];
 
 const ACTION_BUTTONS = [
-  { label: "Sign in", href: "/login", variant: "ghost" as const },
-  { label: "Get started", href: "/signup", variant: "default" as const },
+  { label: "Sign in", href: "/login", variant: "ghost" as const, className: "text-white/80 hover:text-white hover:bg-white/10" },
+  { label: "Get started", href: "/signup", variant: "default" as const, className: "bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white border-0 hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90" },
 ];
 const Navbar = ({
   initialBannerVisible = true,
@@ -74,28 +72,21 @@ const Navbar = ({
   const { isAtLeast } = useMediaQuery();
   const pathname = usePathname();
   const [isBannerVisible, setIsBannerVisible] = useState(initialBannerVisible);
-  const { products } = useAppSelector((state) => state.products);
-  const dispatch = useAppDispatch();
+  const [firstChallengeId, setFirstChallengeId] = useState<string | undefined>();
   const hideNavbar = ["/login", "/signup", "/not-found", "/verify"].some(
     (route) => pathname.includes(route),
   );
 
-  const firstChallengeId = products[0]?.paddle_product_id;
   const dynamicNavLinks = getNavLinks(firstChallengeId);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      if (!products.length) {
-        try {
-          const { data } = await axios.get("/api/payment/products");
-          dispatch(setProducts(data));
-        } catch (error) {
-          console.error("Failed to load products:", error);
-        }
+    fetchChallengesList().then((data) => {
+      if (data.length > 0) {
+        const active = data.find((c: any) => c.status?.type === "active");
+        if (active) setFirstChallengeId(String(active.id));
       }
-    };
-    loadProducts();
-  }, [products.length, dispatch]);
+    });
+  }, []);
 
   useEffect(() => {
     const handleBannerDismiss = () => {
@@ -140,18 +131,18 @@ const Navbar = ({
         "isolate z-50 transition-all duration-300 ease-in-out",
         isScrolled && isAtLeast("lg")
           ? "fixed top-0 right-0 left-0 translate-y-2 px-5.5"
-          : "relative",
+          : "absolute top-0 left-0 right-0",
       )}
     >
       <div
         className={cn(
-          "bg-background navbar-container relative z-50 flex h-(--header-height) items-center justify-between gap-4 transition-all duration-300 ease-in-out",
+          "navbar-container relative z-50 flex h-(--header-height) items-center justify-between gap-4 transition-all duration-300 ease-in-out",
           isScrolled &&
             isAtLeast("lg") &&
-            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-sm backdrop-blur-md",
+            "h-[calc(var(--header-height)-20px)] max-w-7xl rounded-full shadow-lg bg-white/15 backdrop-blur-xl border border-white/20",
         )}
       >
-        <Logo className="" />
+        <Logo className="h-12 lg:h-24" />
 
         <div className="flex items-center gap-8">
           <NavigationMenu viewport={false} className="hidden lg:block">
@@ -202,8 +193,8 @@ const Navbar = ({
                         //   ? 'bg-[url("/images/application/challenge-bg-1.png")] opacity-50'
                         //   : "",
                         navigationMenuTriggerStyle(),
-                        // "after:from-chart-2 after:to-chart-3 after:absolute after:-inset-0.25 after:-z-1 after:rounded-sm after:bg-gradient-to-tr after:opacity-0 after:transition-all after:content-[''] hover:after:opacity-100",
-                        pathname === item.href && "bg-accent font-semibold",
+                        "!bg-transparent text-white/80 hover:text-white hover:!bg-white/10",
+                        pathname === item.href && "!bg-white/15 font-semibold text-white",
                       )}
                       suppressHydrationWarning
                     >
@@ -221,7 +212,7 @@ const Navbar = ({
                 key={button.label}
                 size="sm"
                 variant={button.variant}
-                className="rounded-full shadow-none"
+                className={cn("rounded-full shadow-none", button.className)}
                 asChild
               >
                 <Link href={button.href}>{button.label}</Link>
@@ -230,7 +221,7 @@ const Navbar = ({
           </div>
           <div className="flex items-center gap-2 lg:hidden lg:gap-4">
             <button
-              className="text-muted-foreground relative flex size-8 rounded-sm border lg:hidden"
+              className="text-white/80 relative flex size-8 rounded-sm border border-white/30 lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
@@ -267,7 +258,7 @@ const Navbar = ({
         {/*  Mobile Menu Navigation */}
         <div
           className={cn(
-            "fixed inset-0 -z-10 flex flex-col justify-between tracking-normal backdrop-blur-2xl transition-all duration-500 ease-out lg:hidden",
+            "fixed inset-0 -z-10 flex flex-col tracking-normal backdrop-blur-2xl transition-all duration-500 ease-out lg:hidden",
             isBannerVisible
               ? "pt-[calc(var(--header-height)+3rem)]"
               : "pt-(--header-height)",
@@ -277,10 +268,9 @@ const Navbar = ({
           )}
           style={{
             background: `linear-gradient(to bottom,
-              rgba(81, 112, 213, 0.95) 0%,
-              rgba(90, 122, 214, 0.95) 30%,
-              rgba(122, 155, 200, 0.95) 60%,
-              rgba(173, 198, 180, 0.95) 100%
+              rgba(26, 42, 74, 1) 0%,
+              rgba(42, 74, 106, 1) 50%,
+              rgba(26, 58, 58, 1) 100%
             )`
           }}
         >
@@ -339,7 +329,7 @@ const Navbar = ({
             </NavigationMenu>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-white/20 px-6 py-6 mb-6">
+          <div className="flex flex-col gap-4 border-t border-white/20 px-6 py-6">
             <Button
               variant="ghost"
               asChild

@@ -3,7 +3,7 @@
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
 import LanguageBottomSheet from "@/app/components/Application/Settings/LanguageBottomSheet/LanguageBottomSheet";
-import { Shield, Globe, LogOut, Mail, User, UserCog, Ruler } from "lucide-react";
+import { Shield, Globe, LogOut, User, UserCog, Ruler } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -14,9 +14,9 @@ import { clearUser, updateUserMeasure } from "@/app/lib/features/user/userSlice"
 import { useMeasure } from "@/app/hooks/useMeasure";
 import { useTranslation } from "@/app/contexts/LanguageContext";
 import { MeasureUnit } from "@/app/types/user";
+import { logger } from "@/app/lib/logger";
 
 const Settings = () => {
-  const [emailUpdates, setEmailUpdates] = useState(false);
   const [isChangingMeasure, setIsChangingMeasure] = useState(false);
   const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -31,8 +31,21 @@ const Settings = () => {
   const handleChangeMeasure = async (newMeasure: MeasureUnit) => {
     if (newMeasure === measure || isChangingMeasure) return;
     setIsChangingMeasure(true);
-    const success = await setMeasure(newMeasure);
-    setIsChangingMeasure(false);
+    const previousMeasure = measure;
+    dispatch(updateUserMeasure(newMeasure));
+    try {
+      const formData = new FormData();
+      formData.append("measure", newMeasure);
+      const response = await axios.post("/api/user/update-user", formData);
+      if (response.status !== 200) {
+        dispatch(updateUserMeasure(previousMeasure));
+      }
+    } catch (error) {
+      logger.error("Error updating measure:", error);
+      dispatch(updateUserMeasure(previousMeasure));
+    } finally {
+      setIsChangingMeasure(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -43,7 +56,7 @@ const Settings = () => {
       router.replace("/");
       dispatch;
     } catch (error) {
-      console.error("Error logging out: ", error);
+      logger.error("Error logging out: ", error);
     }
   };
 
@@ -61,7 +74,7 @@ const Settings = () => {
         dispatch(updateUserMeasure(previousUnit));
       }
     } catch (error) {
-      console.error("Error updating distance unit: ", error);
+      logger.error("Error updating distance unit: ", error);
       dispatch(updateUserMeasure(previousUnit));
     }
   };
@@ -83,7 +96,6 @@ const Settings = () => {
           onClick={() => handleGoTo("/app/profile/settings/personalization")}
           delay={1}
         />
-        <Integrations />
       </SettingSection>
 
       <SettingSection title={t.settings.security} delay={2}>
@@ -91,11 +103,16 @@ const Settings = () => {
           icon={<Shield className="w-4 h-4" />}
           label={t.settings.password}
           description={t.settings.passwordDesc}
+          onClick={() => handleGoTo("/app/profile/settings/change-password")}
           delay={2}
         />
       </SettingSection>
 
-      <SettingSection title={t.settings.preferences} delay={3}>
+      <SettingSection title="Integrations" delay={3} id="integrations">
+        <Integrations />
+      </SettingSection>
+
+      <SettingSection title={t.settings.preferences} delay={4}>
         <SettingItem
           icon={<Globe className="w-4 h-4" />}
           label={t.settings.language}
@@ -150,23 +167,11 @@ const Settings = () => {
         </motion.div>
       </SettingSection>
 
-      <SettingSection title={t.settings.notifications} delay={4}>
-        <SettingItem
-          icon={<Mail className="w-4 h-4" />}
-          label={t.settings.emailUpdates}
-          description={t.settings.emailUpdatesDesc}
-          type="toggle"
-          value={emailUpdates}
-          onToggle={setEmailUpdates}
-          delay={4}
-        />
-      </SettingSection>
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.25 }}
-        className="bg-white/40 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] p-3"
+        className="bg-white/10 backdrop-blur-xl backdrop-saturate-200 rounded-2xl border border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] p-3"
       >
         <SettingItem
           icon={<LogOut className="w-4 h-4" />}

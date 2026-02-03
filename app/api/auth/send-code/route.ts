@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
+import { ApiError, handleApiError, HttpStatus } from "@/app/lib/api-error-handler";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,10 +9,7 @@ export async function POST(request: NextRequest) {
     const { email } = body;
 
     if (!email) {
-      return NextResponse.json(
-        { message: "All fields are required" },
-        { status: 400 }
-      );
+      throw new ApiError("All fields are required", HttpStatus.BAD_REQUEST);
     }
 
     const response = await instance.post("/send-code", {
@@ -19,20 +17,14 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    if (error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
-
-    return NextResponse.json(
-      { message: "Service unavailable" },
-      { status: 503 }
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/auth/send-code");
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
+  return NextResponse.json(
+    { message: "Method not allowed" },
+    { status: HttpStatus.METHOD_NOT_ALLOWED }
+  );
 }

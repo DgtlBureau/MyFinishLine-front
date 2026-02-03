@@ -39,19 +39,19 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
       transition={{
         delay: delay,
       }}
-      className="group shadow-lg border border-white/30 overflow-hidden rounded-2xl bg-white/40 backdrop-blur-2xl backdrop-saturate-150 relative"
+      className="group shadow-lg border border-white/30 overflow-hidden rounded-2xl bg-white/10 backdrop-blur-2xl backdrop-saturate-150 relative"
     >
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-      <div className="px-4 pt-4 pb-2.5 flex items-center justify-between bg-gradient-to-r from-[#5170D5]/80 to-[#CEE9D8]/80 backdrop-blur-sm">
-        <div className="flex flex-1 items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
-          <Route color="#5170D5" width={16} height={16} />{" "}
+      <div className="px-4 pt-4 pb-2.5 flex items-center justify-between bg-gradient-to-r from-[#3B5CC6]/40 to-[#4DA67A]/40 backdrop-blur-sm">
+        <div className="flex flex-1 items-center gap-1 font-semibold text-sm leading-5 text-white">
+          <Route color="#7B9AE8" width={16} height={16} />{" "}
           {handleConvertDistance(Number(progress))}
         </div>
-        <div className="flex flex-1 justify-center items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
-          <Clock color="#5170D5" width={16} height={16} />{" "}
+        <div className="flex flex-1 justify-center items-center gap-1 font-semibold text-sm leading-5 text-white">
+          <Clock color="#7B9AE8" width={16} height={16} />{" "}
           {handleConvertTimeShort(activity_time)}
         </div>
-        <div className="flex flex-1 justify-end items-center gap-1 font-semibold text-sm leading-5 text-[#09090B]">
+        <div className="flex flex-1 justify-end items-center gap-1 font-semibold text-sm leading-5 text-white">
           <Image
             src="/icons/average-time.svg"
             alt="Average speed"
@@ -65,7 +65,7 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
         <div className="flex gap-4 h-full items-stretch">
           <ActivityImage sport_type={sport_type} />
           <div className="w-full flex flex-col justify-between">
-            <span className="block text-lg leading-7 font-medium text-[#09090B]">
+            <span className="block text-lg leading-7 font-medium text-white">
               {activity_name}
             </span>
             <div className="w-full flex items-end justify-between flex-1">
@@ -84,7 +84,7 @@ const Activity = forwardRef<HTMLLIElement, IActivity & { delay: number }>(({
                     alt="Strava icon"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-8 w-8 bg-linear-to-b from-[#CEE9D8] to-[#5170D5] rounded-sm">
+                  <div className="flex items-center justify-center h-8 w-8 bg-linear-to-b from-[#3B5CC6] to-[#4DA67A] rounded-sm">
                     <ActivityIcon width={16} height={16} />
                   </div>
                 )}

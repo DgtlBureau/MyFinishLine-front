@@ -1,6 +1,7 @@
 "use client";
 
 import { SetStateAction } from "react";
+import { logger } from "@/app/lib/logger";
 import {
   WheelPicker,
   WheelPickerOption,
@@ -19,14 +20,15 @@ export const createArray = (
     };
   });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomWheelPicker = ({
   options,
   value,
   onChange,
 }: {
-  options: any;
+  options: WheelPickerOption<any>[];
   value: any;
-  onChange: (value: SetStateAction<any>) => void;
+  onChange: (value: any) => void;
 }) => {
   return (
     <WheelPickerWrapper>
@@ -34,7 +36,7 @@ const CustomWheelPicker = ({
         options={options}
         value={value}
         onValueChange={(value) => {
-          console.log(value);
+          logger.log(value);
           onChange(value);
         }}
       />

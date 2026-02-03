@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { ApiError, handleApiError, HttpStatus } from "@/app/lib/api-error-handler";
 
 export async function POST(request: Request) {
   try {
     const { code } = await request.json();
-
-    console.log(`Received verification code: ${code}`);
 
     if (code && code.length === 6 && /^\d+$/.test(code)) {
       const cookieStore = await cookies();
@@ -33,22 +32,9 @@ export async function POST(request: Request) {
         },
       });
     } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Wrong code",
-        },
-        { status: 400 }
-      );
+      throw new ApiError("Wrong code", HttpStatus.BAD_REQUEST);
     }
-  } catch (error) {
-    console.error("Verify error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Ошибка сервера",
-      },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    return handleApiError(error, "POST /api/auth/verify");
   }
 }

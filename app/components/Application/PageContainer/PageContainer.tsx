@@ -12,7 +12,7 @@ const PageContainer = ({
   description,
 }: IPageContainerProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#5170D5] via-[#8BA3E0] via-25% to-[#CEE9D8] pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] pb-24">
       <div className="pt-14">
         <div className="pt-7">
           <h2 className="font-bold text-3xl leading-9 text-white text-center drop-shadow-sm">

@@ -47,14 +47,14 @@ const handleGetStyle = (
   rareness: "common" | "legendary",
 ) => {
   const style: React.CSSProperties = {
-    background: "rgba(255, 255, 255, 0.5)",
+    background: "rgba(255, 255, 255, 0.1)",
     backdropFilter: "blur(16px)",
     WebkitBackdropFilter: "blur(16px)",
-    border: "1px solid rgba(255, 255, 255, 0.4)",
-    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.1)",
   };
   if (is_completed) {
-    style.background = "rgba(255, 255, 255, 0.6)";
+    style.background = "rgba(255, 255, 255, 0.15)";
     style.border = "1px solid rgba(16, 185, 129, 0.3)";
   }
   if (rareness === "legendary") {
@@ -64,7 +64,7 @@ const handleGetStyle = (
 };
 
 const ImagePlaceholder = () => (
-  <div className="w-full h-full flex items-center justify-center bg-white/40 rounded-2xl border border-white/50">
+  <div className="w-full h-full flex items-center justify-center bg-white/10 rounded-2xl border border-white/20">
     <Image
       src="/icons/myfinishline-placeholder.png"
       alt="MyFinishLine"
@@ -153,7 +153,7 @@ const Feature = memo(
                 >
                   <Image
                     src={imageUrl!}
-                    alt={firstReward?.title || "Reward"}
+                    alt={firstReward?.name || "Reward"}
                     fill
                     className="object-cover rounded-2xl"
                     onError={() => setImageError(true)}
@@ -165,7 +165,7 @@ const Feature = memo(
 
           {/* Description */}
           <p
-            className="text-xs text-[#71717A] leading-4 text-left overflow-hidden text-ellipsis"
+            className="text-xs text-white/60 leading-4 text-left overflow-hidden text-ellipsis"
             style={{
               display: "-webkit-box",
               WebkitLineClamp: 2,

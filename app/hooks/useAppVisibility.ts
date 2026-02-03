@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+import { logger } from "@/app/lib/logger";
 export const useAppVisibility = (onVisible: () => void) => {
   const isInitialMount = useRef(true);
 
@@ -13,10 +14,10 @@ export const useAppVisibility = (onVisible: () => void) => {
           return;
         }
 
-        console.log("User returned to app - calling API");
+        logger.log("User returned to app - calling API");
         onVisible();
       } else {
-        console.log("User left the app/tab");
+        logger.log("User left the app/tab");
       }
     };
 

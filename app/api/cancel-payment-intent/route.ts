@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+import { logger } from "@/app/lib/logger";
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
 }
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
 
     const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
 
-    console.log("Payment intent canceled:", paymentIntent.id);
+    logger.log("Payment intent canceled:", paymentIntent.id);
 
     return NextResponse.json({
       success: true,
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
       id: paymentIntent.id,
     });
   } catch (error: any) {
-    console.error("Error cancelling payment intent:", error);
+    logger.error("Error cancelling payment intent:", error);
     return NextResponse.json(
       {
         success: false,

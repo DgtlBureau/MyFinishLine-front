@@ -12,8 +12,10 @@ import GoogleLogin from "@/app/components/Shared/GoogleLogin/GoogleLogin";
 import TermsLine from "@/app/components/Shared/TermsLine/TermsLine";
 import Image from "next/image";
 import { getFitbitAuthUrl } from "@/app/lib/utils/authWithFitbit";
+import { toast } from "react-toastify";
 import { motion } from "motion/react";
 import { Eye, EyeOff } from "lucide-react";
+import ChallengePromo from "@/app/components/Shared/ChallengePromo/ChallengePromo";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -73,7 +75,7 @@ export default function Login() {
       setForgotSent(true);
       setCountdown(600);
     } catch (error: any) {
-      setForgotError(error.response?.data?.message || "Failed to send reset link");
+      toast.error(error.response?.data?.message || "Failed to send reset link");
     } finally {
       setForgotLoading(false);
     }
@@ -123,9 +125,7 @@ export default function Login() {
       }
       router.replace("/app");
     } catch (error: any) {
-      setFormData((prevState) => {
-        return { ...prevState, error: error.response?.data?.message || "Login failed" };
-      });
+      toast.error(error.response?.data?.message || "Login failed");
     } finally {
       setFormData((prevState) => {
         return { ...prevState, isLoading: false };
@@ -238,11 +238,6 @@ export default function Login() {
                   </motion.button>
                 </div>
               </div>
-              {formData.error && (
-                <span className="block text-sm text-center text-red-200 mt-1">
-                  {formData.error}
-                </span>
-              )}
 
               <Button
                 type="submit"
@@ -304,10 +299,10 @@ export default function Login() {
                   ) : (
                     <Image
                       src="/icons/strava-logo.png"
-                      width={28}
-                      height={28}
+                      width={20}
+                      height={20}
                       alt="Strava"
-                      className="w-7 h-7 rounded-md"
+                      className="w-5 h-5 rounded"
                     />
                   )}
                 </div>
@@ -328,10 +323,10 @@ export default function Login() {
                   ) : (
                     <Image
                       src="/icons/fitbit-logo.png"
-                      width={28}
-                      height={28}
+                      width={20}
+                      height={20}
                       alt="Fitbit"
-                      className="w-7 h-7 rounded-md"
+                      className="w-5 h-5 rounded"
                     />
                   )}
                 </div>
@@ -366,6 +361,8 @@ export default function Login() {
               </button>
             </motion.div>
           </motion.div>
+
+          <ChallengePromo />
       </div>
 
       {/* Forgot Password Modal */}

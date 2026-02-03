@@ -1,5 +1,6 @@
 import { STRAVA_CONFIG } from "@/app/lib/strava";
 
+import { logger } from "@/app/lib/logger";
 export async function GET() {
   const params = new URLSearchParams({
     client_id: STRAVA_CONFIG.clientId ?? "",
@@ -10,7 +11,7 @@ export async function GET() {
   });
 
   const authUrl = `${STRAVA_CONFIG.authUrl}?${params.toString()}`;
-  console.log("Redirecting to:", authUrl);
+  logger.log("Redirecting to:", authUrl);
 
   return Response.redirect(authUrl);
 }

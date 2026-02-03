@@ -6,6 +6,7 @@ import Image from "next/image";
 import React, { useRef, useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 
+import { logger } from "@/app/lib/logger";
 type XarrowProps = React.ComponentProps<typeof Xarrow>;
 
 interface ProgressArrowProps extends XarrowProps {
@@ -97,7 +98,7 @@ const ProgressArrow: React.FC<ProgressArrowProps> = ({
       circleContainerRef.current.style.opacity = "1";
       circleContainerRef.current.style.display = "flex";
     } catch (error) {
-      console.warn("Error updating circle position:", error);
+      logger.warn("Error updating circle position:", error);
     }
   };
 

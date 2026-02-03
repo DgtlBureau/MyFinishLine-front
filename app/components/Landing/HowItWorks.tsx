@@ -67,7 +67,7 @@ function Card1() {
           top: "24.55px",
           width: "173.277px",
           height: "268.551px",
-          background: "linear-gradient(to bottom, white 0%, #cee9d8 49.965%, white 100%)",
+          background: "linear-gradient(to bottom, #f8f8f8 0%, #cee9d8 49.965%, #f8f8f8 100%)",
           border: "1px solid #ededed"
         }}
       >
@@ -380,7 +380,7 @@ const imgCard3RoutePath2 = "/images/card3-route-path2.png";
 const imgCard3RewardImg = "/images/card3-reward-img.png";
 const imgCard3TaskImg = "/images/card3-task-img.png";
 const imgCard3EarlyBird = "/images/card3-early-bird.png";
-const imgMflLogo = "/images/mfl-logo.svg";
+const imgMflLogo = "/images/mfl-logo-new.svg";
 const imgMflTextLogo = "/images/mfl-text-logo.png";
 const imgCard3Avatar = "/images/card3-avatar.png";
 
@@ -881,7 +881,7 @@ function Card3() {
       {/* Bottom gradient fade */}
       <div
         className="absolute bottom-0 left-0 w-full h-[27px] z-20"
-        style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.8))" }}
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(206,233,216,0.3))" }}
       />
     </div>
   );
@@ -1048,7 +1048,7 @@ function Card4() {
           bottom: "-1.12px",
           width: "398px",
           height: "64px",
-          background: "linear-gradient(to bottom, rgba(218,218,218,0), white)",
+          background: "linear-gradient(to bottom, rgba(206,233,216,0), rgba(206,233,216,0.3))",
           backdropFilter: "blur(6px)"
         }}
       />
@@ -1164,10 +1164,10 @@ function AnimatedStepItem({
           transform: isVisible ? "translateX(0)" : "translateX(-50px)"
         }}
       >
-        <h3 className="text-[#09090b] text-xl md:text-2xl font-semibold leading-8">
+        <h3 className="text-white text-xl md:text-2xl font-semibold leading-8">
           {step.title}
         </h3>
-        <p className="text-base text-[#71717a] leading-6">
+        <p className="text-base text-white/60 leading-6">
           {step.description}
         </p>
       </div>
@@ -1343,17 +1343,17 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section id="features" className="bg-white flex flex-col items-center py-12 md:py-24 w-full">
+    <section id="features" className="flex flex-col items-center py-12 md:py-24 w-full">
       <div className="max-w-[1280px] px-4 md:px-24 w-full">
         {/* Header */}
         <div className="flex flex-col gap-3 items-center justify-center px-4 md:px-24 mb-8 md:mb-14">
           <div className="flex items-center justify-center w-full">
-            <h2 className="font-semibold text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-black leading-none">
+            <h2 className="font-semibold text-3xl md:text-[48px] text-center tracking-[-1px] md:tracking-[-1.92px] text-white leading-none">
               How it works
             </h2>
           </div>
           <div className="flex items-center justify-center w-full">
-            <p className="font-normal text-sm md:text-base text-center text-[#71717a] leading-6">
+            <p className="font-normal text-sm md:text-base text-center text-white/60 leading-6">
               From choice to goal achievement step by step
             </p>
           </div>

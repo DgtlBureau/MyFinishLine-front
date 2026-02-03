@@ -2,14 +2,15 @@ import { STRAVA_CONFIG } from "@/app/lib/strava";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const pathParts = url.pathname.split("/");
     const id = pathParts[pathParts.length - 1];
 
-    console.log("Extracted ID from URL:", id);
-    console.log("Full URL:", request.url);
+    logger.log("Extracted ID from URL:", id);
+    logger.log("Full URL:", request.url);
 
     if (!id || id === "activity" || id === "api") {
       return NextResponse.json(
@@ -37,7 +38,7 @@ export async function GET(request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Strava API Error:`, errorText);
+      logger.error(`Strava API Error:`, errorText);
 
       if (response.status === 401) {
         cookieStore.delete("strava_access_token");
@@ -56,7 +57,7 @@ export async function GET(request: Request) {
       debug: { receivedId: id },
     });
   } catch (error: any) {
-    console.error("API error:", error);
+    logger.error("API error:", error);
     return NextResponse.json(
       { error: "Internal server error", message: error.message },
       { status: 500 }

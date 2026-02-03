@@ -28,7 +28,7 @@ export const CustomSelect = ({
   };
 
   return (
-    <div className={`z-10 flex h-[40px] w-full flex-col items-start bg-white`}>
+    <div className={`z-10 flex h-10 min-h-[2.5rem] w-full flex-col items-start bg-white`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         type="button"

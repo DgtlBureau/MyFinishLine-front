@@ -3,6 +3,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { ApiError, ApiErrorType } from "@/app/lib/api";
 
+import { logger } from "@/app/lib/logger";
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -24,7 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Error caught by boundary:", error, errorInfo);
+    logger.error("Error caught by boundary:", error, errorInfo);
   }
 
   handleRetry = () => {

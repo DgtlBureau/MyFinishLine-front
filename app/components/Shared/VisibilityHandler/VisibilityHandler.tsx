@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 
+import { logger } from "@/app/lib/logger";
 export default function VisibilityHandler() {
   const isInitialMount = useRef(true);
 
@@ -28,7 +29,7 @@ export default function VisibilityHandler() {
           lastDate.getDate() !== today.getDate()
         );
       } catch (error) {
-        console.error("Error accessing localStorage:", error);
+        logger.error("Error accessing localStorage:", error);
         return true;
       }
     };
@@ -40,28 +41,20 @@ export default function VisibilityHandler() {
         const now = new Date();
         localStorage.setItem(STORAGE_KEY, now.toISOString());
       } catch (error) {
-        console.error("Error updating localStorage:", error);
+        logger.error("Error updating localStorage:", error);
       }
     };
 
     const sendInitRequest = async () => {
       try {
-        console.log("User returned to tab - checking daily limit...");
+        if (!document.cookie.includes("token")) return;
 
-        if (!canCallToday()) {
-          console.log("Already called /user/set-init today, skipping...");
-          return;
-        }
-
-        console.log("Calling /user/set-init...");
+        if (!canCallToday()) return;
 
         const { data } = await axios.post("/api/user/update-activity");
-
-        console.log("Init successful:", data);
-
         updateLastCallDate();
-      } catch (error) {
-        console.error("Failed to send init request:", error);
+      } catch {
+        // silently ignore auth errors
       }
     };
 

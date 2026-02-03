@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export const GET = async () => {
   try {
     const cookieStore = await cookies();
@@ -14,7 +15,7 @@ export const GET = async () => {
     });
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("API error:", error);
+    logger.error("API error:", error);
 
     if (error.response) {
       return NextResponse.json(

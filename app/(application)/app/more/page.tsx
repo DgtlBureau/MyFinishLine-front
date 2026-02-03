@@ -33,7 +33,7 @@ const links = [
     content: faqData,
     additional_content: () => (
       <div className="flex flex-col justify-center items-center gap-2 py-[20px]">
-        <p className="text-center text-white/50">Still have questions?</p>
+        <p className="text-center text-white/70 font-medium">Still have questions?</p>
         <Link
           href="/faq"
           className="px-4 py-2 text-[16px] w-fit bg-white/80 backdrop-blur-xl text-[#09090B] rounded-[12px] hover:bg-white/90 duration-300 font-medium cursor-pointer border border-white/50 shadow-sm"
@@ -279,7 +279,7 @@ const Page = () => {
             className="relative w-full mt-4 flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold text-white overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-90 shadow-lg"
             onClick={handleOpenContactMenu}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#5170D5] to-[#66af69]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]" />
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
             <div className="absolute inset-[1px] rounded-[11px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
             <MessageCircleIcon className="relative z-10 h-5 w-5" />

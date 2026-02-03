@@ -5,14 +5,16 @@ import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { CurrencieSymbols, IPrice } from "@/app/types";
-import { Button } from "../../ui/button";
-import amazoniaImage from '@/public/images/landing/level-amazonia.webp'
+import amazoniaImage from "@/public/images/landing/level-amazonia.webp";
 
 interface IPurchaseChallengeProps {
   id: string | number;
   imageSrc: string;
   title: string;
-  price: IPrice;
+  description?: string;
+  distance?: string;
+  distanceMile?: number;
+  price: IPrice | null;
 }
 
 const features = [
@@ -26,6 +28,9 @@ const PurchaseChallenge = ({
   id,
   price,
   imageSrc,
+  description,
+  distance,
+  distanceMile,
 }: IPurchaseChallengeProps) => {
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -41,48 +46,60 @@ const PurchaseChallenge = ({
     },
   };
 
+  const priceDisplay =
+    price && Number(price.amount) > 0
+      ? `${CurrencieSymbols[price.currency]}${(Number(price.amount) / 100).toFixed(Number(price.amount) % 100 === 0 ? 0 : 2)}`
+      : null;
+
   return (
     <motion.div
       id="challenge-pricing"
-      className="mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-[#B7B9E2] bg-white md:max-w-4xl md:rounded-3xl md:flex md:flex-row-reverse"
+      className="mx-auto w-full max-w-md overflow-hidden md:max-w-4xl md:flex md:flex-row-reverse md:items-center md:gap-10"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
     >
-      <div className="relative aspect-[4/3] w-full md:aspect-auto md:w-1/2 md:min-h-[400px]">
+      {/* Image */}
+      <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden md:aspect-[3/4] md:w-[45%] md:min-h-[400px]">
         <Image
-          src={title.toLocaleLowerCase() === 'amazonia route' ? amazoniaImage : imageSrc}
+          src={
+            title.toLocaleLowerCase() === "amazonia route"
+              ? amazoniaImage
+              : imageSrc
+          }
           alt={title}
           fill
           className="object-cover"
         />
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[50%] backdrop-blur-sm md:hidden"
-          style={{
-            WebkitMaskImage:
-              "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
-            maskImage:
-              "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
-          }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-white/90 to-transparent md:hidden" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent md:bg-gradient-to-l md:from-black/20 md:to-transparent" />
       </div>
 
-      <div className="flex flex-col gap-4 px-5 py-6 md:w-1/2 md:gap-5 md:px-8 md:py-8 md:justify-center">
-        <h4 className="text-center text-xl font-semibold leading-tight sm:text-2xl md:text-left md:text-3xl">
-          <span className="bg-gradient-to-r from-[#3B559D] to-[#66AF69] bg-clip-text text-transparent">
-            {title}
-          </span>
+      {/* Content */}
+      <div className="flex flex-col gap-5 px-2 py-7 md:w-[55%] md:gap-6 md:px-0 md:py-0 md:justify-center">
+        <h4 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] tracking-tight">
+          {title}
         </h4>
 
-        <ul className="space-y-2.5">
+        {description && (
+          <p className="text-sm md:text-base text-white/60 leading-relaxed">
+            {description}
+          </p>
+        )}
+
+        {distance && (
+          <p className="text-sm md:text-base text-white/70 font-medium">
+            {distance} km{distanceMile ? ` / ${distanceMile} mi` : ""}
+          </p>
+        )}
+
+        <ul className="space-y-3">
           {features.map((feature, idx) => (
             <li
               key={idx}
-              className="flex items-center gap-3 text-sm text-muted-foreground md:text-base"
+              className="flex items-center gap-3 text-sm text-white/70 md:text-base"
             >
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#65AE6A]">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#4DA67A]/80">
                 <Check className="size-3 text-white" />
               </span>
               {feature}
@@ -90,22 +107,21 @@ const PurchaseChallenge = ({
           ))}
         </ul>
 
-        <div className="flex flex-col items-center gap-4 pt-2 md:items-start">
-          <span className="text-3xl font-semibold md:text-4xl">
-            {CurrencieSymbols[price.currency]}
-            {price.amount}
-          </span>
+        <div className="flex flex-col gap-5 pt-2">
+          {priceDisplay && (
+            <span className="text-4xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] md:text-5xl">
+              {priceDisplay}
+            </span>
+          )}
 
-          <Button
-            asChild
-            size="lg"
-            className="w-full rounded-full before:rounded-full md:w-auto md:px-8"
+          <Link
+            href={"/payment?challenge_id=" + id}
+            className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold text-white rounded-xl overflow-hidden bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 w-full md:w-auto"
           >
-            <Link href={"/payment?challenge_id=" + id}>
-              Sign up now
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+            <span className="relative z-10">Sign up now</span>
+            <ArrowRight className="relative z-10 size-4" />
+          </Link>
         </div>
       </div>
     </motion.div>

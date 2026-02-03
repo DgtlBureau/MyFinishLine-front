@@ -2,6 +2,7 @@ import instance from "@/app/lib/utils/instance";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   try {
@@ -15,7 +16,7 @@ export const POST = async (req: NextRequest) => {
     });
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error fetching reward-tickets:", error);
+    logger.error("Error fetching reward-tickets:", error);
 
     let errorMessage = "Failed to redeem medal";
     let statusCode = 500;

@@ -21,8 +21,8 @@ interface IRedeemStep3Props {
 const Label = ({ label, text }: { label: string; text: string }) => {
   return (
     <>
-      <li className="font-medium text-xs leading-5 text-[#71717A]">{label}</li>
-      <li className="font-medium text-xs leading-5 text-black">{text}</li>
+      <li className="font-medium text-xs leading-5 text-white/60">{label}</li>
+      <li className="font-medium text-xs leading-5 text-white">{text}</li>
     </>
   );
 };
@@ -45,7 +45,7 @@ const RedeemStep3 = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-linear-to-b from-[#5170D5] via-[#FBFBFB] to-[#CEE9D8] border border-border rounded-xl py-6 px-4"
+      className="bg-linear-to-b from-[#3B5CC6] via-[#2a4a6a] to-[#4DA67A] border border-white/20 rounded-xl py-6 px-4"
     >
       <div className="mx-auto relative flex items-center justify-center rounded-full max-w-30 max-h-30 w-full h-full bg-linear-to-b from-[#EEDFBA] to-[#CBA76D] p-1">
         <div className="bg-white w-28 h-28 rounded-full">
@@ -58,7 +58,7 @@ const RedeemStep3 = ({
           />
         </div>
       </div>
-      <span className="mt-4 block text-center font-medium leading-7 text-lg text-[#09090B]">
+      <span className="mt-4 block text-center font-medium leading-7 text-lg text-white">
         Confirm delivery details
       </span>
       <ul className="mt-4 grid grid-cols-2 gap-2 w-fit">
@@ -72,7 +72,7 @@ const RedeemStep3 = ({
         <Label label="ZIP / Postcode" text={zip_code} />
         <Label label="Mobile Number" text={dial_code + phone} />
       </ul>
-      <Button className="mt-8 w-full" type="submit">
+      <Button variant="gradient" className="mt-8 w-full" type="submit">
         {isLoading ? (
           <>
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

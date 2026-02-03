@@ -31,7 +31,7 @@ const navLinksConfig = [
   {
     id: 4,
     key: "profile" as const,
-    href: "/app/profile/journey",
+    href: "/app/profile",
     parent: "profile",
     Icon: User,
   },
@@ -73,7 +73,7 @@ const Navbar = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40">
-      <div className="bg-gradient-to-b from-white/40 to-white/30 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]">
+      <div className="bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]">
         <nav className="flex items-end max-w-4xl mx-auto py-2 px-3">
           {navLinks.map((link) => {
             const active = isActive(link);
@@ -93,12 +93,12 @@ const Navbar = () => {
                     animate={{
                       scale: 1,
                       background: active
-                        ? "linear-gradient(to bottom right, #5170D5, #CEE9D8)"
+                        ? "linear-gradient(to bottom right, #3B5CC6, #4DA67A)"
                         : "linear-gradient(to bottom right, #374151, #111827)",
                     }}
                     whileHover={{
                       scale: 1.08,
-                      background: "linear-gradient(to bottom right, #5170D5, #CEE9D8)",
+                      background: "linear-gradient(to bottom right, #3B5CC6, #4DA67A)",
                       boxShadow: "0 10px 40px -10px rgba(139, 92, 246, 0.5)",
                     }}
                     whileTap={{ scale: 0.92 }}
@@ -109,7 +109,7 @@ const Navbar = () => {
                       mass: 0.8,
                     }}
                     className={`p-4 rounded-full shadow-lg ${
-                      active ? "shadow-emerald-300/50" : "shadow-gray-400/30"
+                      active ? "shadow-emerald-500/30" : "shadow-gray-400/30"
                     }`}
                   >
                     <motion.div
@@ -125,9 +125,9 @@ const Navbar = () => {
                   </motion.div>
                   <motion.span
                     animate={{
-                      color: active ? "#5170D5" : "#9ca3af",
+                      color: active ? "#7B9AE8" : "#9ca3af",
                     }}
-                    whileHover={{ color: "#5170D5" }}
+                    whileHover={{ color: "#7B9AE8" }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     className="mt-1 text-[10px] font-semibold tracking-wide"
                   >
@@ -156,7 +156,7 @@ const Navbar = () => {
                       <motion.div
                         style={{ originY: "0px" }}
                         layoutId="navbar-active-indicator"
-                        className="absolute inset-1 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-2xl shadow-sm"
+                        className="absolute inset-1 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl shadow-sm"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
@@ -182,7 +182,7 @@ const Navbar = () => {
                           scale: 1.1,
                           backgroundColor: active
                             ? "transparent"
-                            : "rgba(243, 244, 246, 1)",
+                            : "rgba(255, 255, 255, 0.1)",
                         },
                       }}
                       transition={{
@@ -192,7 +192,7 @@ const Navbar = () => {
                       }}
                       className={`p-1.5 rounded-xl ${
                         active
-                          ? "bg-gradient-to-br from-blue-500 to-emerald-600 shadow-md shadow-emerald-200"
+                          ? "bg-gradient-to-br from-blue-500 to-emerald-600 shadow-md shadow-emerald-500/30"
                           : ""
                       }`}
                     >
@@ -218,10 +218,10 @@ const Navbar = () => {
                     <motion.span
                       variants={{
                         rest: {
-                          color: active ? "#5170D5" : "#9ca3af",
+                          color: active ? "#7B9AE8" : "#9ca3af",
                         },
                         hover: {
-                          color: active ? "#5170D5" : "#4b5563",
+                          color: active ? "#7B9AE8" : "#4b5563",
                         },
                       }}
                       transition={{ duration: 0.25, ease: "easeOut" }}
@@ -237,7 +237,7 @@ const Navbar = () => {
         </nav>
       </div>
 
-      <div className="h-[env(safe-area-inset-bottom)] bg-white/30 backdrop-blur-3xl" />
+      <div className="h-[env(safe-area-inset-bottom)] bg-white/5 backdrop-blur-3xl" />
     </div>
   );
 };

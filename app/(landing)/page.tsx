@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import Navbar from "@/app/components/ChallengeContent/Navbar/Navbar";
 import {
   Hero,
-  LogoCloud,
   QuestSelection,
   HowItWorks,
   Participation,
@@ -22,13 +21,12 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen">
       <Navbar initialBannerVisible={false} />
       <Hero />
-      <LogoCloud />
-      <QuestSelection />
       <HowItWorks />
       <Participation />
+      <QuestSelection />
       <FAQ />
       <Testimonials />
       <Footer />

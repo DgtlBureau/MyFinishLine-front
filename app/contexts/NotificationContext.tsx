@@ -6,6 +6,7 @@ import { useFetchNotifications, userKeys } from "@/app/lib/api/queries/useUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { INotification } from "@/app/types/notification";
 
+import { logger } from "@/app/lib/logger";
 interface NotificationContextType {
   checkNotifications: () => Promise<void>;
 }
@@ -42,7 +43,7 @@ export const NotificationProvider = ({
         queryClient.invalidateQueries({ queryKey: userKeys.contracts() });
       }
     } catch (error) {
-      console.error("Error fetching notifications:", error);
+      logger.error("Error fetching notifications:", error);
     }
   }, [fetchNotifications, queryClient]);
 

@@ -16,34 +16,20 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-      style={{
-        backgroundImage: "url('/images/Prototype/Frame 2147224088.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a]"
     >
-      <div className="flex items-end">
+      <motion.div
+        animate={{ opacity: [1, 0.4, 1] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
         <Image
-          src="/images/loading/logo-state-1.png"
-          width={220}
-          height={70}
+          src="/images/loading/logo-splash.svg"
+          width={240}
+          height={80}
           alt="MyFinishLine"
+          priority
         />
-        <motion.div
-          className="w-2 h-2 rounded-full bg-[#CEE9D8] -ml-1 mb-[1px]"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{
-            opacity: [0, 1, 0.3, 1, 0.3, 1],
-            scale: [0, 1, 0.9, 1, 0.9, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

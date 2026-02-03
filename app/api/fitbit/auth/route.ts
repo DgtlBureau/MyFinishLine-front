@@ -3,6 +3,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/app/lib/logger";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   } catch (error: any) {
-    console.error("Fitbit connect error:", error);
+    logger.error("Fitbit connect error:", error);
     return NextResponse.json(
       { error: error.message || "Server error" },
       { status: 500 },

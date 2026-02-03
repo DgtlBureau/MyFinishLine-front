@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import { useAppSelector } from "@/app/lib/hooks";
 import { getDistanceUnit } from "@/app/lib/utils/convertData";
 
+import { logger } from "@/app/lib/logger";
 export interface IRunner {
   id: number;
   image?: string;
@@ -107,13 +108,13 @@ const getMedalColor = (rank: number) => {
 const getRowStyle = (rank: number) => {
   switch (rank) {
     case 1:
-      return "bg-amber-100 dark:bg-amber-900/30";
+      return "bg-amber-900/30";
     case 2:
-      return "bg-slate-200 dark:bg-slate-700/30";
+      return "bg-slate-700/30";
     case 3:
-      return "bg-orange-100 dark:bg-orange-900/20";
+      return "bg-orange-900/20";
     default:
-      return "bg-background hover:bg-muted/50";
+      return "bg-white/5 hover:bg-white/10";
   }
 };
 
@@ -137,7 +138,7 @@ const Leaderboard = () => {
       const data = await response.json();
       setStravaData(data);
     } catch (error) {
-      console.error("Error fetching Strava user data:", error);
+      logger.error("Error fetching Strava user data:", error);
     }
   };
 
@@ -173,21 +174,21 @@ const Leaderboard = () => {
             <SwiperSlide key={challenge.id} className="px-4">
               <div className="flex items-center justify-between text-center">
                 <button
-                  className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-1 text-white/60 hover:text-white transition-colors"
                   onClick={handleGoToPrevSlide}
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+                  <h1 className="text-2xl font-semibold text-white tracking-tight">
                     {challenge.title}
                   </h1>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-white/60">
                     {challenge.description}
                   </p>
                 </div>
                 <button
-                  className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-1 text-white/60 hover:text-white transition-colors"
                   onClick={handleGoToNextSlide}
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -209,8 +210,8 @@ const Leaderboard = () => {
                       <span
                         className={`w-6 text-sm font-medium ${
                           isTopThree
-                            ? "text-foreground"
-                            : "text-muted-foreground"
+                            ? "text-white"
+                            : "text-white/60"
                         }`}
                       >
                         {medalColor ? (
@@ -230,16 +231,16 @@ const Leaderboard = () => {
                         />
                       </div>
 
-                      <span className="text-sm font-medium text-foreground flex-1">
+                      <span className="text-sm font-medium text-white flex-1">
                         {runner.name}
                       </span>
 
                       <div className="text-right">
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="text-sm font-medium text-white">
                           {runner.distance.toLocaleString()} {distanceUnit}
                         </span>
                         {isTopThree && runner.time && (
-                          <span className="text-sm text-muted-foreground ml-2">
+                          <span className="text-sm text-white/60 ml-2">
                             {runner.time}
                           </span>
                         )}
@@ -248,9 +249,9 @@ const Leaderboard = () => {
                   );
                 })}
 
-                <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                    <span className="w-6 text-sm font-medium text-muted-foreground">
+                <div className="mt-4 pt-4 border-t border-white/20">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 border border-white/20">
+                    <span className="w-6 text-sm font-medium text-white/60">
                       999
                     </span>
 
@@ -267,12 +268,12 @@ const Leaderboard = () => {
                       )}
                     </div>
 
-                    <span className="text-sm font-medium text-foreground flex-1">
+                    <span className="text-sm font-medium text-white flex-1">
                       {stravaData.athlete?.firstname}{" "}
                       {stravaData.athlete?.lastname}
                     </span>
 
-                    <span className="text-sm font-medium text-foreground">
+                    <span className="text-sm font-medium text-white">
                       0 {distanceUnit}
                     </span>
                   </div>
