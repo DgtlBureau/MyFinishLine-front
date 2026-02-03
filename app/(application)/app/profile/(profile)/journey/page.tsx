@@ -17,6 +17,7 @@ import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkele
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import { motion } from "motion/react";
 
 import { logger } from "@/app/lib/logger";
 export const Journey = () => {
@@ -52,12 +53,22 @@ export const Journey = () => {
   if (!hasActiveChallenge) {
     return (
       <main className="relative px-4 max-w-4xl mx-auto">
-        <div className="mt-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-10"
+        >
           <h2 className="text-3xl text-center font-medium leading-9 text-white">
             My Journey
           </h2>
-        </div>
-        <div className="mt-12 flex flex-col items-center text-center">
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-12 flex flex-col items-center text-center"
+        >
           <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4">
             <MapPin className="w-8 h-8 text-white/70" />
           </div>
@@ -71,7 +82,7 @@ export const Journey = () => {
           >
             Choose a Quest →
           </Link>
-        </div>
+        </motion.div>
       </main>
     );
   }
@@ -79,9 +90,14 @@ export const Journey = () => {
   return (
     <section>
       <div className="max-w-4xl mx-auto">
-        <h2 className="mt-10 font-medium text-3xl leading-9 text-white text-center px-4">
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-10 font-medium text-3xl leading-9 text-white text-center px-4"
+        >
           My Journey
-        </h2>
+        </motion.h2>
         <AnimatedSection
           skeleton={<ChallengeCardSkeleton />}
           delay={0}

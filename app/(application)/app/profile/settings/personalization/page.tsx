@@ -8,6 +8,7 @@ import {
   getUserFrames,
   getUserBanners,
   getUserSkins,
+  getUserCards,
 } from "@/app/lib/utils/userService";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -15,19 +16,24 @@ import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 
 import { logger } from "@/app/lib/logger";
-type Tab = "frames" | "banners" | "skins";
+type Tab = "frames" | "banners" | "skins" | "cards";
 
 const tabs: { id: Tab; name: string }[] = [
   { id: "frames", name: "Frames" },
   { id: "banners", name: "Banners" },
   { id: "skins", name: "Skins" },
+  { id: "cards", name: "Cards" },
 ];
 
 const emptyMessages: Record<Tab, string> = {
   frames: "No frames available",
   banners: "No banners available",
   skins: "No skins available",
+  cards: "No cards available",
 };
+
+// Cards are view-only (cannot be used for customization)
+const viewOnlyTabs: Tab[] = ["cards"];
 
 const PersonalizationPage = () => {
   const [activeTab, setActiveTab] = useState<Tab>("frames");
@@ -40,6 +46,7 @@ const PersonalizationPage = () => {
     frames: getUserFrames,
     banners: getUserBanners,
     skins: getUserSkins,
+    cards: getUserCards,
   };
 
   const handleLoad = async (tab: Tab) => {
@@ -58,7 +65,10 @@ const PersonalizationPage = () => {
     frames: user.selected_frame?.id,
     banners: user.selected_banner?.id,
     skins: user.selected_skin?.id,
+    cards: undefined, // Cards are view-only
   };
+
+  const isViewOnly = viewOnlyTabs.includes(activeTab);
 
   const handleSetActive = async (item: {
     id: number;
@@ -66,15 +76,20 @@ const PersonalizationPage = () => {
     image_url: string | null;
     description: string;
   }) => {
+    // Skip if this is a view-only tab
+    if (isViewOnly) return;
+
     const updateKeyMap: Record<Tab, string> = {
       frames: "selected_frame",
       banners: "selected_banner",
       skins: "selected_skin",
+      cards: "", // Not used
     };
     const cosmeticsKeyMap: Record<Tab, string> = {
       frames: "contracts_frame_id",
       banners: "contracts_banner_id",
       skins: "contracts_skin_id",
+      cards: "", // Not used
     };
 
     const updateKey = updateKeyMap[activeTab];
@@ -158,6 +173,7 @@ const PersonalizationPage = () => {
               items={items}
               handleSelectItem={handleSetActive}
               selectedId={selectedIdMap[activeTab]}
+              viewOnly={isViewOnly}
             />
           </motion.div>
         ) : (

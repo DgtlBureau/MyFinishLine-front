@@ -33,7 +33,7 @@ const links = [
     content: faqData,
     additional_content: () => (
       <div className="flex flex-col justify-center items-center gap-2 py-[20px]">
-        <p className="text-center text-white/50">Still have questions?</p>
+        <p className="text-center text-white/70 font-medium">Still have questions?</p>
         <Link
           href="/faq"
           className="px-4 py-2 text-[16px] w-fit bg-white/80 backdrop-blur-xl text-[#09090B] rounded-[12px] hover:bg-white/90 duration-300 font-medium cursor-pointer border border-white/50 shadow-sm"

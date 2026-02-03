@@ -7,6 +7,7 @@ import { useAppSelector } from "@/app/lib/hooks";
 import { useState } from "react";
 import { Camera } from "lucide-react";
 import Link from "next/link";
+import ProfileBadges from "../ProfileBadges/ProfileBadges";
 
 const ProfileUserline = ({ userId }: { userId?: string }) => {
   const [imageError, setImageError] = useState(false);
@@ -117,6 +118,9 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           @{currentUser.username}
         </span>
       </motion.div>
+
+      {/* Badges */}
+      {!userId && <ProfileBadges />}
 
       {/* Stats */}
       <motion.div

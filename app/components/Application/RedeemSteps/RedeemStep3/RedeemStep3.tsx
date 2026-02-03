@@ -21,8 +21,8 @@ interface IRedeemStep3Props {
 const Label = ({ label, text }: { label: string; text: string }) => {
   return (
     <>
-      <li className="font-medium text-xs leading-5 text-[#71717A]">{label}</li>
-      <li className="font-medium text-xs leading-5 text-black">{text}</li>
+      <li className="font-medium text-xs leading-5 text-white/60">{label}</li>
+      <li className="font-medium text-xs leading-5 text-white">{text}</li>
     </>
   );
 };
@@ -58,7 +58,7 @@ const RedeemStep3 = ({
           />
         </div>
       </div>
-      <span className="mt-4 block text-center font-medium leading-7 text-lg text-[#09090B]">
+      <span className="mt-4 block text-center font-medium leading-7 text-lg text-white">
         Confirm delivery details
       </span>
       <ul className="mt-4 grid grid-cols-2 gap-2 w-fit">
@@ -72,7 +72,7 @@ const RedeemStep3 = ({
         <Label label="ZIP / Postcode" text={zip_code} />
         <Label label="Mobile Number" text={dial_code + phone} />
       </ul>
-      <Button className="mt-8 w-full" type="submit">
+      <Button variant="gradient" className="mt-8 w-full" type="submit">
         {isLoading ? (
           <>
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

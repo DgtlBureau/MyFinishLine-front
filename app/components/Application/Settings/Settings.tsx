@@ -108,7 +108,7 @@ const Settings = () => {
         />
       </SettingSection>
 
-      <SettingSection title="Integrations" delay={3}>
+      <SettingSection title="Integrations" delay={3} id="integrations">
         <Integrations />
       </SettingSection>
 

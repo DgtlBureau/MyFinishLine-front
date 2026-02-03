@@ -11,9 +11,10 @@ const PersonalizationList = ({
   type,
   selectedId,
   handleSelectItem,
+  viewOnly = false,
 }: {
   items: PersonalizationItemType[];
-  type: "frames" | "skins" | "banners";
+  type: "frames" | "skins" | "banners" | "cards";
   selectedId: number | undefined;
   handleSelectItem: (item: {
     id: number;
@@ -21,6 +22,7 @@ const PersonalizationList = ({
     image_url: string | null;
     description: string;
   }) => void;
+  viewOnly?: boolean;
 }) => {
   return (
     <ul className="grid grid-cols-2 gap-3 mt-3 auto-rows-fr">
@@ -30,8 +32,9 @@ const PersonalizationList = ({
           type={type}
           {...item}
           index={index}
-          isSelected={item.id === selectedId}
-          handlePressSelect={handleSelectItem}
+          isSelected={!viewOnly && item.id === selectedId}
+          handlePressSelect={viewOnly ? undefined : handleSelectItem}
+          viewOnly={viewOnly}
         />
       ))}
     </ul>

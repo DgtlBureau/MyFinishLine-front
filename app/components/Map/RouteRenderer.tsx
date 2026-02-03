@@ -23,6 +23,43 @@ interface RouteSegmentProps {
   segmentIndex: number;
 }
 
+// Generate curved path between two points with S-curve
+function generateCurvedPath(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+  segmentIndex: number,
+  curveIntensity: number = 0.25
+): { x: number; y: number }[] {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance < 50) {
+    // Too short, don't add curves
+    return [start, end];
+  }
+
+  // Normal vector (perpendicular to the line)
+  const nx = -dy / distance;
+  const ny = dx / distance;
+
+  // Offset for curve - alternate direction based on segment index
+  const direction = segmentIndex % 2 === 0 ? 1 : -1;
+  const offset = distance * curveIntensity * direction;
+
+  // Intermediate points at 33% and 66% of the path
+  const p1 = {
+    x: start.x + dx * 0.33 + nx * offset,
+    y: start.y + dy * 0.33 + ny * offset,
+  };
+  const p2 = {
+    x: start.x + dx * 0.66 - nx * offset,
+    y: start.y + dy * 0.66 - ny * offset,
+  };
+
+  return [start, p1, p2, end];
+}
+
 // Convert points to smooth SVG path using Catmull-Rom splines
 function pointsToSmoothPath(
   points: { x: number; y: number }[],
@@ -34,6 +71,8 @@ function pointsToSmoothPath(
   const pts = points.map((p) => ({ x: p.x, y: mapHeight - p.y }));
 
   if (pts.length === 2) {
+    // Simple line for 2 points - but this shouldn't happen anymore
+    // as we generate curved paths
     return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}`;
   }
 
@@ -218,10 +257,22 @@ const RouteRenderer = ({
     return routeData.routes.map((route, index) => {
       // Find the step for this route to get progress info
       const step = steps.find((s) => s.index === route.from_step_index);
-      const scaledPoints = route.points.map((point) => ({
+
+      // Scale the original points
+      let scaledPoints = route.points.map((point) => ({
         x: point.x * scaleX,
         y: (point.y + yOffset) * scaleY,
       }));
+
+      // If only 2 points, generate curved path
+      if (scaledPoints.length === 2) {
+        scaledPoints = generateCurvedPath(
+          scaledPoints[0],
+          scaledPoints[1],
+          index, // use index to alternate curve direction
+          0.2 // curve intensity
+        );
+      }
 
       const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
       const isActive = activeRouteInfo?.segmentId === segmentId;
@@ -235,7 +286,7 @@ const RouteRenderer = ({
         segmentIndex: index,
       };
     });
-  }, [routeData.routes, steps, scaleX, scaleY, activeRouteInfo]);
+  }, [routeData.routes, steps, scaleX, scaleY, yOffset, activeRouteInfo]);
 
   // Easing function
   const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);

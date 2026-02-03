@@ -11,6 +11,8 @@ import RedeemStep1 from "@/app/components/Application/RedeemSteps/RedeemStep1/Re
 import RedeemStep2 from "@/app/components/Application/RedeemSteps/RedeemStep2/RedeemStep2";
 import RedeemStep3 from "@/app/components/Application/RedeemSteps/RedeemStep3/RedeemStep3";
 import { isValidPhone } from "@/app/lib/utils/regex";
+import { getDialCodeByCountryCode } from "@/app/lib/utils/countryDialCodes";
+import countryList from "react-select-country-list";
 
 import "flag-icons/css/flag-icons.min.css";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
@@ -127,15 +129,37 @@ const Content = () => {
       const { data } = await axios.get(
         "/api/user/challenge?challenge_id=" + challenge_id,
       );
+
+      // Check if challenge is completed - redirect if not
+      if (!data.is_completed) {
+        toast.error("You need to complete the challenge first to claim your medal!");
+        router.push("/app/profile/journey");
+        return;
+      }
+
+      // Check if reward already claimed
+      if (data.reward_ticket) {
+        toast.info("You have already claimed this medal!");
+        router.push("/app/profile/journey");
+        return;
+      }
+
       setChallenge(data);
     } catch (error) {
       logger.log(error);
+      toast.error("Challenge not found");
+      router.push("/app/profile/journey");
     }
   };
 
   useEffect(() => {
+    if (!challenge_id) {
+      toast.error("Invalid challenge");
+      router.push("/app/profile/journey");
+      return;
+    }
     handleLoadChallenge();
-  }, []);
+  }, [challenge_id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -152,12 +176,17 @@ const Content = () => {
   };
 
   const handleUpdateCountry = (value: string) => {
-    setValues(prev => ({ ...prev, country: value }));
+    // Get country code from country name to find dial code
+    const countries = countryList();
+    const countryCode = countries.getValue(value) || "";
+    const dialCode = getDialCodeByCountryCode(countryCode);
+
+    setValues(prev => ({ ...prev, country: value, dial_code: dialCode }));
     setTouched(prev => ({ ...prev, country: true }));
 
-    const updatedValues = { ...values, country: value };
+    const updatedValues = { ...values, country: value, dial_code: dialCode };
     const countryError = validateStep1(updatedValues).country;
-    setErrors(prev => ({ ...prev, country: countryError }));
+    setErrors(prev => ({ ...prev, country: countryError, dial_code: undefined }));
   };
 
   const handleGoNext = () => {
@@ -224,13 +253,14 @@ const Content = () => {
     >
       <div className="px-4">
         <div className="mt-4">
-          <span className="block text-center text-sm leading-5 text-[#71717A]">
+          <span className="block text-center text-sm leading-5 text-white/60">
             Step {stepIndex} of 3
           </span>
-          <div className="h-1 mt-2 bg-[#dadada] w-full rounded-2xl overflow-hidden">
+          <div className="h-1.5 mt-2 bg-white/20 w-full rounded-full overflow-hidden">
             <motion.div
               style={{ width: stepIndex * 33.3 + "%" }}
-              className="h-full bg-black"
+              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"
+              transition={{ duration: 0.3, ease: "easeOut" }}
             />
           </div>
         </div>
@@ -282,7 +312,7 @@ const Content = () => {
             >
               {stepIndex !== 1 && (
                 <Button
-                  variant="outline"
+                  variant="outline-dark"
                   type="button"
                   className="flex-1"
                   onClick={handleGoBack}
@@ -292,7 +322,7 @@ const Content = () => {
                 </Button>
               )}
               {stepIndex !== 3 && (
-                <Button type="button" className="flex-1" onClick={handleGoNext}>
+                <Button variant="gradient" type="button" className="flex-1" onClick={handleGoNext}>
                   Next <ArrowRight />
                 </Button>
               )}

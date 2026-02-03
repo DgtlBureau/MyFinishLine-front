@@ -36,7 +36,7 @@ const RedeemStep2 = ({
       <RedeemInput
         id="address_1"
         label="Address Line 1"
-        placeholder=""
+        placeholder="Street address"
         delay={0}
         value={address_1}
         onChange={handleChange}
@@ -47,7 +47,7 @@ const RedeemStep2 = ({
       <RedeemInput
         id="address_2"
         label="Address Line 2"
-        placeholder=""
+        placeholder="Apartment, suite, etc."
         delay={0.15}
         value={address_2}
         onChange={handleChange}
@@ -59,7 +59,7 @@ const RedeemStep2 = ({
       <RedeemInput
         id="city"
         label="City"
-        placeholder=""
+        placeholder="City"
         delay={0.2}
         value={city}
         onChange={handleChange}

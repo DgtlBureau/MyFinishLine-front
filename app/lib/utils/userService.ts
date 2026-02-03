@@ -66,6 +66,11 @@ export const getUserSkins = async () => {
   return data;
 };
 
+export const getUserCards = async () => {
+  const { data } = await axios.get("/api/user/cosmetics/cards");
+  return data;
+};
+
 export const getUserCosmetics = async () => {
   const { data: frames } = await getUserFrames();
   const { data: banners } = await getUserBanners();

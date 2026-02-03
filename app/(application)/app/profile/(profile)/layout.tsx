@@ -14,13 +14,14 @@ import {
   getUserContracts,
 } from "@/app/lib/utils/userService";
 import { Activity, Award } from "lucide-react";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Journey } from "./journey/page";
 import { ActivitiesTab } from "./activities/page";
 import ChallengeCardSkeleton from "@/app/components/Skeletons/ChallengeCardSkeleton";
 import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkeleton";
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
+import { motion, AnimatePresence } from "motion/react";
 
 import { logger } from "@/app/lib/logger";
 const JOURNEY_TAB = "journey";
@@ -48,7 +49,6 @@ const ProfileLayout = ({
 }>) => {
   const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState(JOURNEY_TAB);
-  const activitiesMounted = useRef(false);
 
   const handleLoadUser = async () => {
     try {
@@ -87,9 +87,6 @@ const ProfileLayout = ({
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    if (tab === ACTIVITIES_TAB) {
-      activitiesMounted.current = true;
-    }
   };
 
   return (
@@ -124,29 +121,45 @@ const ProfileLayout = ({
           />
         </div>
         <div className="mt-4">
-          <div style={{ display: activeTab === JOURNEY_TAB ? "block" : "none" }}>
-            <Suspense
-              fallback={
-                <section>
-                  <div className="max-w-4xl mx-auto">
-                    <div className="mt-10 h-9 w-40 mx-auto rounded bg-white/15 animate-pulse" />
-                    <div className="my-8 px-4">
-                      <ChallengeCardSkeleton />
-                    </div>
-                  </div>
-                  <RewardsSwiperSkeleton />
-                  <ConnectButtonsSkeleton />
-                </section>
-              }
-            >
-              <Journey />
-            </Suspense>
-          </div>
-          <div style={{ display: activeTab === ACTIVITIES_TAB ? "block" : "none" }}>
-            {(activeTab === ACTIVITIES_TAB || activitiesMounted.current) && (
-              <ActivitiesTab />
+          <AnimatePresence mode="wait">
+            {activeTab === JOURNEY_TAB && (
+              <motion.div
+                key="journey"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <Suspense
+                  fallback={
+                    <section>
+                      <div className="max-w-4xl mx-auto">
+                        <div className="mt-10 h-9 w-40 mx-auto rounded bg-white/15 animate-pulse" />
+                        <div className="my-8 px-4">
+                          <ChallengeCardSkeleton />
+                        </div>
+                      </div>
+                      <RewardsSwiperSkeleton />
+                      <ConnectButtonsSkeleton />
+                    </section>
+                  }
+                >
+                  <Journey />
+                </Suspense>
+              </motion.div>
             )}
-          </div>
+            {activeTab === ACTIVITIES_TAB && (
+              <motion.div
+                key="activities"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <ActivitiesTab />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </div>

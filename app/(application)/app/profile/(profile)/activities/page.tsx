@@ -7,7 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { Button } from "@/app/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
 import { useAppSelector } from "@/app/lib/hooks";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { IActivity } from "@/app/types";
 import {
   getUserActivities,
@@ -117,12 +117,22 @@ export const ActivitiesTab = () => {
   if (!hasActiveChallenge) {
     return (
       <main className="relative px-4 max-w-4xl mx-auto">
-        <div className="mt-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-10"
+        >
           <h4 className="text-3xl text-center font-medium leading-9 text-white">
             Recent Activities
           </h4>
-        </div>
-        <div className="mt-12 flex flex-col items-center text-center">
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-12 flex flex-col items-center text-center"
+        >
           <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4">
             <MapPin className="w-8 h-8 text-white/70" />
           </div>
@@ -136,14 +146,19 @@ export const ActivitiesTab = () => {
           >
             Choose a Quest →
           </Link>
-        </div>
+        </motion.div>
       </main>
     );
   }
 
   return (
     <main className="relative px-4 max-w-4xl mx-auto">
-      <div className="mt-10 flex items-center justify-between">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="mt-10 flex items-center justify-between"
+      >
         <div className="flex justify-end">
           <Button
             onClick={handleLoadAllActivities}
@@ -181,23 +196,44 @@ export const ActivitiesTab = () => {
             />
           </div>
         )}
-      </div>
+      </motion.div>
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className="mt-8">
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mt-8"
+          >
             <ActivitiesListShimmer rows={5} />
-          </div>
+          </motion.div>
         ) : activities?.length > 0 ? (
-          <div className="mt-8">
+          <motion.div
+            key="activities"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mt-8"
+          >
             <ActivitiesList activities={activities} loadMoreRef={inViewRef} />
             {isAdditionalLoading && (
               <div className="flex justify-center items-center mt-8">
                 <Loader2 width={48} height={48} className="animate-spin" />
               </div>
             )}
-          </div>
+          </motion.div>
         ) : (
-          <div className="flex flex-col items-center text-center py-16">
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="flex flex-col items-center text-center py-16"
+          >
             <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center mb-5">
               <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -208,12 +244,12 @@ export const ActivitiesTab = () => {
               Connect your Strava or Fitbit account to sync your activities
             </p>
             <Link
-              href="/app/profile/journey"
+              href="/app/profile/settings#integrations"
               className="inline-block mt-5 px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
             >
               Connect Account →
             </Link>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </main>

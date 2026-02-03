@@ -77,6 +77,17 @@ const ConfirmCode = () => {
     try {
       const { data } = await axios.get("/api/user/active-challenge");
       dispatch(setChallenge(data));
+
+      // Auto-mark step 0 (onboarding) as viewed
+      const step0 = data?.steps?.find((step: any) => step.index === 0);
+      if (step0?.id) {
+        try {
+          await axios.post("/api/user/view-story", { step_id: step0.id });
+        } catch (e) {
+          // Ignore errors - step 0 might not have stories
+        }
+      }
+
       router.replace("/app");
     } catch (error) {
       logger.log(error);

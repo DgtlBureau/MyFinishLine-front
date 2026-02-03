@@ -66,7 +66,7 @@ const AccordionContent = ({
     <section>
       <div className="px-4 pb-2">
         {title && (
-          <span className="block mt-7 text-3xl font-semibold leading-9 text-[#1a1a2e]">
+          <span className="block mt-7 text-3xl font-semibold leading-9 text-white">
             {title}
           </span>
         )}
@@ -82,14 +82,14 @@ const AccordionContent = ({
                 >
                   <button
                     onClick={() => handleClickBlock(item.id)}
-                    className="flex items-center text-left justify-between text-base py-3 font-medium leading-6 text-[#1a1a2e]/80 w-full cursor-pointer"
+                    className="flex items-center text-left justify-between text-base py-3 font-medium leading-6 text-white w-full cursor-pointer"
                   >
                     {item.question}
                     <motion.div
                       variants={arrowVariants}
                       initial="collapsed"
                       animate={isExpanded ? "expanded" : "collapsed"}
-                      className="text-[#1a1a2e]/50 shrink-0 ml-2"
+                      className="text-white/50 shrink-0 ml-2"
                     >
                       <ChevronRight size={20} />
                     </motion.div>
@@ -103,15 +103,15 @@ const AccordionContent = ({
                   >
                     <div className="overflow-hidden">
                       <ol
-                        className={`bg-white/30 rounded-xl mb-3 p-3 ${item.answer.length > 1
-                          ? "list-decimal list-inside marker:font-semibold"
+                        className={`bg-white/10 rounded-xl mb-3 p-3 text-white/80 ${item.answer.length > 1
+                          ? "list-decimal list-inside marker:font-semibold marker:text-white/60"
                           : ""
                           }`}
                       >
                         {item.answer.map((el) => (
                           <li
                             key={el.id}
-                            className="pb-2 last:pb-0 text-sm leading-5 text-[#1a1a2e]/70"
+                            className="pb-2 last:pb-0 text-sm leading-5"
                           >
                             <RenderBoldText text={el.variant} />
                           </li>

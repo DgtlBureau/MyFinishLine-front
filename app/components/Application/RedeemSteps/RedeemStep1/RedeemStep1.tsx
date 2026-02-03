@@ -43,7 +43,19 @@ const RedeemStep1 = ({
   errors,
   touched,
 }: IRedeemStep1Props) => {
-  const options = useMemo(() => countryList().getLabels(), []);
+  const countries = useMemo(() => {
+    const list = countryList();
+    return list.getData().map((c) => ({
+      label: c.label,
+      code: c.value.toLowerCase(),
+    }));
+  }, []);
+
+  // Get selected country code for display in trigger
+  const selectedCountryCode = useMemo(() => {
+    const found = countries.find((c) => c.label === country);
+    return found?.code || "";
+  }, [countries, country]);
 
   return (
     <>
@@ -75,18 +87,28 @@ const RedeemStep1 = ({
         transition={{ delay: 0.2 }}
         className="space-y-1"
       >
-        <label className="text-sm font-medium text-foreground">
-          Shipping Country<span className="text-gray-400">*</span>
+        <label className="text-sm font-medium text-white">
+          Shipping Country<span className="text-white/50">*</span>
         </label>
         <div className="mt-1">
           <Select value={country} onValueChange={handleUpdateCountry} required>
             <SelectTrigger className={`w-full ${touched.country && errors.country ? 'border-red-500' : ''}`}>
-              <SelectValue placeholder="Select country" />
+              <SelectValue placeholder="Select country">
+                {country && (
+                  <span className="flex items-center gap-2">
+                    <span className={`fi fi-${selectedCountryCode} rounded-sm`} />
+                    {country}
+                  </span>
+                )}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {options.map((country) => (
-                <SelectItem key={country} value={country}>
-                  {country}
+              {countries.map((c) => (
+                <SelectItem key={c.code} value={c.label}>
+                  <span className="flex items-center gap-2">
+                    <span className={`fi fi-${c.code} rounded-sm`} />
+                    {c.label}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>

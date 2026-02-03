@@ -51,11 +51,6 @@ const links = [
     title: "Activities",
   },
   {
-    id: 11,
-    link: "/profile/redeem",
-    title: "Claim medal",
-  },
-  {
     id: 12,
     link: "/app/activities/new",
     title: "Add Activity",

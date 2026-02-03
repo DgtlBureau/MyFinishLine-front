@@ -4,15 +4,18 @@ interface SettingSectionProps {
   title: string;
   children: React.ReactNode;
   delay?: number;
+  id?: string;
 }
 
 const SettingSection = ({
   title,
   children,
   delay = 0,
+  id,
 }: SettingSectionProps) => {
   return (
     <motion.div
+      id={id}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay * 0.05, duration: 0.25 }}

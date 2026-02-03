@@ -10,6 +10,7 @@ export function ToastContainerClient() {
       transition={Slide}
       closeButton={false}
       className="z-110"
+      autoClose={5000}
     />
   );
 }

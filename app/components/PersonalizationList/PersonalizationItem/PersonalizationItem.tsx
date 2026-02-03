@@ -9,15 +9,16 @@ interface IPersonalizationItemProps {
   id: number;
   image_url: string | null;
   title: string;
-  type: "frames" | "skins" | "banners";
+  type: "frames" | "skins" | "banners" | "cards";
   description: string;
   isSelected: boolean;
-  handlePressSelect: (item: {
+  handlePressSelect?: (item: {
     id: number;
     title: string;
     image_url: string | null;
     description: string;
   }) => void;
+  viewOnly?: boolean;
 }
 
 const PersonalizationItem = ({
@@ -29,10 +30,12 @@ const PersonalizationItem = ({
   description,
   type,
   handlePressSelect,
+  viewOnly = false,
 }: IPersonalizationItemProps) => {
   const [imageError, setImageError] = useState(false);
 
   const handleSelectSkin = () => {
+    if (viewOnly || !handlePressSelect) return;
     handlePressSelect({ id, title, image_url, description });
   };
 
@@ -41,11 +44,12 @@ const PersonalizationItem = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      whileTap={{ scale: 0.97 }}
+      whileTap={viewOnly ? undefined : { scale: 0.97 }}
       onClick={handleSelectSkin}
       className={cn(
-        "relative rounded-2xl p-3 cursor-pointer transition-all duration-300 overflow-hidden",
+        "relative rounded-2xl p-3 transition-all duration-300 overflow-hidden",
         "bg-white/20 backdrop-blur-xl border shadow-lg",
+        viewOnly ? "cursor-default" : "cursor-pointer",
         isSelected
           ? "border-white/80 shadow-[0_0_20px_rgba(255,255,255,0.3),inset_0_1px_0_0_rgba(255,255,255,0.6)] ring-2 ring-white/50"
           : "border-white/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]"

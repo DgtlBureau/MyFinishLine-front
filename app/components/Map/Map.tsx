@@ -105,6 +105,13 @@ const Map = ({
       isInitialLoadRef.current = false;
 
       for (const step of steps) {
+        // Skip step 0 (onboarding) - auto-mark as celebrated without showing modal
+        if (step.index === 0) {
+          if (!celebratedSteps.includes(step.id)) {
+            celebratedSteps.push(step.id);
+          }
+          continue;
+        }
         if (step.completed && !celebratedSteps.includes(step.id)) {
           newlyCompletedSteps.push(step);
           celebratedSteps.push(step.id);
@@ -113,6 +120,9 @@ const Map = ({
     } else {
       // For subsequent updates, detect steps that just became completed
       for (const step of steps) {
+        // Skip step 0 (onboarding)
+        if (step.index === 0) continue;
+
         if (step.completed && !celebratedSteps.includes(step.id)) {
           const prevStep = previousSteps.find((s) => s.id === step.id);
           const wasNotCompletedBefore = prevStep && !prevStep.completed;
@@ -353,38 +363,44 @@ const Map = ({
     // If clicking the same step while zoomed, zoom out
     if (isZooming && activeStep?.id === clickedStep.id) {
       setZoomScale(1);
-      setIsZooming(false);
+      setTimeout(() => {
+        setIsZooming(false);
+      }, 400);
       return;
     }
 
     setActiveStep(clickedStep);
 
-    // First scroll to center the step smoothly
-    const stepElement = document.getElementById(`step-${clickedStep.index}`);
-    if (stepElement) {
-      stepElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
-    }
-
     // Calculate zoom origin based on step position
     const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
     const yPercent = 100 - ((Number(clickedStep.y_coordinate) + yOffset) / MAP_HEIGHT) * 100;
 
-    // Delay zoom to let scroll complete first
-    setTimeout(() => {
-      setZoomOrigin({ x: xPercent, y: yPercent });
-      setZoomScale(1.8);
-      setIsZooming(true);
-    }, 300);
+    // Set zoom origin first (before scrolling)
+    setZoomOrigin({ x: xPercent, y: yPercent });
+    setIsZooming(true);
 
-    // Open stories after zoom animation
+    // Small delay to let origin settle, then scroll
+    setTimeout(() => {
+      const stepElement = document.getElementById(`step-${clickedStep.index}`);
+      if (stepElement) {
+        stepElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      }
+    }, 50);
+
+    // Start zoom after scroll begins
+    setTimeout(() => {
+      setZoomScale(1.8);
+    }, 400);
+
+    // Open stories after zoom animation completes
     if (clickedStep.story?.length) {
       setTimeout(() => {
         setIsStoriesOpen(true);
-      }, 1000);
+      }, 1200);
     }
   };
 
@@ -412,7 +428,10 @@ const Map = ({
   const handleCloseStories = () => {
     setIsStoriesOpen(false);
     setZoomScale(1);
-    setIsZooming(false);
+    // Delay resetting isZooming to allow smooth zoom-out animation
+    setTimeout(() => {
+      setIsZooming(false);
+    }, 700);
   };
 
   return (
@@ -461,8 +480,8 @@ const Map = ({
                 transform: `scale(${scale * zoomScale})`,
                 transformOrigin: isZooming ? `${zoomOrigin.x}% ${zoomOrigin.y}%` : "top left",
                 transition: isZooming
-                  ? "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
-                  : "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  ? "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out"
+                  : "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out",
               }}
             >
             {background_images[0] && (
