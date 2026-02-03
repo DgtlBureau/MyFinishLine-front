@@ -118,10 +118,15 @@ const Page = () => {
               distanceMile={challenge.total_distance_mile}
             />
           )}
+          {/* Dark background when quest not started */}
+          {!questStarted && <div className="fixed inset-0 z-10 bg-[#1a2a4a]" />}
           <div
             ref={mapWrapperRef}
-            className={`transition-[filter] duration-1000 ease-out ${!questStarted ? "h-dvh overflow-hidden" : ""}`}
-            style={{ filter: questStarted ? "none" : "blur(20px)" }}
+            className={`transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
+            style={{
+              filter: questStarted ? "none" : "blur(24px)",
+              transform: questStarted ? "none" : "scale(1.8)",
+            }}
           >
             <Map {...challenge} onMapReady={handleMapReady} />
           </div>
