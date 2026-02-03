@@ -22,7 +22,12 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
   return (
     <section className="flex flex-col items-center px-4 pt-12 pb-4 relative max-w-4xl mx-auto">
       {currentUser.selected_banner && !bannerError ? (
-        <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden"
+        >
           <Image
             className="object-cover"
             src={currentUser?.selected_banner?.image_url}
@@ -31,7 +36,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
             onError={() => setBannerError(true)}
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10" />
-        </div>
+        </motion.div>
       ) : currentUser.selected_banner && bannerError ? (
         <div className="inset-0 absolute top-0 left-0 w-full h-full rounded-b-lg overflow-hidden bg-gradient-to-b from-[#1a2a4a] to-[#2a4a6a]">
           <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
@@ -39,12 +44,17 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
       ) : null}
 
       {/* Avatar */}
-      <Link
-        href={"settings/personalization/frames"}
-        className={`flex items-center justify-center relative w-36 h-36 z-10 ${
-          userId ? "pointer-events-none" : ""
-        }`}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
+        <Link
+          href={"settings/personalization"}
+          className={`flex items-center justify-center relative w-36 h-36 z-10 ${
+            userId ? "pointer-events-none" : ""
+          }`}
+        >
         {currentUser.selected_frame && (
           <div className="absolute left-0 top-0 h-full w-full">
             <Image
@@ -91,27 +101,30 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           )}
         </div>
       </Link>
+      </motion.div>
 
       {/* Name and Username */}
-      <div className="mt-3 text-center relative z-10">
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="font-semibold text-lg text-white block"
-        >
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="mt-3 text-center relative z-10"
+      >
+        <span className="font-semibold text-lg text-white block">
           {currentUser.first_name} {currentUser.last_name}
-        </motion.span>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="block font-medium text-white/60 text-sm"
-        >
+        </span>
+        <span className="block font-medium text-white/60 text-sm">
           @{currentUser.username}
-        </motion.span>
-      </div>
+        </span>
+      </motion.div>
 
       {/* Stats */}
-      <div className="mt-6 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-4 py-3">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="mt-6 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-4 py-3"
+      >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none" />
         <div className="flex items-start justify-center gap-4 relative">
           <div className="flex flex-col items-center">
@@ -164,18 +177,23 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
             </span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Talisman */}
       {currentUser.selected_skin?.image_url && (
-        <button className="absolute top-12 right-4 cursor-pointer z-10">
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="absolute top-12 right-4 cursor-pointer z-10"
+        >
           <Image
             src={currentUser.selected_skin?.image_url || ""}
             alt="Talisman"
             height={60}
             width={60}
           />
-        </button>
+        </motion.button>
       )}
     </section>
   );
