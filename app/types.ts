@@ -166,6 +166,15 @@ export interface IProduct {
   }[];
 }
 
+export interface IShippingRate {
+  id: number;
+  country_code: string;
+  country_name: string;
+  price: string;
+  currency: string;
+  paddle_price_id: string | null;
+}
+
 export interface IReward {
   id: number;
   challenge_id: number;

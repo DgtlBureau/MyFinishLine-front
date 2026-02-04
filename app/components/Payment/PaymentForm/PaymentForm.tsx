@@ -5,9 +5,9 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
 import { useState, useEffect } from "react";
-import { IProduct } from "@/app/types";
+import { IProduct, IShippingRate } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { Lock, CreditCard, Shield } from "lucide-react";
+import { Lock, CreditCard, Shield, MapPin, Package } from "lucide-react";
 
 import { logger } from "@/app/lib/logger";
 const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: number }) => {
@@ -23,6 +23,12 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
       firstName: "",
       lastName: "",
       email: "",
+      country: "",
+      city: "",
+      address: "",
+      postalCode: "",
+      phone: "",
+      promoCode: "",
     },
     validate,
     onSubmit: () => {
@@ -31,6 +37,8 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
   });
   const [isLoading, setIsLoading] = useState(false);
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
+  const [shippingRates, setShippingRates] = useState<IShippingRate[]>([]);
+  const [selectedShipping, setSelectedShipping] = useState<IShippingRate | null>(null);
 
   useEffect(() => {
     initializePaddle({
@@ -44,6 +52,18 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
       })
       .catch((error) => {
         logger.log("Paddle js:error", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Load shipping rates
+    fetch("/api/payment/shipping-rates")
+      .then((res) => res.json())
+      .then((data) => {
+        setShippingRates(data);
+      })
+      .catch((error) => {
+        logger.error("Failed to load shipping rates", error);
       });
   }, []);
 
@@ -63,13 +83,24 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
 
     setIsLoading(true);
 
+    // Build items array - challenge + shipping if selected
+    const items: Array<{ priceId: string; quantity: number }> = [
+      {
+        priceId: paddlePriceId,
+        quantity,
+      },
+    ];
+
+    // Add shipping if country is selected and has paddle_price_id
+    if (selectedShipping && selectedShipping.paddle_price_id) {
+      items.push({
+        priceId: selectedShipping.paddle_price_id,
+        quantity: 1,
+      });
+    }
+
     paddle.Checkout.open({
-      items: [
-        {
-          priceId: paddlePriceId,
-          quantity,
-        },
-      ],
+      items,
       customer: {
         email: values.email,
       },
@@ -77,7 +108,14 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
         firstName: values.firstName,
         lastName: values.lastName,
         challengeId: product.challenge_info?.id,
+        country_code: values.country,
+        country_name: selectedShipping?.country_name || "",
+        city: values.city,
+        address: values.address,
+        postal_code: values.postalCode,
+        phone: values.phone,
       },
+      discountCode: values.promoCode || undefined,
       settings: {
         displayMode: "overlay",
         theme: "light",
@@ -140,6 +178,117 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
             className={glassInputClassName}
             onBlur={handleBlur}
             error={touched.email ? errors.email : undefined}
+          />
+        </div>
+      </div>
+
+      {/* Shipping Address block */}
+      <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 shadow-lg">
+        <div className="flex items-center gap-2">
+          <MapPin size={18} className="text-white/70" />
+          <p className="font-bold text-xl text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+            Shipping Address
+          </p>
+        </div>
+        <div>
+          <label htmlFor="country" className="block text-sm font-medium text-white/80 mb-1.5">Country *</label>
+          <select
+            id="country"
+            name="country"
+            value={values.country}
+            onChange={(e) => {
+              setFieldValue("country", e.target.value);
+              const selected = shippingRates.find(rate => rate.country_code === e.target.value);
+              setSelectedShipping(selected || null);
+            }}
+            onBlur={handleBlur}
+            className={glassInputClassName + " cursor-pointer"}
+          >
+            <option value="">Select country</option>
+            {shippingRates.map((rate) => (
+              <option key={rate.id} value={rate.country_code}>
+                {rate.country_name} (${rate.price})
+              </option>
+            ))}
+          </select>
+          {touched.country && errors.country && (
+            <p className="text-red-400 text-sm mt-1">{errors.country}</p>
+          )}
+        </div>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <label htmlFor="city" className="block text-sm font-medium text-white/80 mb-1.5">City *</label>
+            <Input
+              id="city"
+              name="city"
+              value={values.city}
+              placeholder="City"
+              onChange={(e) => setFieldValue("city", e.target.value)}
+              className={glassInputClassName}
+              onBlur={handleBlur}
+              error={touched.city ? errors.city : undefined}
+            />
+          </div>
+          <div className="w-[50%]">
+            <label htmlFor="postalCode" className="block text-sm font-medium text-white/80 mb-1.5">Postal Code *</label>
+            <Input
+              id="postalCode"
+              name="postalCode"
+              value={values.postalCode}
+              placeholder="Postal Code"
+              onChange={(e) => setFieldValue("postalCode", e.target.value)}
+              className={glassInputClassName}
+              onBlur={handleBlur}
+              error={touched.postalCode ? errors.postalCode : undefined}
+            />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="address" className="block text-sm font-medium text-white/80 mb-1.5">Street Address *</label>
+          <Input
+            id="address"
+            name="address"
+            value={values.address}
+            placeholder="Street Address"
+            onChange={(e) => setFieldValue("address", e.target.value)}
+            className={glassInputClassName}
+            onBlur={handleBlur}
+            error={touched.address ? errors.address : undefined}
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-1.5">Phone *</label>
+          <Input
+            id="phone"
+            name="phone"
+            value={values.phone}
+            placeholder="+1 234 567 8900"
+            onChange={(e) => setFieldValue("phone", e.target.value)}
+            className={glassInputClassName}
+            onBlur={handleBlur}
+            error={touched.phone ? errors.phone : undefined}
+          />
+        </div>
+      </div>
+
+      {/* Promo Code block */}
+      <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/30 shadow-lg">
+        <div className="flex items-center gap-2">
+          <Package size={18} className="text-white/70" />
+          <p className="font-bold text-xl text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+            Promo Code
+          </p>
+        </div>
+        <div>
+          <label htmlFor="promoCode" className="block text-sm font-medium text-white/80 mb-1.5">Promo Code (optional)</label>
+          <Input
+            id="promoCode"
+            name="promoCode"
+            value={values.promoCode}
+            placeholder="Enter promo code"
+            onChange={(e) => setFieldValue("promoCode", e.target.value)}
+            className={glassInputClassName}
+            onBlur={handleBlur}
           />
         </div>
       </div>
