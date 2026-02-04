@@ -245,9 +245,9 @@ const RouteRenderer = ({
   const [svgReady, setSvgReady] = useState(false);
   const previousProgressRef = useRef<number | null>(null);
 
-  // Scale factors based on base dimensions (not mapHeight which includes yOffset)
+  // Scale factors based on base dimensions
   const scaleX = mapWidth / routeData.base_width;
-  const scaleY = mapWidth / routeData.base_width; // uniform scale based on width
+  const scaleY = mapHeight / routeData.base_height;
 
   // Find active route (progress > 0 and < 100)
   const activeRouteInfo = useMemo(() => {
@@ -435,8 +435,8 @@ const RouteRenderer = ({
   return (
     <svg
       className="absolute inset-0 pointer-events-none"
-      width={mapWidth}
-      height={mapHeight}
+      viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+      preserveAspectRatio="none"
       style={{ overflow: "visible", zIndex: 5 }}
     >
       {scaledRoutes.map((route) => (

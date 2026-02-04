@@ -144,7 +144,16 @@ const ConfirmCode = () => {
   };
 
   return (
-    <div className="fixed z-9999 w-screen h-screen top-0 left-0 bg-gradient-to-br from-[#3B5CC6] via-[#5C9BB8] via-50% to-[#4DA67A] flex items-center justify-center px-4">
+    <div className="fixed z-9999 w-screen h-screen top-0 left-0 flex items-start justify-center px-4 pt-24" style={{
+      background: `linear-gradient(to bottom,
+        #1a2a4a 0%,
+        #1e3a5f 20%,
+        #234a6a 40%,
+        #2a5a70 60%,
+        #1e4a5a 80%,
+        #1a3a3a 100%
+      )`
+    }}>
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
           <Image

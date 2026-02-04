@@ -104,7 +104,7 @@ export default function Hero() {
         </div>
 
         {/* Map Image Section */}
-        <div className="relative w-full h-[220px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="relative w-full max-w-[1600px] mx-auto h-[220px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
           {/* Map Image with animation */}
           <div
             className="absolute inset-0 overflow-hidden transition-all duration-1000 ease-out"
@@ -116,7 +116,7 @@ export default function Hero() {
             <img
               src={heroMapImg}
               alt="South America Adventure Map"
-              className="absolute h-full w-full top-0 left-0 object-cover object-center"
+              className="absolute h-full w-full top-0 left-0 object-contain object-center"
               loading="eager"
               decoding="async"
             />
@@ -177,17 +177,6 @@ export default function Hero() {
                 <br />
                 on an adventure!
               </p>
-              {/* Speech bubble tail */}
-              <div
-                className="absolute bottom-[-12px] right-[29px] -z-10 transition-opacity duration-300"
-                style={{
-                  opacity: animationStage >= 3 ? 1 : 0,
-                }}
-              >
-                <svg width="29" height="17" viewBox="0 0 29 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0C8 0 15 8 20 17C15 12 8 10 0 10V0Z" fill="rgba(255,255,255,0.15)"/>
-                </svg>
-              </div>
             </div>
 
             {/* Raccoon with bounce animation */}
