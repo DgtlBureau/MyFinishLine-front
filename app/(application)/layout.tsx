@@ -27,7 +27,7 @@ export default function ApplicationLayout({
       <div className="min-h-screen bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a]">
         <div className="min-h-dvh flex flex-col">
           <AppHeader />
-          <main className="min-h-dvh pb-15.75 bg-transparent">
+          <main className="min-h-dvh pb-24 bg-transparent">
             <PageTransition>{children}</PageTransition>
           </main>
           <Navbar />
