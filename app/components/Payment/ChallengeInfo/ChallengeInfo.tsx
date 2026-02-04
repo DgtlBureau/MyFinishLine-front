@@ -1,7 +1,7 @@
 import { CurrencieSymbols } from "@/app/types";
-import { IProduct, IShippingRate } from "@/app/types";
+import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
 import Image from "next/image";
-import { Minus, Plus, Route, Package } from "lucide-react";
+import { Minus, Plus, Route, Package, Tag } from "lucide-react";
 
 function useIsImperial() {
   if (typeof navigator === "undefined") return false;
@@ -14,14 +14,26 @@ interface ChallengeInfoProps {
   quantity: number;
   onQuantityChange: (qty: number) => void;
   selectedShipping: IShippingRate | null;
+  pricingPreview: IPricingPreview | null;
 }
 
-export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping }: ChallengeInfoProps) => {
+export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping, pricingPreview }: ChallengeInfoProps) => {
   const unitPrice = Number(product.prices?.amount) / 100;
-  const shippingPrice = selectedShipping ? Number(selectedShipping.price) : 0;
-  const subtotal = unitPrice * quantity;
-  const totalPrice = (subtotal + shippingPrice).toFixed(2);
-  const currency = product.prices?.currency || "USD";
+  const shippingPrice = selectedShipping?.price ? Number(selectedShipping.price) : 0;
+
+  // Если есть pricing preview (с промокодом), используем его
+  let subtotal = unitPrice * quantity;
+  let discountAmount = 0;
+  let totalPrice = subtotal + shippingPrice;
+
+  if (pricingPreview) {
+    // Используем данные из Paddle preview
+    subtotal = Number(pricingPreview.details.line_items[0]?.totals.subtotal || 0) / 100;
+    discountAmount = Number(pricingPreview.discount?.total || 0) / 100;
+    totalPrice = Number(pricingPreview.totals.total) / 100;
+  }
+
+  const currency = pricingPreview?.currency_code || product.prices?.currency || "USD";
   const symbol = CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || "$";
 
   return (
@@ -93,7 +105,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
           </div>
 
           {/* Shipping row */}
-          {selectedShipping && (
+          {selectedShipping && selectedShipping.price && (
             <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3">
               <div className="flex items-center gap-2">
                 <Package size={14} className="text-white/70" />
@@ -101,6 +113,19 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
               </div>
               <p className="font-medium whitespace-nowrap">
                 {shippingPrice.toFixed(2)} {symbol}
+              </p>
+            </div>
+          )}
+
+          {/* Discount row */}
+          {pricingPreview && discountAmount > 0 && (
+            <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3 text-green-400">
+              <div className="flex items-center gap-2">
+                <Tag size={14} className="text-green-400/70" />
+                <p className="font-medium">Discount ({pricingPreview.discount?.code})</p>
+              </div>
+              <p className="font-medium whitespace-nowrap">
+                -{discountAmount.toFixed(2)} {symbol}
               </p>
             </div>
           )}

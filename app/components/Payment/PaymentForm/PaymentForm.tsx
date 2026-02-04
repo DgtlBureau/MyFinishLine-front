@@ -4,8 +4,8 @@ import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { useState, useEffect } from "react";
-import { IProduct, IShippingRate } from "@/app/types";
+import { useState, useEffect, useRef } from "react";
+import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { Lock, CreditCard, Shield, MapPin, Package } from "lucide-react";
 
@@ -15,9 +15,10 @@ interface PaymentFormProps {
   quantity: number;
   selectedShipping: IShippingRate | null;
   setSelectedShipping: (shipping: IShippingRate | null) => void;
+  setPricingPreview: (preview: IPricingPreview | null) => void;
 }
 
-const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping }: PaymentFormProps) => {
+const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setPricingPreview }: PaymentFormProps) => {
   const {
     values,
     touched,
@@ -45,6 +46,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping 
   const [isLoading, setIsLoading] = useState(false);
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
   const [shippingRates, setShippingRates] = useState<IShippingRate[]>([]);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     initializePaddle({
@@ -72,6 +74,60 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping 
         logger.error("Failed to load shipping rates", error);
       });
   }, []);
+
+  // Fetch pricing preview with discount code
+  const fetchPricingPreview = async (promoCode: string) => {
+    const paddlePriceId = product.prices?.paddle_price_id;
+    if (!paddlePriceId) return;
+
+    try {
+      const response = await fetch("/api/payment/preview-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          challenge_price_id: paddlePriceId,
+          quantity,
+          shipping_price_id: selectedShipping?.paddle_price_id || null,
+          discount_code: promoCode || null,
+        }),
+      });
+
+      if (response.ok) {
+        const preview = await response.json();
+        setPricingPreview(preview);
+      } else {
+        // Invalid promo code or error
+        setPricingPreview(null);
+      }
+    } catch (error) {
+      logger.error("Failed to fetch pricing preview", error);
+      setPricingPreview(null);
+    }
+  };
+
+  // Update preview when promo code, quantity, or shipping changes (with 500ms debounce)
+  useEffect(() => {
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    if (values.promoCode) {
+      // Set new timer
+      debounceTimerRef.current = setTimeout(() => {
+        fetchPricingPreview(values.promoCode || "");
+      }, 500);
+    } else {
+      setPricingPreview(null);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [values.promoCode, quantity, selectedShipping]);
 
   const openCheckout = () => {
     if (!paddle) {

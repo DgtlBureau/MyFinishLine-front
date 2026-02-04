@@ -170,9 +170,33 @@ export interface IShippingRate {
   id: number;
   country_code: string;
   country_name: string;
-  price: string;
-  currency: string;
+  price?: string; // Загружается из Paddle API
+  currency?: string; // Загружается из Paddle API
   paddle_price_id: string | null;
+}
+
+export interface IPricingPreview {
+  currency_code: string;
+  details: {
+    line_items: Array<{
+      price_id: string;
+      quantity: number;
+      totals: {
+        subtotal: string;
+        discount: string;
+        total: string;
+      };
+    }>;
+  };
+  discount?: {
+    code: string;
+    total: string; // Сумма скидки
+  };
+  totals: {
+    subtotal: string;
+    discount: string;
+    total: string;
+  };
 }
 
 export interface IReward {
