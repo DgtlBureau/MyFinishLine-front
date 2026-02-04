@@ -10,7 +10,14 @@ import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { Lock, CreditCard, Shield, MapPin, Package } from "lucide-react";
 
 import { logger } from "@/app/lib/logger";
-const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: number }) => {
+interface PaymentFormProps {
+  product: IProduct;
+  quantity: number;
+  selectedShipping: IShippingRate | null;
+  setSelectedShipping: (shipping: IShippingRate | null) => void;
+}
+
+const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping }: PaymentFormProps) => {
   const {
     values,
     touched,
@@ -38,7 +45,6 @@ const PaymentForm = ({ product, quantity }: { product: IProduct; quantity: numbe
   const [isLoading, setIsLoading] = useState(false);
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
   const [shippingRates, setShippingRates] = useState<IShippingRate[]>([]);
-  const [selectedShipping, setSelectedShipping] = useState<IShippingRate | null>(null);
 
   useEffect(() => {
     initializePaddle({

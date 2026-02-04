@@ -1,7 +1,7 @@
 import { CurrencieSymbols } from "@/app/types";
-import { IProduct } from "@/app/types";
+import { IProduct, IShippingRate } from "@/app/types";
 import Image from "next/image";
-import { Minus, Plus, Route } from "lucide-react";
+import { Minus, Plus, Route, Package } from "lucide-react";
 
 function useIsImperial() {
   if (typeof navigator === "undefined") return false;
@@ -13,11 +13,14 @@ interface ChallengeInfoProps {
   product: IProduct;
   quantity: number;
   onQuantityChange: (qty: number) => void;
+  selectedShipping: IShippingRate | null;
 }
 
-export const ChallengeInfo = ({ product, quantity, onQuantityChange }: ChallengeInfoProps) => {
+export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping }: ChallengeInfoProps) => {
   const unitPrice = Number(product.prices?.amount) / 100;
-  const totalPrice = (unitPrice * quantity).toFixed(2);
+  const shippingPrice = selectedShipping ? Number(selectedShipping.price) : 0;
+  const subtotal = unitPrice * quantity;
+  const totalPrice = (subtotal + shippingPrice).toFixed(2);
   const currency = product.prices?.currency || "USD";
   const symbol = CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || "$";
 
@@ -84,10 +87,24 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange }: Challenge
                 <Plus size={12} />
               </button>
               <p className="font-medium ml-2 whitespace-nowrap">
-                {totalPrice} {symbol}
+                {subtotal.toFixed(2)} {symbol}
               </p>
             </div>
           </div>
+
+          {/* Shipping row */}
+          {selectedShipping && (
+            <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3">
+              <div className="flex items-center gap-2">
+                <Package size={14} className="text-white/70" />
+                <p className="font-medium">Shipping to {selectedShipping.country_name}</p>
+              </div>
+              <p className="font-medium whitespace-nowrap">
+                {shippingPrice.toFixed(2)} {symbol}
+              </p>
+            </div>
+          )}
+
           <div className="flex justify-between p-3 px-5 text-base font-bold">
             <p>Total</p>
             <p>
