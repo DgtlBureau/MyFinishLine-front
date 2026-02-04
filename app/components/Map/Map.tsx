@@ -19,6 +19,7 @@ import FogOfWar from "./FogOfWar";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { logger } from "@/app/lib/logger";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { getStorageUrl } from "@/app/lib/utils/storage";
 
 const Map = ({
   background_images,
@@ -35,12 +36,16 @@ const Map = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const hasCalledMapReady = useRef(false);
   const imageRef = useRef<HTMLImageElement>(null);
+  const initialCheckDone = useRef(false);
 
   // Check if we have a valid background image to load
   const hasBackgroundImage = background_images && background_images.length > 0 && background_images[0]?.image_url;
 
-  // If there's no background image to load, signal ready immediately
+  // If there's no background image to load, signal ready immediately (once on mount)
   useEffect(() => {
+    if (initialCheckDone.current) return;
+    initialCheckDone.current = true;
+
     if (!hasBackgroundImage) {
       setImageLoaded(true);
     }
@@ -455,43 +460,48 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden overscroll-none">
-        <div className="fixed -inset-20 -z-10 bg-[#1a2a4a]">
-          {/* On mobile: disable heavy blur effects to reduce GPU load */}
-          {!isMobile && background_images.map((image, index) => (
+      <div className="relative w-full h-full overflow-x-hidden overscroll-none">
+        {/* Background - fixed behind content */}
+        {background_images && background_images.length > 0 && (
+          <div className="fixed inset-0 -z-10 bg-[#1a2a4a]">
+            {/* On mobile: disable heavy blur effects to reduce GPU load */}
+            {!isMobile && (
+              <div className="w-full h-full blur-2xl opacity-40">
+                <img
+                  src={getStorageUrl(background_images[0].image_url)}
+                  className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
+                  alt=""
+                />
+              </div>
+            )}
+            {/* Color overlay to blend with map theme */}
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
+            {/* Soft vignette */}
             <div
-              key={`blur-bg-${index}`}
-              className="w-full h-auto blur-2xl opacity-40"
-            >
-              <img
-                src={background_images[0].image_url}
-                className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
-                alt=""
-              />
-            </div>
-          ))}
-          {/* Color overlay to blend with map theme */}
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
-          {/* Soft vignette */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
-            }}
-          />
-        </div>
+              className="absolute inset-0"
+              style={{
+                background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
+              }}
+            />
+          </div>
+        )}
 
         <div
           ref={mapContainerRef}
-          className="relative w-full overflow-hidden"
+          className="relative w-full h-full overflow-hidden"
         >
           <div
+            className="relative h-full mx-auto overflow-y-auto"
             style={{
               width: `${MAP_WIDTH * scale}px`,
-              height: `${MAP_HEIGHT * scale}px`,
-              margin: "0 auto",
             }}
           >
+            <div
+              className="absolute bottom-0 left-0 right-0"
+              style={{
+                height: `${MAP_HEIGHT * scale}px`,
+              }}
+            >
             <div
               className="relative"
               style={{
@@ -507,7 +517,7 @@ const Map = ({
             {hasBackgroundImage && (
               <img
                 ref={imageRef}
-                src={background_images[0].image_url}
+                src={getStorageUrl(background_images[0].image_url)}
                 alt=""
                 className="absolute inset-0 w-full h-full"
                 style={{ objectFit: "fill" }}
@@ -602,6 +612,7 @@ const Map = ({
             </div>
           </div>
           </div>
+          </div>
         </div>
 
         <div className="fixed bottom-18 left-2 z-30">
@@ -619,7 +630,13 @@ const Map = ({
         {isAwardOpen && (
           <AwardModal
             onCloseClick={handleContinueAwards}
-            medalImage={reward?.image_url || undefined}
+            medalImage={
+              getStorageUrl(
+                activeStep?.badges?.find((b) => b.show_before_story !== false)?.image_url ||
+                activeStep?.cards?.find((c) => c.show_before_story !== false)?.image_url ||
+                reward?.image_url
+              ) || undefined
+            }
           />
         )}
       </AnimatePresence>

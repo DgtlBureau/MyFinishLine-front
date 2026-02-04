@@ -23,6 +23,8 @@ interface RouteSegmentProps {
   isActive: boolean;
   segmentIndex: number;
   isMobile: boolean;
+  scale: number;
+  yOffset: number;
 }
 
 // Generate curved path between two points with S-curve
@@ -65,12 +67,18 @@ function generateCurvedPath(
 // Convert points to smooth SVG path using Catmull-Rom splines
 function pointsToSmoothPath(
   points: { x: number; y: number }[],
-  mapHeight: number
+  mapHeight: number,
+  scale: number,
+  offset: number = 0
 ): string {
   if (points.length < 2) return "";
 
-  // Convert Y coordinates (from bottom to top)
-  const pts = points.map((p) => ({ x: p.x, y: mapHeight - p.y }));
+  // Convert Y coordinates (from bottom to top) with scale and offset
+  // This formula matches the admin panel implementation (DevicePreview.tsx:52)
+  const pts = points.map((p) => ({
+    x: p.x * scale,
+    y: (mapHeight - (p.y + offset)) * scale
+  }));
 
   if (pts.length === 2) {
     // Simple line for 2 points - but this shouldn't happen anymore
@@ -101,14 +109,14 @@ function pointsToSmoothPath(
 
 // Individual route segment with progress animation
 const RouteSegment = memo(
-  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex, isMobile }: RouteSegmentProps) => {
+  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex, isMobile, scale, yOffset }: RouteSegmentProps) => {
     const progressPathRef = useRef<SVGPathElement>(null);
     const glowPathRef = useRef<SVGPathElement>(null);
 
     // Build smooth SVG path
     const pathD = useMemo(() => {
-      return pointsToSmoothPath(points, mapHeight);
-    }, [points, mapHeight]);
+      return pointsToSmoothPath(points, mapHeight, scale, yOffset);
+    }, [points, mapHeight, scale, yOffset]);
 
     // Apply progress animation using stroke-dashoffset
     useLayoutEffect(() => {
@@ -160,21 +168,12 @@ const RouteSegment = memo(
           </linearGradient>
         </defs>
 
-        {/* Background path - uncompleted (dimmed, dashed) */}
+        {/* Background path - uncompleted (solid) */}
         <path
           d={pathD}
           fill="none"
-          stroke="rgba(255, 255, 255, 0.15)"
+          stroke="rgba(255, 255, 255, 0.3)"
           strokeWidth={backgroundStrokeWidth}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d={pathD}
-          fill="none"
-          stroke="rgba(139, 92, 246, 0.25)"
-          strokeWidth={dashedStrokeWidth}
-          strokeDasharray="12 8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -270,10 +269,10 @@ const RouteRenderer = ({
       // Find the step for this route to get progress info
       const step = steps.find((s) => s.index === route.from_step_index);
 
-      // Scale the original points
+      // Keep original points (scaling will happen in pointsToSmoothPath)
       let scaledPoints = route.points.map((point) => ({
-        x: point.x * scaleX,
-        y: (point.y + yOffset) * scaleY,
+        x: point.x,
+        y: point.y,
       }));
 
       // If only 2 points, generate curved path
@@ -433,25 +432,91 @@ const RouteRenderer = ({
   }, []);
 
   return (
-    <svg
-      className="absolute inset-0 pointer-events-none"
-      viewBox={`0 0 ${mapWidth} ${mapHeight}`}
-      preserveAspectRatio="none"
-      style={{ overflow: "visible", zIndex: 5 }}
-    >
-      {scaledRoutes.map((route) => (
-        <RouteSegment
-          key={`route-${route.from_step_index}-${route.to_step_index}`}
-          points={route.scaledPoints}
-          mapHeight={mapHeight}
-          progress={route.progress}
-          isCompleted={route.isCompleted}
-          isActive={route.isActive}
-          segmentIndex={route.segmentIndex}
-          isMobile={isMobile}
-        />
-      ))}
-    </svg>
+    <>
+      <svg
+        ref={svgRef}
+        className="absolute inset-0 pointer-events-none"
+        viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+        preserveAspectRatio="none"
+        style={{ overflow: "visible", zIndex: 5 }}
+      >
+        {scaledRoutes.map((route) => {
+          const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
+          return (
+            <RouteSegment
+              key={segmentId}
+              points={route.scaledPoints}
+              mapHeight={mapHeight}
+              progress={route.progress}
+              isCompleted={route.isCompleted}
+              isActive={route.isActive}
+              segmentIndex={route.segmentIndex}
+              isMobile={isMobile}
+              scale={scaleX}
+              yOffset={yOffset}
+            />
+          );
+        })}
+
+        {/* Hidden path for position calculation */}
+        {activeRouteInfo && scaledRoutes.map((route) => {
+          const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
+          if (segmentId !== activeRouteInfo.segmentId) return null;
+          const pathD = pointsToSmoothPath(route.scaledPoints, mapHeight, scaleX, yOffset);
+          return (
+            <path
+              key={`hidden-${segmentId}`}
+              ref={(el) => {
+                if (el) handlePathReady(el, segmentId);
+              }}
+              d={pathD}
+              fill="none"
+              stroke="transparent"
+              strokeWidth={0}
+              pointerEvents="none"
+            />
+          );
+        })}
+      </svg>
+
+      {/* User Avatar */}
+      {activeRouteInfo && (
+        <div
+          ref={avatarRef}
+          id="user-progress-icon"
+          className="absolute pointer-events-none transition-opacity duration-300"
+          style={{
+            transform: "translate(-50%, -50%)",
+            zIndex: 30,
+            opacity: 0,
+            display: "none",
+          }}
+        >
+          <div className="relative">
+            {/* Pulsing glow effect */}
+            <div className="absolute inset-0 bg-cyan-400 rounded-full animate-ping opacity-75" style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }} />
+
+            {/* Avatar container */}
+            <div
+              className="relative bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl border-2 border-white"
+              style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
+            >
+              {user?.profile_picture_url ? (
+                <Image
+                  src={user.profile_picture_url}
+                  alt="User avatar"
+                  width={CIRCLE_RADIUS * 2 - 4}
+                  height={CIRCLE_RADIUS * 2 - 4}
+                  className="rounded-full object-cover"
+                />
+              ) : (
+                <User size={CIRCLE_RADIUS} className="text-white" />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

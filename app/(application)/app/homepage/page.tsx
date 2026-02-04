@@ -99,7 +99,7 @@ const Page = () => {
   }, [showMap, mapReady]);
 
   return (
-    <>
+    <div className="absolute inset-0 flex flex-col">
       <AnimatePresence mode="wait">
         {(isFetching || showSplash) && (
           <LoadingScreen isVisible={true} />
@@ -123,7 +123,7 @@ const Page = () => {
           )}
           <div
             ref={mapWrapperRef}
-            className={`transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
+            className={`flex-1 transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
             style={{
               filter: questStarted ? "none" : "blur(8px)",
               transform: questStarted ? "none" : "scale(1.15)",
@@ -177,7 +177,7 @@ const Page = () => {
       ) : (
         !isFetching && !hasCachedChallenge && <StartJourney />
       )}
-    </>
+    </div>
   );
 };
 

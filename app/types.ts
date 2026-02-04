@@ -20,6 +20,24 @@ export interface IStory {
   challenge_step_id: string;
 }
 
+export interface IBadge {
+  id: number;
+  image_url: string;
+  title?: string;
+  description?: string;
+  show_before_story?: boolean;
+  challenge_step_id: number;
+}
+
+export interface ICard {
+  id: number;
+  image_url: string;
+  title?: string;
+  description?: string;
+  show_before_story?: boolean;
+  challenge_step_id: number;
+}
+
 export interface IStep {
   challenge_id: number;
   completed: boolean;
@@ -28,6 +46,8 @@ export interface IStep {
   id: number;
   index: number;
   story: IStory[];
+  badges?: IBadge[];
+  cards?: ICard[];
   user_distance: number;
   user_distance_mile?: number;
   user_distance_percent: number;

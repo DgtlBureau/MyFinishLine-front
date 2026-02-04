@@ -22,7 +22,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
           duration: 0.2,
           ease: [0.25, 0.46, 0.45, 0.94] as const,
         }}
-        className="min-h-full"
+        className="h-full"
       >
         {children}
       </motion.div>

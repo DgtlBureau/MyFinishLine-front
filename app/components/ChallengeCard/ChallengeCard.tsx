@@ -216,7 +216,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
               {hours || 0}
             </span>
           </div>
-          {!userId && challenge.is_completed && !challenge.reward_ticket ? (
+          {!userId && challenge.is_completed && progress >= 100 && !challenge.reward_ticket ? (
             <Link
               href={`/app/profile/redeem?reward_id=${challenge.reward?.id}&challenge_name=${challenge.name}&challenge_id=${challenge.id}`}
               className="block text-center bg-white/20 backdrop-blur-sm w-full mt-8 border-white/40 py-2.5 px-4 border text-white text-sm leading-6 font-semibold hover:bg-white/40 shadow-lg transition-all rounded-xl cursor-pointer"

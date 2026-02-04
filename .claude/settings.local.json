@@ -14,7 +14,24 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(open https://github.com/DgtlBureau/MyFinishLine-front/pull/44)",
+      "Bash(docker build:*)",
+      "Bash(docker run:*)",
+      "Bash(docker rm:*)",
+      "Bash(xargs:*)",
+      "Bash(docker logs:*)",
+      "Bash(lsof:*)",
+      "Bash(sips:*)",
+      "Bash(npm run dev:*)",
+      "Bash(open http://localhost:3000)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(open:*)",
+      "Bash(cat:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker compose up:*)"
     ]
   }
 }

@@ -46,9 +46,6 @@ const Step = memo(
     const displayUserDistanceReached = isMiles ? userDistanceReachedMile : userDistanceReached;
 
     const getStepColor = () => {
-      if (isNext) {
-        return "bg-white/30 text-white border-2 border-white/50 shadow-lg shadow-black/20";
-      }
       if (completed) {
         return `bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A] text-white border-[3px] border-white/60 shadow-lg shadow-black/30 ${
           isViewed ? "" : "ring-[#BFC0CC] ring-2"
@@ -58,6 +55,9 @@ const Step = memo(
         return `bg-gradient-to-br from-[#3B5CC6] to-[#4DA67A] text-white border-[3px] border-white/60 shadow-lg shadow-black/30 ${
           isViewed ? "" : "ring-[#BFC0CC] ring-2"
         }`;
+      }
+      if (isNext) {
+        return "bg-white/30 text-white border-2 border-white/50 shadow-lg shadow-black/20";
       }
       return "bg-white/20 text-white/40 border-2 border-white/30 shadow-md shadow-black/15";
     };
@@ -169,8 +169,8 @@ const Step = memo(
           <div
             className={`
             ${getStepColor()}
-            rounded-full flex w-10 h-10 items-center justify-center
-            font-bold text-sm
+            rounded-full flex w-14 h-14 items-center justify-center
+            font-bold text-lg
             transition-all duration-300
             ${completed ? "cursor-pointer" : "cursor-default"}
           `}
@@ -197,7 +197,7 @@ const Step = memo(
             <div className="relative">
               <div
                 className={`
-            text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-full
+            text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-full
             ${
               completed
                 ? "bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] text-white"
@@ -229,7 +229,7 @@ const Step = memo(
           >
             <div
               className={`
-          text-xs font-semibold whitespace-nowrap px-3 py-1.5 rounded-full bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]
+          text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-full bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A]
         `}
             >
               <div className="text-white">
@@ -243,7 +243,6 @@ const Step = memo(
           <>
             <div className="relative z-10">
               <Xarrow
-                dashness
                 color="gray"
                 start={"step-" + index}
                 end={"step-" + (index + 1)}
@@ -253,7 +252,6 @@ const Step = memo(
             </div>
             <div className="relative z-20">
               <ProgressArrow
-                dashness
                 color={completed ? "#3B5CC6" : "#3B5CC6"}
                 start={"step-" + index}
                 end={"step-" + (index + 1)}

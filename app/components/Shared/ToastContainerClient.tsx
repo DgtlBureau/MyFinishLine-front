@@ -9,8 +9,11 @@ export function ToastContainerClient() {
       draggable
       transition={Slide}
       closeButton={false}
-      className="z-110"
       autoClose={5000}
+      pauseOnHover={true}
+      pauseOnFocusLoss={false}
+      newestOnTop
+      style={{ zIndex: 9999 }}
     />
   );
 }

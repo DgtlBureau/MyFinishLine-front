@@ -138,7 +138,7 @@ const MapHeader = ({
                 }}
               >
                 <Image
-                  src="/images/application/map-racoon.png"
+                  src="/images/application/map-racoon.webp"
                   width={70}
                   height={70}
                   alt="Map racoon"

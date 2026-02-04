@@ -12,6 +12,10 @@ const RedirectComponent = () => {
     setIsMounted(true);
   }, []);
 
+  // Don't show ConfirmCode if user is not logged in (after logout)
+  if (!user.id || !user.email) {
+    return;
+  }
   if (user.has_activated_code === true) {
     return;
   }
