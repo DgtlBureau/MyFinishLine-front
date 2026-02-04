@@ -1,7 +1,7 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useLayoutEffect, useEffect, useMemo, useRef } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo, useRef, useCallback } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
@@ -32,12 +32,19 @@ const Map = ({
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
 
-  // If no background images, signal map ready immediately
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const hasCalledMapReady = useRef(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // Check if we have a valid background image to load
+  const hasBackgroundImage = background_images && background_images.length > 0 && background_images[0]?.image_url;
+
+  // If there's no background image to load, signal ready immediately
   useEffect(() => {
-    if (!background_images || background_images.length === 0) {
-      onMapReady?.();
+    if (!hasBackgroundImage) {
+      setImageLoaded(true);
     }
-  }, [background_images, onMapReady]);
+  }, [hasBackgroundImage]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -280,46 +287,56 @@ const Map = ({
     }
   };
 
-  useLayoutEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
+  // Handle image load with proper verification
+  const handleImageLoad = useCallback(() => {
+    // Use requestAnimationFrame to ensure browser has painted the image
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Double rAF ensures the image is actually rendered
+        setImageLoaded(true);
+      });
+    });
+  }, []);
 
-    const SESSION_KEY = "map_scroll_animated";
-    const hasSeenAnimation = sessionStorage.getItem(SESSION_KEY) === "true";
+  // When image loads, scroll to user position FIRST, then signal map ready
+  useEffect(() => {
+    if (!imageLoaded || hasCalledMapReady.current) return;
 
-    const scrollToBottom = (animate: boolean) => {
+    const scrollToBottom = () => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
-        behavior: animate ? "smooth" : "instant",
+        behavior: "instant",
       });
     };
 
     const hasActiveStep = steps.some((step) => step.active && !step.completed);
     const isAllCompleted = is_completed;
 
+    // Scroll instantly (no animation) to user's position
     if (hasActiveStep || isAllCompleted) {
-      if (hasSeenAnimation) {
-        timer = setTimeout(() => handleScrollToActiveStep(false), 10);
-      } else {
-        timer = setTimeout(() => {
-          handleScrollToActiveStep(true);
-          sessionStorage.setItem(SESSION_KEY, "true");
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        handleScrollToActiveStep(false); // false = no animation
+        // Signal map ready after scroll completes
+        setTimeout(() => {
+          if (!hasCalledMapReady.current) {
+            hasCalledMapReady.current = true;
+            onMapReady?.();
+          }
         }, 100);
-      }
+      }, 100);
     } else {
-      if (hasSeenAnimation) {
-        timer = setTimeout(() => scrollToBottom(false), 10);
-      } else {
-        timer = setTimeout(() => {
-          scrollToBottom(true);
-          sessionStorage.setItem(SESSION_KEY, "true");
+      setTimeout(() => {
+        scrollToBottom();
+        setTimeout(() => {
+          if (!hasCalledMapReady.current) {
+            hasCalledMapReady.current = true;
+            onMapReady?.();
+          }
         }, 100);
-      }
+      }, 100);
     }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [steps]);
+  }, [imageLoaded, steps, is_completed, onMapReady]);
 
   // const handleGoToNextStep = () => {
   //   if (isAnimating) return;
@@ -487,15 +504,16 @@ const Map = ({
                   : "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out",
               }}
             >
-            {background_images[0] && (
+            {hasBackgroundImage && (
               <img
+                ref={imageRef}
                 src={background_images[0].image_url}
                 alt=""
                 className="absolute inset-0 w-full h-full"
                 style={{ objectFit: "fill" }}
                 draggable={false}
-                onLoad={onMapReady}
-                onError={onMapReady}
+                onLoad={handleImageLoad}
+                onError={handleImageLoad}
               />
             )}
 

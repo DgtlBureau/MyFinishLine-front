@@ -3,10 +3,10 @@
 import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
 import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { setUser } from "@/app/lib/features/user/userSlice";
+import { setUser, setUserChallenges } from "@/app/lib/features/user/userSlice";
 import { linkStrava } from "@/app/lib/utils/authWithStrava";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
@@ -16,19 +16,36 @@ import ChallengeCardSkeleton from "@/app/components/Skeletons/ChallengeCardSkele
 import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkeleton";
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
+import { getUserChallenges } from "@/app/lib/utils/userService";
 
 import { logger } from "@/app/lib/logger";
 export const Journey = () => {
   const { completedContracts, challenges } = useAppSelector((state) => state.user);
   const { user } = useAppSelector((state) => state.user);
+  const [isLoading, setIsLoading] = useState(true);
   const hasActiveChallenge = challenges && challenges.length > 0;
   const searchParams = useSearchParams();
   const errorParam = searchParams.get("error");
   const dataParam = searchParams.get("data");
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  // Load challenges on mount
+  useEffect(() => {
+    const loadChallenges = async () => {
+      try {
+        const data = await getUserChallenges();
+        dispatch(setUserChallenges(data.data));
+      } catch (error) {
+        logger.error("Failed to load challenges", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadChallenges();
+  }, [dispatch]);
 
   useEffect(() => {
     if (errorParam) {
@@ -49,6 +66,22 @@ export const Journey = () => {
       }
     }
   }, []);
+
+  // Show loading state while fetching challenges
+  if (isLoading) {
+    return (
+      <main className="relative px-4 max-w-4xl mx-auto">
+        <div className="mt-10">
+          <h2 className="text-3xl text-center font-medium leading-9 text-white">
+            My Journey
+          </h2>
+        </div>
+        <div className="mt-12 flex flex-col items-center">
+          <Loader2 className="w-8 h-8 text-white/70 animate-spin" />
+        </div>
+      </main>
+    );
+  }
 
   if (!hasActiveChallenge) {
     return (

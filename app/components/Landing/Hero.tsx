@@ -3,8 +3,8 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
-const heroMapImg = "/images/hero-map.png";
-const raccoonImg = "/images/mascot.png";
+const heroMapImg = "/images/hero-map.webp";
+const raccoonImg = "/images/mascot.webp";
 const speechBubbleImg = "";
 
 // Images to preload

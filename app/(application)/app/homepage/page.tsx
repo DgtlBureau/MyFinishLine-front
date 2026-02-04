@@ -90,10 +90,11 @@ const Page = () => {
     }
   }, [mapReady, questStarted]);
 
-  // Safety timeout: force mapReady after 5s to prevent infinite loading
+  // Safety timeout: force mapReady after 10s to prevent infinite loading
+  // Increased to allow for slow image loads on poor connections
   useEffect(() => {
     if (!showMap || mapReady) return;
-    const timer = setTimeout(() => setMapReady(true), 5000);
+    const timer = setTimeout(() => setMapReady(true), 10000);
     return () => clearTimeout(timer);
   }, [showMap, mapReady]);
 

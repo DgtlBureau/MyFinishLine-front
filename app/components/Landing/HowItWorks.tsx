@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // Card 1 images (local)
-const imgRingDecoration = "/images/card1-ring.png";
-const imgPhotoBackground = "/images/card1-photo-bg.jpg";
-const imgMedalPreview = "/images/card1-medal.png";
+const imgRingDecoration = "/images/card1-ring.webp";
+const imgPhotoBackground = "/images/card1-photo-bg.webp";
+const imgMedalPreview = "/images/card1-medal.webp";
 
 
 const steps = [
@@ -373,16 +373,16 @@ function Card2() {
 }
 
 // Card 3 images - local files
-const imgCard3Sage = "/images/card3-sage.png";
-const imgCard3MapBg = "/images/card3-map-bg.jpg";
-const imgCard3RoutePath1 = "/images/card3-route-path1.png";
-const imgCard3RoutePath2 = "/images/card3-route-path2.png";
-const imgCard3RewardImg = "/images/card3-reward-img.png";
-const imgCard3TaskImg = "/images/card3-task-img.png";
-const imgCard3EarlyBird = "/images/card3-early-bird.png";
+const imgCard3Sage = "/images/card3-sage.webp";
+const imgCard3MapBg = "/images/card3-map-bg.webp";
+const imgCard3RoutePath1 = "/images/card3-route-path1.webp";
+const imgCard3RoutePath2 = "/images/card3-route-path2.webp";
+const imgCard3RewardImg = "/images/card3-reward-img.webp";
+const imgCard3TaskImg = "/images/card3-task-img.webp";
+const imgCard3EarlyBird = "/images/card3-early-bird.webp";
 const imgMflLogo = "/images/mfl-logo-new.svg";
-const imgMflTextLogo = "/images/mfl-text-logo.png";
-const imgCard3Avatar = "/images/card3-avatar.png";
+const imgMflTextLogo = "/images/mfl-text-logo.webp";
+const imgCard3Avatar = "/images/card3-avatar.webp";
 
 // Card 3 - Discover Content with Full Animation Sequence
 function Card3() {
@@ -888,9 +888,9 @@ function Card3() {
 }
 
 // Card 4 images (local)
-const imgCard4MedalWithRibbon = "/images/card4-medal-with-ribbon.png";
+const imgCard4MedalWithRibbon = "/images/card4-medal-with-ribbon.webp";
 const imgCard4Glow = "/images/card4-glow.png";
-const imgCard4Bg = "/images/card4-bg.png";
+const imgCard4Bg = "/images/card4-bg.webp";
 
 // Card 4 - Medal Completion with Loading Animation
 function Card4() {
