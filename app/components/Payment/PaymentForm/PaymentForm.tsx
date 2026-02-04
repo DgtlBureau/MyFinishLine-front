@@ -94,7 +94,13 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
 
       if (response.ok) {
         const preview = await response.json();
-        setPricingPreview(preview);
+        // Validate that preview has required structure
+        if (preview && preview.details && preview.totals) {
+          setPricingPreview(preview);
+        } else {
+          // Invalid response structure (e.g., invalid promo code)
+          setPricingPreview(null);
+        }
       } else {
         // Invalid promo code or error
         setPricingPreview(null);

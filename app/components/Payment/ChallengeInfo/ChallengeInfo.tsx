@@ -26,11 +26,11 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
   let discountAmount = 0;
   let totalPrice = subtotal + shippingPrice;
 
-  if (pricingPreview) {
+  if (pricingPreview && pricingPreview.details && pricingPreview.details.line_items) {
     // Используем данные из Paddle preview
     subtotal = Number(pricingPreview.details.line_items[0]?.totals.subtotal || 0) / 100;
     discountAmount = Number(pricingPreview.discount?.total || 0) / 100;
-    totalPrice = Number(pricingPreview.totals.total) / 100;
+    totalPrice = Number(pricingPreview.totals?.total || 0) / 100;
   }
 
   const currency = pricingPreview?.currency_code || product.prices?.currency || "USD";
