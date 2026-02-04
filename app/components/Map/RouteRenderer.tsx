@@ -5,6 +5,7 @@ import { IRouteData, IStep } from "@/app/types";
 import { useAppSelector } from "@/app/lib/hooks";
 import { User } from "lucide-react";
 import Image from "next/image";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 interface RouteRendererProps {
   routeData: IRouteData;
@@ -21,6 +22,7 @@ interface RouteSegmentProps {
   isCompleted: boolean;
   isActive: boolean;
   segmentIndex: number;
+  isMobile: boolean;
 }
 
 // Generate curved path between two points with S-curve
@@ -99,7 +101,7 @@ function pointsToSmoothPath(
 
 // Individual route segment with progress animation
 const RouteSegment = memo(
-  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex }: RouteSegmentProps) => {
+  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex, isMobile }: RouteSegmentProps) => {
     const progressPathRef = useRef<SVGPathElement>(null);
     const glowPathRef = useRef<SVGPathElement>(null);
 
@@ -131,17 +133,26 @@ const RouteSegment = memo(
     const filterId = `glow-${segmentIndex}`;
     const gradientId = `progress-gradient-${segmentIndex}`;
 
+    // Mobile: use thinner strokes and disable heavy blur filters
+    const backgroundStrokeWidth = isMobile ? 4 : 6;
+    const dashedStrokeWidth = isMobile ? 3 : 4;
+    const glowStrokeWidth = isMobile ? 8 : 12;
+    const progressStrokeWidth = isMobile ? 4 : 5;
+    const highlightStrokeWidth = isMobile ? 1.5 : 2;
+
     return (
       <g>
-        {/* Filter for glow effect */}
+        {/* Filter for glow effect - simplified on mobile */}
         <defs>
-          <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+          {!isMobile && (
+            <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          )}
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#8B5CF6" />
             <stop offset="50%" stopColor="#06B6D4" />
@@ -154,7 +165,7 @@ const RouteSegment = memo(
           d={pathD}
           fill="none"
           stroke="rgba(255, 255, 255, 0.15)"
-          strokeWidth={6}
+          strokeWidth={backgroundStrokeWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -162,23 +173,23 @@ const RouteSegment = memo(
           d={pathD}
           fill="none"
           stroke="rgba(139, 92, 246, 0.25)"
-          strokeWidth={4}
+          strokeWidth={dashedStrokeWidth}
           strokeDasharray="12 8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Progress glow effect (behind the main line) */}
+        {/* Progress glow effect (behind the main line) - skip filter on mobile */}
         {(isActive || isCompleted) && (
           <path
             ref={glowPathRef}
             d={pathD}
             fill="none"
             stroke={isCompleted ? "#8B5CF6" : "#06B6D4"}
-            strokeWidth={12}
+            strokeWidth={glowStrokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
-            filter={`url(#${filterId})`}
+            filter={isMobile ? undefined : `url(#${filterId})`}
             opacity={0.5}
           />
         )}
@@ -189,7 +200,7 @@ const RouteSegment = memo(
           d={pathD}
           fill="none"
           stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
-          strokeWidth={5}
+          strokeWidth={progressStrokeWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -200,7 +211,7 @@ const RouteSegment = memo(
             d={pathD}
             fill="none"
             stroke="rgba(255, 255, 255, 0.4)"
-            strokeWidth={2}
+            strokeWidth={highlightStrokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
@@ -225,6 +236,7 @@ const RouteRenderer = ({
   mapHeight,
   yOffset = 0,
 }: RouteRendererProps) => {
+  const isMobile = useIsMobile();
   const { user } = useAppSelector((state) => state.user);
   const svgRef = useRef<SVGSVGElement>(null);
   const activePathRef = useRef<SVGPathElement | null>(null);
@@ -436,6 +448,7 @@ const RouteRenderer = ({
           isCompleted={route.isCompleted}
           isActive={route.isActive}
           segmentIndex={route.segmentIndex}
+          isMobile={isMobile}
         />
       ))}
     </svg>

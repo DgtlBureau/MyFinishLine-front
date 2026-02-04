@@ -2,6 +2,8 @@
 
 import { memo, useMemo } from "react";
 import { IStep } from "@/app/types";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import usePrefersReducedMotion from "@/app/hooks/usePrefersReducedMotion";
 
 interface FogOfWarProps {
   steps: IStep[];
@@ -11,6 +13,9 @@ interface FogOfWarProps {
 }
 
 const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarProps) => {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   // Detect challenge direction early so it's available in useMemo
   const sortedForDir = [...steps].sort((a, b) => a.index - b.index);
   const goesUpward = sortedForDir.length >= 2
@@ -70,6 +75,67 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
     return `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - offsetAfter)}%, black ${fogStartPercent + offsetBefore}%, black 100%)`;
   };
 
+  // Disable animations on mobile or if user prefers reduced motion
+  const shouldAnimate = !isMobile && !prefersReducedMotion;
+
+  // MOBILE VERSION: Simplified with only 3 layers and minimal gradients
+  if (isMobile) {
+    return (
+      <div
+        className="absolute inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: 25 }}
+        aria-hidden="true"
+      >
+        {/* Layer 1: Solid lavender base - main coverage */}
+        <div
+          className="absolute inset-0"
+          style={{
+            maskImage: fogMask(5, 2),
+            WebkitMaskImage: fogMask(5, 2),
+            background: `linear-gradient(
+              ${goesUpward ? '180deg' : '0deg'},
+              rgba(185, 175, 220, 1) 0%,
+              rgba(195, 185, 228, 0.98) 50%,
+              rgba(210, 203, 240, 0.85) 85%,
+              transparent 100%
+            )`,
+          }}
+        />
+
+        {/* Layer 2: Simple cloud forms - reduced complexity */}
+        <div
+          className="absolute inset-0"
+          style={{
+            maskImage: fogMask(4, 0),
+            WebkitMaskImage: fogMask(4, 0),
+            background: `
+              radial-gradient(ellipse 100% 60% at 30% 20%, rgba(255,255,255,0.9) 0%, rgba(245,240,255,0.6) 40%, transparent 75%),
+              radial-gradient(ellipse 100% 55% at 70% 25%, rgba(255,255,255,0.85) 0%, rgba(248,245,255,0.55) 40%, transparent 75%)
+            `,
+          }}
+        />
+
+        {/* Layer 3: Soft edge transition */}
+        <div
+          className="absolute inset-0"
+          style={{
+            maskImage: goesUpward
+              ? `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, fogStartPercent - 15)}%, black ${Math.max(0, fogStartPercent - 8)}%, black ${Math.max(0, fogStartPercent - 3)}%, transparent ${fogStartPercent + 2}%)`
+              : `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - 2)}%, black ${fogStartPercent + 3}%, black ${fogStartPercent + 8}%, transparent ${Math.min(100, fogStartPercent + 15)}%, transparent 100%)`,
+            WebkitMaskImage: goesUpward
+              ? `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, fogStartPercent - 15)}%, black ${Math.max(0, fogStartPercent - 8)}%, black ${Math.max(0, fogStartPercent - 3)}%, transparent ${fogStartPercent + 2}%)`
+              : `linear-gradient(to bottom, transparent ${Math.max(0, fogStartPercent - 2)}%, black ${fogStartPercent + 3}%, black ${fogStartPercent + 8}%, transparent ${Math.min(100, fogStartPercent + 15)}%, transparent 100%)`,
+            background: `
+              radial-gradient(ellipse 30% 80% at 25% 50%, rgba(255,255,255,0.85) 0%, rgba(248,245,255,0.45) 50%, transparent 80%),
+              radial-gradient(ellipse 28% 75% at 75% 50%, rgba(255,255,255,0.8) 0%, rgba(245,242,255,0.4) 50%, transparent 80%)
+            `,
+          }}
+        />
+      </div>
+    );
+  }
+
+  // DESKTOP VERSION: Full-featured with all 11 layers and animations
   return (
     <>
       <style jsx>{`
@@ -98,7 +164,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
       >
         {/* Layer 1: Solid lavender base - main coverage */}
         <div
-          className="absolute inset-0"
+          className={shouldAnimate ? "absolute inset-0" : "absolute inset-0"}
           style={{
             maskImage: fogMask(5, 2),
             WebkitMaskImage: fogMask(5, 2),
@@ -117,7 +183,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 2: Slightly lighter overlay for texture variation */}
         <div
-          className="absolute inset-0 float-1"
+          className={shouldAnimate ? "absolute inset-0 float-1" : "absolute inset-0"}
           style={{
             maskImage: fogMask(6, 1),
             WebkitMaskImage: fogMask(6, 1),
@@ -134,7 +200,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 3: Large white cloud forms - creates fluffy volume */}
         <div
-          className="absolute inset-0 float-2"
+          className={shouldAnimate ? "absolute inset-0 float-2" : "absolute inset-0"}
           style={{
             maskImage: fogMask(4, 0),
             WebkitMaskImage: fogMask(4, 0),
@@ -148,7 +214,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 4: Mid-section cloud forms */}
         <div
-          className="absolute inset-0 float-3"
+          className={shouldAnimate ? "absolute inset-0 float-3" : "absolute inset-0"}
           style={{
             maskImage: fogMask(5, 0),
             WebkitMaskImage: fogMask(5, 0),
@@ -162,7 +228,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 5: Lower cloud forms */}
         <div
-          className="absolute inset-0 float-1"
+          className={shouldAnimate ? "absolute inset-0 float-1" : "absolute inset-0"}
           style={{
             maskImage: fogMask(6, 0),
             WebkitMaskImage: fogMask(6, 0),
@@ -177,7 +243,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 6: Even lower clouds */}
         <div
-          className="absolute inset-0 float-2"
+          className={shouldAnimate ? "absolute inset-0 float-2" : "absolute inset-0"}
           style={{
             maskImage: fogMask(7, 0),
             WebkitMaskImage: fogMask(7, 0),
@@ -191,7 +257,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 7: Bottom section clouds */}
         <div
-          className="absolute inset-0 float-3"
+          className={shouldAnimate ? "absolute inset-0 float-3" : "absolute inset-0"}
           style={{
             maskImage: fogMask(8, 0),
             WebkitMaskImage: fogMask(8, 0),
@@ -205,7 +271,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 8: Bright highlights - cotton candy tops */}
         <div
-          className="absolute inset-0 float-1"
+          className={shouldAnimate ? "absolute inset-0 float-1" : "absolute inset-0"}
           style={{
             maskImage: fogMask(5, 0),
             WebkitMaskImage: fogMask(5, 0),
@@ -248,7 +314,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 10: Pink-lavender warmth tint */}
         <div
-          className="absolute inset-0 float-2"
+          className={shouldAnimate ? "absolute inset-0 float-2" : "absolute inset-0"}
           style={{
             maskImage: fogMask(6, 0),
             WebkitMaskImage: fogMask(6, 0),
@@ -264,7 +330,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
 
         {/* Layer 11: Soft fluffy edge transition */}
         <div
-          className="absolute inset-0 float-3"
+          className={shouldAnimate ? "absolute inset-0 float-3" : "absolute inset-0"}
           style={{
             maskImage: goesUpward
               ? `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, fogStartPercent - 15)}%, black ${Math.max(0, fogStartPercent - 8)}%, black ${Math.max(0, fogStartPercent - 3)}%, transparent ${fogStartPercent + 2}%)`

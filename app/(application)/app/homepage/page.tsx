@@ -11,6 +11,7 @@ import LoadingScreen from "@/app/components/Application/LoadingScreen/LoadingScr
 import StartJourney from "@/app/components/Application/StartJourney/StartJourney";
 import { AnimatePresence, motion } from "framer-motion";
 import { logger } from "@/app/lib/logger";
+import ErrorBoundary from "@/app/components/ErrorBoundary/ErrorBoundary";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -133,7 +134,39 @@ const Page = () => {
               transform: questStarted ? "none" : "scale(1.8)",
             }}
           >
-            <Map {...challenge} onMapReady={handleMapReady} />
+            <ErrorBoundary
+              fallback={
+                <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center text-white">
+                  <div className="w-16 h-16 mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <svg
+                      className="w-8 h-8 text-red-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-semibold mb-2">Map Loading Error</h2>
+                  <p className="text-gray-300 mb-4 max-w-sm">
+                    Unable to load the challenge map. Please refresh the page to try again.
+                  </p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    Refresh Page
+                  </button>
+                </div>
+              }
+            >
+              <Map {...challenge} onMapReady={handleMapReady} />
+            </ErrorBoundary>
           </div>
           <AnimatePresence>
             {mapReady && !questStarted && (

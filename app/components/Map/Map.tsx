@@ -18,6 +18,7 @@ import Image from "next/image";
 import FogOfWar from "./FogOfWar";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { logger } from "@/app/lib/logger";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 const Map = ({
   background_images,
@@ -27,6 +28,7 @@ const Map = ({
   reward,
   onMapReady,
 }: IActiveChallenge & { onMapReady?: () => void }) => {
+  const isMobile = useIsMobile();
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
 
@@ -438,7 +440,8 @@ const Map = ({
     <>
       <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
         <div className="fixed inset-0 -z-10">
-          {background_images.map((image, index) => (
+          {/* On mobile: disable heavy blur effects to reduce GPU load */}
+          {!isMobile && background_images.map((image, index) => (
             <div
               key={`blur-bg-${index}`}
               className="w-full h-auto blur-2xl opacity-40"
