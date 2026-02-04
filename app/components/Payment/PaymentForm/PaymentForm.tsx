@@ -122,7 +122,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       // Set new timer
       debounceTimerRef.current = setTimeout(() => {
         fetchPricingPreview(values.promoCode || "");
-      }, 500);
+      }, 1500);
     } else {
       setPricingPreview(null);
     }
@@ -188,6 +188,8 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         displayMode: "overlay",
         theme: "light",
         locale: "en",
+        allowLogout: false,
+        showAddTaxId: false,
         successUrl: `${window.location.origin}/payment/success`,
       },
     });
