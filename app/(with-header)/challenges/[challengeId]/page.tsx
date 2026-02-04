@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "@/app/components/Shared/Loader/Loader";
-
+//a
 interface ChallengeDetail {
   id: number;
   name: string;
