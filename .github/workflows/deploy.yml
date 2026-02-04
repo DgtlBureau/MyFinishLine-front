@@ -15,7 +15,6 @@ jobs:
     - name: Set up environment variables
       run: |
         echo "${{ secrets.ENV }}" >> .env
-        echo "NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN=${{ secrets.NEXT_PUBLIC_PADDLE_CLIENT_SIDE_TOKEN }}" >> .env
     
     - name: Deploy with compose
       run: |
