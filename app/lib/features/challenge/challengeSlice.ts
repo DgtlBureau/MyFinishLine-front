@@ -16,6 +16,8 @@ export const initialState: IActiveChallenge = {
   activate_date: "",
   is_completed: false,
   completed_at: "",
+  is_started: false,
+  started_at: null,
 };
 
 const challengeSlice = createSlice({

@@ -14,9 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-
-    const { data } = await instance.post("/change-password", body, {
+    const { data } = await instance.post("/challenges/start-quest", {}, {
       headers: {
         Authorization: "Bearer " + token,
       },

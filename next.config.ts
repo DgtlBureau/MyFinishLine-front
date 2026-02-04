@@ -99,6 +99,12 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
       },
       {
+        protocol: "http",
+        hostname: "192.168.0.28",
+        port: "",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "myfinishline.io",
         pathname: "/**",

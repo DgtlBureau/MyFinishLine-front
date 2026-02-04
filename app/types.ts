@@ -80,7 +80,10 @@ export interface IActiveChallenge {
   logo_url?: string | null;
   reward?: IReward;
   reward_ticket?: IRewardTicket;
+  reward_image_url?: string | null;
   route_data?: IRouteData;
+  is_started?: boolean;
+  started_at?: string | null;
 }
 
 export interface IActivity {

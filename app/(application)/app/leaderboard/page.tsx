@@ -4,7 +4,7 @@ import LeaderboardSwiper from "@/app/components/LeaderboardSwiper/LeaderboardSwi
 import { setUserChallenges } from "@/app/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserChallenges } from "@/app/lib/utils/userService";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import LeaderboardSkeleton from "@/app/components/LeaderboardSwiper/LeaderboardItem/LeaderboardSkeleton";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
@@ -19,12 +19,8 @@ const page = () => {
   const [mounted, setMounted] = useState(false);
   const { challenges } = useAppSelector((state) => state.user);
   const challenge = useAppSelector((state) => state.challenge);
-  const questStarted = useMemo(() => {
-    if (!challenge?.id || challenge.id <= 0) return false;
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem(`quest_started_${challenge.id}`) === "true";
-  }, [challenge?.id]);
-  const hasActiveChallenge = challenge?.id > 0 && questStarted;
+  // Quest started state comes from API (challenge.is_started)
+  const hasActiveChallenge = challenge?.id > 0 && (challenge?.is_started ?? true);
   const dispatch = useAppDispatch();
 
   const handleLoadChallenges = async () => {

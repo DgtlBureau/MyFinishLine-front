@@ -52,14 +52,8 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
     ? anotherCahallenges?.[0]
     : challenges?.[0];
 
-  const [questStarted, setQuestStarted] = useState(true);
-
-  useEffect(() => {
-    if (challenge?.id) {
-      const stored = localStorage.getItem(`quest_started_${challenge.id}`);
-      setQuestStarted(stored === "true");
-    }
-  }, [challenge?.id]);
+  // Quest started state comes from API (challenge.is_started)
+  const questStarted = challenge?.is_started ?? true;
 
   const hours = challenge?.activate_date
     ? getTimePassed(challenge.activate_date, challenge.completed_at)
@@ -171,7 +165,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             <span className="text-xl font-bold leading-6 text-white min-w-[80px]">
               {(isMile ? challenge.user_distance_mile : challenge.user_distance) || 0} {label}
             </span>
-            {challenge.reward?.image_url && (
+            {(challenge.reward?.image_url || challenge.reward_image_url) && (
               <motion.div
                 onClick={handleOpenModal}
                 className="relative flex items-center justify-center rounded-full w-28 h-28 bg-gradient-to-b from-[#EEDFBA] to-[#CBA76D] p-1 cursor-pointer shadow-lg"
@@ -199,7 +193,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
                 <div className="bg-white w-full h-full rounded-full relative z-10 overflow-hidden">
                   <Image
                     className="p-2 w-full object-contain h-full"
-                    src={challenge.reward?.image_url}
+                    src={challenge.reward?.image_url || challenge.reward_image_url || ""}
                     width={1080}
                     height={1080}
                     alt="Medal"
@@ -243,10 +237,10 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             ease: "easeInOut",
           }}
         >
-          {challenge.reward?.image_url && (
+          {(challenge.reward?.image_url || challenge.reward_image_url) && (
             <Image
               className="px-4 pb-3 h-[50%] max-h-[calc(100vh-80px)] object-contain"
-              src={challenge.reward?.image_url}
+              src={challenge.reward?.image_url || challenge.reward_image_url || ""}
               width={1080}
               height={1080}
               quality={100}

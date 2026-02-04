@@ -3,7 +3,6 @@
 import { setChallenge, updateChallenge } from "@/app/lib/features/challenge/challengeSlice";
 import { getUserActiveChallenge } from "@/app/lib/utils/userService";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import Clouds from "@/app/components/Map/Clouds/Clouds";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Map from "@/app/components/Map/Map";
 import MapHeader from "@/app/components/Application/MapHeader/MapHeader";
@@ -12,6 +11,7 @@ import StartJourney from "@/app/components/Application/StartJourney/StartJourney
 import { AnimatePresence, motion } from "framer-motion";
 import { logger } from "@/app/lib/logger";
 import ErrorBoundary from "@/app/components/ErrorBoundary/ErrorBoundary";
+import axios from "axios";
 
 const Page = () => {
   const challenge = useAppSelector((state) => state.challenge);
@@ -21,9 +21,9 @@ const Page = () => {
   const hasCachedChallenge = challenge?.id > 0;
 
   const [isFetching, setIsFetching] = useState(!hasCachedChallenge);
-  const [shouldAnimate, setShouldAnimate] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [questStarted, setQuestStarted] = useState(true);
+  const [isStarting, setIsStarting] = useState(false);
+  const [hasFreshData, setHasFreshData] = useState(false);
 
   const mapWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -31,31 +31,29 @@ const Page = () => {
     setMapReady(true);
   }, []);
 
-  // Check localStorage for quest started state
-  useEffect(() => {
-    if (challenge?.id > 0) {
-      const key = `quest_started_${challenge.id}`;
-      const stored = localStorage.getItem(key);
-      setQuestStarted(stored === "true");
-    }
-  }, [challenge?.id]);
+  // Quest started state comes from API (challenge.is_started)
+  // Don't show "Start Quest" until we have fresh data from API
+  const questStarted = !hasFreshData || (challenge?.is_started ?? true);
 
-  const handleStartQuest = useCallback(() => {
-    if (challenge?.id > 0) {
-      localStorage.setItem(`quest_started_${challenge.id}`, "true");
+  const handleStartQuest = useCallback(async () => {
+    if (isStarting) return;
+    setIsStarting(true);
+
+    try {
+      const { data } = await axios.post("/api/challenges/start-quest");
+      if (data.status) {
+        dispatch(updateChallenge({ is_started: true, started_at: data.started_at }));
+      }
+    } catch (error) {
+      logger.error("Failed to start quest:", error);
+    } finally {
+      setIsStarting(false);
     }
-    setQuestStarted(true);
-  }, [challenge?.id]);
+  }, [dispatch, isStarting]);
 
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-
-    const hasSeenClouds = sessionStorage.getItem("clouds_seen");
-
-    if (!hasCachedChallenge && !hasSeenClouds) {
-      setShouldAnimate(true);
-    }
 
     const loadChallenge = async () => {
       if (!hasCachedChallenge) {
@@ -66,11 +64,13 @@ const Page = () => {
         const data = await getUserActiveChallenge();
         if (data) {
           dispatch(setChallenge(data));
+          setHasFreshData(true);
         }
       } catch (error) {
         logger.error("Failed to load challenge:", error);
+        // If fetch fails, trust cached data
+        setHasFreshData(true);
       } finally {
-        sessionStorage.setItem("clouds_seen", "true");
         setIsFetching(false);
       }
     };
@@ -100,13 +100,10 @@ const Page = () => {
   return (
     <>
       <AnimatePresence mode="wait">
-        {(isFetching || showSplash) && !shouldAnimate && (
+        {(isFetching || showSplash) && (
           <LoadingScreen isVisible={true} />
         )}
       </AnimatePresence>
-      {shouldAnimate && !hasCachedChallenge && (
-        <Clouds isVisible={isFetching || showSplash} />
-      )}
       {showMap ? (
         <>
           {mapReady && questStarted && (
@@ -119,19 +116,16 @@ const Page = () => {
               distanceMile={challenge.total_distance_mile}
             />
           )}
-          {/* Dark background + bottom overlay when quest not started */}
+          {/* Bottom gradient overlay when quest not started */}
           {!questStarted && (
-            <>
-              <div className="fixed inset-0 z-10 bg-[#1a2a4a]" />
-              <div className="fixed bottom-0 left-0 right-0 h-1/3 z-25 bg-gradient-to-t from-[#1a2a4a] via-[#1a2a4a]/80 to-transparent pointer-events-none" />
-            </>
+            <div className="fixed bottom-0 left-0 right-0 h-1/3 z-30 bg-gradient-to-t from-[#1a2a4a] via-[#1a2a4a]/80 to-transparent pointer-events-none" />
           )}
           <div
             ref={mapWrapperRef}
             className={`transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
             style={{
-              filter: questStarted ? "none" : "blur(24px)",
-              transform: questStarted ? "none" : "scale(1.8)",
+              filter: questStarted ? "none" : "blur(8px)",
+              transform: questStarted ? "none" : "scale(1.15)",
             }}
           >
             <ErrorBoundary

@@ -438,8 +438,8 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
-        <div className="fixed inset-0 -z-10">
+      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden overscroll-none">
+        <div className="fixed -inset-20 -z-10 bg-[#1a2a4a]">
           {/* On mobile: disable heavy blur effects to reduce GPU load */}
           {!isMobile && background_images.map((image, index) => (
             <div

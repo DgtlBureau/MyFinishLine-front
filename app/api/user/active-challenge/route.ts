@@ -34,6 +34,7 @@ export async function GET() {
     if (data) {
       data.image_url = prefixStorageUrl(data.image_url);
       data.logo_url = prefixStorageUrl(data.logo_url);
+      data.reward_image_url = prefixStorageUrl(data.reward_image_url);
       if (data.background_images) {
         data.background_images = data.background_images.map(
           (img: { image_url: string; [key: string]: unknown }) => ({

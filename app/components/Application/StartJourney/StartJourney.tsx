@@ -15,7 +15,7 @@ export default function StartJourney({
 }: StartJourneyProps) {
   if (mode === "start") {
     return (
-      <div className="fixed inset-0 z-30 flex flex-col items-center justify-center px-6 pb-[63px] bg-black/40 backdrop-blur-sm" style={{ height: '100dvh' }}>
+      <div className="fixed inset-0 z-30 flex flex-col items-center justify-center px-6 pb-[63px]" style={{ height: '100dvh' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
