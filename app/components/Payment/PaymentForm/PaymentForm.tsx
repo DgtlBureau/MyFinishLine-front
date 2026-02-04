@@ -68,6 +68,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
     fetch("/api/payment/shipping-rates")
       .then((res) => res.json())
       .then((data) => {
+        console.log("Loaded shipping rates:", data);
         setShippingRates(data);
       })
       .catch((error) => {
@@ -267,6 +268,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
             onChange={(e) => {
               setFieldValue("country", e.target.value);
               const selected = shippingRates.find(rate => rate.country_code === e.target.value);
+              console.log("Selected country:", e.target.value, "Found rate:", selected);
               setSelectedShipping(selected || null);
             }}
             onBlur={handleBlur}

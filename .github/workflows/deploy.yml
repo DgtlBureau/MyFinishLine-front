@@ -14,7 +14,8 @@ jobs:
 
     - name: Set up environment variables
       run: |
-        echo "${{ secrets.ENV }}" >> .env
+        rm -f .env
+        echo "${{ secrets.ENV }}" > .env
     
     - name: Deploy with compose
       run: |
