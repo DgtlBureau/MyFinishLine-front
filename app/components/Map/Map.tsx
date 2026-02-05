@@ -519,10 +519,11 @@ const Map = ({
                   <div
                     key={step.id}
                     id={`step-${step.index}`}
-                    className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute"
                     style={{
                       left: `${step.x_coordinate}px`,
                       bottom: `${Number(step.y_coordinate) + yOffset}px`,
+                      transform: 'translate(-50%, 50%)',
                       zIndex: 10,
                     }}
                   >
