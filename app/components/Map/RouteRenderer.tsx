@@ -440,10 +440,12 @@ const RouteRenderer = ({
     <>
       <svg
         ref={svgRef}
-        className="absolute inset-0 pointer-events-none"
+        className="absolute pointer-events-none"
+        width={mapWidth}
+        height={mapHeight}
         viewBox={`0 0 ${routeData.base_width} ${routeData.base_height}`}
         preserveAspectRatio="none"
-        style={{ overflow: "visible", zIndex: 5 }}
+        style={{ overflow: "visible", zIndex: 5, left: 0, top: 0 }}
       >
         {scaledRoutes.map((route) => {
           const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
