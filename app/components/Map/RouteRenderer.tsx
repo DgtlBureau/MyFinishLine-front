@@ -168,12 +168,13 @@ const RouteSegment = memo(
           </linearGradient>
         </defs>
 
-        {/* Background path - uncompleted (solid) */}
+        {/* Background path - uncompleted (dashed gray) */}
         <path
           d={pathD}
           fill="none"
-          stroke="rgba(255, 255, 255, 0.3)"
+          stroke="#9ca3af"
           strokeWidth={backgroundStrokeWidth}
+          strokeDasharray="8 4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -186,6 +187,7 @@ const RouteSegment = memo(
             fill="none"
             stroke={isCompleted ? "#8B5CF6" : "#06B6D4"}
             strokeWidth={glowStrokeWidth}
+            strokeDasharray="8 4"
             strokeLinecap="round"
             strokeLinejoin="round"
             filter={isMobile ? undefined : `url(#${filterId})`}
@@ -193,13 +195,14 @@ const RouteSegment = memo(
           />
         )}
 
-        {/* Progress colored line - completed/in-progress portion */}
+        {/* Progress colored line - completed/in-progress portion (dashed) */}
         <path
           ref={progressPathRef}
           d={pathD}
           fill="none"
           stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
           strokeWidth={progressStrokeWidth}
+          strokeDasharray="8 4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -211,6 +214,7 @@ const RouteSegment = memo(
             fill="none"
             stroke="rgba(255, 255, 255, 0.4)"
             strokeWidth={highlightStrokeWidth}
+            strokeDasharray="8 4"
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
