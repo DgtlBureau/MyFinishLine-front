@@ -4,7 +4,6 @@ const navigationLinks = [
   { name: "About Us", href: "#about" },
   { name: "FAQ", href: "#faq" },
   { name: "Support", href: "#" },
-  { name: "Blog", href: "#blog" },
   { name: "Career with us", href: "#" },
 ];
 
@@ -14,20 +13,13 @@ const resourceLinks = [
   { name: "Refund Policy", href: "https://dev.myfinishline.io/refund-policy" },
 ];
 
-const socialLinks = [
-  { name: "Follow on Instagram", href: "#" },
-  { name: "Follow on Facebook", href: "#" },
-  { name: "Follow on TikTok", href: "#" },
-  { name: "Follow on X", href: "#" },
-];
-
 export default function Footer() {
   return (
     <footer className="py-12 md:py-24 border-t border-white/15">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="flex flex-col gap-12 md:gap-24">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 gap-8">
             {/* Navigation Column */}
             <div className="flex flex-col">
               <div className="pb-3 md:pb-4">
@@ -53,24 +45,6 @@ export default function Footer() {
               </div>
               <div className="flex flex-col gap-3 md:gap-4">
                 {resourceLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="font-medium text-sm md:text-base text-white/50 leading-5 md:leading-6 hover:text-white transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Social Column */}
-            <div className="flex flex-col col-span-2 md:col-span-1 mt-4 md:mt-0">
-              <div className="pb-3 md:pb-4">
-                <h4 className="font-bold text-sm md:text-base text-white leading-5 md:leading-6">Social</h4>
-              </div>
-              <div className="flex flex-col gap-3 md:gap-4">
-                {socialLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}

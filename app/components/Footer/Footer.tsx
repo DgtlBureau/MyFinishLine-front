@@ -20,12 +20,6 @@ const FOOTER_SECTIONS = [
   },
 ];
 
-const SOCIAL_LINKS = [
-  { name: "Follow on Instagram", href: "#" },
-  { name: "Follow on Facebook", href: "#" },
-  { name: "Follow on TikTok", href: "#" },
-  { name: "Follow on X", href: "https://x.com" },
-];
 
 const Footer = () => {
   const pathname = usePathname();
@@ -41,7 +35,7 @@ const Footer = () => {
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="flex flex-col gap-12 md:gap-24">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 gap-8">
             {/* Navigation & Resources Columns */}
             {FOOTER_SECTIONS.map((section, index) => (
               <div key={index} className="flex flex-col">
@@ -63,30 +57,6 @@ const Footer = () => {
                 </div>
               </div>
             ))}
-
-            {/* Logo and Social Column */}
-            <div className="flex flex-col col-span-2 md:col-span-1 mt-4 md:mt-0">
-              <div className="pb-3 md:pb-4 h-8 md:h-10">
-                <img
-                  src={logoImg}
-                  alt="MyFinishLine"
-                  className="h-6 md:h-8 w-auto"
-                />
-              </div>
-              <div className="flex flex-col gap-3 md:gap-4">
-                {SOCIAL_LINKS.map((link, index) => (
-                  <Link
-                    key={index}
-                    href={link.href}
-                    className="font-medium text-sm md:text-base text-white/50 leading-5 md:leading-6 hover:text-white transition-colors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Bottom Section */}

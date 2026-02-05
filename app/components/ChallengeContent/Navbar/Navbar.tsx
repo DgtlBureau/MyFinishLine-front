@@ -41,7 +41,6 @@ export const NAV_LINKS: NavLinks[] = [
   },
   { label: "Challenges", href: "/#challenges" },
   { label: "How it works", href: "/#how-it-works" },
-  { label: "Blog", href: "/blog" },
   { label: "FAQ", href: "/faq" },
 ];
 
@@ -54,7 +53,6 @@ const getNavLinks = (firstChallengeId?: string): NavLinks[] => [
   },
   { label: "Challenges", href: "/#challenges" },
   { label: "How it works", href: "/#how-it-works" },
-  { label: "Blog", href: "/blog" },
   { label: "FAQ", href: "/faq" },
 ];
 
