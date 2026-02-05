@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
+    unoptimized: true, // Disable Image Optimization API for development (allows localhost images)
     remotePatterns: [
       {
         protocol: "https",
@@ -97,6 +98,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/storage/**",
       },
       {
         protocol: "http",

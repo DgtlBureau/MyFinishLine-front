@@ -58,8 +58,8 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
               <Route size={14} className="text-white/80" />
               <span className="font-medium text-xs text-white">
                 {useIsImperial() && product.challenge_info?.total_distance_mile
-                  ? `${Math.round(product.challenge_info.total_distance_mile)} mi`
-                  : `${(Number(product.challenge_info!.total_distance) / 1000).toFixed(0)} km`}
+                  ? `${product.challenge_info.total_distance_mile >= 100 ? product.challenge_info.total_distance_mile.toLocaleString('en-US', { maximumFractionDigits: 0 }) : product.challenge_info.total_distance_mile.toFixed(2)} mi`
+                  : `${(Number(product.challenge_info!.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} km`}
               </span>
             </div>
           )}
@@ -93,7 +93,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
               >
                 <Minus size={12} />
               </button>
-              <span className="text-white font-bold w-5 text-center">{quantity}</span>
+              <span className="text-white font-bold w-10 text-center tabular-nums">{quantity}</span>
               <button
                 type="button"
                 onClick={() => onQuantityChange(Math.min(10, quantity + 1))}
@@ -101,7 +101,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
               >
                 <Plus size={12} />
               </button>
-              <p className="font-medium ml-2 whitespace-nowrap">
+              <p className="font-medium ml-2 whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">
                 {subtotal.toFixed(2)} {symbol}
               </p>
             </div>
@@ -117,7 +117,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
                   {quantity > 1 ? ` x${quantity}` : ""}
                 </p>
               </div>
-              <p className="font-medium whitespace-nowrap">
+              <p className="font-medium whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">
                 {shippingPrice.toFixed(2)} {symbol}
               </p>
             </div>
@@ -133,7 +133,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
                   {discount.type === "percentage" ? ` ${discount.amount}%` : ""})
                 </p>
               </div>
-              <p className="font-medium whitespace-nowrap">
+              <p className="font-medium whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">
                 -{discountAmount.toFixed(2)} {symbol}
               </p>
             </div>
@@ -141,7 +141,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
 
           <div className="flex justify-between p-3 px-5 text-base font-bold">
             <p>Total</p>
-            <p>
+<p className="min-w-[5.5rem] text-right tabular-nums">
               {totalPrice.toFixed(2)} {symbol}
             </p>
           </div>

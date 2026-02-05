@@ -148,7 +148,7 @@ export default function FeaturesCarousel() {
                       className="h-full basis-full"
                     >
                       <div className="relative flex flex-col rounded-2xl md:rounded-3xl p-5 sm:p-7 lg:p-9 w-full overflow-hidden aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]">
-                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6 text-white/80"><Route width={20} height={20} /> {useIsImperial() ? `${Math.round(challenge.total_distance_mile)} mi` : `${(challenge.total_distance / 1000).toFixed(0)} km`}</p>
+                        <p className="flex items-center gap-1.5 z-10 text-xs sm:text-[14px] font-regular leading-6 text-white/80"><Route width={20} height={20} /> {useIsImperial() ? `${challenge.total_distance_mile >= 100 ? challenge.total_distance_mile.toLocaleString('en-US', { maximumFractionDigits: 0 }) : challenge.total_distance_mile.toFixed(2)} mi` : `${(challenge.total_distance / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} km`}</p>
                         <div className="mt-auto z-10">
                           <h3 className="text-lg sm:text-xl lg:text-[24px] font-semibold leading-7 lg:leading-8 text-white">{challenge.name}</h3>
                           {challenge.description && <p className="text-xs sm:text-[14px] leading-5 sm:leading-6 text-white/70">{challenge.description}</p>}

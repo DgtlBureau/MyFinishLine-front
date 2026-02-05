@@ -6,11 +6,18 @@ export function ToastContainerClient() {
   return (
     <ToastContainer
       position="top-center"
-      draggable
+      draggable={false}
       transition={Slide}
-      closeButton={false}
-      className="z-110"
+      closeButton={true}
       autoClose={5000}
+      pauseOnHover={false}
+      pauseOnFocusLoss={false}
+      hideProgressBar={false}
+      newestOnTop
+      limit={3}
+      enableMultiContainer={false}
+      containerId="main-toast-container"
+      style={{ zIndex: 9999 }}
     />
   );
 }

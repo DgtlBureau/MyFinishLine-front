@@ -54,7 +54,7 @@ export const FaqForm = ({
   };
 
   return (
-    <div className="relative flex w-full flex-col gap-4 rounded-2xl p-5">
+    <div className="relative flex w-full flex-col gap-4 rounded-2xl p-5 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 shadow-2xl">
       {hasCloseIcon && (
         <button
           type="button"

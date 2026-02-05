@@ -37,8 +37,8 @@ function useIsImperial() {
 }
 
 function formatLandingDistance(meters: number, miles: number, imperial: boolean): string {
-  if (imperial) return `${Math.round(miles)} mi`;
-  return `${(meters / 1000).toFixed(0)} km`;
+  if (imperial) return `${miles >= 100 ? miles.toLocaleString('en-US', { maximumFractionDigits: 0 }) : miles.toFixed(2)} mi`;
+  return `${(meters / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} km`;
 }
 
 const formatPrice = (amount: string, currency: string) => {
@@ -261,7 +261,7 @@ export default function QuestSelection() {
 
   return (
     <section
-      className="flex flex-col items-center py-12 md:py-24 w-full"
+      className="flex flex-col items-center py-12 md:py-24 w-full scroll-mt-[calc(var(--header-height)+1rem)]"
       id="challenges"
     >
       <div className="flex flex-col items-center w-full">

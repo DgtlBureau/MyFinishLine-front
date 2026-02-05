@@ -9,6 +9,7 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
+import { useAppSelector } from "@/app/lib/hooks";
 
 const glassInputClassName =
   "h-12 text-base bg-white/15 backdrop-blur-xl border-white/30 text-white placeholder:text-white/40 focus:border-white/50 focus:ring-white/20";
@@ -31,6 +32,7 @@ const formItemVariants = {
 
 const ChangePasswordPage = () => {
   const router = useRouter();
+  const { user } = useAppSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -80,6 +82,9 @@ const ChangePasswordPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Prevent double submission
+    if (isLoading) return;
+
     const allTouched = { current_password: true, new_password: true, new_password_confirmation: true };
     setTouched(allTouched);
     const validationErrors = validate(form);
@@ -88,7 +93,18 @@ const ChangePasswordPage = () => {
 
     setIsLoading(true);
     try {
-      await axios.post("/api/user/change-password", form);
+      const response = await axios.post("/api/user/change-password", {
+        ...form,
+        email: user.email,
+      });
+
+      // Check if response contains errors (backend might return 200 with errors)
+      if (response.data?.errors || response.data?.message?.includes("required") || response.data?.message?.includes("incorrect")) {
+        const message = response.data?.message || "Failed to change password";
+        toast.error(message);
+        return;
+      }
+
       toast.success("Password changed successfully");
       router.push("/app/profile/settings");
     } catch (error: any) {

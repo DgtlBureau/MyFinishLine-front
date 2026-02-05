@@ -13,9 +13,17 @@ const GoogleLogin = ({
   disabled?: boolean;
   onNavigate?: (url: string) => void;
 }) => {
+  const logoSize = type === "sign-up" ? "w-7 h-7" : "w-6 h-6";
+  const logoWidth = type === "sign-up" ? 28 : 24;
+  const buttonPadding = type === "sign-up" ? "py-5 px-6" : "py-3.5 px-5";
+  const buttonTextSize = type === "sign-up" ? "text-lg font-semibold" : "text-base font-medium";
+  const buttonGap = type === "sign-up" ? "gap-3" : "gap-2.5";
+  const buttonRadius = type === "sign-up" ? "rounded-2xl" : "rounded-xl";
+  const dropShadow = type === "sign-up" ? "drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]" : "drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]";
+
   return (
     <Button
-      className={`w-full py-3.5 px-5 text-base font-medium cursor-pointer transition-all duration-300 flex items-center justify-center gap-2.5 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:bg-white/30 hover:shadow-lg hover:text-white
+      className={`w-full ${buttonPadding} ${buttonTextSize} cursor-pointer transition-all duration-300 flex items-center justify-center ${buttonGap} ${buttonRadius} bg-white/20 backdrop-blur-xl border border-white/30 text-white ${dropShadow} hover:bg-white/30 hover:shadow-lg hover:text-white
         ${disabled && "opacity-70 cursor-not-allowed"}
       `}
       variant="ghost"
@@ -29,19 +37,22 @@ const GoogleLogin = ({
         }
       }}
     >
-      {loading ? (
-        <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
-      ) : (
-        <div className="w-7 h-7 flex items-center justify-center shrink-0">
-          <Image
-            width={20}
-            height={20}
-            src="/icons/google.svg"
-            alt="Google"
-            className="w-5 h-5"
-          />
-        </div>
-      )}
+      <div className={`${logoSize} flex items-center justify-center shrink-0 relative`}>
+        {loading ? (
+          <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+        ) : (
+          <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
+            <Image
+              width={logoWidth}
+              height={logoWidth}
+              src="/icons/google-logo.webp"
+              alt="Google"
+              className="w-[110%] h-[110%] object-cover"
+              style={{ display: 'block' }}
+            />
+          </div>
+        )}
+      </div>
       {type === "login" ? "Sign in" : "Sign up"} with Google
     </Button>
   );

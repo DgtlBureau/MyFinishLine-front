@@ -88,7 +88,7 @@ export default function Footer() {
             <img
               src={logoImg}
               alt="MyFinishLine"
-              className="h-8 md:h-10 w-auto"
+              className="h-12 md:h-16 w-auto"
             />
             <p className="font-medium text-xs md:text-sm text-white/50 leading-4 md:leading-5 text-center">
               © 2026 MyFinishLine. All rights reserved.

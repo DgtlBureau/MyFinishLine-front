@@ -293,17 +293,20 @@ export default function Login() {
                 ${(formData.isLoading || loadingProvider) && "opacity-70 cursor-not-allowed"}
               `}
               >
-                <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 flex items-center justify-center shrink-0 relative">
                   {loadingProvider === "strava" ? (
                     <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
                   ) : (
-                    <Image
-                      src="/icons/strava-logo.png"
-                      width={20}
-                      height={20}
-                      alt="Strava"
-                      className="w-5 h-5 rounded"
-                    />
+                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
+                      <Image
+                        src="/icons/strava-logo.svg"
+                        width={24}
+                        height={24}
+                        alt="Strava"
+                        className="w-[110%] h-[110%] object-cover"
+                        style={{ display: 'block' }}
+                      />
+                    </div>
                   )}
                 </div>
                 Sign in with Strava
@@ -317,17 +320,20 @@ export default function Login() {
                 ${(formData.isLoading || loadingProvider) && "opacity-70 cursor-not-allowed"}
               `}
               >
-                <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 flex items-center justify-center shrink-0 relative">
                   {loadingProvider === "fitbit" ? (
                     <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
                   ) : (
-                    <Image
-                      src="/icons/fitbit-logo.png"
-                      width={20}
-                      height={20}
-                      alt="Fitbit"
-                      className="w-5 h-5 rounded"
-                    />
+                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
+                      <Image
+                        src="/icons/fitbit-logo-new.png"
+                        width={24}
+                        height={24}
+                        alt="Fitbit"
+                        className="w-[110%] h-[110%] object-cover"
+                        style={{ display: 'block' }}
+                      />
+                    </div>
                   )}
                 </div>
                 Sign in with FitBit

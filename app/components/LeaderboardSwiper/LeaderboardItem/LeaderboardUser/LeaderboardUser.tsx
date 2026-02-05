@@ -162,7 +162,7 @@ const LeaderboardUser = ({
           {(challengeId
             ? (isMile ? Number(total_progress_mile) : Number(total_progress))
             : (isMile ? Number(total_distance_mile) : Number(total_distance) / 1000)
-          )?.toFixed(2)} {label}
+          ).toFixed(2)} {label}
         </span>
         <span className="text-white/70 block text-[12px] font-medium tabular-nums">
           {challengeId

@@ -172,7 +172,7 @@ const AwardModal = ({ onCloseClick, medalImage }: IAwardModalProps) => {
         {/* Medal */}
         {medalImage ? (
           <div className="relative">
-            <Image
+            <img
               src={medalImage}
               width={280}
               height={280}

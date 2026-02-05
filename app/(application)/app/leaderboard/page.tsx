@@ -6,11 +6,11 @@ import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { getUserChallenges } from "@/app/lib/utils/userService";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import LeaderboardSkeleton from "@/app/components/LeaderboardSwiper/LeaderboardItem/LeaderboardSkeleton";
 import { initialState } from "@/app/lib/features/challenge/challengeSlice";
 import PageContainer from "@/app/components/Application/PageContainer/PageContainer";
 import Link from "next/link";
 import { logger } from "@/app/lib/logger";
+import Loader from "@/app/components/Shared/Loader/Loader";
 
 const generalChallengeInfo = { ...initialState, name: "General" };
 
@@ -43,8 +43,8 @@ const page = () => {
   if (!mounted) {
     return (
       <PageContainer title="Leaderboard" description="Keep up the great work!">
-        <div className="px-4 mt-8">
-          <LeaderboardSkeleton count={7} />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <Loader />
         </div>
       </PageContainer>
     );
@@ -88,9 +88,9 @@ const page = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="px-4 mt-8"
+            className="flex items-center justify-center min-h-[50vh]"
           >
-            <LeaderboardSkeleton count={7} />
+            <Loader />
           </motion.div>
         ) : challenges.length > 0 ? (
           <motion.div

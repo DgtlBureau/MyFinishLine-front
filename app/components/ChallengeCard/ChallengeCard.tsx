@@ -149,7 +149,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         <>
           <div className="flex items-center justify-center gap-2 mt-4">
             <span className="text-[13px] text-white/70">
-              Total Distance {(Number(isMile ? challenge.total_distance_mile : challenge.total_distance) / 1000).toFixed(0)} {label}
+              Total Distance {isMile ? (Number(challenge.total_distance_mile) >= 100 ? Number(challenge.total_distance_mile).toLocaleString('en-US', { maximumFractionDigits: 0 }) : Number(challenge.total_distance_mile).toFixed(2)) : (Number(challenge.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} {label}
             </span>
             {challenge.reward_ticket?.id && (
               <>
@@ -163,7 +163,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
           </div>
           <div className="flex justify-between items-center mt-8">
             <span className="text-xl font-bold leading-6 text-white min-w-[80px]">
-              {(isMile ? challenge.user_distance_mile : challenge.user_distance) || 0} {label}
+              {isMile ? (challenge.user_distance_mile || 0).toFixed(2) : (challenge.user_distance || 0).toFixed(2)} {label}
             </span>
             {(challenge.reward?.image_url || challenge.reward_image_url) && (
               <motion.div
@@ -216,7 +216,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
               {hours || 0}
             </span>
           </div>
-          {!userId && challenge.is_completed && !challenge.reward_ticket ? (
+          {!userId && challenge.is_completed && progress >= 100 && !challenge.reward_ticket ? (
             <Link
               href={`/app/profile/redeem?reward_id=${challenge.reward?.id}&challenge_name=${challenge.name}&challenge_id=${challenge.id}`}
               className="block text-center bg-white/20 backdrop-blur-sm w-full mt-8 border-white/40 py-2.5 px-4 border text-white text-sm leading-6 font-semibold hover:bg-white/40 shadow-lg transition-all rounded-xl cursor-pointer"

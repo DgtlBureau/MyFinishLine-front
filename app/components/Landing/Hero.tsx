@@ -5,10 +5,9 @@ import { useEffect, useState, useCallback } from "react";
 
 const heroMapImg = "/images/hero-map.webp";
 const raccoonImg = "/images/mascot.webp";
-const speechBubbleImg = "";
 
-// Images to preload
-const imagesToPreload = [heroMapImg, raccoonImg, speechBubbleImg];
+// Images to preload (filter out empty strings)
+const imagesToPreload = [heroMapImg, raccoonImg].filter(Boolean);
 
 export default function Hero() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -16,6 +15,17 @@ export default function Hero() {
 
   // Preload all images before starting animation
   const preloadImages = useCallback(() => {
+    // If no images to preload, show content immediately
+    if (imagesToPreload.length === 0) {
+      setImagesLoaded(true);
+      return;
+    }
+
+    // Fallback: show content even if images take too long to load
+    const fallbackTimeout = setTimeout(() => {
+      setImagesLoaded(true);
+    }, 5000); // 5 seconds maximum
+
     let loadedCount = 0;
     const totalImages = imagesToPreload.length;
 
@@ -25,12 +35,14 @@ export default function Hero() {
       img.onload = () => {
         loadedCount++;
         if (loadedCount === totalImages) {
+          clearTimeout(fallbackTimeout);
           setImagesLoaded(true);
         }
       };
       img.onerror = () => {
         loadedCount++;
         if (loadedCount === totalImages) {
+          clearTimeout(fallbackTimeout);
           setImagesLoaded(true);
         }
       };
@@ -65,6 +77,13 @@ export default function Hero() {
     };
   }, [imagesLoaded]);
 
+  // Debug: log animation state
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      // Only log in development mode
+    }
+  }, [imagesLoaded, animationStage]);
+
   return (
     <section className="flex flex-col items-center pt-20 md:pt-28 pb-8 md:pb-[60px] w-full">
       <div className="flex flex-col gap-4 md:gap-6 items-center w-full">
@@ -95,7 +114,7 @@ export default function Hero() {
 
           {/* CTA Button */}
           <a
-            href="#level-up"
+            href="#challenges"
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] rounded-md hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 transition-colors"
           >
             Start the Adventure
@@ -104,10 +123,10 @@ export default function Hero() {
         </div>
 
         {/* Map Image Section */}
-        <div className="relative w-full max-w-[1600px] mx-auto h-[220px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="relative w-full max-w-[1600px] mx-auto h-[220px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-3xl">
           {/* Map Image with animation */}
           <div
-            className="absolute inset-0 overflow-hidden transition-all duration-1000 ease-out"
+            className="absolute inset-0 overflow-hidden rounded-3xl transition-all duration-1000 ease-out"
             style={{
               opacity: animationStage >= 1 ? 1 : 0,
               transform: animationStage >= 1 ? "scale(1)" : "scale(0.95)",
@@ -124,33 +143,33 @@ export default function Hero() {
 
           {/* Seamless edge fade - all sides */}
           <div
-            className="absolute -inset-[1px] pointer-events-none"
+            className="absolute -inset-[1px] pointer-events-none rounded-3xl"
             style={{
               backgroundImage: `
-                radial-gradient(ellipse at 50% 45%, rgba(26,42,74,0) 30%, rgba(26,42,74,0.3) 50%, rgba(26,42,74,0.7) 65%, rgba(26,42,74,1) 82%),
-                linear-gradient(to bottom, rgba(26,42,74,0) 55%, rgba(26,42,74,0.5) 75%, rgba(26,42,74,1) 92%),
-                linear-gradient(to top, rgba(26,42,74,0) 75%, rgba(26,42,74,0.5) 88%, rgba(26,42,74,1) 100%),
-                linear-gradient(to right, rgba(26,42,74,1) 0%, rgba(26,42,74,0.8) 6%, rgba(26,42,74,0.3) 14%, rgba(26,42,74,0) 23%),
-                linear-gradient(to left, rgba(26,42,74,1) 0%, rgba(26,42,74,0.8) 6%, rgba(26,42,74,0.3) 14%, rgba(26,42,74,0) 23%)
+                radial-gradient(ellipse at 50% 45%, rgba(26,42,74,0) 25%, rgba(26,42,74,0.2) 45%, rgba(26,42,74,0.5) 60%, rgba(26,42,74,0.8) 75%, rgba(26,42,74,1) 88%),
+                linear-gradient(to bottom, rgba(26,42,74,0) 50%, rgba(26,42,74,0.4) 70%, rgba(26,42,74,0.8) 85%, rgba(26,42,74,1) 95%),
+                linear-gradient(to top, rgba(26,42,74,0) 70%, rgba(26,42,74,0.4) 85%, rgba(26,42,74,1) 100%),
+                linear-gradient(to right, rgba(26,42,74,1) 0%, rgba(26,42,74,0.9) 3%, rgba(26,42,74,0.5) 8%, rgba(26,42,74,0.2) 15%, rgba(26,42,74,0) 25%),
+                linear-gradient(to left, rgba(26,42,74,1) 0%, rgba(26,42,74,0.9) 3%, rgba(26,42,74,0.5) 8%, rgba(26,42,74,0.2) 15%, rgba(26,42,74,0) 25%)
               `,
             }}
           />
 
           {/* Left blur */}
           <div
-            className="absolute top-0 left-0 h-full w-[80px] md:w-[140px] backdrop-blur-[20px] pointer-events-none"
+            className="absolute top-0 left-0 h-full w-[120px] md:w-[180px] backdrop-blur-[20px] pointer-events-none"
             style={{
-              WebkitMaskImage: "linear-gradient(to right, black, transparent)",
-              maskImage: "linear-gradient(to right, black, transparent)",
+              WebkitMaskImage: "linear-gradient(to right, black 0%, black 20%, transparent 100%)",
+              maskImage: "linear-gradient(to right, black 0%, black 20%, transparent 100%)",
             }}
           />
 
           {/* Right blur */}
           <div
-            className="absolute top-0 right-0 h-full w-[80px] md:w-[140px] backdrop-blur-[20px] pointer-events-none"
+            className="absolute top-0 right-0 h-full w-[120px] md:w-[180px] backdrop-blur-[20px] pointer-events-none"
             style={{
-              WebkitMaskImage: "linear-gradient(to left, black, transparent)",
-              maskImage: "linear-gradient(to left, black, transparent)",
+              WebkitMaskImage: "linear-gradient(to left, black 0%, black 20%, transparent 100%)",
+              maskImage: "linear-gradient(to left, black 0%, black 20%, transparent 100%)",
             }}
           />
 

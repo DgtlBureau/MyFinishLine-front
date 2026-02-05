@@ -157,7 +157,7 @@ const Page = () => {
     setIsSending(true);
     const payload = {
       email: values.email,
-      text: values.question,
+      question: values.question,
       category: values.category,
       ...(values.user_id !== null ? { user_id: values.user_id } : {}),
     };

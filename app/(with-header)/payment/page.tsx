@@ -63,7 +63,7 @@ function OtherChallengeCard({ challenge }: { challenge: ChallengeItem }) {
             src={challenge.image_url}
             fill
             alt={challenge.name}
-            className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         </div>

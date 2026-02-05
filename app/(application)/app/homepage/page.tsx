@@ -99,7 +99,7 @@ const Page = () => {
   }, [showMap, mapReady]);
 
   return (
-    <>
+    <div className="absolute inset-0 flex flex-col pb-24">
       <AnimatePresence mode="wait">
         {(isFetching || showSplash) && (
           <LoadingScreen isVisible={true} />
@@ -119,11 +119,11 @@ const Page = () => {
           )}
           {/* Bottom gradient overlay when quest not started */}
           {!questStarted && (
-            <div className="fixed bottom-0 left-0 right-0 h-1/3 z-30 bg-gradient-to-t from-[#1a2a4a] via-[#1a2a4a]/80 to-transparent pointer-events-none" />
+            <div className="fixed bottom-24 left-0 right-0 h-1/3 z-30 bg-gradient-to-t from-[#1a2a4a] via-[#1a2a4a]/80 to-transparent pointer-events-none" />
           )}
           <div
             ref={mapWrapperRef}
-            className={`transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
+            className={`flex-1 overflow-y-auto transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "overflow-hidden" : ""}`}
             style={{
               filter: questStarted ? "none" : "blur(8px)",
               transform: questStarted ? "none" : "scale(1.15)",
@@ -168,6 +168,7 @@ const Page = () => {
               <motion.div
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
+                className="fixed inset-x-0 bottom-24 z-40"
               >
                 <StartJourney mode="start" onStart={handleStartQuest} />
               </motion.div>
@@ -177,7 +178,7 @@ const Page = () => {
       ) : (
         !isFetching && !hasCachedChallenge && <StartJourney />
       )}
-    </>
+    </div>
   );
 };
 
