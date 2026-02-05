@@ -13,9 +13,9 @@ const FOOTER_SECTIONS = [
   {
     title: "Resources",
     links: [
-      { name: "Terms & Conditions", href: "/terms-of-service" },
-      { name: "Privacy Policy", href: "/privacy" },
-      { name: "Refund Policy", href: "/refund-policy" },
+      { name: "Terms & Conditions", href: "https://myfinishline.io/terms-of-service" },
+      { name: "Privacy Policy", href: "https://myfinishline.io/privacy" },
+      { name: "Refund Policy", href: "https://myfinishline.io/refund-policy" },
     ],
   },
 ];

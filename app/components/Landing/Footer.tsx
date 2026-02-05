@@ -8,9 +8,9 @@ const navigationLinks = [
 ];
 
 const resourceLinks = [
-  { name: "Terms of Service", href: "https://dev.myfinishline.io/terms-of-service" },
-  { name: "Privacy Policy", href: "https://dev.myfinishline.io/privacy" },
-  { name: "Refund Policy", href: "https://dev.myfinishline.io/refund-policy" },
+  { name: "Terms of Service", href: "https://myfinishline.io/terms-of-service" },
+  { name: "Privacy Policy", href: "https://myfinishline.io/privacy" },
+  { name: "Refund Policy", href: "https://myfinishline.io/refund-policy" },
 ];
 
 export default function Footer() {
