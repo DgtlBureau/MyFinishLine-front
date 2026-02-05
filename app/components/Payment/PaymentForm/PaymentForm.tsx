@@ -211,7 +211,6 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         allowLogout: false,
         showAddTaxId: false,
         successUrl: `${window.location.origin}/payment/success`,
-        ...({ allowQuantityUpdates: false } as Record<string, unknown>),
       },
     });
 
