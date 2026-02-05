@@ -34,7 +34,8 @@
       "Bash(docker compose up:*)",
       "Bash(npm view:*)",
       "Bash(npm pack:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git ls-tree:*)"
     ]
   }
 }

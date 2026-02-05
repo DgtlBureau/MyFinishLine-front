@@ -5,7 +5,6 @@ import { IRouteData, IStep } from "@/app/types";
 import { useAppSelector } from "@/app/lib/hooks";
 import { User } from "lucide-react";
 import Image from "next/image";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 interface RouteRendererProps {
   routeData: IRouteData;
@@ -22,9 +21,6 @@ interface RouteSegmentProps {
   isCompleted: boolean;
   isActive: boolean;
   segmentIndex: number;
-  isMobile: boolean;
-  scale: number;
-  yOffset: number;
 }
 
 // Generate curved path between two points with S-curve
@@ -67,18 +63,12 @@ function generateCurvedPath(
 // Convert points to smooth SVG path using Catmull-Rom splines
 function pointsToSmoothPath(
   points: { x: number; y: number }[],
-  mapHeight: number,
-  scale: number,
-  offset: number = 0
+  mapHeight: number
 ): string {
   if (points.length < 2) return "";
 
-  // Convert Y coordinates (from bottom to top) - no scaling, viewBox handles it
-  // This matches the admin panel implementation exactly
-  const pts = points.map((p) => ({
-    x: p.x,
-    y: mapHeight - p.y
-  }));
+  // Convert Y coordinates (from bottom to top)
+  const pts = points.map((p) => ({ x: p.x, y: mapHeight - p.y }));
 
   if (pts.length === 2) {
     // Simple line for 2 points - but this shouldn't happen anymore
@@ -109,13 +99,13 @@ function pointsToSmoothPath(
 
 // Individual route segment with progress animation
 const RouteSegment = memo(
-  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex, isMobile, scale, yOffset }: RouteSegmentProps) => {
+  ({ points, mapHeight, progress, isCompleted, isActive, segmentIndex }: RouteSegmentProps) => {
     const progressPathRef = useRef<SVGPathElement>(null);
     const glowPathRef = useRef<SVGPathElement>(null);
 
     // Build smooth SVG path
     const pathD = useMemo(() => {
-      return pointsToSmoothPath(points, mapHeight, 1, 0);
+      return pointsToSmoothPath(points, mapHeight);
     }, [points, mapHeight]);
 
     // Apply progress animation using stroke-dashoffset
@@ -141,26 +131,17 @@ const RouteSegment = memo(
     const filterId = `glow-${segmentIndex}`;
     const gradientId = `progress-gradient-${segmentIndex}`;
 
-    // Mobile: use thinner strokes and disable heavy blur filters
-    const backgroundStrokeWidth = isMobile ? 4 : 6;
-    const dashedStrokeWidth = isMobile ? 3 : 4;
-    const glowStrokeWidth = isMobile ? 8 : 12;
-    const progressStrokeWidth = isMobile ? 4 : 5;
-    const highlightStrokeWidth = isMobile ? 1.5 : 2;
-
     return (
       <g>
-        {/* Filter for glow effect - simplified on mobile */}
+        {/* Filter for glow effect */}
         <defs>
-          {!isMobile && (
-            <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          )}
+          <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#8B5CF6" />
             <stop offset="50%" stopColor="#06B6D4" />
@@ -168,41 +149,47 @@ const RouteSegment = memo(
           </linearGradient>
         </defs>
 
-        {/* Background path - uncompleted (dashed gray) */}
+        {/* Background path - uncompleted (dimmed, dashed) */}
         <path
           d={pathD}
           fill="none"
-          stroke="#9ca3af"
-          strokeWidth={backgroundStrokeWidth}
-          strokeDasharray="8 4"
+          stroke="rgba(255, 255, 255, 0.15)"
+          strokeWidth={6}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d={pathD}
+          fill="none"
+          stroke="rgba(139, 92, 246, 0.25)"
+          strokeWidth={4}
+          strokeDasharray="12 8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Progress glow effect (behind the main line) - skip filter on mobile */}
+        {/* Progress glow effect (behind the main line) */}
         {(isActive || isCompleted) && (
           <path
             ref={glowPathRef}
             d={pathD}
             fill="none"
             stroke={isCompleted ? "#8B5CF6" : "#06B6D4"}
-            strokeWidth={glowStrokeWidth}
-            strokeDasharray="8 4"
+            strokeWidth={12}
             strokeLinecap="round"
             strokeLinejoin="round"
-            filter={isMobile ? undefined : `url(#${filterId})`}
+            filter={`url(#${filterId})`}
             opacity={0.5}
           />
         )}
 
-        {/* Progress colored line - completed/in-progress portion (dashed) */}
+        {/* Progress colored line - completed/in-progress portion */}
         <path
           ref={progressPathRef}
           d={pathD}
           fill="none"
           stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
-          strokeWidth={progressStrokeWidth}
-          strokeDasharray="8 4"
+          strokeWidth={5}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -213,8 +200,7 @@ const RouteSegment = memo(
             d={pathD}
             fill="none"
             stroke="rgba(255, 255, 255, 0.4)"
-            strokeWidth={highlightStrokeWidth}
-            strokeDasharray="8 4"
+            strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
@@ -239,7 +225,6 @@ const RouteRenderer = ({
   mapHeight,
   yOffset = 0,
 }: RouteRendererProps) => {
-  const isMobile = useIsMobile();
   const { user } = useAppSelector((state) => state.user);
   const svgRef = useRef<SVGSVGElement>(null);
   const activePathRef = useRef<SVGPathElement | null>(null);
@@ -248,9 +233,9 @@ const RouteRenderer = ({
   const [svgReady, setSvgReady] = useState(false);
   const previousProgressRef = useRef<number | null>(null);
 
-  // Scale factors based on base dimensions
+  // Scale factors based on base dimensions (not mapHeight which includes yOffset)
   const scaleX = mapWidth / routeData.base_width;
-  const scaleY = mapHeight / routeData.base_height;
+  const scaleY = mapWidth / routeData.base_width; // uniform scale based on width
 
   // Find active route (progress > 0 and < 100)
   const activeRouteInfo = useMemo(() => {
@@ -273,10 +258,10 @@ const RouteRenderer = ({
       // Find the step for this route to get progress info
       const step = steps.find((s) => s.index === route.from_step_index);
 
-      // Keep original points (scaling will happen in pointsToSmoothPath)
+      // Scale the original points
       let scaledPoints = route.points.map((point) => ({
-        x: point.x,
-        y: point.y,
+        x: point.x * scaleX,
+        y: (point.y + yOffset) * scaleY,
       }));
 
       // If only 2 points, generate curved path
@@ -313,9 +298,8 @@ const RouteRenderer = ({
     if (totalLength === 0) return null;
 
     const point = path.getPointAtLength(totalLength * (progress / 100));
-    // Scale from viewBox coordinates to actual pixel coordinates
-    return { x: point.x * scaleX, y: point.y * scaleY };
-  }, [scaleX, scaleY]);
+    return { x: point.x, y: point.y };
+  }, []);
 
   // Handle path ready callback
   const handlePathReady = useCallback((path: SVGPathElement, segmentId: string) => {
@@ -437,93 +421,24 @@ const RouteRenderer = ({
   }, []);
 
   return (
-    <>
-      <svg
-        ref={svgRef}
-        className="absolute pointer-events-none"
-        width={mapWidth}
-        height={mapHeight}
-        viewBox={`0 0 ${routeData.base_width} ${routeData.base_height}`}
-        preserveAspectRatio="none"
-        style={{ overflow: "visible", zIndex: 5, left: 0, top: 0 }}
-      >
-        {scaledRoutes.map((route) => {
-          const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
-          return (
-            <RouteSegment
-              key={segmentId}
-              points={route.scaledPoints}
-              mapHeight={routeData.base_height}
-              progress={route.progress}
-              isCompleted={route.isCompleted}
-              isActive={route.isActive}
-              segmentIndex={route.segmentIndex}
-              isMobile={isMobile}
-              scale={1}
-              yOffset={0}
-            />
-          );
-        })}
-
-        {/* Hidden path for position calculation */}
-        {activeRouteInfo && scaledRoutes.map((route) => {
-          const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
-          if (segmentId !== activeRouteInfo.segmentId) return null;
-          const pathD = pointsToSmoothPath(route.scaledPoints, routeData.base_height, 1, 0);
-          return (
-            <path
-              key={`hidden-${segmentId}`}
-              ref={(el) => {
-                if (el) handlePathReady(el, segmentId);
-              }}
-              d={pathD}
-              fill="none"
-              stroke="transparent"
-              strokeWidth={0}
-              pointerEvents="none"
-            />
-          );
-        })}
-      </svg>
-
-      {/* User Avatar */}
-      {activeRouteInfo && (
-        <div
-          ref={avatarRef}
-          id="user-progress-icon"
-          className="absolute pointer-events-none transition-opacity duration-300"
-          style={{
-            transform: "translate(-50%, -50%)",
-            zIndex: 30,
-            opacity: 0,
-            display: "none",
-          }}
-        >
-          <div className="relative">
-            {/* Pulsing glow effect */}
-            <div className="absolute inset-0 bg-cyan-400 rounded-full animate-ping opacity-75" style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }} />
-
-            {/* Avatar container */}
-            <div
-              className="relative bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl border-2 border-white"
-              style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
-            >
-              {user?.full_avatar_url ? (
-                <Image
-                  src={user.full_avatar_url}
-                  alt="User avatar"
-                  width={CIRCLE_RADIUS * 2 - 4}
-                  height={CIRCLE_RADIUS * 2 - 4}
-                  className="rounded-full object-cover"
-                />
-              ) : (
-                <User size={CIRCLE_RADIUS} className="text-white" />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    <svg
+      className="absolute inset-0 pointer-events-none"
+      width={mapWidth}
+      height={mapHeight}
+      style={{ overflow: "visible", zIndex: 5 }}
+    >
+      {scaledRoutes.map((route) => (
+        <RouteSegment
+          key={`route-${route.from_step_index}-${route.to_step_index}`}
+          points={route.scaledPoints}
+          mapHeight={mapHeight}
+          progress={route.progress}
+          isCompleted={route.isCompleted}
+          isActive={route.isActive}
+          segmentIndex={route.segmentIndex}
+        />
+      ))}
+    </svg>
   );
 };
 

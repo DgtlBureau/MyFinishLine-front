@@ -175,13 +175,13 @@ const Navbar = () => {
                         rest: {
                           scale: 1,
                           backgroundColor: active
-                            ? "transparent"
-                            : "transparent",
+                            ? "rgba(0, 0, 0, 0)"
+                            : "rgba(0, 0, 0, 0)",
                         },
                         hover: {
                           scale: 1.1,
                           backgroundColor: active
-                            ? "transparent"
+                            ? "rgba(0, 0, 0, 0)"
                             : "rgba(255, 255, 255, 0.1)",
                         },
                       }}

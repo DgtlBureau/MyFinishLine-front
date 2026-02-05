@@ -28,6 +28,7 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
           height={80}
           alt="MyFinishLine"
           priority
+          style={{ width: "auto", height: "auto" }}
         />
       </motion.div>
     </motion.div>

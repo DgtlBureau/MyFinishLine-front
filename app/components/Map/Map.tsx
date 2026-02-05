@@ -1,7 +1,7 @@
 "use client";
 
 import Step from "@/app/components/Application/Map/Step/Step";
-import { useState, useLayoutEffect, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence } from "motion/react";
 import AwardModal from "./AwardModal/AwardModal";
 import { Xwrapper } from "react-xarrows";
@@ -18,8 +18,6 @@ import Image from "next/image";
 import FogOfWar from "./FogOfWar";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { logger } from "@/app/lib/logger";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { getStorageUrl } from "@/app/lib/utils/storage";
 
 const Map = ({
   background_images,
@@ -29,27 +27,15 @@ const Map = ({
   reward,
   onMapReady,
 }: IActiveChallenge & { onMapReady?: () => void }) => {
-  const isMobile = useIsMobile();
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
 
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const hasCalledMapReady = useRef(false);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const initialCheckDone = useRef(false);
-
-  // Check if we have a valid background image to load
-  const hasBackgroundImage = background_images && background_images.length > 0 && background_images[0]?.image_url;
-
-  // If there's no background image to load, signal ready immediately (once on mount)
+  // If no background images, signal map ready immediately
   useEffect(() => {
-    if (initialCheckDone.current) return;
-    initialCheckDone.current = true;
-
-    if (!hasBackgroundImage) {
-      setImageLoaded(true);
+    if (!background_images || background_images.length === 0) {
+      onMapReady?.();
     }
-  }, [hasBackgroundImage]);
+  }, [background_images, onMapReady]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -292,56 +278,46 @@ const Map = ({
     }
   };
 
-  // Handle image load with proper verification
-  const handleImageLoad = useCallback(() => {
-    // Use requestAnimationFrame to ensure browser has painted the image
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        // Double rAF ensures the image is actually rendered
-        setImageLoaded(true);
-      });
-    });
-  }, []);
+  useLayoutEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
 
-  // When image loads, scroll to user position FIRST, then signal map ready
-  useEffect(() => {
-    if (!imageLoaded || hasCalledMapReady.current) return;
+    const SESSION_KEY = "map_scroll_animated";
+    const hasSeenAnimation = sessionStorage.getItem(SESSION_KEY) === "true";
 
-    const scrollToBottom = () => {
+    const scrollToBottom = (animate: boolean) => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
-        behavior: "instant",
+        behavior: animate ? "smooth" : "instant",
       });
     };
 
     const hasActiveStep = steps.some((step) => step.active && !step.completed);
     const isAllCompleted = is_completed;
 
-    // Scroll instantly (no animation) to user's position
     if (hasActiveStep || isAllCompleted) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        handleScrollToActiveStep(false); // false = no animation
-        // Signal map ready after scroll completes
-        setTimeout(() => {
-          if (!hasCalledMapReady.current) {
-            hasCalledMapReady.current = true;
-            onMapReady?.();
-          }
+      if (hasSeenAnimation) {
+        timer = setTimeout(() => handleScrollToActiveStep(false), 10);
+      } else {
+        timer = setTimeout(() => {
+          handleScrollToActiveStep(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
         }, 100);
-      }, 100);
+      }
     } else {
-      setTimeout(() => {
-        scrollToBottom();
-        setTimeout(() => {
-          if (!hasCalledMapReady.current) {
-            hasCalledMapReady.current = true;
-            onMapReady?.();
-          }
+      if (hasSeenAnimation) {
+        timer = setTimeout(() => scrollToBottom(false), 10);
+      } else {
+        timer = setTimeout(() => {
+          scrollToBottom(true);
+          sessionStorage.setItem(SESSION_KEY, "true");
         }, 100);
-      }, 100);
+      }
     }
-  }, [imageLoaded, steps, is_completed, onMapReady]);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [steps]);
 
   // const handleGoToNextStep = () => {
   //   if (isAnimating) return;
@@ -460,49 +436,42 @@ const Map = ({
 
   return (
     <>
-      <div className="relative w-full h-full overflow-x-hidden overscroll-none">
-        {/* Background - fixed behind content */}
-        {background_images && background_images.length > 0 && (
-          <div className="fixed inset-0 -z-10 bg-[#1a2a4a]">
-            {/* On mobile: disable heavy blur effects to reduce GPU load */}
-            {!isMobile && (
-              <div className="w-full h-full blur-2xl opacity-40">
-                <img
-                  src={getStorageUrl(background_images[0].image_url)}
-                  className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
-                  alt=""
-                />
-              </div>
-            )}
-            {/* Color overlay to blend with map theme */}
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
-            {/* Soft vignette */}
+      <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
+        <div className="fixed inset-0 -z-10">
+          {background_images.map((image, index) => (
             <div
-              className="absolute inset-0"
-              style={{
-                background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
-              }}
-            />
-          </div>
-        )}
+              key={`blur-bg-${index}`}
+              className="w-full h-auto blur-2xl opacity-40"
+            >
+              <img
+                src={background_images[0].image_url}
+                className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
+                alt=""
+              />
+            </div>
+          ))}
+          {/* Color overlay to blend with map theme */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
+          {/* Soft vignette */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 30, 0.5) 100%)'
+            }}
+          />
+        </div>
 
         <div
           ref={mapContainerRef}
-          className="relative w-full h-full overflow-hidden"
+          className="relative w-full overflow-hidden"
         >
           <div
-            className="relative h-full mx-auto overflow-y-auto overflow-x-hidden"
             style={{
               width: `${MAP_WIDTH * scale}px`,
-              maxWidth: '100%',
+              height: `${MAP_HEIGHT * scale}px`,
+              margin: "0 auto",
             }}
           >
-            <div
-              className="absolute bottom-0 left-0 right-0"
-              style={{
-                height: `${MAP_HEIGHT * scale}px`,
-              }}
-            >
             <div
               className="relative"
               style={{
@@ -515,16 +484,15 @@ const Map = ({
                   : "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.3s ease-out",
               }}
             >
-            {hasBackgroundImage && (
+            {background_images[0] && (
               <img
-                ref={imageRef}
-                src={getStorageUrl(background_images[0].image_url)}
+                src={background_images[0].image_url}
                 alt=""
                 className="absolute inset-0 w-full h-full"
                 style={{ objectFit: "fill" }}
                 draggable={false}
-                onLoad={handleImageLoad}
-                onError={handleImageLoad}
+                onLoad={onMapReady}
+                onError={onMapReady}
               />
             )}
 
@@ -613,7 +581,6 @@ const Map = ({
             </div>
           </div>
           </div>
-          </div>
         </div>
 
         <div className="fixed bottom-18 left-2 z-30">
@@ -631,13 +598,7 @@ const Map = ({
         {isAwardOpen && (
           <AwardModal
             onCloseClick={handleContinueAwards}
-            medalImage={
-              getStorageUrl(
-                activeStep?.badges?.find((b) => b.show_before_story !== false)?.image_url ||
-                activeStep?.cards?.find((c) => c.show_before_story !== false)?.image_url ||
-                reward?.image_url
-              ) || undefined
-            }
+            medalImage={reward?.image_url || undefined}
           />
         )}
       </AnimatePresence>

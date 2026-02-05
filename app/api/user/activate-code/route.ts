@@ -30,11 +30,12 @@ export const POST = async (req: NextRequest) => {
 
     return NextResponse.json(data);
   } catch (error: any) {
-    return NextResponse.json(
-      {
-        message: error.response?.data.error || "Error sending code",
-      },
-      { status: 500 },
-    );
+    const status = error.response?.status || 500;
+    const message =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      "Error sending code";
+
+    return NextResponse.json({ message }, { status });
   }
 };

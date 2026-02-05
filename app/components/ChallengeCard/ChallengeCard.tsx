@@ -125,6 +125,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
             width={220}
             height={90}
             className="object-contain max-h-24"
+            style={{ width: "auto", height: "auto" }}
           />
         </div>
       ) : (
