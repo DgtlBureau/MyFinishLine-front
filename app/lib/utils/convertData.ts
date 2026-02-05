@@ -33,26 +33,15 @@ export const handleConvertTime = (
 };
 
 export const handleConvertTimeShort = (elapsedTimeInSeconds: number) => {
-  if (!elapsedTimeInSeconds) return "0m";
+  if (!elapsedTimeInSeconds) return "00:00:00";
 
   const hours = Math.floor(elapsedTimeInSeconds / 3600);
   const minutes = Math.floor((elapsedTimeInSeconds % 3600) / 60);
-  const seconds = elapsedTimeInSeconds % 60;
+  const seconds = Math.floor(elapsedTimeInSeconds % 60);
 
-  const parts: string[] = [];
+  const pad = (num: number) => num.toString().padStart(2, '0');
 
-  if (hours > 0) {
-    parts.push(`${hours}h`);
-    if (minutes > 0) {
-      parts.push(`${minutes}m`);
-    }
-  } else if (minutes > 0) {
-    parts.push(`${minutes}m`);
-  } else {
-    parts.push(`${seconds}s`);
-  }
-
-  return parts.join(" ");
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 };
 
 export const handleConvertDate = (dateString: string) => {

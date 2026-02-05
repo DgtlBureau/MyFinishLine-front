@@ -27,21 +27,19 @@ const getTimePassed = (
 
   const diffMs = Math.abs(end.getTime() - start.getTime());
 
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-  if (hours === 0) {
-    return `${minutes}m`;
-  }
-  if (minutes === 0) {
-    return `${hours}h`;
-  }
-  return `${hours || 0}h ${minutes || 0}m`;
+  const pad = (num: number) => num.toString().padStart(2, '0');
+
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 };
 
 const ChallengeCard = ({ userId }: { userId?: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const dispatch = useAppDispatch();
   const { challenges, user } = useAppSelector((state) => state.user);
   const { challenges: anotherCahallenges } = useAppSelector(
@@ -55,9 +53,35 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
   // Quest started state comes from API (challenge.is_started)
   const questStarted = challenge?.is_started ?? true;
 
-  const hours = challenge?.activate_date
-    ? getTimePassed(challenge.activate_date, challenge.completed_at)
-    : "0h";
+  // Live timer effect
+  useEffect(() => {
+    if (!challenge?.activate_date || challenge?.completed_at) return;
+
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [challenge?.activate_date, challenge?.completed_at]);
+
+  const getTimeComponents = () => {
+    if (!challenge?.activate_date) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    const start = new Date(challenge.activate_date);
+    const end = challenge.completed_at ? new Date(challenge.completed_at) : currentTime;
+    const diffMs = Math.abs(end.getTime() - start.getTime());
+    const totalSeconds = Math.floor(diffMs / 1000);
+
+    return {
+      hours: Math.floor(totalSeconds / 3600),
+      minutes: Math.floor((totalSeconds % 3600) / 60),
+      seconds: totalSeconds % 60
+    };
+  };
+
+  const timeComponents = getTimeComponents();
 
   const progress = challenge
     ? (challenge.user_distance / +challenge.total_distance) * 100
@@ -150,7 +174,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         <>
           <div className="flex items-center justify-center gap-2 mt-4">
             <span className="text-[13px] text-white/70">
-              Total Distance {isMile ? Number(challenge.total_distance_mile).toLocaleString('de-DE', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : (Number(challenge.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} {label}
+              Total Distance {isMile ? (Number(challenge.total_distance_mile) / 1000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (Number(challenge.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} {label}
             </span>
             {challenge.reward_ticket?.id && (
               <>
@@ -162,14 +186,20 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
           <div className="mt-6">
             <ProgressLine progress={progress} />
           </div>
-          <div className="flex justify-between items-center mt-8">
-            <span className="text-xl font-bold leading-6 text-white min-w-[80px]">
-              {isMile ? (challenge.user_distance_mile || 0).toLocaleString('de-DE', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : (challenge.user_distance || 0).toFixed(2)} {label}
-            </span>
+          <div className="relative flex justify-between items-end mt-8 min-h-[80px]">
+            <div className="flex flex-col gap-1 z-10">
+              <span className="text-[9px] text-white/50 font-medium tracking-wide">TOTAL DISTANCE</span>
+              <div className="flex flex-col">
+                <span className="text-base font-bold leading-5 text-white">
+                  {isMile ? (challenge.user_distance_mile || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (challenge.user_distance || 0).toFixed(2)}
+                </span>
+                <span className="text-[7px] text-white/50 font-medium">{label}</span>
+              </div>
+            </div>
             {(challenge.reward?.image_url || challenge.reward_image_url) && (
               <motion.div
                 onClick={handleOpenModal}
-                className="relative flex items-center justify-center rounded-full w-28 h-28 bg-gradient-to-b from-[#EEDFBA] to-[#CBA76D] p-1 cursor-pointer shadow-lg"
+                className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-[#EEDFBA] to-[#CBA76D] p-1 cursor-pointer shadow-lg"
                 initial={{ scale: 0, opacity: 0, rotateY: -180 }}
                 animate={{ scale: 1, opacity: 1, rotateY: 0 }}
                 transition={{
@@ -213,9 +243,31 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
                 </div>
               </motion.div>
             )}
-            <span className="text-xl font-bold leading-6 text-white min-w-[80px] text-right">
-              {hours || 0}
-            </span>
+            <div className="flex flex-col gap-1 items-end z-10">
+              <span className="text-[9px] text-white/50 font-medium tracking-wide">TIME ON TRACK</span>
+              <div className="flex gap-0.5 items-baseline">
+                <div className="flex flex-col items-center">
+                  <span className="text-base font-bold leading-5 text-white">
+                    {timeComponents.hours.toString().padStart(2, '0')}
+                  </span>
+                  <span className="text-[7px] text-white/50">h</span>
+                </div>
+                <span className="text-base font-bold text-white/50 leading-5">:</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-base font-bold leading-5 text-white">
+                    {timeComponents.minutes.toString().padStart(2, '0')}
+                  </span>
+                  <span className="text-[7px] text-white/50">m</span>
+                </div>
+                <span className="text-base font-bold text-white/50 leading-5">:</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-base font-bold leading-5 text-white">
+                    {timeComponents.seconds.toString().padStart(2, '0')}
+                  </span>
+                  <span className="text-[7px] text-white/50">s</span>
+                </div>
+              </div>
+            </div>
           </div>
           {!userId && challenge.is_completed && progress >= 100 && !challenge.reward_ticket ? (
             <Link

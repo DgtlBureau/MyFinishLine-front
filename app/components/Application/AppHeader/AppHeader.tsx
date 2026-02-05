@@ -77,7 +77,7 @@ const AppHeader = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white/15 backdrop-blur-2xl border-b border-white/30 shadow-lg lg:hidden">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white/15 backdrop-blur-2xl border-b border-white/30 shadow-lg">
       <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
       <div className="relative flex items-center justify-between max-w-4xl mx-auto px-4">
         {isCurrentLinkNested ? (

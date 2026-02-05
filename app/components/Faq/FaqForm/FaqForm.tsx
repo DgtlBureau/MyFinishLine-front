@@ -96,7 +96,7 @@ export const FaqForm = ({
               value={values.email}
               onChange={(e) => setValues("email", e.target.value)}
               placeholder={"email"}
-              className={`rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/35 text-white ${
+              className={`rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/60 text-white ${
                 touched.email && errors.email ? "border-red-400" : ""
               } ${values.user_id ? "text-white/60" : ""}`}
               onBlur={() => setFieldTouched("email", true)}
@@ -117,7 +117,7 @@ export const FaqForm = ({
               rows={4}
               onChange={(e) => setValues("question", e.target.value)}
               placeholder={`Write your question...`}
-              className={`resize-none rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/35 text-white ${
+              className={`resize-none rounded-xl border bg-white/50 backdrop-blur-xl border-white/60 p-3 outline-none focus:border-white/80 focus:ring-2 focus:ring-white/30 transition-all placeholder:text-white/60 text-white ${
                 touched.question && errors.question ? "border-red-400" : ""
               }`}
               onBlur={() => setFieldTouched("question", true)}
