@@ -1,7 +1,7 @@
 import { CurrencieSymbols } from "@/app/types";
 import { IProduct, IShippingRate, IDiscount } from "@/app/types";
 import Image from "next/image";
-import { Minus, Plus, Route, Package, Tag } from "lucide-react";
+import { Route, Package, Tag } from "lucide-react";
 
 function useIsImperial() {
   if (typeof navigator === "undefined") return false;
@@ -11,18 +11,16 @@ function useIsImperial() {
 
 interface ChallengeInfoProps {
   product: IProduct;
-  quantity: number;
-  onQuantityChange: (qty: number) => void;
   selectedShipping: IShippingRate | null;
   discount: IDiscount | null;
 }
 
-export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping, discount }: ChallengeInfoProps) => {
+export const ChallengeInfo = ({ product, selectedShipping, discount }: ChallengeInfoProps) => {
   const unitPrice = Number(product.prices?.amount) / 100;
   const shippingUnitPrice = selectedShipping?.price ? Number(selectedShipping.price) : 0;
-  const shippingPrice = shippingUnitPrice * quantity;
+  const shippingPrice = shippingUnitPrice;
 
-  const subtotal = unitPrice * quantity;
+  const subtotal = unitPrice;
 
   // Calculate discount from Paddle discount object
   let discountAmount = 0;
@@ -85,26 +83,9 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
         <div className="rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-sm text-white overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3">
             <p className="font-medium truncate">{product.name}</p>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
-                className="w-6 h-6 rounded-md bg-white/15 border border-white/25 flex items-center justify-center text-white hover:bg-white/25 transition-colors cursor-pointer"
-              >
-                <Minus size={12} />
-              </button>
-              <span className="text-white font-bold w-10 text-center tabular-nums">{quantity}</span>
-              <button
-                type="button"
-                onClick={() => onQuantityChange(Math.min(10, quantity + 1))}
-                className="w-6 h-6 rounded-md bg-white/15 border border-white/25 flex items-center justify-center text-white hover:bg-white/25 transition-colors cursor-pointer"
-              >
-                <Plus size={12} />
-              </button>
-              <p className="font-medium ml-2 whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">
-                {subtotal.toFixed(2)} {symbol}
-              </p>
-            </div>
+            <p className="font-medium whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">
+              {subtotal.toFixed(2)} {symbol}
+            </p>
           </div>
 
           {/* Shipping row */}
@@ -114,7 +95,6 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
                 <Package size={14} className="text-white/70" />
                 <p className="font-medium">
                   Shipping to {selectedShipping.country_name}
-                  {quantity > 1 ? ` x${quantity}` : ""}
                 </p>
               </div>
               <p className="font-medium whitespace-nowrap min-w-[5.5rem] text-right tabular-nums">

@@ -15,13 +15,12 @@ import "react-phone-number-input/style.css";
 import { logger } from "@/app/lib/logger";
 interface PaymentFormProps {
   product: IProduct;
-  quantity: number;
   selectedShipping: IShippingRate | null;
   setSelectedShipping: (shipping: IShippingRate | null) => void;
   setDiscount: (discount: IDiscount | null) => void;
 }
 
-const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setDiscount }: PaymentFormProps) => {
+const PaymentForm = ({ product, selectedShipping, setSelectedShipping, setDiscount }: PaymentFormProps) => {
   const {
     values,
     touched,
@@ -169,15 +168,15 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
     const items: Array<{ priceId: string; quantity: number }> = [
       {
         priceId: paddlePriceId,
-        quantity,
+        quantity: 1,
       },
     ];
 
-    // Add shipping if country is selected and has paddle_price_id (1 shipping per challenge)
+    // Add shipping if country is selected and has paddle_price_id
     if (selectedShipping && selectedShipping.paddle_price_id) {
       items.push({
         priceId: selectedShipping.paddle_price_id,
-        quantity,
+        quantity: 1,
       });
     }
 

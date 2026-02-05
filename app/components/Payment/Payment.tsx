@@ -10,7 +10,6 @@ interface IPaymentProps {
 }
 
 export const Payment = ({ product }: IPaymentProps) => {
-  const [quantity, setQuantity] = useState(1);
   const [selectedShipping, setSelectedShipping] = useState<IShippingRate | null>(null);
   const [discount, setDiscount] = useState<IDiscount | null>(null);
 
@@ -18,15 +17,12 @@ export const Payment = ({ product }: IPaymentProps) => {
     <div className="flex flex-col gap-4 lg:gap-18 md:flex-row">
       <PaymentForm
         product={product}
-        quantity={quantity}
         selectedShipping={selectedShipping}
         setSelectedShipping={setSelectedShipping}
         setDiscount={setDiscount}
       />
       <ChallengeInfo
         product={product}
-        quantity={quantity}
-        onQuantityChange={setQuantity}
         selectedShipping={selectedShipping}
         discount={discount}
       />
