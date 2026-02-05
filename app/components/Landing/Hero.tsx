@@ -114,7 +114,7 @@ export default function Hero() {
 
           {/* CTA Button */}
           <a
-            href="#level-up"
+            href="#challenges"
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] rounded-md hover:from-[#3B5CC6]/90 hover:to-[#4DA67A]/90 transition-colors"
           >
             Start the Adventure

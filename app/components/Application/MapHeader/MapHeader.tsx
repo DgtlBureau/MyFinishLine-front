@@ -77,7 +77,7 @@ const MapHeader = ({
                   You / Quest
                 </span>
                 <span className="font-bold text-[18px] text-white whitespace-nowrap">
-                  {(Number(userDist) / 1000).toFixed(1).replace('.', ',')} / {(Number(totalDist) / 1000).toFixed(1).replace('.', ',')} {label}
+                  {(isMile ? Number(userDist) : Number(userDist) / 1000).toFixed(2).replace('.', ',')} / {(isMile ? Number(totalDist) : Number(totalDist) / 1000).toFixed(2).replace('.', ',')} {label}
                 </span>
               </div>
               <TimeCounter startDate={startDate} />
@@ -118,57 +118,6 @@ const MapHeader = ({
             </div>
           </div>
         </div>
-
-        {/* Raccoon mascot - only show when not connected */}
-        {!user.has_fitbit_connect && !user.has_strava_connect && (
-          <motion.div
-            className="mt-4 flex items-end"
-            whileTap={{ scale: 0.98 }}
-          >
-            <Link href="/app/profile/settings" className="flex items-end gap-1">
-              <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.3,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 15
-                }}
-              >
-                <Image
-                  src="/images/application/map-racoon.webp"
-                  width={70}
-                  height={70}
-                  alt="Map racoon"
-                />
-              </motion.div>
-              <motion.div
-                className="relative bg-white/15 backdrop-blur-xl border border-white/25 py-2 px-3 rounded-xl shadow-lg mb-4"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  duration: 0.25,
-                  delay: 0.7,
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20
-                }}
-              >
-                <div
-                  className="absolute -left-1.5 bottom-3 w-0 h-0
-                  border-t-6 border-t-transparent
-                  border-r-6 border-r-white/15
-                  border-b-6 border-b-transparent"
-                />
-                <p className="text-[12px] font-medium text-white/80 leading-tight">
-                  Connect <span className="text-blue-500 font-semibold">Strava</span> or <span className="text-teal-500 font-semibold">Fitbit</span>
-                </p>
-              </motion.div>
-            </Link>
-          </motion.div>
-        )}
       </div>
     </motion.header>
   );

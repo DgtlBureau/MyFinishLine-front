@@ -81,7 +81,7 @@ const ChallengeHero = ({
           className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 px-4 py-1.5 text-sm text-white/80 w-fit"
         >
           <Route className="size-4" />
-          <span>{useIsImperial() && distanceMile ? `${Math.round(distanceMile)} mi` : `${(Number(distance) / 1000).toFixed(0)} km`}</span>
+          <span>{useIsImperial() && distanceMile ? `${distanceMile >= 100 ? distanceMile.toLocaleString('en-US', { maximumFractionDigits: 0 }) : distanceMile.toFixed(2)} mi` : `${(Number(distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} km`}</span>
         </motion.div>}
 
         <motion.h1

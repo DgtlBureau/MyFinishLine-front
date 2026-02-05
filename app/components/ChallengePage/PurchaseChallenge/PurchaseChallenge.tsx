@@ -89,7 +89,7 @@ const PurchaseChallenge = ({
 
         {distance && (
           <p className="text-sm md:text-base text-white/70 font-medium">
-            {distance} km{distanceMile ? ` / ${distanceMile} mi` : ""}
+            {(Number(distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} km{distanceMile ? ` / ${distanceMile >= 100 ? distanceMile.toLocaleString('en-US', { maximumFractionDigits: 0 }) : distanceMile.toFixed(2)} mi` : ""}
           </p>
         )}
 

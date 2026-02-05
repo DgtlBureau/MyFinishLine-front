@@ -280,17 +280,22 @@ export default function Register() {
                 ${loadingProvider && "opacity-70 cursor-not-allowed"}
               `}
               >
-                {loadingProvider === "strava" ? (
-                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                ) : (
-                  <Image
-                    src="/icons/strava-logo.png"
-                    width={36}
-                    height={36}
-                    alt="Strava"
-                    className="w-9 h-9 shrink-0 rounded-lg"
-                  />
-                )}
+                <div className="w-7 h-7 flex items-center justify-center shrink-0 relative">
+                  {loadingProvider === "strava" ? (
+                    <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                  ) : (
+                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
+                      <Image
+                        src="/icons/strava-logo.svg"
+                        width={28}
+                        height={28}
+                        alt="Strava"
+                        className="w-[110%] h-[110%] object-cover"
+                        style={{ display: 'block' }}
+                      />
+                    </div>
+                  )}
+                </div>
                 Sign up with Strava
               </Button>
 
@@ -302,17 +307,22 @@ export default function Register() {
                 ${loadingProvider && "opacity-70 cursor-not-allowed"}
               `}
               >
-                {loadingProvider === "fitbit" ? (
-                  <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                ) : (
-                  <Image
-                    src="/icons/fitbit-logo.png"
-                    width={36}
-                    height={36}
-                    alt="Fitbit"
-                    className="w-9 h-9 shrink-0 rounded-lg"
-                  />
-                )}
+                <div className="w-7 h-7 flex items-center justify-center shrink-0 relative">
+                  {loadingProvider === "fitbit" ? (
+                    <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                  ) : (
+                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
+                      <Image
+                        src="/icons/fitbit-logo-new.png"
+                        width={28}
+                        height={28}
+                        alt="Fitbit"
+                        className="w-[110%] h-[110%] object-cover"
+                        style={{ display: 'block' }}
+                      />
+                    </div>
+                  )}
+                </div>
                 Sign up with FitBit
               </Button>
 

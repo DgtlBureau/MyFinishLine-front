@@ -2,8 +2,7 @@
 
 import SettingSection from "@/app/components/Application/Settings/SettingSection/SettingSection";
 import SettingItem from "@/app/components/Application/Settings/SettingItem/SettingItem";
-import LanguageBottomSheet from "@/app/components/Application/Settings/LanguageBottomSheet/LanguageBottomSheet";
-import { Shield, Globe, LogOut, User, UserCog, Ruler } from "lucide-react";
+import { Shield, LogOut, User, UserCog, Ruler } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -18,11 +17,10 @@ import { logger } from "@/app/lib/logger";
 
 const Settings = () => {
   const [isChangingMeasure, setIsChangingMeasure] = useState(false);
-  const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { measure, setMeasure } = useMeasure();
-  const { language, setLanguage, getCurrentLanguage, languages, t } = useTranslation();
+  const { t } = useTranslation();
 
   const handleGoTo = (link: string) => {
     router.push(link);
@@ -113,14 +111,6 @@ const Settings = () => {
       </SettingSection>
 
       <SettingSection title={t.settings.preferences} delay={4}>
-        <SettingItem
-          icon={<Globe className="w-4 h-4" />}
-          label={t.settings.language}
-          type="info"
-          value={getCurrentLanguage().nativeName}
-          onClick={() => setIsLanguageSheetOpen(true)}
-          delay={3}
-        />
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -189,13 +179,6 @@ const Settings = () => {
         {t.settings.version} 1.0.0
       </motion.p>
 
-      <LanguageBottomSheet
-        isOpen={isLanguageSheetOpen}
-        onClose={() => setIsLanguageSheetOpen(false)}
-        languages={languages}
-        currentLanguage={language}
-        onSelectLanguage={setLanguage}
-      />
     </>
   );
 };

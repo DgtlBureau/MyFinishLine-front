@@ -1,12 +1,12 @@
 "use client";
 
 import FeatureList from "@/app/components/Application/FeatureList/FeatureList";
-import FeatureSkeleton from "@/app/components/Application/FeatureList/FeatureSkeleton";
 import { IContract } from "@/app/types";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { getUserContracts } from "@/app/lib/utils/userService";
 import { toast } from "react-toastify";
+import Loader from "@/app/components/Shared/Loader/Loader";
 
 
 type Tab = "all" | "achieved" | "still-to-get";
@@ -92,12 +92,14 @@ const ContractsPage = () => {
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div
-              key="skeleton"
-              initial={{ opacity: 1 }}
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
+              className="flex items-center justify-center min-h-[50vh]"
             >
-              <FeatureSkeleton count={4} />
+              <Loader />
             </motion.div>
           ) : contracts.length > 0 ? (
             <motion.section

@@ -491,9 +491,10 @@ const Map = ({
           className="relative w-full h-full overflow-hidden"
         >
           <div
-            className="relative h-full mx-auto overflow-y-auto"
+            className="relative h-full mx-auto overflow-y-auto overflow-x-hidden"
             style={{
               width: `${MAP_WIDTH * scale}px`,
+              maxWidth: '100%',
             }}
           >
             <div

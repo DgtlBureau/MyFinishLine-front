@@ -50,7 +50,6 @@ export function buildSeo({
     alternates: {
       canonical: canonicalPath ? `${BASE_URL}${canonicalPath}` : BASE_URL,
     },
-    colorScheme: "light dark",
     robots: {
       index: robotsIndex,
       follow: robotsFollow,
