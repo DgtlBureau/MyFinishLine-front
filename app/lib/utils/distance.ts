@@ -59,7 +59,7 @@ export function formatPace(
   const minutes = Math.floor(pace);
   const seconds = Math.round((pace - minutes) * 60);
   const label = getDistanceLabel(measure);
-  return `${minutes}:${seconds.toString().padStart(2, "0")} /${label}`;
+  return `${minutes}:${seconds.toString().padStart(2, "0")} ${label}`;
 }
 
 /**

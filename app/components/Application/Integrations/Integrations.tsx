@@ -44,6 +44,7 @@ const Integrations = () => {
         label="Swipe the slider to the right to connect Strava"
         disconnectLabel="Swipe the slider to the right to disconnect Strava"
         isConnected={user.has_strava_connect}
+        disabled={user.has_fitbit_connect}
         serviceName="Strava"
         icon={
           <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-sm">
@@ -65,6 +66,7 @@ const Integrations = () => {
         label="Swipe the slider to the right to connect Fitbit"
         disconnectLabel="Swipe the slider to the right to disconnect Fitbit"
         isConnected={user.has_fitbit_connect}
+        disabled={user.has_strava_connect}
         serviceName="Fitbit"
         icon={
           <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-sm">

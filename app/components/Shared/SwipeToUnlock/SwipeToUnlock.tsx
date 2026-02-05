@@ -12,6 +12,7 @@ interface SwipeToUnlockProps {
   icon?: React.ReactNode;
   isConnected?: boolean;
   serviceName?: string;
+  disabled?: boolean;
 }
 
 const SwipeToUnlock = ({
@@ -22,6 +23,7 @@ const SwipeToUnlock = ({
   icon,
   isConnected = false,
   serviceName = "",
+  disabled = false,
 }: SwipeToUnlockProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -57,7 +59,7 @@ const SwipeToUnlock = ({
   }, []);
 
   const handleDragEnd = async () => {
-    if (containerWidth <= 0 || isProcessing) return;
+    if (containerWidth <= 0 || isProcessing || disabled) return;
 
     const currentX = x.get();
     const progress = currentX / containerWidth;
@@ -107,7 +109,7 @@ const SwipeToUnlock = ({
 
   return (
     <div className="pb-2">
-      <div className="rounded-2xl bg-white/10 backdrop-blur-xl p-2 border border-white/20">
+      <div className={`rounded-2xl bg-white/10 backdrop-blur-xl p-2 border border-white/20 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         <div
           ref={containerRef}
           className="relative h-[72px] rounded-xl overflow-hidden bg-white/5"
@@ -182,7 +184,7 @@ const SwipeToUnlock = ({
               WebkitUserSelect: "none",
               userSelect: "none",
             }}
-            drag={isProcessing ? false : "x"}
+            drag={isProcessing || disabled ? false : "x"}
             dragConstraints={{ left: 0, right: containerWidth }}
             dragElastic={0}
             dragMomentum={false}
