@@ -7,7 +7,7 @@ import { validate } from "@/app/lib/utils/validate/paymentValidate";
 import { useState, useEffect, useRef } from "react";
 import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { Lock, CreditCard, Shield, MapPin, Package } from "lucide-react";
+import { Lock, CreditCard, Shield, MapPin, Package, Check, X, Loader2 } from "lucide-react";
 
 import { logger } from "@/app/lib/logger";
 interface PaymentFormProps {
@@ -46,7 +46,9 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
   const [isLoading, setIsLoading] = useState(false);
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
   const [shippingRates, setShippingRates] = useState<IShippingRate[]>([]);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "invalid">("idle");
+  const appliedPromoRef = useRef<string>("");
 
   useEffect(() => {
     initializePaddle({
@@ -76,9 +78,9 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
   }, []);
 
   // Fetch pricing preview with discount code
-  const fetchPricingPreview = async (promoCode: string) => {
+  const fetchPricingPreview = async (promoCode: string): Promise<boolean> => {
     const paddlePriceId = product.prices?.paddle_price_id;
-    if (!paddlePriceId) return;
+    if (!paddlePriceId) return false;
 
     try {
       const response = await fetch("/api/payment/preview-price", {
@@ -94,46 +96,52 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
 
       if (response.ok) {
         const preview = await response.json();
-        // Validate that preview has required structure
         if (preview && preview.details && preview.totals) {
           setPricingPreview(preview);
-        } else {
-          // Invalid response structure (e.g., invalid promo code)
-          setPricingPreview(null);
+          return true;
         }
-      } else {
-        // Invalid promo code or error
-        setPricingPreview(null);
       }
+      setPricingPreview(null);
+      return false;
     } catch (error) {
       logger.error("Failed to fetch pricing preview", error);
       setPricingPreview(null);
+      return false;
     }
   };
 
-  // Update preview when promo code, quantity, or shipping changes (with 500ms debounce)
+  // Apply promo code immediately on button click
+  const applyPromoCode = async () => {
+    const code = values.promoCode.trim();
+    if (!code) return;
+
+    setPromoLoading(true);
+    setPromoStatus("idle");
+
+    const success = await fetchPricingPreview(code);
+    setPromoStatus(success ? "valid" : "invalid");
+    setPromoLoading(false);
+    appliedPromoRef.current = success ? code : "";
+  };
+
+  // Re-fetch preview when quantity or shipping changes (if promo already applied)
   useEffect(() => {
-    // Clear previous timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (appliedPromoRef.current) {
+      fetchPricingPreview(appliedPromoRef.current);
     }
+  }, [quantity, selectedShipping]);
 
-    if (values.promoCode) {
-      // Set new timer
-      debounceTimerRef.current = setTimeout(() => {
-        fetchPricingPreview(values.promoCode || "");
-      }, 1500);
-    } else {
-      setPricingPreview(null);
-    }
-
-    // Cleanup on unmount
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+  // Reset promo status when user edits the promo code
+  useEffect(() => {
+    const code = values.promoCode.trim();
+    if (code !== appliedPromoRef.current) {
+      setPromoStatus("idle");
+      if (!code) {
+        setPricingPreview(null);
+        appliedPromoRef.current = "";
       }
-    };
-  }, [values.promoCode, quantity, selectedShipping]);
+    }
+  }, [values.promoCode]);
 
   const openCheckout = () => {
     if (!paddle) {
@@ -352,15 +360,47 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         </div>
         <div>
           <label htmlFor="promoCode" className="block text-sm font-medium text-white/80 mb-1.5">Promo Code (optional)</label>
-          <Input
-            id="promoCode"
-            name="promoCode"
-            value={values.promoCode}
-            placeholder="Enter promo code"
-            onChange={(e) => setFieldValue("promoCode", e.target.value)}
-            className={glassInputClassName}
-            onBlur={handleBlur}
-          />
+          <div className="flex gap-2">
+            <Input
+              id="promoCode"
+              name="promoCode"
+              value={values.promoCode}
+              placeholder="Enter promo code"
+              onChange={(e) => setFieldValue("promoCode", e.target.value)}
+              className={glassInputClassName}
+              onBlur={handleBlur}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applyPromoCode();
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={applyPromoCode}
+              disabled={promoLoading || !values.promoCode.trim()}
+              className="shrink-0 px-5 py-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white font-medium text-sm hover:bg-white/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {promoLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                "Apply"
+              )}
+            </button>
+          </div>
+          {promoStatus === "valid" && (
+            <p className="flex items-center gap-1.5 text-green-400 text-sm mt-2">
+              <Check size={14} />
+              Promo code applied
+            </p>
+          )}
+          {promoStatus === "invalid" && (
+            <p className="flex items-center gap-1.5 text-red-400 text-sm mt-2">
+              <X size={14} />
+              Invalid promo code
+            </p>
+          )}
         </div>
       </div>
 

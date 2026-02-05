@@ -133,7 +133,7 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
           <div className="flex justify-between p-3 px-5 text-base font-bold">
             <p>Total</p>
             <p>
-              {totalPrice} {symbol}
+              {totalPrice.toFixed(2)} {symbol}
             </p>
           </div>
         </div>
