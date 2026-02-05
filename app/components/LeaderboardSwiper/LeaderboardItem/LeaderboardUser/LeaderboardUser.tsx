@@ -161,13 +161,13 @@ const LeaderboardUser = ({
         }`}>
           {(challengeId
             ? (isMile ? Number(total_progress_mile) : Number(total_progress))
-            : (isMile ? Number(total_distance_mile) : Number(total_distance) / 1000)
-          ).toFixed(2)} {label}
+            : (isMile ? Number(total_distance_mile) / 1000 : Number(total_distance) / 1000)
+          ).toFixed(2).replace('.', ',')} {label}
         </span>
         <span className="text-white/70 block text-[12px] font-medium tabular-nums">
-          {challengeId
-            ? Number(total_hours).toFixed(1)
-            : Number(total_moving_time_hours).toFixed(1)} h
+          {(challengeId
+            ? Number(total_hours)
+            : Number(total_moving_time_hours)).toFixed(1).replace('.', ',')} h
         </span>
       </div>
     </motion.li>

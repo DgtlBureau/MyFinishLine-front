@@ -43,7 +43,7 @@ const CurrentUserLine = ({
       </div>
       <div>
         <span className="text-[8px] font-medium text-[#71717A] block">
-          {(isMile ? Number(total_distance_mile) : Number(total_distance)).toFixed(2)} {label}
+          {(isMile ? Number(total_distance_mile) / 1000 : Number(total_distance) / 1000).toFixed(2).replace('.', ',')} {label}
         </span>
         <span className="text-[8px] font-medium text-[#71717A] block text-end">
           {handleConvertTimeShort(total_moving_time_hours)}
