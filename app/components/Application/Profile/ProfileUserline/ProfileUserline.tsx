@@ -51,7 +51,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <Link
-          href={"settings/personalization"}
+          href={"https://myfinishline.io/app/profile/settings/personalization"}
           className={`flex items-center justify-center relative w-36 h-36 z-10 ${
             userId ? "pointer-events-none" : ""
           }`}
@@ -127,30 +127,30 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="mt-6 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-4 py-3"
+        className="mt-6 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-3 py-2.5 max-w-[95vw] mx-auto"
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none" />
-        <div className="flex items-start justify-center gap-4 relative">
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] text-white/70 font-medium tracking-wider whitespace-nowrap">TOTAL DISTANCE</span>
-            <span className="text-[8px] text-white/50 h-[12px]">&nbsp;</span>
-            <span className="font-bold text-white text-lg leading-tight">
+        <div className="flex items-start justify-center gap-2 relative">
+          <div className="flex flex-col items-center min-w-0">
+            <span className="text-[9px] text-white/70 font-medium tracking-wide whitespace-nowrap">TOTAL DISTANCE</span>
+            <span className="text-[7px] text-white/50 h-[10px]">&nbsp;</span>
+            <span className="font-bold text-white text-base leading-tight">
               {handleConvertDistance(currentUser.total_distance) || "0"}
             </span>
           </div>
-          <div className="w-px h-12 bg-white/30 self-center" />
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] text-white/70 font-medium tracking-wider whitespace-nowrap">TIME ON TRACK</span>
-            <div className="flex items-center text-[8px] text-white/50 h-[12px]">
-              <span className="w-6 text-center">DAYS</span>
-              <span className="w-3" />
-              <span className="w-6 text-center">HRS</span>
-              <span className="w-3" />
-              <span className="w-6 text-center">MIN</span>
-              <span className="w-3" />
-              <span className="w-6 text-center">SEC</span>
+          <div className="w-px h-10 bg-white/30 self-center shrink-0" />
+          <div className="flex flex-col items-center min-w-0">
+            <span className="text-[9px] text-white/70 font-medium tracking-wide whitespace-nowrap">TIME ON TRACK</span>
+            <div className="flex items-center text-[7px] text-white/50 h-[10px] gap-0.5">
+              <span className="w-5 text-center">DAYS</span>
+              <span className="w-2" />
+              <span className="w-5 text-center">HRS</span>
+              <span className="w-2" />
+              <span className="w-5 text-center">MIN</span>
+              <span className="w-2" />
+              <span className="w-5 text-center">SEC</span>
             </div>
-            <div className="flex items-center font-bold text-white text-lg leading-tight tabular-nums">
+            <div className="flex items-center font-bold text-white text-base leading-tight tabular-nums gap-0.5">
               {(() => {
                 const totalHours = currentUser.total_moving_time_hours || 0;
                 const days = Math.floor(totalHours / 24);
@@ -160,23 +160,23 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
                 const pad = (n: number) => n.toString().padStart(2, '0');
                 return (
                   <>
-                    <span className="w-6 text-center">{pad(days)}</span>
-                    <span className="w-3 text-center text-white/50">:</span>
-                    <span className="w-6 text-center">{pad(hours)}</span>
-                    <span className="w-3 text-center text-white/50">:</span>
-                    <span className="w-6 text-center">{pad(minutes)}</span>
-                    <span className="w-3 text-center text-white/50">:</span>
-                    <span className="w-6 text-center">{pad(seconds)}</span>
+                    <span className="w-5 text-center text-sm">{pad(days)}</span>
+                    <span className="w-2 text-center text-white/50 text-sm">:</span>
+                    <span className="w-5 text-center text-sm">{pad(hours)}</span>
+                    <span className="w-2 text-center text-white/50 text-sm">:</span>
+                    <span className="w-5 text-center text-sm">{pad(minutes)}</span>
+                    <span className="w-2 text-center text-white/50 text-sm">:</span>
+                    <span className="w-5 text-center text-sm">{pad(seconds)}</span>
                   </>
                 );
               })()}
             </div>
           </div>
-          <div className="w-px h-12 bg-white/30 self-center" />
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] text-white/70 font-medium tracking-wider whitespace-nowrap">TOTAL ACTIVITIES</span>
-            <span className="text-[8px] text-white/50 h-[12px]">&nbsp;</span>
-            <span className="font-bold text-white text-lg leading-tight">
+          <div className="w-px h-10 bg-white/30 self-center shrink-0" />
+          <div className="flex flex-col items-center min-w-0">
+            <span className="text-[9px] text-white/70 font-medium tracking-wide whitespace-nowrap">TOTAL ACTIVITIES</span>
+            <span className="text-[7px] text-white/50 h-[10px]">&nbsp;</span>
+            <span className="font-bold text-white text-base leading-tight">
               {currentUser.total_activities_count?.toString() || "0"}
             </span>
           </div>
