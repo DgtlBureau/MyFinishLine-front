@@ -360,27 +360,29 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         </div>
         <div>
           <label htmlFor="promoCode" className="block text-sm font-medium text-white/80 mb-1.5">Promo Code (optional)</label>
-          <div className="flex gap-2">
-            <Input
-              id="promoCode"
-              name="promoCode"
-              value={values.promoCode}
-              placeholder="Enter promo code"
-              onChange={(e) => setFieldValue("promoCode", e.target.value)}
-              className={glassInputClassName}
-              onBlur={handleBlur}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  applyPromoCode();
-                }
-              }}
-            />
+          <div className="flex items-stretch gap-2">
+            <div className="flex-1">
+              <Input
+                id="promoCode"
+                name="promoCode"
+                value={values.promoCode}
+                placeholder="Enter promo code"
+                onChange={(e) => setFieldValue("promoCode", e.target.value)}
+                className={glassInputClassName}
+                onBlur={handleBlur}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyPromoCode();
+                  }
+                }}
+              />
+            </div>
             <button
               type="button"
               onClick={applyPromoCode}
               disabled={promoLoading || !values.promoCode.trim()}
-              className="shrink-0 px-5 py-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 text-white font-medium text-sm hover:bg-white/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              className="shrink-0 px-6 rounded-2xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] font-medium text-sm hover:bg-white/70 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {promoLoading ? (
                 <Loader2 size={18} className="animate-spin" />
