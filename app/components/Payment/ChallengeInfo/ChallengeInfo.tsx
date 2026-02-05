@@ -1,5 +1,5 @@
 import { CurrencieSymbols } from "@/app/types";
-import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
+import { IProduct, IShippingRate, IDiscount } from "@/app/types";
 import Image from "next/image";
 import { Minus, Plus, Route, Package, Tag } from "lucide-react";
 
@@ -14,26 +14,28 @@ interface ChallengeInfoProps {
   quantity: number;
   onQuantityChange: (qty: number) => void;
   selectedShipping: IShippingRate | null;
-  pricingPreview: IPricingPreview | null;
+  discount: IDiscount | null;
 }
 
-export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping, pricingPreview }: ChallengeInfoProps) => {
+export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping, discount }: ChallengeInfoProps) => {
   const unitPrice = Number(product.prices?.amount) / 100;
   const shippingPrice = selectedShipping?.price ? Number(selectedShipping.price) : 0;
 
-  // Если есть pricing preview (с промокодом), используем его
-  let subtotal = unitPrice * quantity;
-  let discountAmount = 0;
-  let totalPrice = subtotal + shippingPrice;
+  const subtotal = unitPrice * quantity;
 
-  if (pricingPreview && pricingPreview.details && pricingPreview.details.line_items) {
-    // Используем данные из Paddle preview
-    subtotal = Number(pricingPreview.details.line_items[0]?.totals.subtotal || 0) / 100;
-    discountAmount = Number(pricingPreview.discount?.total || 0) / 100;
-    totalPrice = Number(pricingPreview.totals?.total || 0) / 100;
+  // Calculate discount from Paddle discount object
+  let discountAmount = 0;
+  if (discount) {
+    if (discount.type === "percentage") {
+      discountAmount = subtotal * (Number(discount.amount) / 100);
+    } else if (discount.type === "flat" || discount.type === "flat_per_seat") {
+      discountAmount = Number(discount.amount) / 100;
+    }
   }
 
-  const currency = pricingPreview?.currency_code || product.prices?.currency || "USD";
+  const totalPrice = Math.max(0, subtotal + shippingPrice - discountAmount);
+
+  const currency = product.prices?.currency || "USD";
   const symbol = CurrencieSymbols[currency as keyof typeof CurrencieSymbols] || "$";
 
   return (
@@ -118,11 +120,14 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
           )}
 
           {/* Discount row */}
-          {pricingPreview && discountAmount > 0 && (
+          {discount && discountAmount > 0 && (
             <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3 text-green-400">
               <div className="flex items-center gap-2">
                 <Tag size={14} className="text-green-400/70" />
-                <p className="font-medium">Discount ({pricingPreview.discount?.code})</p>
+                <p className="font-medium">
+                  Discount ({discount.code}
+                  {discount.type === "percentage" ? ` ${discount.amount}%` : ""})
+                </p>
               </div>
               <p className="font-medium whitespace-nowrap">
                 -{discountAmount.toFixed(2)} {symbol}

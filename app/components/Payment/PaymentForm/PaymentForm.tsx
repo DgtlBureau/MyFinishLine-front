@@ -5,7 +5,7 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
 import { useState, useEffect, useRef } from "react";
-import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
+import { IProduct, IShippingRate, IDiscount } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { Lock, CreditCard, Shield, MapPin, Package, Check, X, Loader2 } from "lucide-react";
 
@@ -15,10 +15,10 @@ interface PaymentFormProps {
   quantity: number;
   selectedShipping: IShippingRate | null;
   setSelectedShipping: (shipping: IShippingRate | null) => void;
-  setPricingPreview: (preview: IPricingPreview | null) => void;
+  setDiscount: (discount: IDiscount | null) => void;
 }
 
-const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setPricingPreview }: PaymentFormProps) => {
+const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setDiscount }: PaymentFormProps) => {
   const {
     values,
     touched,
@@ -77,40 +77,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       });
   }, []);
 
-  // Fetch pricing preview with discount code
-  const fetchPricingPreview = async (promoCode: string): Promise<boolean> => {
-    const paddlePriceId = product.prices?.paddle_price_id;
-    if (!paddlePriceId) return false;
-
-    try {
-      const response = await fetch("/api/payment/preview-price", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          challenge_price_id: paddlePriceId,
-          quantity,
-          shipping_price_id: selectedShipping?.paddle_price_id || null,
-          discount_code: promoCode || null,
-        }),
-      });
-
-      if (response.ok) {
-        const preview = await response.json();
-        if (preview && preview.details && preview.totals) {
-          setPricingPreview(preview);
-          return true;
-        }
-      }
-      setPricingPreview(null);
-      return false;
-    } catch (error) {
-      logger.error("Failed to fetch pricing preview", error);
-      setPricingPreview(null);
-      return false;
-    }
-  };
-
-  // Apply promo code immediately on button click
+  // Apply promo code — validate via backend (cached Paddle discounts)
   const applyPromoCode = async () => {
     const code = values.promoCode.trim();
     if (!code) return;
@@ -118,18 +85,32 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
     setPromoLoading(true);
     setPromoStatus("idle");
 
-    const success = await fetchPricingPreview(code);
-    setPromoStatus(success ? "valid" : "invalid");
-    setPromoLoading(false);
-    appliedPromoRef.current = success ? code : "";
-  };
+    try {
+      const response = await fetch("/api/payment/validate-promo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
 
-  // Re-fetch preview when quantity or shipping changes (if promo already applied)
-  useEffect(() => {
-    if (appliedPromoRef.current) {
-      fetchPricingPreview(appliedPromoRef.current);
+      if (response.ok) {
+        const discountData = await response.json();
+        setDiscount(discountData);
+        setPromoStatus("valid");
+        appliedPromoRef.current = code;
+      } else {
+        setDiscount(null);
+        setPromoStatus("invalid");
+        appliedPromoRef.current = "";
+      }
+    } catch (error) {
+      logger.error("Failed to validate promo code", error);
+      setDiscount(null);
+      setPromoStatus("invalid");
+      appliedPromoRef.current = "";
     }
-  }, [quantity, selectedShipping]);
+
+    setPromoLoading(false);
+  };
 
   // Reset promo status when user edits the promo code
   useEffect(() => {
@@ -137,7 +118,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
     if (code !== appliedPromoRef.current) {
       setPromoStatus("idle");
       if (!code) {
-        setPricingPreview(null);
+        setDiscount(null);
         appliedPromoRef.current = "";
       }
     }
