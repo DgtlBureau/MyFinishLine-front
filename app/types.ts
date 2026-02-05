@@ -219,6 +219,15 @@ export interface IPricingPreview {
   };
 }
 
+export interface IDiscount {
+  id: string;
+  code: string;
+  type: "percentage" | "flat" | "flat_per_seat";
+  amount: string;
+  currency_code?: string | null;
+  description?: string | null;
+}
+
 export interface IReward {
   id: number;
   challenge_id: number;

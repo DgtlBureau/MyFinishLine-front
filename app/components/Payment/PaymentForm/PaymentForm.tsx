@@ -4,10 +4,13 @@ import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { useState, useEffect, useRef } from "react";
-import { IProduct, IShippingRate, IPricingPreview } from "@/app/types";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { IProduct, IShippingRate, IDiscount } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { Lock, CreditCard, Shield, MapPin, Package } from "lucide-react";
+import { Lock, CreditCard, Shield, MapPin, Package, Check, X, Loader2 } from "lucide-react";
+import PhoneInput from "react-phone-number-input";
+import type { Country } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import { logger } from "@/app/lib/logger";
 interface PaymentFormProps {
@@ -15,10 +18,10 @@ interface PaymentFormProps {
   quantity: number;
   selectedShipping: IShippingRate | null;
   setSelectedShipping: (shipping: IShippingRate | null) => void;
-  setPricingPreview: (preview: IPricingPreview | null) => void;
+  setDiscount: (discount: IDiscount | null) => void;
 }
 
-const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setPricingPreview }: PaymentFormProps) => {
+const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping, setDiscount }: PaymentFormProps) => {
   const {
     values,
     touched,
@@ -46,7 +49,31 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
   const [isLoading, setIsLoading] = useState(false);
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
   const [shippingRates, setShippingRates] = useState<IShippingRate[]>([]);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "invalid">("idle");
+  const appliedPromoRef = useRef<string>("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+  const countryRef = useRef<HTMLDivElement>(null);
+
+  const filteredCountries = useMemo(() => {
+    if (!countrySearch) return shippingRates;
+    const q = countrySearch.toLowerCase();
+    return shippingRates.filter(
+      (rate) => rate.country_name.toLowerCase().includes(q) || rate.country_code.toLowerCase().includes(q)
+    );
+  }, [countrySearch, shippingRates]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   useEffect(() => {
     initializePaddle({
@@ -75,65 +102,52 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       });
   }, []);
 
-  // Fetch pricing preview with discount code
-  const fetchPricingPreview = async (promoCode: string) => {
-    const paddlePriceId = product.prices?.paddle_price_id;
-    if (!paddlePriceId) return;
+  // Apply promo code — validate via backend (cached Paddle discounts)
+  const applyPromoCode = async () => {
+    const code = values.promoCode.trim();
+    if (!code) return;
+
+    setPromoLoading(true);
+    setPromoStatus("idle");
 
     try {
-      const response = await fetch("/api/payment/preview-price", {
+      const response = await fetch("/api/payment/validate-promo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          challenge_price_id: paddlePriceId,
-          quantity,
-          shipping_price_id: selectedShipping?.paddle_price_id || null,
-          discount_code: promoCode || null,
-        }),
+        body: JSON.stringify({ code }),
       });
 
       if (response.ok) {
-        const preview = await response.json();
-        // Validate that preview has required structure
-        if (preview && preview.details && preview.totals) {
-          setPricingPreview(preview);
-        } else {
-          // Invalid response structure (e.g., invalid promo code)
-          setPricingPreview(null);
-        }
+        const discountData = await response.json();
+        setDiscount(discountData);
+        setPromoStatus("valid");
+        appliedPromoRef.current = code;
       } else {
-        // Invalid promo code or error
-        setPricingPreview(null);
+        setDiscount(null);
+        setPromoStatus("invalid");
+        appliedPromoRef.current = "";
       }
     } catch (error) {
-      logger.error("Failed to fetch pricing preview", error);
-      setPricingPreview(null);
+      logger.error("Failed to validate promo code", error);
+      setDiscount(null);
+      setPromoStatus("invalid");
+      appliedPromoRef.current = "";
     }
+
+    setPromoLoading(false);
   };
 
-  // Update preview when promo code, quantity, or shipping changes (with 500ms debounce)
+  // Reset promo status when user edits the promo code
   useEffect(() => {
-    // Clear previous timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    if (values.promoCode) {
-      // Set new timer
-      debounceTimerRef.current = setTimeout(() => {
-        fetchPricingPreview(values.promoCode || "");
-      }, 1500);
-    } else {
-      setPricingPreview(null);
-    }
-
-    // Cleanup on unmount
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+    const code = values.promoCode.trim();
+    if (code !== appliedPromoRef.current) {
+      setPromoStatus("idle");
+      if (!code) {
+        setDiscount(null);
+        appliedPromoRef.current = "";
       }
-    };
-  }, [values.promoCode, quantity, selectedShipping]);
+    }
+  }, [values.promoCode]);
 
   const openCheckout = () => {
     if (!paddle) {
@@ -159,11 +173,11 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       },
     ];
 
-    // Add shipping if country is selected and has paddle_price_id
+    // Add shipping if country is selected and has paddle_price_id (1 shipping per challenge)
     if (selectedShipping && selectedShipping.paddle_price_id) {
       items.push({
         priceId: selectedShipping.paddle_price_id,
-        quantity: 1,
+        quantity,
       });
     }
 
@@ -171,6 +185,12 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       items,
       customer: {
         email: values.email,
+        address: {
+          countryCode: values.country || undefined,
+          postalCode: values.postalCode || undefined,
+          city: values.city || undefined,
+          firstLine: values.address || undefined,
+        },
       },
       customData: {
         firstName: values.firstName,
@@ -190,8 +210,8 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         locale: "en",
         allowLogout: false,
         showAddTaxId: false,
-        allowQuantityUpdates: false,
         successUrl: `${window.location.origin}/payment/success`,
+        ...({ allowQuantityUpdates: false } as Record<string, unknown>),
       },
     });
 
@@ -261,27 +281,50 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
             Shipping Address
           </p>
         </div>
-        <div>
+        <div ref={countryRef} className="relative">
           <label htmlFor="country" className="block text-sm font-medium text-white/80 mb-1.5">Country *</label>
-          <select
+          <input
             id="country"
             name="country"
-            value={values.country}
+            type="text"
+            autoComplete="off"
+            value={countrySearch}
+            placeholder="Search country..."
             onChange={(e) => {
-              setFieldValue("country", e.target.value);
-              const selected = shippingRates.find(rate => rate.country_code === e.target.value);
-              setSelectedShipping(selected || null);
+              setCountrySearch(e.target.value);
+              setCountryDropdownOpen(true);
+              if (!e.target.value) {
+                setFieldValue("country", "");
+                setSelectedShipping(null);
+              }
             }}
+            onFocus={() => setCountryDropdownOpen(true)}
             onBlur={handleBlur}
-            className={glassInputClassName + " cursor-pointer"}
-          >
-            <option value="">Select country</option>
-            {shippingRates.map((rate) => (
-              <option key={rate.id} value={rate.country_code}>
-                {rate.country_name} (${rate.price})
-              </option>
-            ))}
-          </select>
+            className={glassInputClassName}
+          />
+          {countryDropdownOpen && filteredCountries.length > 0 && (
+            <ul className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-lg">
+              {filteredCountries.map((rate) => (
+                <li
+                  key={rate.id}
+                  onMouseDown={() => {
+                    setFieldValue("country", rate.country_code);
+                    setSelectedShipping(rate);
+                    setCountrySearch(`${rate.country_name} ($${rate.price})`);
+                    setCountryDropdownOpen(false);
+                  }}
+                  className="px-4 py-2.5 text-sm text-[#1a1a2e] cursor-pointer hover:bg-[#3B5CC6]/10 transition-colors"
+                >
+                  {rate.country_name} (${rate.price})
+                </li>
+              ))}
+            </ul>
+          )}
+          {countryDropdownOpen && filteredCountries.length === 0 && countrySearch && (
+            <div className="absolute z-50 mt-1 w-full rounded-xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-lg px-4 py-3 text-sm text-[#1a1a2e]/50">
+              No countries found
+            </div>
+          )}
           {touched.country && errors.country && (
             <p className="text-red-400 text-sm mt-1">{errors.country}</p>
           )}
@@ -329,16 +372,21 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         </div>
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-1.5">Phone *</label>
-          <Input
+          <PhoneInput
+            international
+            limitMaxLength
+            defaultCountry={(values.country as Country) || undefined}
+            country={(values.country as Country) || undefined}
+            value={values.phone}
+            onChange={(value) => setFieldValue("phone", value || "")}
+            onBlur={handleBlur}
+            className={glassInputClassName}
             id="phone"
             name="phone"
-            value={values.phone}
-            placeholder="+1 234 567 8900"
-            onChange={(e) => setFieldValue("phone", e.target.value)}
-            className={glassInputClassName}
-            onBlur={handleBlur}
-            error={touched.phone ? errors.phone : undefined}
           />
+          {touched.phone && errors.phone && (
+            <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
+          )}
         </div>
       </div>
 
@@ -352,15 +400,49 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         </div>
         <div>
           <label htmlFor="promoCode" className="block text-sm font-medium text-white/80 mb-1.5">Promo Code (optional)</label>
-          <Input
-            id="promoCode"
-            name="promoCode"
-            value={values.promoCode}
-            placeholder="Enter promo code"
-            onChange={(e) => setFieldValue("promoCode", e.target.value)}
-            className={glassInputClassName}
-            onBlur={handleBlur}
-          />
+          <div className="flex items-stretch gap-2">
+            <div className="flex-1">
+              <Input
+                id="promoCode"
+                name="promoCode"
+                value={values.promoCode}
+                placeholder="Enter promo code"
+                onChange={(e) => setFieldValue("promoCode", e.target.value)}
+                className={glassInputClassName}
+                onBlur={handleBlur}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyPromoCode();
+                  }
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={applyPromoCode}
+              disabled={promoLoading || !values.promoCode.trim()}
+              className="shrink-0 px-6 rounded-2xl bg-white/50 backdrop-blur-xl border border-white/60 text-[#1a1a2e] font-medium text-sm hover:bg-white/70 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {promoLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                "Apply"
+              )}
+            </button>
+          </div>
+          {promoStatus === "valid" && (
+            <p className="flex items-center gap-1.5 text-green-400 text-sm mt-2">
+              <Check size={14} />
+              Promo code applied
+            </p>
+          )}
+          {promoStatus === "invalid" && (
+            <p className="flex items-center gap-1.5 text-red-400 text-sm mt-2">
+              <X size={14} />
+              Invalid promo code
+            </p>
+          )}
         </div>
       </div>
 

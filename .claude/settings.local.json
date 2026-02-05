@@ -15,7 +15,7 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "WebSearch",
-      "Bash(open https://github.com/DgtlBureau/MyFinishLine-front/pull/44)",
+"Bash(open https://github.com/DgtlBureau/MyFinishLine-front/pull/44)",
       "Bash(docker build:*)",
       "Bash(docker run:*)",
       "Bash(docker rm:*)",
