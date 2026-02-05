@@ -210,6 +210,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         locale: "en",
         allowLogout: false,
         showAddTaxId: false,
+        // @ts-expect-error - allowQuantityUpdates is supported by Paddle but missing from @paddle/paddle-js types
         allowQuantityUpdates: false,
         successUrl: `${window.location.origin}/payment/success`,
       },
