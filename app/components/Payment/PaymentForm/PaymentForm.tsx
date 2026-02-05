@@ -4,10 +4,13 @@ import { useFormik } from "formik";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { validate } from "@/app/lib/utils/validate/paymentValidate";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { IProduct, IShippingRate, IDiscount } from "@/app/types";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { Lock, CreditCard, Shield, MapPin, Package, Check, X, Loader2 } from "lucide-react";
+import PhoneInput from "react-phone-number-input";
+import type { Country } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import { logger } from "@/app/lib/logger";
 interface PaymentFormProps {
@@ -49,6 +52,28 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
   const [promoLoading, setPromoLoading] = useState(false);
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "invalid">("idle");
   const appliedPromoRef = useRef<string>("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+  const countryRef = useRef<HTMLDivElement>(null);
+
+  const filteredCountries = useMemo(() => {
+    if (!countrySearch) return shippingRates;
+    const q = countrySearch.toLowerCase();
+    return shippingRates.filter(
+      (rate) => rate.country_name.toLowerCase().includes(q) || rate.country_code.toLowerCase().includes(q)
+    );
+  }, [countrySearch, shippingRates]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   useEffect(() => {
     initializePaddle({
@@ -256,27 +281,50 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
             Shipping Address
           </p>
         </div>
-        <div>
+        <div ref={countryRef} className="relative">
           <label htmlFor="country" className="block text-sm font-medium text-white/80 mb-1.5">Country *</label>
-          <select
+          <input
             id="country"
             name="country"
-            value={values.country}
+            type="text"
+            autoComplete="off"
+            value={countrySearch}
+            placeholder="Search country..."
             onChange={(e) => {
-              setFieldValue("country", e.target.value);
-              const selected = shippingRates.find(rate => rate.country_code === e.target.value);
-              setSelectedShipping(selected || null);
+              setCountrySearch(e.target.value);
+              setCountryDropdownOpen(true);
+              if (!e.target.value) {
+                setFieldValue("country", "");
+                setSelectedShipping(null);
+              }
             }}
+            onFocus={() => setCountryDropdownOpen(true)}
             onBlur={handleBlur}
-            className={glassInputClassName + " cursor-pointer"}
-          >
-            <option value="">Select country</option>
-            {shippingRates.map((rate) => (
-              <option key={rate.id} value={rate.country_code}>
-                {rate.country_name} (${rate.price})
-              </option>
-            ))}
-          </select>
+            className={glassInputClassName}
+          />
+          {countryDropdownOpen && filteredCountries.length > 0 && (
+            <ul className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-lg">
+              {filteredCountries.map((rate) => (
+                <li
+                  key={rate.id}
+                  onMouseDown={() => {
+                    setFieldValue("country", rate.country_code);
+                    setSelectedShipping(rate);
+                    setCountrySearch(`${rate.country_name} ($${rate.price})`);
+                    setCountryDropdownOpen(false);
+                  }}
+                  className="px-4 py-2.5 text-sm text-[#1a1a2e] cursor-pointer hover:bg-[#3B5CC6]/10 transition-colors"
+                >
+                  {rate.country_name} (${rate.price})
+                </li>
+              ))}
+            </ul>
+          )}
+          {countryDropdownOpen && filteredCountries.length === 0 && countrySearch && (
+            <div className="absolute z-50 mt-1 w-full rounded-xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-lg px-4 py-3 text-sm text-[#1a1a2e]/50">
+              No countries found
+            </div>
+          )}
           {touched.country && errors.country && (
             <p className="text-red-400 text-sm mt-1">{errors.country}</p>
           )}
@@ -324,16 +372,20 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         </div>
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-1.5">Phone *</label>
-          <Input
+          <PhoneInput
+            international
+            defaultCountry={(values.country as Country) || undefined}
+            country={(values.country as Country) || undefined}
+            value={values.phone}
+            onChange={(value) => setFieldValue("phone", value || "")}
+            onBlur={handleBlur}
+            className={glassInputClassName}
             id="phone"
             name="phone"
-            value={values.phone}
-            placeholder="+1 234 567 8900"
-            onChange={(e) => setFieldValue("phone", e.target.value)}
-            className={glassInputClassName}
-            onBlur={handleBlur}
-            error={touched.phone ? errors.phone : undefined}
           />
+          {touched.phone && errors.phone && (
+            <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
+          )}
         </div>
       </div>
 

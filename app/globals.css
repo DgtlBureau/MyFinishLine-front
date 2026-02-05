@@ -583,3 +583,40 @@ html.theme-transition::view-transition-new(root) {
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Phone input styles for payment form */
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.PhoneInput .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+}
+
+.PhoneInput .PhoneInputCountrySelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.PhoneInput .PhoneInputCountryIcon {
+  width: 24px;
+  height: 18px;
+}
+
+.PhoneInput .PhoneInputInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+}
