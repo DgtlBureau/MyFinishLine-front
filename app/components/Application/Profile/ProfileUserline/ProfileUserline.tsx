@@ -51,7 +51,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <Link
-          href={"settings/personalization"}
+          href={"https://myfinishline.io/app/profile/settings/personalization"}
           className={`flex items-center justify-center relative w-36 h-36 z-10 ${
             userId ? "pointer-events-none" : ""
           }`}
