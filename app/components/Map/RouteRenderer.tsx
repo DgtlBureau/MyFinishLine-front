@@ -73,11 +73,11 @@ function pointsToSmoothPath(
 ): string {
   if (points.length < 2) return "";
 
-  // Convert Y coordinates (from bottom to top) with scale and offset
-  // This formula matches the admin panel implementation (DevicePreview.tsx:52)
+  // Convert Y coordinates (from bottom to top) - no scaling, viewBox handles it
+  // This matches the admin panel implementation exactly
   const pts = points.map((p) => ({
-    x: p.x * scale,
-    y: (mapHeight - (p.y + offset)) * scale
+    x: p.x,
+    y: mapHeight - p.y
   }));
 
   if (pts.length === 2) {
@@ -115,8 +115,8 @@ const RouteSegment = memo(
 
     // Build smooth SVG path
     const pathD = useMemo(() => {
-      return pointsToSmoothPath(points, mapHeight, scale, yOffset);
-    }, [points, mapHeight, scale, yOffset]);
+      return pointsToSmoothPath(points, mapHeight, 1, 0);
+    }, [points, mapHeight]);
 
     // Apply progress animation using stroke-dashoffset
     useLayoutEffect(() => {
@@ -313,8 +313,9 @@ const RouteRenderer = ({
     if (totalLength === 0) return null;
 
     const point = path.getPointAtLength(totalLength * (progress / 100));
-    return { x: point.x, y: point.y };
-  }, []);
+    // Scale from viewBox coordinates to actual pixel coordinates
+    return { x: point.x * scaleX, y: point.y * scaleY };
+  }, [scaleX, scaleY]);
 
   // Handle path ready callback
   const handlePathReady = useCallback((path: SVGPathElement, segmentId: string) => {
@@ -440,7 +441,7 @@ const RouteRenderer = ({
       <svg
         ref={svgRef}
         className="absolute inset-0 pointer-events-none"
-        viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+        viewBox={`0 0 ${routeData.base_width} ${routeData.base_height}`}
         preserveAspectRatio="none"
         style={{ overflow: "visible", zIndex: 5 }}
       >
@@ -450,14 +451,14 @@ const RouteRenderer = ({
             <RouteSegment
               key={segmentId}
               points={route.scaledPoints}
-              mapHeight={mapHeight}
+              mapHeight={routeData.base_height}
               progress={route.progress}
               isCompleted={route.isCompleted}
               isActive={route.isActive}
               segmentIndex={route.segmentIndex}
               isMobile={isMobile}
-              scale={scaleX}
-              yOffset={yOffset}
+              scale={1}
+              yOffset={0}
             />
           );
         })}
@@ -466,7 +467,7 @@ const RouteRenderer = ({
         {activeRouteInfo && scaledRoutes.map((route) => {
           const segmentId = `route-${route.from_step_index}-${route.to_step_index}`;
           if (segmentId !== activeRouteInfo.segmentId) return null;
-          const pathD = pointsToSmoothPath(route.scaledPoints, mapHeight, scaleX, yOffset);
+          const pathD = pointsToSmoothPath(route.scaledPoints, routeData.base_height, 1, 0);
           return (
             <path
               key={`hidden-${segmentId}`}
