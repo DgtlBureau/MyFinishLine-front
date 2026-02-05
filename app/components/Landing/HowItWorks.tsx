@@ -872,7 +872,7 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section id="features" className="flex flex-col items-center py-12 md:py-24 w-full">
+    <section id="how-it-works" className="flex flex-col items-center py-12 md:py-24 w-full">
       <div className="max-w-[1280px] px-4 md:px-24 w-full">
         {/* Header */}
         <div className="flex flex-col gap-3 items-center justify-center px-4 md:px-24 mb-8 md:mb-14">
