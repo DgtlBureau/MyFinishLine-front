@@ -374,6 +374,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
           <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-1.5">Phone *</label>
           <PhoneInput
             international
+            limitMaxLength
             defaultCountry={(values.country as Country) || undefined}
             country={(values.country as Country) || undefined}
             value={values.phone}
