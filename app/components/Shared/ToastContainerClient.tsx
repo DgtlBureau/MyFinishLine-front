@@ -15,7 +15,6 @@ export function ToastContainerClient() {
       hideProgressBar={false}
       newestOnTop
       limit={3}
-      enableMultiContainer={false}
       containerId="main-toast-container"
       style={{ zIndex: 9999 }}
     />
