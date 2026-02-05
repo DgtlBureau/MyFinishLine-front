@@ -142,7 +142,7 @@ const SwipeToUnlock = ({
 
           {/* Label text */}
           <motion.div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 flex items-center justify-center pointer-events-none pl-[88px] pr-4"
             style={{ opacity: isProcessing ? 1 : textOpacity }}
           >
             {isProcessing ? (
@@ -158,18 +158,18 @@ const SwipeToUnlock = ({
                 </span>
               </motion.div>
             ) : (
-              <>
-                <span className="text-white/70 text-[11px] font-medium select-none ml-16 whitespace-nowrap">
+              <div className="flex items-center justify-center flex-1">
+                <span className="text-white/70 text-[10px] sm:text-[11px] font-medium select-none text-center leading-tight">
                   {displayLabel}
                 </span>
                 <motion.span
-                  className="ml-1 text-white/50 text-[11px]"
+                  className="ml-1 text-white/50 text-[10px] sm:text-[11px] shrink-0"
                   animate={{ x: [0, 4, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 >
                   &gt;
                 </motion.span>
-              </>
+              </div>
             )}
           </motion.div>
 
