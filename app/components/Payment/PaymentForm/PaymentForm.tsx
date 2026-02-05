@@ -210,6 +210,7 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
         locale: "en",
         allowLogout: false,
         showAddTaxId: false,
+        allowQuantityUpdates: false,
         successUrl: `${window.location.origin}/payment/success`,
       },
     });
