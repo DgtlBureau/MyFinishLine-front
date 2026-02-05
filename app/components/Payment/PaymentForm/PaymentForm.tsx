@@ -148,11 +148,11 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       },
     ];
 
-    // Add shipping if country is selected and has paddle_price_id
+    // Add shipping if country is selected and has paddle_price_id (1 shipping per challenge)
     if (selectedShipping && selectedShipping.paddle_price_id) {
       items.push({
         priceId: selectedShipping.paddle_price_id,
-        quantity: 1,
+        quantity,
       });
     }
 
@@ -160,6 +160,12 @@ const PaymentForm = ({ product, quantity, selectedShipping, setSelectedShipping,
       items,
       customer: {
         email: values.email,
+        address: {
+          countryCode: values.country || undefined,
+          postalCode: values.postalCode || undefined,
+          city: values.city || undefined,
+          firstLine: values.address || undefined,
+        },
       },
       customData: {
         firstName: values.firstName,

@@ -19,7 +19,8 @@ interface ChallengeInfoProps {
 
 export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShipping, discount }: ChallengeInfoProps) => {
   const unitPrice = Number(product.prices?.amount) / 100;
-  const shippingPrice = selectedShipping?.price ? Number(selectedShipping.price) : 0;
+  const shippingUnitPrice = selectedShipping?.price ? Number(selectedShipping.price) : 0;
+  const shippingPrice = shippingUnitPrice * quantity;
 
   const subtotal = unitPrice * quantity;
 
@@ -111,7 +112,10 @@ export const ChallengeInfo = ({ product, quantity, onQuantityChange, selectedShi
             <div className="flex items-center justify-between border-b border-white/15 p-3 px-5 gap-3">
               <div className="flex items-center gap-2">
                 <Package size={14} className="text-white/70" />
-                <p className="font-medium">Shipping to {selectedShipping.country_name}</p>
+                <p className="font-medium">
+                  Shipping to {selectedShipping.country_name}
+                  {quantity > 1 ? ` x${quantity}` : ""}
+                </p>
               </div>
               <p className="font-medium whitespace-nowrap">
                 {shippingPrice.toFixed(2)} {symbol}
