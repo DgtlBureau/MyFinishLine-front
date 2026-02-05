@@ -501,9 +501,9 @@ const RouteRenderer = ({
               className="relative bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl border-2 border-white"
               style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
             >
-              {user?.profile_picture_url ? (
+              {user?.full_avatar_url ? (
                 <Image
-                  src={user.profile_picture_url}
+                  src={user.full_avatar_url}
                   alt="User avatar"
                   width={CIRCLE_RADIUS * 2 - 4}
                   height={CIRCLE_RADIUS * 2 - 4}
