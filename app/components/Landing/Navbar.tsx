@@ -13,7 +13,6 @@ export default function Navbar() {
     { name: "Amazonia Route", href: "#quest" },
     { name: "Challenges", href: "#challenges" },
     { name: "How it works", href: "#how-it-works" },
-    { name: "Blog", href: "#blog" },
     { name: "FAQ", href: "#faq" },
   ];
 
