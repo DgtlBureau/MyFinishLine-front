@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { code } = await req.json();
     if (!code) throw new Error("No code provided");
 
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
+    const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
 
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -25,8 +25,9 @@ export async function POST(req: Request) {
     const tokenData = await tokenRes.json();
 
     if (!tokenData.access_token) {
+      logger.error("Google token exchange failed:", tokenData);
       return NextResponse.json(
-        { error: "No access_token from Google" },
+        { error: "No access_token from Google", google_error: tokenData },
         { status: 400 },
       );
     }

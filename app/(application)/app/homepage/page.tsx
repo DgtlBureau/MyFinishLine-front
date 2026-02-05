@@ -127,11 +127,7 @@ const Page = () => {
           )}
           <div
             ref={mapWrapperRef}
-            className={`transition-[filter,transform] duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 flex items-center justify-center overflow-hidden" : ""}`}
-            style={{
-              filter: questStarted ? "none" : "blur(24px)",
-              transform: questStarted ? "none" : "scale(1.8)",
-            }}
+            className={`transition-opacity duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 overflow-hidden opacity-0 pointer-events-none" : ""}`}
           >
             <Map {...challenge} onMapReady={handleMapReady} />
           </div>

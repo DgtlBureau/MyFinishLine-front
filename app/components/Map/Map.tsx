@@ -438,18 +438,13 @@ const Map = ({
     <>
       <div className="relative w-full min-h-dvh bg-gradient-to-b from-[#1a2a4a] via-[#2a4a6a] to-[#1a3a3a] overflow-x-hidden">
         <div className="fixed inset-0 -z-10">
-          {background_images.map((image, index) => (
-            <div
-              key={`blur-bg-${index}`}
-              className="w-full h-auto blur-2xl opacity-40"
-            >
-              <img
-                src={background_images[0].image_url}
-                className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
-                alt=""
-              />
-            </div>
-          ))}
+          {background_images[0] && (
+            <img
+              src={background_images[0].image_url}
+              className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-30 scale-110"
+              alt=""
+            />
+          )}
           {/* Color overlay to blend with map theme */}
           <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-blue-900/20 to-purple-900/30" />
           {/* Soft vignette */}

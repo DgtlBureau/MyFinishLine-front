@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No code provided" }, { status: 400 });
     }
 
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
+    const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
 
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",

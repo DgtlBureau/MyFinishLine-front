@@ -128,27 +128,8 @@ const RouteSegment = memo(
 
     if (!pathD) return null;
 
-    const filterId = `glow-${segmentIndex}`;
-    const gradientId = `progress-gradient-${segmentIndex}`;
-
     return (
       <g>
-        {/* Filter for glow effect */}
-        <defs>
-          <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="50%" stopColor="#06B6D4" />
-            <stop offset="100%" stopColor="#10B981" />
-          </linearGradient>
-        </defs>
-
         {/* Background path - uncompleted (dimmed, dashed) */}
         <path
           d={pathD}
@@ -178,7 +159,7 @@ const RouteSegment = memo(
             strokeWidth={12}
             strokeLinecap="round"
             strokeLinejoin="round"
-            filter={`url(#${filterId})`}
+            filter="url(#route-glow)"
             opacity={0.5}
           />
         )}
@@ -188,7 +169,7 @@ const RouteSegment = memo(
           ref={progressPathRef}
           d={pathD}
           fill="none"
-          stroke={isCompleted ? `url(#${gradientId})` : "#06B6D4"}
+          stroke={isCompleted ? "url(#route-progress-gradient)" : "#06B6D4"}
           strokeWidth={5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -427,6 +408,20 @@ const RouteRenderer = ({
       height={mapHeight}
       style={{ overflow: "visible", zIndex: 5 }}
     >
+      <defs>
+        <filter id="route-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <linearGradient id="route-progress-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#8B5CF6" />
+          <stop offset="50%" stopColor="#06B6D4" />
+          <stop offset="100%" stopColor="#10B981" />
+        </linearGradient>
+      </defs>
       {scaledRoutes.map((route) => (
         <RouteSegment
           key={`route-${route.from_step_index}-${route.to_step_index}`}

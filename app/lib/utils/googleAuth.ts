@@ -1,5 +1,5 @@
 export const googleAuthUrl = () => {
-  const redirectUri = "https://myfinishline.io/auth/google/callback";
+  const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || "https://myfinishline.io/auth/google/callback";
 
   const params = new URLSearchParams({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
