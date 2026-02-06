@@ -174,7 +174,7 @@ const Settings = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="text-xs text-white/60 text-center mt-4"
+        className="text-xs text-white/60 text-center mt-2"
       >
         {t.settings.version} 1.0.0
       </motion.p>

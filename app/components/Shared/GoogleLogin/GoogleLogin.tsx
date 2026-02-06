@@ -41,16 +41,14 @@ const GoogleLogin = ({
         {loading ? (
           <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
         ) : (
-          <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
-            <Image
-              width={logoWidth}
-              height={logoWidth}
-              src="/icons/google-logo.webp"
-              alt="Google"
-              className="w-[110%] h-[110%] object-cover"
-              style={{ display: 'block' }}
-            />
-          </div>
+          <Image
+            width={logoWidth}
+            height={logoWidth}
+            src="/icons/google-icon-new.svg"
+            alt="Google"
+            className="w-full h-full object-contain"
+            style={{ display: 'block' }}
+          />
         )}
       </div>
       {type === "login" ? "Sign in" : "Sign up"} with Google

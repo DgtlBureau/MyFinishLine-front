@@ -132,15 +132,14 @@ const ConfirmCode = () => {
       await axios.post("/api/auth/logout");
       dispatch(clearUser());
       localStorage.removeItem("persist:root");
-      router.replace("/login");
+      router.replace("/");
     } catch (error) {
       logger.error("Error logging out: ", error);
     }
   };
 
   const handleClickLink = () => {
-    handleLogout();
-    router.push("/login");
+    router.push("/payment");
   };
 
   return (
