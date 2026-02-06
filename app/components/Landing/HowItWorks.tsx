@@ -2,12 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
-// Card 1 images (local)
-const imgRingDecoration = "/images/card1-ring.webp";
-const imgPhotoBackground = "/images/card1-photo-bg.webp";
-const imgMedalPreview = "/images/card1-medal.webp";
-
-
 const steps = [
   {
     number: 1,
@@ -31,175 +25,15 @@ const steps = [
   },
 ];
 
-// Card 1 - Quest Selection UI (matches Figma node 1735:7717)
+// Card 1 - Quest Selection (simple image display)
 function Card1() {
   return (
-    <div
-      className="relative w-[398px] h-[320px] rounded-3xl overflow-hidden border border-[#b7b9e2]"
-      style={{ background: "linear-gradient(to bottom, #5170d5, #cee9d8)", backdropFilter: "blur(6.131px)" }}
-    >
-      {/* Background photo with soft light blend */}
-      <div
-        className="absolute w-[398px] h-[542px] mix-blend-soft-light overflow-hidden pointer-events-none"
-        style={{ left: "-1px", top: "-78.45px" }}
-      >
-        <img
-          src={imgPhotoBackground}
-          alt=""
-          className="absolute w-full max-w-none"
-          style={{ height: "142.83%", left: "0", top: "-42.82%" }}
-        />
-      </div>
-
-      {/* Ring decoration */}
-      <div
-        className="absolute pointer-events-none"
-        style={{ left: "37px", top: "-1.45px", width: "315px", height: "320px" }}
-      >
-        <img src={imgRingDecoration} alt="" className="w-full h-full object-cover" />
-      </div>
-
-      {/* Gallery card - Figma node 1735:7724 */}
-      <div
-        className="absolute rounded-[8px] shadow-[0px_0px_12px_0px_rgba(0,0,0,0.25)]"
-        style={{
-          left: "198px",
-          top: "24.55px",
-          width: "173.277px",
-          height: "268.551px",
-          background: "linear-gradient(to bottom, #f8f8f8 0%, #cee9d8 49.965%, #f8f8f8 100%)",
-          border: "1px solid #ededed"
-        }}
-      >
-        {/* Thumbnail - left:13.37px, top:13.37px, size:43.458px */}
-        <div
-          className="absolute overflow-hidden"
-          style={{ left: "13.37px", top: "13.37px", width: "43.458px", height: "43.458px", borderRadius: "6.686px" }}
-        >
-          <div className="absolute" style={{ inset: "-266.67% -34.23% -41.77% -75.64%" }}>
-            <img src={imgPhotoBackground} alt="" className="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        {/* Title - Amazonia Route - left:63.52px, top:13.37px */}
-        <div
-          className="absolute flex items-center"
-          style={{ left: "63.52px", top: "13.37px", width: "90.26px", height: "22.286px", paddingTop: "8.915px", paddingBottom: "4.457px" }}
-        >
-          <span className="text-[10.029px] font-medium text-[#09090b]" style={{ lineHeight: "15.6px" }}>Amazonia Route</span>
-        </div>
-
-        {/* 649 km - left:63.52px, top:56.83px translateY(-100%) */}
-        <div
-          className="absolute flex flex-col justify-end"
-          style={{ left: "63.52px", top: "56.83px", transform: "translateY(-100%)", width: "36.215px", height: "6.686px" }}
-        >
-          <span className="text-[5.572px] text-[#71717a]" style={{ lineHeight: "normal" }}>649 km</span>
-        </div>
-
-        {/* Go to map - left:159.9px translateX(-100%), top:56.83px translateY(-100%) */}
-        <div
-          className="absolute flex flex-col justify-end text-right"
-          style={{ left: "159.9px", top: "56.83px", transform: "translate(-100%, -100%)", width: "36.215px", height: "6.686px" }}
-        >
-          <span className="underline text-[5.572px] font-semibold text-black" style={{ lineHeight: "normal" }}>Go to map</span>
-        </div>
-
-        {/* Description - left:13.37px, top:73.55px */}
-        <div
-          className="absolute"
-          style={{ left: "13.37px", top: "73.55px", width: "140.404px", height: "22.286px" }}
-        >
-          <div
-            className="absolute flex flex-col justify-center text-[7.8px] text-[#71717a]"
-            style={{ left: "0", top: "11.5px", transform: "translateY(-50%)", width: "140.404px", lineHeight: "11.143px" }}
-          >
-            We&apos;ve traveled around South America to find some treasures!
-          </div>
-        </div>
-
-        {/* Progress bar - left:13.37px, top:109.2px */}
-        <div
-          className="absolute overflow-hidden"
-          style={{
-            left: "13.37px",
-            top: "109.2px",
-            width: "146.533px",
-            height: "8.915px",
-            borderRadius: "24px",
-            border: "1px solid white",
-            background: "linear-gradient(90deg, #3a559b 0%, #66af69 100%)",
-            boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.15)"
-          }}
-        >
-          <div
-            className="absolute flex flex-col justify-center text-center text-[5.572px] text-white font-medium"
-            style={{ left: "calc(50% + 0.28px)", top: "3.46px", transform: "translate(-50%, -50%)", width: "60.173px", height: "8.915px", lineHeight: "11.143px" }}
-          >
-            100 %
-          </div>
-        </div>
-
-        {/* 120 km - left:13.37px, top:145.29px translateY(-50%) */}
-        <div
-          className="absolute flex flex-col justify-center"
-          style={{ left: "13.37px", top: "145.29px", transform: "translateY(-50%)", width: "27.858px" }}
-        >
-          <span className="text-[7.8px] font-semibold text-[#09090b]" style={{ lineHeight: "11.143px", letterSpacing: "0.0557px" }}>120 km</span>
-        </div>
-
-        {/* 53 hrs - left:159.9px translateX(-100%), top:145.29px translateY(-50%) */}
-        <div
-          className="absolute flex flex-col justify-center text-right"
-          style={{ left: "159.9px", top: "145.29px", transform: "translate(-100%, -50%)", width: "27.858px" }}
-        >
-          <span className="text-[7.8px] font-semibold text-[#09090b]" style={{ lineHeight: "11.143px", letterSpacing: "0.0557px" }}>53 hrs</span>
-        </div>
-
-        {/* Medal preview - bottom:62.4px, left:calc(50%+0.28px), size:66.859px */}
-        <div
-          className="absolute overflow-hidden"
-          style={{
-            left: "calc(50% + 0.28px)",
-            bottom: "62.4px",
-            width: "66.859px",
-            height: "66.859px",
-            borderRadius: "44.573px",
-            border: "2.229px solid #eedfba",
-            transform: "translateX(-50%)"
-          }}
-        >
-          <div className="absolute" style={{ inset: "-25.83% -17.5% -7.5% -15.83%" }}>
-            <img src={imgMedalPreview} alt="" className="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        {/* In processing button - yellow gradient with shimmer */}
-        <div
-          className="absolute flex items-center justify-center overflow-hidden"
-          style={{
-            left: "13.37px",
-            right: "13.37px",
-            bottom: "28.97px",
-            height: "20.058px",
-            paddingTop: "4.457px",
-            paddingBottom: "4.457px",
-            borderRadius: "4.457px",
-            background: "linear-gradient(90deg, #d4a853 0%, #f5d998 30%, #eedfba 50%, #f5d998 70%, #d4a853 100%)",
-            boxShadow: "0px 2px 4px rgba(0,0,0,0.15), inset 0px 1px 2px rgba(255,255,255,0.5)"
-          }}
-        >
-          <span className="text-[7.8px] font-semibold text-[#5c4a1f]" style={{ lineHeight: "13.372px" }}>In processing...</span>
-        </div>
-
-        {/* Look at medal - left:50%, top:255.18px translateX(-50%) translateY(-100%) */}
-        <div
-          className="absolute flex flex-col justify-end text-center"
-          style={{ left: "50%", top: "255.18px", transform: "translate(-50%, -100%)", width: "56.273px", height: "6.686px" }}
-        >
-          <span className="underline text-[5.572px] font-semibold text-black" style={{ lineHeight: "normal" }}>Look at the medal</span>
-        </div>
-      </div>
+    <div className="relative w-[398px] h-[320px] rounded-3xl overflow-hidden">
+      <img
+        src="/images/landing-quest-preview.png"
+        alt="Choose your adventure quest"
+        className="w-full h-full object-cover"
+      />
     </div>
   );
 }
@@ -373,7 +207,7 @@ function Card2() {
 }
 
 // Card 3 image - local file
-const imgCard3NewFrame = "/images/card3-phone-new.png";
+const imgCard3NewFrame = "/images/card3-new.png";
 
 // Card 3 - Discover Content with Smooth Fade-in Animation
 function Card3() {

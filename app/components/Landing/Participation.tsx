@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 
 // Images - use local files
-const imgYoungPeople = "/images/young-people.webp";
-const imgSportBeginners = "/images/sport-beginners.webp";
-const imgProfessionalAthlete = "/images/professional-athlete.webp";
-const imgFitnessEnthusiasts = "/images/fitness-enthusiasts.webp";
-const imgActiveAdults = "/images/active-adults.webp";
+const imgYoungPeople = "/images/card4-people.png";
+const imgSportBeginners = "/images/card-runner.png";
+const imgProfessionalAthlete = "/images/card-woman.png";
+const imgFitnessEnthusiasts = "/images/card-hikers.png";
+const imgActiveAdults = "/images/card-elderly.png";
 
 const sections = [
   {
