@@ -25,6 +25,7 @@ const Map = ({
   is_completed,
   route_data,
   reward,
+  is_started,
   onMapReady,
   mapReady = false,
 }: IActiveChallenge & { onMapReady?: () => void; mapReady?: boolean }) => {
@@ -33,6 +34,7 @@ const Map = ({
   const [canShowAwards, setCanShowAwards] = useState(false);
   const [currentAwardIndex, setCurrentAwardIndex] = useState(0);
   const [allAwards, setAllAwards] = useState<Array<{ image_url: string; type: 'badge' | 'card'; id: number }>>([]);
+  const [isShowingAfterStoryAwards, setIsShowingAfterStoryAwards] = useState(false);
 
   // If no background images, signal map ready immediately
   useEffect(() => {
@@ -52,6 +54,7 @@ const Map = ({
     }
   }, [mapReady]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [isManualStoryView, setIsManualStoryView] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const [isZooming, setIsZooming] = useState(false);
@@ -95,16 +98,19 @@ const Map = ({
   // Track previous steps to detect newly completed ones
   const previousStepsRef = useRef<IStep[]>([]);
   const isInitialLoadRef = useRef(true);
+  const previousIsStartedRef = useRef(is_started);
 
   // Detect when steps are completed and have unclaimed awards
   useEffect(() => {
-    if (steps.length === 0 || !canShowAwards) return;
+    // Don't show awards if quest is not started
+    if (steps.length === 0 || !canShowAwards || !is_started) return;
 
     const previousSteps = previousStepsRef.current;
     const stepsWithUnclaimedAwards: IStep[] = [];
+    const justStartedQuest = !previousIsStartedRef.current && is_started;
 
-    // On initial load, find steps with unclaimed awards
-    if (isInitialLoadRef.current) {
+    // On initial load or when quest just started, find steps with unclaimed awards
+    if (isInitialLoadRef.current || justStartedQuest) {
       isInitialLoadRef.current = false;
 
       for (const step of steps) {
@@ -190,6 +196,7 @@ const Map = ({
       setActiveStep(firstStep);
       setAllAwards(awards);
       setCurrentAwardIndex(0);
+      setIsShowingAfterStoryAwards(false); // These are before-story awards
 
       if (awards.length > 0) {
         setIsAwardOpen(true);
@@ -200,9 +207,10 @@ const Map = ({
       }
     }
 
-    // Update previous steps ref
+    // Update previous steps and is_started refs
     previousStepsRef.current = steps;
-  }, [steps, canShowAwards]);
+    previousIsStartedRef.current = is_started;
+  }, [steps, canShowAwards, is_started]);
 
   const stepsAmount = steps.length;
 
@@ -407,8 +415,9 @@ const Map = ({
       });
     }
 
-    // Open stories
+    // Open stories (manual view - user clicked on step)
     if (clickedStep.story?.length) {
+      setIsManualStoryView(true);
       setTimeout(() => {
         setIsStoriesOpen(true);
       }, 300);
@@ -458,12 +467,21 @@ const Map = ({
         setIsAwardOpen(true);
       }, 300);
     } else {
-      // All awards shown, now show stories or next queued step
-      if (activeStep?.story?.length) {
-        setIsStoriesOpen(true);
-      } else {
-        // No stories, check if there are more steps in queue
+      // All awards shown
+      // If these were after-story awards, don't show stories again
+      if (isShowingAfterStoryAwards) {
+        setIsShowingAfterStoryAwards(false);
         showNextQueuedAward();
+      } else {
+        // These were before-story awards, now show stories or next queued step
+        // Only show stories if step has not been viewed yet
+        if (activeStep?.story?.length && !activeStep?.is_viewed) {
+          setIsManualStoryView(false); // Automatic story view after awards
+          setIsStoriesOpen(true);
+        } else {
+          // No stories or already viewed, check if there are more steps in queue
+          showNextQueuedAward();
+        }
       }
     }
   };
@@ -482,7 +500,13 @@ const Map = ({
   const handleCloseStories = () => {
     setIsStoriesOpen(false);
 
-    // Check if there are awards to show AFTER stories
+    // If this was a manual story view (user clicked on step), don't show awards after
+    if (isManualStoryView) {
+      setIsManualStoryView(false);
+      return;
+    }
+
+    // Check if there are awards to show AFTER stories (only for automatic story view)
     if (activeStep) {
       const afterStoryAwards: Array<{ image_url: string; type: 'badge' | 'card'; id: number }> = [];
 
@@ -506,6 +530,7 @@ const Map = ({
         // Show after-story awards
         setAllAwards(afterStoryAwards);
         setCurrentAwardIndex(0);
+        setIsShowingAfterStoryAwards(true);
         setTimeout(() => {
           setIsAwardOpen(true);
         }, 300);

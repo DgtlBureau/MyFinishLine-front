@@ -180,15 +180,17 @@ const SwipeToUnlock = ({
             className="absolute top-0 left-0 h-[72px] w-[72px] rounded-xl z-10 overflow-hidden"
             style={{
               x,
-              touchAction: "none",
               WebkitUserSelect: "none",
               userSelect: "none",
               cursor: isProcessing || disabled ? "default" : "grab",
+              touchAction: "none",
             }}
             drag={isProcessing || disabled ? false : "x"}
             dragConstraints={{ left: 0, right: containerWidth }}
             dragElastic={0}
             dragMomentum={false}
+            dragPropagation={false}
+            dragListener={true}
             dragTransition={{ bounceStiffness: 500, bounceDamping: 30 }}
             onDragEnd={handleDragEnd}
             whileDrag={{ cursor: "grabbing", scale: 1.05 }}

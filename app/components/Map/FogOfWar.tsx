@@ -19,31 +19,14 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
   const fogPosition = useMemo(() => {
     const sortedSteps = [...steps].sort((a, b) => a.index - b.index);
 
-    // DEBUG: входные данные
-    console.log('[FogOfWar] props:', { mapHeight, isCompleted, yOffset, stepsCount: steps.length });
-    console.table(sortedSteps.map(s => ({
-      index: s.index,
-      active: s.active,
-      next: s.next,
-      completed: s.completed,
-      pct: s.user_distance_percent,
-      dist: s.user_distance,
-      y: s.y_coordinate,
-    })));
-
     if (isCompleted) {
-      const val = sortedSteps.length > 0
+      return sortedSteps.length > 0
         ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + yOffset + 200
         : mapHeight;
-      console.log('[FogOfWar] isCompleted → fogPosition:', val);
-      return val;
     }
 
     const activeStep = sortedSteps.find((s) => s.active);
     const nextStep = sortedSteps.find((s) => s.next);
-
-    console.log('[FogOfWar] activeStep:', activeStep ? { index: activeStep.index, y: activeStep.y_coordinate, percent: activeStep.user_distance_percent } : null);
-    console.log('[FogOfWar] nextStep:', nextStep ? { index: nextStep.index, y: nextStep.y_coordinate } : null);
 
     let currentY: number;
 
@@ -52,27 +35,20 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
       const progress = activeStep.user_distance_percent || 0;
       currentY = activeY;
 
-      console.log('[FogOfWar] activeY:', activeY, 'progress:', progress);
-
       if (nextStep && progress > 0) {
         const nextY = Number(nextStep.y_coordinate) + yOffset;
         currentY = activeY + ((nextY - activeY) * progress) / 100;
-        console.log('[FogOfWar] interpolated → nextY:', nextY, 'currentY:', currentY);
       }
 
       currentY -= 50;
-      console.log('[FogOfWar] final currentY (after -50):', currentY);
     } else {
       const firstIncomplete = sortedSteps.find((s) => !s.completed);
       if (firstIncomplete) {
         currentY = Number(firstIncomplete.y_coordinate) + yOffset;
-        console.log('[FogOfWar] no activeStep, firstIncomplete index:', firstIncomplete.index, 'currentY:', currentY);
       } else {
-        const val = sortedSteps.length > 0
+        return sortedSteps.length > 0
           ? Number(sortedSteps[sortedSteps.length - 1].y_coordinate) + yOffset + 200
           : mapHeight;
-        console.log('[FogOfWar] all completed → fogPosition:', val);
-        return val;
       }
     }
 
@@ -85,8 +61,6 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
   // For upward challenges: fog covers top (0%) → fogEdgeFromTop%
   // For downward challenges: fog covers fogEdgeFromTop% → bottom (100%)
   const fogStartPercent = fogEdgeFromTop;
-
-  console.log('[FogOfWar] RESULT:', { fogPosition, mapHeight, fogEdgeFromTop, fogStartPercent, goesUpward });
 
   // Helper: generates mask gradient based on direction
   const fogMask = (offsetBefore: number, offsetAfter: number) => {
@@ -109,7 +83,7 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
       style={{ zIndex: 25 }}
       aria-hidden="true"
     >
-      {/* Layer 1: Solid lavender base with purple shadows merged */}
+      {/* Layer 1: Solid lavender base with purple shadows merged - DEBUG: increased opacity */}
       <div
         className="absolute inset-0"
         style={{
@@ -119,15 +93,15 @@ const FogOfWar = memo(({ steps, mapHeight, isCompleted, yOffset = 0 }: FogOfWarP
             linear-gradient(
               ${dir},
               rgba(185, 175, 220, 1) 0%,
-              rgba(192, 183, 228, 0.98) 40%,
-              rgba(200, 192, 232, 0.95) 65%,
-              rgba(210, 203, 240, 0.85) 82%,
-              rgba(225, 220, 250, 0.6) 93%,
-              transparent 100%
+              rgba(192, 183, 228, 1) 40%,
+              rgba(200, 192, 232, 1) 65%,
+              rgba(210, 203, 240, 0.95) 82%,
+              rgba(225, 220, 250, 0.8) 93%,
+              rgba(235, 230, 255, 0.5) 100%
             ),
-            radial-gradient(ellipse 50% 20% at 25% 20%, rgba(160,150,195,0.35) 0%, transparent 70%),
-            radial-gradient(ellipse 55% 22% at 65% 35%, rgba(155,145,190,0.3) 0%, transparent 70%),
-            radial-gradient(ellipse 52% 20% at 50% 55%, rgba(158,148,193,0.28) 0%, transparent 70%)
+            radial-gradient(ellipse 50% 20% at 25% 20%, rgba(160,150,195,0.5) 0%, transparent 70%),
+            radial-gradient(ellipse 55% 22% at 65% 35%, rgba(155,145,190,0.45) 0%, transparent 70%),
+            radial-gradient(ellipse 52% 20% at 50% 55%, rgba(158,148,193,0.42) 0%, transparent 70%)
           `,
         }}
       />
