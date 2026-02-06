@@ -22,29 +22,53 @@ const Page = () => {
   const [isFetching, setIsFetching] = useState(!hasCachedChallenge);
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [questStarted, setQuestStarted] = useState(true);
+  const [isStarting, setIsStarting] = useState(false);
 
   const mapWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Get quest started state from Redux (single source of truth)
+  const questStarted = challenge?.is_started ?? false;
 
   const handleMapReady = useCallback(() => {
     setMapReady(true);
   }, []);
 
-  // Check localStorage for quest started state
-  useEffect(() => {
-    if (challenge?.id > 0) {
-      const key = `quest_started_${challenge.id}`;
-      const stored = localStorage.getItem(key);
-      setQuestStarted(stored === "true");
-    }
-  }, [challenge?.id]);
+  const handleStartQuest = useCallback(async () => {
+    if (!challenge?.id || isStarting) return;
 
-  const handleStartQuest = useCallback(() => {
-    if (challenge?.id > 0) {
-      localStorage.setItem(`quest_started_${challenge.id}`, "true");
+    setIsStarting(true);
+
+    try {
+      const response = await fetch('/api/challenges/start-quest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to start quest');
+      }
+
+      const data = await response.json();
+
+      // Update Redux state
+      dispatch(updateChallenge({
+        is_started: true,
+        started_at: data.started_at
+      }));
+
+      logger.info('Quest started successfully', {
+        challenge_id: challenge.id,
+        started_at: data.started_at
+      });
+    } catch (error) {
+      logger.error('Failed to start quest:', error);
+    } finally {
+      setIsStarting(false);
     }
-    setQuestStarted(true);
-  }, [challenge?.id]);
+  }, [challenge?.id, dispatch, isStarting]);
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -65,6 +89,11 @@ const Page = () => {
         const data = await getUserActiveChallenge();
         if (data) {
           dispatch(setChallenge(data));
+
+          // Cleanup: remove old localStorage keys (no longer needed)
+          if (data.id > 0) {
+            localStorage.removeItem(`quest_started_${data.id}`);
+          }
         }
       } catch (error) {
         logger.error("Failed to load challenge:", error);
@@ -111,7 +140,7 @@ const Page = () => {
           {mapReady && questStarted && (
             <MapHeader
               challengeName={challenge.name}
-              startDate={challenge.activate_date}
+              startDate={challenge.started_at || challenge.activate_date}
               totalDistance={challenge.user_distance}
               totalDistanceMile={challenge.user_distance_mile}
               distance={challenge.total_distance}
@@ -129,7 +158,7 @@ const Page = () => {
             ref={mapWrapperRef}
             className={`transition-opacity duration-1000 ease-out ${!questStarted ? "fixed inset-0 z-20 overflow-hidden opacity-0 pointer-events-none" : ""}`}
           >
-            <Map {...challenge} onMapReady={handleMapReady} />
+            <Map {...challenge} onMapReady={handleMapReady} mapReady={mapReady} />
           </div>
           <AnimatePresence>
             {mapReady && !questStarted && (
@@ -137,7 +166,7 @@ const Page = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <StartJourney mode="start" onStart={handleStartQuest} />
+                <StartJourney mode="start" onStart={handleStartQuest} isLoading={isStarting} />
               </motion.div>
             )}
           </AnimatePresence>

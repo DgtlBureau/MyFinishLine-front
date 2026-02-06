@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     const { data } = await instance.post(
-      "/challenges/view-story/" + body.step_id,
+      "/challenges/view-story/" + body.story_id,
       {},
       {
         headers: {

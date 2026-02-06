@@ -8,10 +8,10 @@ import { Xwrapper } from "react-xarrows";
 import StoryModal from "../Shared/StoryList/StoryList";
 import RouteRenderer from "./RouteRenderer";
 import { IActiveChallenge, IStep, IStory } from "@/app/types";
-import { Crosshair } from "lucide-react";
 import { motion } from "motion/react";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import axios from "axios";
+import instance from "@/app/lib/utils/instance";
 import { toast } from "react-toastify";
 import { updateUser } from "@/app/lib/features/user/userSlice";
 import Image from "next/image";
@@ -26,9 +26,13 @@ const Map = ({
   route_data,
   reward,
   onMapReady,
-}: IActiveChallenge & { onMapReady?: () => void }) => {
+  mapReady = false,
+}: IActiveChallenge & { onMapReady?: () => void; mapReady?: boolean }) => {
   const [activeStep, setActiveStep] = useState<IStep | null>(null);
   const [isAwardOpen, setIsAwardOpen] = useState(false);
+  const [canShowAwards, setCanShowAwards] = useState(false);
+  const [currentAwardIndex, setCurrentAwardIndex] = useState(0);
+  const [allAwards, setAllAwards] = useState<Array<{ image_url: string; type: 'badge' | 'card'; id: number }>>([]);
 
   // If no background images, signal map ready immediately
   useEffect(() => {
@@ -36,6 +40,17 @@ const Map = ({
       onMapReady?.();
     }
   }, [background_images, onMapReady]);
+
+  // Wait for map to be ready and splash screen to fade out before showing awards
+  useEffect(() => {
+    if (mapReady) {
+      // Wait for LoadingScreen fade out animation (500ms) + small buffer
+      const timer = setTimeout(() => {
+        setCanShowAwards(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [mapReady]);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -80,67 +95,61 @@ const Map = ({
   // Track previous steps to detect newly completed ones
   const previousStepsRef = useRef<IStep[]>([]);
   const isInitialLoadRef = useRef(true);
-  const CELEBRATED_STEPS_KEY = "celebrated_steps";
 
-  // Detect when steps are newly completed and queue award modals
+  // Detect when steps are completed and have unclaimed awards
   useEffect(() => {
-    if (steps.length === 0) return;
-
-    // Get already celebrated steps from sessionStorage
-    let celebratedSteps: number[] = [];
-    try {
-      const stored = sessionStorage.getItem(CELEBRATED_STEPS_KEY);
-      if (stored) {
-        celebratedSteps = JSON.parse(stored);
-      }
-    } catch (e) {
-      // Ignore parse errors
-    }
+    if (steps.length === 0 || !canShowAwards) return;
 
     const previousSteps = previousStepsRef.current;
-    const newlyCompletedSteps: IStep[] = [];
+    const stepsWithUnclaimedAwards: IStep[] = [];
 
-    // On initial load, find steps completed since last session
+    // On initial load, find steps with unclaimed awards
     if (isInitialLoadRef.current) {
       isInitialLoadRef.current = false;
 
       for (const step of steps) {
-        // Skip step 0 (onboarding) - auto-mark as celebrated without showing modal
-        if (step.index === 0) {
-          if (!celebratedSteps.includes(step.id)) {
-            celebratedSteps.push(step.id);
+        if (step.completed) {
+          // Check if step has unclaimed badges or cards (before stories)
+          const hasUnclaimedBeforeBadges = step.badges?.some(
+            b => b.show_before_story !== false && !b.is_claimed
+          );
+          const hasUnclaimedBeforeCards = step.cards?.some(
+            c => c.show_before_story !== false && !c.is_claimed
+          );
+
+          if (hasUnclaimedBeforeBadges || hasUnclaimedBeforeCards) {
+            stepsWithUnclaimedAwards.push(step);
           }
-          continue;
-        }
-        if (step.completed && !celebratedSteps.includes(step.id)) {
-          newlyCompletedSteps.push(step);
-          celebratedSteps.push(step.id);
         }
       }
     } else {
       // For subsequent updates, detect steps that just became completed
       for (const step of steps) {
-        // Skip step 0 (onboarding)
-        if (step.index === 0) continue;
-
-        if (step.completed && !celebratedSteps.includes(step.id)) {
+        if (step.completed) {
           const prevStep = previousSteps.find((s) => s.id === step.id);
           const wasNotCompletedBefore = prevStep && !prevStep.completed;
 
           if (wasNotCompletedBefore) {
-            newlyCompletedSteps.push(step);
-            celebratedSteps.push(step.id);
+            // Check if has unclaimed awards
+            const hasUnclaimedBeforeBadges = step.badges?.some(
+              b => b.show_before_story !== false && !b.is_claimed
+            );
+            const hasUnclaimedBeforeCards = step.cards?.some(
+              c => c.show_before_story !== false && !c.is_claimed
+            );
+
+            if (hasUnclaimedBeforeBadges || hasUnclaimedBeforeCards) {
+              stepsWithUnclaimedAwards.push(step);
+            }
           }
         }
       }
     }
 
-    // If there are newly completed steps, queue them for celebration
-    if (newlyCompletedSteps.length > 0) {
-      sessionStorage.setItem(CELEBRATED_STEPS_KEY, JSON.stringify(celebratedSteps));
-
+    // If there are steps with unclaimed awards, show them
+    if (stepsWithUnclaimedAwards.length > 0) {
       // Sort by index (lowest first) so user sees them in order
-      const sortedSteps = newlyCompletedSteps.sort((a, b) => a.index - b.index);
+      const sortedSteps = stepsWithUnclaimedAwards.sort((a, b) => a.index - b.index);
 
       // Send GTM events for each completed step
       sortedSteps.forEach((step) => {
@@ -158,8 +167,34 @@ const Map = ({
 
       // Show the first one immediately, queue the rest
       const [firstStep, ...remainingSteps] = sortedSteps;
+
+      // Collect all UNCLAIMED awards (badges and cards) that should be shown before stories
+      const awards: Array<{ image_url: string; type: 'badge' | 'card'; id: number }> = [];
+
+      if (firstStep.badges) {
+        firstStep.badges
+          .filter(b => b.show_before_story !== false && !b.is_claimed)
+          .forEach(badge => {
+            awards.push({ image_url: badge.image_url, type: 'badge', id: badge.id });
+          });
+      }
+
+      if (firstStep.cards) {
+        firstStep.cards
+          .filter(c => c.show_before_story !== false && !c.is_claimed)
+          .forEach(card => {
+            awards.push({ image_url: card.image_url, type: 'card', id: card.id });
+          });
+      }
+
       setActiveStep(firstStep);
-      setIsAwardOpen(true);
+      setAllAwards(awards);
+      setCurrentAwardIndex(0);
+
+      if (awards.length > 0) {
+        setIsAwardOpen(true);
+      }
+
       if (remainingSteps.length > 0) {
         setAwardQueue(remainingSteps);
       }
@@ -167,7 +202,7 @@ const Map = ({
 
     // Update previous steps ref
     previousStepsRef.current = steps;
-  }, [steps]);
+  }, [steps, canShowAwards]);
 
   const stepsAmount = steps.length;
 
@@ -360,57 +395,76 @@ const Map = ({
   const handleStepClick = (clickedStep: IStep) => {
     if (!clickedStep.completed && !clickedStep.active) return;
 
-    // If clicking the same step while zoomed, zoom out
-    if (isZooming && activeStep?.id === clickedStep.id) {
-      setZoomScale(1);
-      setTimeout(() => {
-        setIsZooming(false);
-      }, 400);
-      return;
-    }
-
     setActiveStep(clickedStep);
 
-    // Calculate zoom origin based on step position
-    const xPercent = (Number(clickedStep.x_coordinate) / MAP_WIDTH) * 100;
-    const yPercent = 100 - ((Number(clickedStep.y_coordinate) + yOffset) / MAP_HEIGHT) * 100;
+    // Scroll to step
+    const stepElement = document.getElementById(`step-${clickedStep.index}`);
+    if (stepElement) {
+      stepElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
 
-    // Set zoom origin first (before scrolling)
-    setZoomOrigin({ x: xPercent, y: yPercent });
-    setIsZooming(true);
-
-    // Small delay to let origin settle, then scroll
-    setTimeout(() => {
-      const stepElement = document.getElementById(`step-${clickedStep.index}`);
-      if (stepElement) {
-        stepElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
-      }
-    }, 50);
-
-    // Start zoom after scroll begins
-    setTimeout(() => {
-      setZoomScale(1.8);
-    }, 400);
-
-    // Open stories after zoom animation completes
+    // Open stories
     if (clickedStep.story?.length) {
       setTimeout(() => {
         setIsStoriesOpen(true);
-      }, 1200);
+      }, 300);
     }
   };
 
-  const handleContinueAwards = () => {
+  const handleContinueAwards = async () => {
+    // Claim current award on backend
+    const currentAward = allAwards[currentAwardIndex];
+    if (currentAward && activeStep) {
+      try {
+        await axios.post('/api/challenges/claim-cosmetic', {
+          challenge_step_id: activeStep.id,
+          type: currentAward.type,
+        });
+
+        // Update local state to mark this award as claimed
+        setActiveStep(prevStep => {
+          if (!prevStep) return prevStep;
+
+          const updatedStep = { ...prevStep };
+
+          if (currentAward.type === 'badge' && updatedStep.badges) {
+            updatedStep.badges = updatedStep.badges.map(b =>
+              b.id === currentAward.id ? { ...b, is_claimed: true } : b
+            );
+          } else if (currentAward.type === 'card' && updatedStep.cards) {
+            updatedStep.cards = updatedStep.cards.map(c =>
+              c.id === currentAward.id ? { ...c, is_claimed: true } : c
+            );
+          }
+
+          return updatedStep;
+        });
+      } catch (error) {
+        logger.error('Failed to claim cosmetic:', error);
+      }
+    }
+
     setIsAwardOpen(false);
-    if (activeStep?.story?.length) {
-      setIsStoriesOpen(true);
+
+    // Check if there are more awards to show
+    if (currentAwardIndex < allAwards.length - 1) {
+      // Show next award
+      setCurrentAwardIndex(prev => prev + 1);
+      setTimeout(() => {
+        setIsAwardOpen(true);
+      }, 300);
     } else {
-      // No stories, check if there are more steps in queue
-      showNextQueuedAward();
+      // All awards shown, now show stories or next queued step
+      if (activeStep?.story?.length) {
+        setIsStoriesOpen(true);
+      } else {
+        // No stories, check if there are more steps in queue
+        showNextQueuedAward();
+      }
     }
   };
 
@@ -427,11 +481,40 @@ const Map = ({
 
   const handleCloseStories = () => {
     setIsStoriesOpen(false);
-    setZoomScale(1);
-    // Delay resetting isZooming to allow smooth zoom-out animation
-    setTimeout(() => {
-      setIsZooming(false);
-    }, 700);
+
+    // Check if there are awards to show AFTER stories
+    if (activeStep) {
+      const afterStoryAwards: Array<{ image_url: string; type: 'badge' | 'card'; id: number }> = [];
+
+      if (activeStep.badges) {
+        activeStep.badges
+          .filter(b => b.show_before_story === false && !b.is_claimed)
+          .forEach(badge => {
+            afterStoryAwards.push({ image_url: badge.image_url, type: 'badge', id: badge.id });
+          });
+      }
+
+      if (activeStep.cards) {
+        activeStep.cards
+          .filter(c => c.show_before_story === false && !c.is_claimed)
+          .forEach(card => {
+            afterStoryAwards.push({ image_url: card.image_url, type: 'card', id: card.id });
+          });
+      }
+
+      if (afterStoryAwards.length > 0) {
+        // Show after-story awards
+        setAllAwards(afterStoryAwards);
+        setCurrentAwardIndex(0);
+        setTimeout(() => {
+          setIsAwardOpen(true);
+        }, 300);
+        return;
+      }
+    }
+
+    // No after-story awards, check if there are more steps in queue
+    showNextQueuedAward();
   };
 
   return (
@@ -510,7 +593,14 @@ const Map = ({
               )}
 
               <Xwrapper>
-                {steps.map((step) => (
+                {steps
+                  .filter(step =>
+                    step.completed ||  // Показывать завершенные точки
+                    step.active ||     // Показывать активную точку
+                    step.next ||       // Показывать следующую точку
+                    step.index === 0   // Показывать стартовую точку
+                  )
+                  .map((step) => (
                   <div
                     key={step.id}
                     id={`step-${step.index}`}
@@ -569,6 +659,7 @@ const Map = ({
                         index={step.index}
                         isViewed={step.is_viewed}
                         hideArrows={hasRouteData}
+                        storiesCount={step.story?.length || 0}
                       />
                     </div>
                   </div>
@@ -578,23 +669,13 @@ const Map = ({
           </div>
           </div>
         </div>
-
-        <div className="fixed bottom-18 left-2 z-30">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="bg-white rounded-full p-2 shadow-lg"
-            onClick={() => handleScrollToActiveStep()}
-          >
-            <Crosshair />
-          </motion.button>
-        </div>
       </div>
 
       <AnimatePresence>
         {isAwardOpen && (
           <AwardModal
             onCloseClick={handleContinueAwards}
-            medalImage={reward?.image_url || undefined}
+            medalImage={allAwards[currentAwardIndex]?.image_url || reward?.image_url || undefined}
           />
         )}
       </AnimatePresence>

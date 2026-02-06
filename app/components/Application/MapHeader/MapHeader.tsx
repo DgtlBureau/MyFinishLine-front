@@ -77,7 +77,7 @@ const MapHeader = ({
                   You / Quest
                 </span>
                 <span className="font-bold text-[18px] text-white whitespace-nowrap">
-                  {(isMile ? Number(userDist) / 1000 : Number(userDist) / 1000).toFixed(2)} / {(isMile ? Number(totalDist) / 1000 : Number(totalDist) / 1000).toFixed(2)} {label}
+                  {(isMile ? Number(userDist).toFixed(2) : (Number(userDist) / 1000).toFixed(2))} / {(isMile ? Number(totalDist).toFixed(2) : (Number(totalDist) / 1000).toFixed(2))} {label}
                 </span>
               </div>
               <TimeCounter startDate={startDate} />

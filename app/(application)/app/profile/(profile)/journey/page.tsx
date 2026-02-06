@@ -131,13 +131,14 @@ export const Journey = () => {
         >
           My Journey
         </motion.h2>
-        <AnimatedSection
-          skeleton={<ChallengeCardSkeleton />}
-          delay={0}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           className="my-8 px-4"
         >
           <ChallengeCard />
-        </AnimatedSection>
+        </motion.div>
       </div>
 
       {hasActiveChallenge && (
