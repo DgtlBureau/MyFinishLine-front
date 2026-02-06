@@ -174,7 +174,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
         <>
           <div className="flex items-center justify-center gap-2 mt-4">
             <span className="text-[13px] text-white/70">
-              Total Distance {isMile ? (Number(challenge.total_distance_mile) / 1000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (Number(challenge.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} {label}
+              Total Distance {isMile ? Number(challenge.total_distance_mile).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (Number(challenge.total_distance) / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 })} {label}
             </span>
             {challenge.reward_ticket?.id && (
               <>
@@ -191,7 +191,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
               <span className="text-[9px] text-white/50 font-medium tracking-wide">TOTAL DISTANCE</span>
               <div className="flex flex-col">
                 <span className="text-base font-bold leading-5 text-white">
-                  {isMile ? (challenge.user_distance_mile || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (challenge.user_distance || 0).toFixed(2)}
+                  {isMile ? (challenge.user_distance_mile || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ((challenge.user_distance || 0) / 1000).toFixed(2)}
                 </span>
                 <span className="text-[7px] text-white/50 font-medium">{label}</span>
               </div>

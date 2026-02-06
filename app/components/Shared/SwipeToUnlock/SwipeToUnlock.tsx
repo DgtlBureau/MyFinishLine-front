@@ -183,6 +183,7 @@ const SwipeToUnlock = ({
               touchAction: "none",
               WebkitUserSelect: "none",
               userSelect: "none",
+              cursor: isProcessing || disabled ? "default" : "grab",
             }}
             drag={isProcessing || disabled ? false : "x"}
             dragConstraints={{ left: 0, right: containerWidth }}
@@ -190,6 +191,8 @@ const SwipeToUnlock = ({
             dragMomentum={false}
             dragTransition={{ bounceStiffness: 500, bounceDamping: 30 }}
             onDragEnd={handleDragEnd}
+            whileDrag={{ cursor: "grabbing", scale: 1.05 }}
+            whileHover={!isProcessing && !disabled ? { scale: 1.02 } : {}}
           >
             {/* Icon wrapper with pulse animation when not connected */}
             <motion.div

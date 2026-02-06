@@ -21,6 +21,7 @@ interface StepProps {
   index: number;
   hideArrows?: boolean;
   userDistanceReachedMile?: number;
+  storiesCount?: number;
 }
 
 const Step = memo(
@@ -38,12 +39,15 @@ const Step = memo(
     isViewed,
     x,
     hideArrows = false,
+    storiesCount = 0,
   }: StepProps) => {
     const isLast = id === stepsAmount;
     const { user } = useAppSelector((state) => state.user);
     const distanceUnit = getDistanceUnit(user.measure);
     const isMiles = user.measure === "mile";
-    const displayUserDistanceReached = isMiles ? userDistanceReachedMile : userDistanceReached;
+    const displayUserDistanceReached = isMiles
+      ? (userDistanceReachedMile ?? (userDistanceReached * 0.621371))
+      : userDistanceReached;
 
     const getStepColor = () => {
       if (completed) {
@@ -165,6 +169,59 @@ const Step = memo(
             />
           </>
         )}
+
+        {/* Story indicators - Telegram-style ring with segments */}
+        {storiesCount > 0 && (completed || isActive) && (
+          <div className="absolute inset-0 pointer-events-none">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              style={{ transform: 'rotate(-90deg)' }}
+              viewBox="0 0 80 80"
+            >
+              <defs>
+                {/* Gradient for unviewed stories */}
+                <linearGradient id="story-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#00d4ff" />
+                  <stop offset="50%" stopColor="#0099ff" />
+                  <stop offset="100%" stopColor="#0066ff" />
+                </linearGradient>
+                {/* Glow filter */}
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {Array.from({ length: storiesCount }).map((_, i) => {
+                const circumference = 2 * Math.PI * 35; // radius = 35
+                const segmentLength = (circumference / storiesCount) - 2; // -2 for gap
+                const offset = (circumference / storiesCount) * i;
+
+                return (
+                  <circle
+                    key={i}
+                    cx="40"
+                    cy="40"
+                    r="35"
+                    fill="none"
+                    stroke={isViewed ? "#9ca3af" : "url(#story-gradient)"}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+                    strokeDashoffset={-offset}
+                    opacity={isViewed ? "0.5" : "1"}
+                    filter={isViewed ? "none" : "url(#glow)"}
+                    className="transition-all duration-300"
+                  />
+                );
+              })}
+            </svg>
+          </div>
+        )}
+
         <div className="relative">
           <div
             className={`

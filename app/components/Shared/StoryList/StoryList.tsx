@@ -31,25 +31,28 @@ const StoryList = ({
   const HOLD_DELAY = 150;
   const dispatch = useAppDispatch();
 
-  const handleViewStories = async () => {
-    if (isViewed || !stepId) {
-      return;
-    }
-
+  const handleViewCurrentStory = async (storyId: number) => {
     try {
-      await axios.post("/api/user/view-story", { step_id: stepId });
-      dispatch(setViewedStory(stepId));
+      await axios.post("/api/user/view-story", { story_id: storyId });
     } catch (error) {
       logger.log(error);
     }
   };
 
   const handleGoToNextStory = () => {
+    const currentStoryId = stories[activeStoryIndex]?.id;
+
+    // Mark current story as viewed
+    if (currentStoryId) {
+      handleViewCurrentStory(currentStoryId);
+    }
+
     setActiveStoryIndex((prevIndex) => {
       if (stories[prevIndex + 1]) {
         return prevIndex + 1;
       } else {
-        handleViewStories();
+        // Mark as viewed in Redux when all stories are completed
+        dispatch(setViewedStory(stepId));
         onClose();
         return prevIndex;
       }
@@ -160,12 +163,12 @@ const StoryList = ({
       onPointerUp={handleResumeAnimation}
       onPointerLeave={handlePointerLeave}
       onContextMenu={(e) => e.preventDefault()}
-      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-gradient-to-b from-[#1a2a4a]/90 via-black/90 to-[#1a3a3a]/90 select-none"
+      className="fixed top-0 left-0 w-screen h-screen z-50 flex justify-center bg-gradient-to-b from-[#0a0f1c]/95 via-black/95 to-[#0f1419]/95 select-none"
     >
       <AnimatePresence>{showShadow && <StoryShadow />}</AnimatePresence>
       {currentStory && (
         <Image
-          className="fixed object-cover z-50 w-full h-full blur-xl opacity-50"
+          className="fixed object-cover z-50 w-full h-full blur-2xl opacity-40"
           src={currentStory?.image_url}
           quality={40}
           fill
@@ -176,13 +179,17 @@ const StoryList = ({
       )}
 
       <div className="top-0 h-screen z-100 max-w-270 w-full mx-auto relative">
-        <Button
-          className="text-white z-200 absolute top-2 right-2"
+        <motion.button
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="absolute top-4 right-4 z-200 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-sm font-medium hover:bg-black/60 transition-all duration-200 shadow-lg hover:shadow-xl"
           onClick={onClose}
         >
           Skip
-        </Button>
-        <div className="absolute top-0 left-0 w-full z-50 flex gap-1">
+        </motion.button>
+
+        <div className="absolute top-2 left-2 right-2 z-50 flex gap-2 px-2">
           {stories.map((story, index) => {
             const isActive = index === activeStoryIndex;
             const isCompleted = index < activeStoryIndex;
@@ -191,17 +198,17 @@ const StoryList = ({
               <div
                 key={story.id}
                 data-story-progress
-                className="h-0.5 bg-gray-500/70 w-full z-50 overflow-hidden backdrop-blur-sm"
+                className="h-1 bg-white/20 w-full z-50 overflow-hidden rounded-full backdrop-blur-sm"
               >
                 {isCompleted && (
-                  <div className="h-full w-full bg-white transition-all duration-300" />
+                  <div className="h-full w-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-300 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                 )}
                 {isActive && (
                   <motion.div
                     initial={{ width: 0 }}
                     animate={controls}
                     onAnimationComplete={handleGoToNextStory}
-                    className="h-full bg-white progress-fill"
+                    className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 progress-fill rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
                   />
                 )}
               </div>
@@ -233,13 +240,20 @@ const StoryList = ({
         </AnimatePresence>
       </div>
 
-      {/* {currentStory && currentStory.content && (
-        <StoryDescription
-          currentStoryNumber={activeStoryIndex + 1}
-          storiesAmount={stories.length}
-          text={currentStory.content}
-        />
-      )} */}
+      {/* Bottom instruction */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-6 py-3 rounded-full bg-black/30 backdrop-blur-md border border-white/10 z-100"
+      >
+        <svg className="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+        </svg>
+        <span className="text-white/70 text-sm font-medium">
+          Tap anywhere to continue
+        </span>
+      </motion.div>
     </motion.div>
   );
 };

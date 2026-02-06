@@ -21,6 +21,7 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
       <motion.div
         animate={{ opacity: [1, 0.4, 1] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        className="flex items-center justify-center"
       >
         <Image
           src="/images/loading/logo-splash.svg"
@@ -28,7 +29,7 @@ const LoadingScreen = ({ isVisible }: LoadingScreenProps) => {
           height={80}
           alt="MyFinishLine"
           priority
-          style={{ width: "auto", height: "auto" }}
+          className="max-w-[240px] max-h-[80px] w-auto h-auto object-contain"
         />
       </motion.div>
     </motion.div>

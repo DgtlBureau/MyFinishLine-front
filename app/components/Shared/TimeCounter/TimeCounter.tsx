@@ -38,23 +38,26 @@ const TimeCounter = ({ startDate }: ITimeCounterProps) => {
       <span className="text-[11px] text-white/70 font-medium tracking-wider">
         TIME ON TRACK
       </span>
-      <div className="flex items-center gap-0.5">
-        <span className="text-[9px] text-white/50 font-medium w-6 text-center">DAYS</span>
-        <span className="w-3" />
-        <span className="text-[9px] text-white/50 font-medium w-6 text-center">HRS</span>
-        <span className="w-3" />
-        <span className="text-[9px] text-white/50 font-medium w-6 text-center">MIN</span>
-        <span className="w-3" />
-        <span className="text-[9px] text-white/50 font-medium w-6 text-center">SEC</span>
-      </div>
-      <div className="flex items-center font-bold text-[18px] text-white tabular-nums">
-        <span className="w-6 text-center">{pad(time.days)}</span>
-        <span className="w-3 text-center text-white/70">:</span>
-        <span className="w-6 text-center">{pad(time.hours)}</span>
-        <span className="w-3 text-center text-white/70">:</span>
-        <span className="w-6 text-center">{pad(time.minutes)}</span>
-        <span className="w-3 text-center text-white/70">:</span>
-        <span className="w-6 text-center">{pad(time.seconds)}</span>
+      <div className="flex items-end gap-0.5">
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <span className="text-[9px] text-white/50 font-medium">DAYS</span>
+          <span className="font-bold text-[18px] text-white tabular-nums">{pad(time.days)}</span>
+        </div>
+        <span className="text-[18px] font-bold text-white/70 pb-0.5 flex-shrink-0">:</span>
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <span className="text-[9px] text-white/50 font-medium">HRS</span>
+          <span className="font-bold text-[18px] text-white tabular-nums">{pad(time.hours)}</span>
+        </div>
+        <span className="text-[18px] font-bold text-white/70 pb-0.5 flex-shrink-0">:</span>
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <span className="text-[9px] text-white/50 font-medium">MIN</span>
+          <span className="font-bold text-[18px] text-white tabular-nums">{pad(time.minutes)}</span>
+        </div>
+        <span className="text-[18px] font-bold text-white/70 pb-0.5 flex-shrink-0">:</span>
+        <div className="flex flex-col items-center w-8 flex-shrink-0">
+          <span className="text-[9px] text-white/50 font-medium">SEC</span>
+          <span className="font-bold text-[18px] text-white tabular-nums">{pad(time.seconds)}</span>
+        </div>
       </div>
     </div>
   );

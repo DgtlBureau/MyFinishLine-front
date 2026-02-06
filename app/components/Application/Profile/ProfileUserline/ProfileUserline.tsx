@@ -127,7 +127,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="mt-6 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-2 sm:px-3 py-2 sm:py-2.5 w-[calc(100vw-2rem)] sm:max-w-[95vw] md:max-w-2xl mx-auto"
+        className="mt-0 relative z-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg px-2 sm:px-3 py-2 sm:py-2.5 w-[calc(100vw-2rem)] sm:max-w-[95vw] md:max-w-2xl mx-auto"
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none" />
         <div className="flex items-start justify-center gap-1 sm:gap-2 relative">

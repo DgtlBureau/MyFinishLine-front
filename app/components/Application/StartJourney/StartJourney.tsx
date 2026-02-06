@@ -2,16 +2,18 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, Loader2 } from "lucide-react";
 
 interface StartJourneyProps {
   mode?: "choose" | "start";
-  onStart?: () => void;
+  onStart?: () => void | Promise<void>;
+  isLoading?: boolean;
 }
 
 export default function StartJourney({
   mode = "choose",
   onStart,
+  isLoading = false,
 }: StartJourneyProps) {
   if (mode === "start") {
     return (
@@ -33,10 +35,20 @@ export default function StartJourney({
 
           <button
             onClick={onStart}
-            className="flex items-center gap-2 px-8 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+            disabled={isLoading}
+            className="flex items-center gap-2 px-8 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-[#3B5CC6] to-[#4DA67A] rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <Play size={16} fill="white" />
-            Start Quest
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                Starting...
+              </>
+            ) : (
+              <>
+                <Play size={16} fill="white" />
+                Start Quest
+              </>
+            )}
           </button>
         </motion.div>
       </div>

@@ -27,6 +27,7 @@ export interface IBadge {
   description?: string;
   show_before_story?: boolean;
   challenge_step_id: number;
+  is_claimed?: boolean;
 }
 
 export interface ICard {
@@ -36,6 +37,7 @@ export interface ICard {
   description?: string;
   show_before_story?: boolean;
   challenge_step_id: number;
+  is_claimed?: boolean;
 }
 
 export interface IStep {
