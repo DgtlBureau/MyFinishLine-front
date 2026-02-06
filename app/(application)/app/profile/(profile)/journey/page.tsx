@@ -168,12 +168,12 @@ export const Journey = () => {
                     disconnectLabel="Connected to Strava"
                     serviceName="Strava"
                     icon={
-                      <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden">
+                      <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden bg-[#FC4C02] flex items-center justify-center">
                         <Image
                           src="/icons/strava.svg"
-                          fill
+                          width={40}
+                          height={40}
                           alt="Strava"
-                          className="object-cover"
                         />
                       </div>
                     }

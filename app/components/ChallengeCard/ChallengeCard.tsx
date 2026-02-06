@@ -55,21 +55,23 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
 
   // Live timer effect
   useEffect(() => {
-    if (!challenge?.activate_date || challenge?.completed_at) return;
+    const startDate = challenge?.started_at || challenge?.activate_date;
+    if (!startDate || challenge?.completed_at) return;
 
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [challenge?.activate_date, challenge?.completed_at]);
+  }, [challenge?.started_at, challenge?.activate_date, challenge?.completed_at]);
 
   const getTimeComponents = () => {
-    if (!challenge?.activate_date) {
+    const startDate = challenge?.started_at || challenge?.activate_date;
+    if (!startDate) {
       return { hours: 0, minutes: 0, seconds: 0 };
     }
 
-    const start = new Date(challenge.activate_date);
+    const start = new Date(startDate);
     const end = challenge.completed_at ? new Date(challenge.completed_at) : currentTime;
     const diffMs = Math.abs(end.getTime() - start.getTime());
     const totalSeconds = Math.floor(diffMs / 1000);
