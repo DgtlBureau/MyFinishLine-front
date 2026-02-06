@@ -109,7 +109,14 @@ const SwipeToUnlock = ({
 
   return (
     <div className="pb-2">
-      <div className={`rounded-2xl bg-white/10 backdrop-blur-xl p-2 border border-white/20 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      {disabled && (
+        <div className="mb-1 px-2">
+          <p className="text-xs text-amber-400/80 font-medium">
+            ⚠️ Only one activity tracker can be connected at a time
+          </p>
+        </div>
+      )}
+      <div className={`rounded-2xl bg-white/10 backdrop-blur-xl p-2 border ${disabled ? 'opacity-40 pointer-events-none border-white/10' : 'border-white/20'}`}>
         <div
           ref={containerRef}
           className="relative h-[72px] rounded-xl overflow-hidden bg-white/5"

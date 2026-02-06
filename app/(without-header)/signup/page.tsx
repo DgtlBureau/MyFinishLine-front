@@ -284,16 +284,14 @@ export default function Register() {
                   {loadingProvider === "strava" ? (
                     <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
                   ) : (
-                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
-                      <Image
-                        src="/icons/strava-logo.svg"
-                        width={28}
-                        height={28}
-                        alt="Strava"
-                        className="w-[110%] h-[110%] object-cover"
-                        style={{ display: 'block' }}
-                      />
-                    </div>
+                    <Image
+                      src="/icons/strava-icon-new.svg"
+                      width={28}
+                      height={28}
+                      alt="Strava"
+                      className="w-full h-full object-contain"
+                      style={{ display: 'block' }}
+                    />
                   )}
                 </div>
                 Sign up with Strava
@@ -307,20 +305,18 @@ export default function Register() {
                 ${loadingProvider && "opacity-70 cursor-not-allowed"}
               `}
               >
-                <div className="w-7 h-7 flex items-center justify-center shrink-0 relative">
+                <div className="w-9 h-9 flex items-center justify-center shrink-0 relative">
                   {loadingProvider === "fitbit" ? (
                     <div className="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
                   ) : (
-                    <div className="w-full h-full rounded-md overflow-hidden flex items-center justify-center">
-                      <Image
-                        src="/icons/fitbit-logo-new.png"
-                        width={28}
-                        height={28}
-                        alt="Fitbit"
-                        className="w-[110%] h-[110%] object-cover"
-                        style={{ display: 'block' }}
-                      />
-                    </div>
+                    <Image
+                      src="/icons/fitbit-icon-new.svg"
+                      width={36}
+                      height={36}
+                      alt="Fitbit"
+                      className="w-full h-full object-contain"
+                      style={{ display: 'block' }}
+                    />
                   )}
                 </div>
                 Sign up with FitBit
