@@ -261,16 +261,16 @@ export default function QuestSelection() {
 
   return (
     <section
-      className="flex flex-col items-center py-12 md:py-24 w-full scroll-mt-[calc(var(--header-height)+1rem)]"
-      id="challenges"
+      className="flex flex-col items-center py-12 md:py-24 w-full"
     >
       <div className="flex flex-col items-center w-full">
         <motion.div
+          id="challenges"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col gap-4 md:gap-6 items-center px-4 md:px-24 py-6 md:py-10 w-full"
+          className="flex flex-col gap-4 md:gap-6 items-center px-4 md:px-24 py-6 md:py-10 w-full scroll-mt-[calc(var(--header-height)+8rem)]"
         >
           <div className="flex flex-col gap-4 md:gap-6 items-center max-w-[500px] w-full">
             <h2 className="font-semibold text-3xl sm:text-4xl md:text-5xl lg:text-[60px] text-center tracking-[-1px] md:tracking-[-2.4px] leading-tight md:leading-none">

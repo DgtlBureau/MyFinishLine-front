@@ -36,7 +36,7 @@ const TimeCounter = ({ startDate }: ITimeCounterProps) => {
   return (
     <div className="flex flex-col">
       <span className="text-[11px] text-white/70 font-medium tracking-wider">
-        TIME ON TRACK
+        TIME IN JOURNEY
       </span>
       <div className="flex items-end gap-0.5">
         <div className="flex flex-col items-center w-8 flex-shrink-0">

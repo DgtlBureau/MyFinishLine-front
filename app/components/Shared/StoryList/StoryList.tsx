@@ -25,6 +25,7 @@ const StoryList = ({
   const [activeStoryIndex, setActiveStoryIndex] = useState<number>(0);
   const [isPaused, setIsPaused] = useState(false);
   const [showShadow, setShowShadow] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const controls = useAnimation();
   const animationDuration = 10;
@@ -76,20 +77,27 @@ const StoryList = ({
   }, []);
 
   useEffect(() => {
+    // Reset image loaded state when story changes
+    setIsImageLoaded(false);
     controls.stop();
-
     controls.set({ width: "0%" });
-
-    setTimeout(() => {
-      controls.start({
-        width: "100%",
-        transition: {
-          duration: animationDuration,
-          ease: "linear",
-        },
-      });
-    }, 50);
   }, [activeStoryIndex, controls]);
+
+  useEffect(() => {
+    // Only start timer when image is loaded
+    if (isImageLoaded) {
+      controls.stop();
+      setTimeout(() => {
+        controls.start({
+          width: "100%",
+          transition: {
+            duration: animationDuration,
+            ease: "linear",
+          },
+        });
+      }, 50);
+    }
+  }, [isImageLoaded, controls]);
 
   const currentStory =
     typeof activeStoryIndex === "number" ? stories[activeStoryIndex] : null;
@@ -151,7 +159,12 @@ const StoryList = ({
     }
     setShowShadow(false);
     setIsPaused(false);
+    setIsImageLoaded(false);
   }, [activeStoryIndex]);
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
 
   return (
     <motion.div
@@ -235,6 +248,7 @@ const StoryList = ({
             <StorySlide
               id={currentStory.id}
               image_url={currentStory.image_url}
+              onImageLoad={handleImageLoad}
             />
           )}
         </AnimatePresence>

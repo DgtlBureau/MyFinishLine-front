@@ -177,7 +177,13 @@ const Page = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <StartJourney mode="start" onStart={handleStartQuest} isLoading={isStarting} />
+                <StartJourney
+                  mode="start"
+                  onStart={handleStartQuest}
+                  isLoading={isStarting}
+                  challengeName={challenge?.name}
+                  challengeLogo={challenge?.logo_url}
+                />
               </motion.div>
             )}
           </AnimatePresence>

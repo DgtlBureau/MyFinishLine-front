@@ -246,7 +246,7 @@ const ChallengeCard = ({ userId }: { userId?: string }) => {
               </motion.div>
             )}
             <div className="flex flex-col gap-1 items-end z-10">
-              <span className="text-[9px] text-white/50 font-medium tracking-wide">TIME ON TRACK</span>
+              <span className="text-[9px] text-white/50 font-medium tracking-wide">TIME IN JOURNEY</span>
               <div className="flex gap-0.5 items-baseline">
                 <div className="flex flex-col items-center">
                   <span className="text-base font-bold leading-5 text-white">

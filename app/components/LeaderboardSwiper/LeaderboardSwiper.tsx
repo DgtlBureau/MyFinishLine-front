@@ -45,7 +45,7 @@ const LeaderboardSwiper = ({
         {!!challenges.length && (
           <>
             {/* Header with title and navigation */}
-            <div className={`flex items-center justify-between px-8 mb-4 ${isEmpty ? "hidden" : ""}`}>
+            <div className="flex items-center justify-between px-8 mb-4">
               <AnimatePresence mode="wait">
                 <motion.h4
                   key={activeIndex}
@@ -87,7 +87,7 @@ const LeaderboardSwiper = ({
             </div>
 
             {/* Progress dots */}
-            {challenges.length > 1 && !isEmpty && (
+            {challenges.length > 1 && (
               <div className="flex items-center justify-center gap-2 mb-4">
                 {challenges.map((_, index) => (
                   <motion.button

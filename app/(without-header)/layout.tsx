@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import BackButton from "../components/Shared/BackButton/BackButton";
 import PolicyPageTransition from "../components/Shared/PolicyPageTransition/PolicyPageTransition";
+import { ToastContainerClient } from "../components/Shared/ToastContainerClient";
 import "../globals.css";
-
-export const metadata: Metadata = {
-  title: "MyFinishLine",
-  description: "Combine sports and pleasure",
-};
 
 export default function WithoutHeaderLayout({
   children,
@@ -38,6 +35,7 @@ export default function WithoutHeaderLayout({
         </header>
         <PolicyPageTransition>{children}</PolicyPageTransition>
       </div>
+      <ToastContainerClient />
     </div>
   );
 }

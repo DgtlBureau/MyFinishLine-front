@@ -4,14 +4,12 @@ import ChallengeCard from "@/app/components/ChallengeCard/ChallengeCard";
 import RewardsSwiper from "@/app/components/RewardsSwiper/RewardsSwiper";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 import { setUser, setUserChallenges } from "@/app/lib/features/user/userSlice";
-import { linkStrava } from "@/app/lib/utils/authWithStrava";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Image from "next/image";
-import { linkFitbit } from "@/app/lib/utils/authWithFitbit";
 import AnimatedSection from "@/app/components/Shared/AnimatedSection/AnimatedSection";
 import SwipeToUnlock from "@/app/components/Shared/SwipeToUnlock/SwipeToUnlock";
+import Integrations from "@/app/components/Application/Integrations/Integrations";
 import ChallengeCardSkeleton from "@/app/components/Skeletons/ChallengeCardSkeleton";
 import RewardsSwiperSkeleton from "@/app/components/Skeletons/RewardsSwiperSkeleton";
 import ConnectButtonsSkeleton from "@/app/components/Skeletons/ConnectButtonsSkeleton";
@@ -156,47 +154,11 @@ export const Journey = () => {
           >
             <section className="px-4 pb-4 w-full border-t border-white/20 pt-11">
               <div className="max-w-4xl mx-auto">
-                <h4 className="font-medium leading-7 text-xl text-center text-white/70">
+                <h4 className="font-medium leading-7 text-xl text-center text-white/70 mb-5">
                   Authorize your accounts to connect to MyFinishLine
                 </h4>
-                <div className="mt-5 max-w-25 w-full bg-white/30 h-px mx-auto" />
-                <div className="mt-5 space-y-2">
-                  <SwipeToUnlock
-                    onUnlock={linkStrava}
-                    label="Swipe the slider to the right to connect Strava"
-                    isConnected={user.has_strava_connect}
-                    disconnectLabel="Connected to Strava"
-                    serviceName="Strava"
-                    icon={
-                      <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden bg-[#FC4C02] flex items-center justify-center">
-                        <Image
-                          src="/icons/strava.svg"
-                          width={40}
-                          height={40}
-                          alt="Strava"
-                        />
-                      </div>
-                    }
-                  />
-                  <SwipeToUnlock
-                    onUnlock={linkFitbit}
-                    label="Swipe the slider to the right to connect Fitbit"
-                    isConnected={user.has_fitbit_connect}
-                    disconnectLabel="Connected to Fitbit"
-                    serviceName="Fitbit"
-                    icon={
-                      <div className="w-[72px] h-[72px] relative rounded-xl overflow-hidden bg-[#00B0B9] flex items-center justify-center">
-                        <Image
-                          src="/icons/fitbit.svg"
-                          width={40}
-                          height={40}
-                          alt="Fitbit"
-                          className="invert"
-                        />
-                      </div>
-                    }
-                  />
-                </div>
+                <div className="max-w-25 w-full bg-white/30 h-px mx-auto mb-5" />
+                <Integrations />
               </div>
             </section>
           </AnimatedSection>

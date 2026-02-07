@@ -14,13 +14,13 @@ import Loader from "@/app/components/Shared/Loader/Loader";
 
 const generalChallengeInfo = { ...initialState, name: "General" };
 
-const page = () => {
+const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const { challenges } = useAppSelector((state) => state.user);
   const challenge = useAppSelector((state) => state.challenge);
-  // Quest started state comes from API (challenge.is_started)
-  const hasActiveChallenge = challenge?.id > 0 && (challenge?.is_started ?? true);
+  const hasChallenge = challenge?.id > 0;
+  const isChallengeStarted = challenge?.is_started ?? false;
   const dispatch = useAppDispatch();
 
   const handleLoadChallenges = async () => {
@@ -52,7 +52,7 @@ const page = () => {
 
   return (
     <PageContainer title="Leaderboard" description="Keep up the great work!">
-      {!hasActiveChallenge ? (
+      {!hasChallenge ? (
         <motion.div
           key="no-challenge"
           initial={{ opacity: 0, y: 20 }}
@@ -73,10 +73,37 @@ const page = () => {
             Start a challenge to compete on the leaderboard
           </p>
           <Link
+            href="/payment"
+            className="mt-2 inline-block px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
+          >
+            Choose a Quest →
+          </Link>
+        </motion.div>
+      ) : !isChallengeStarted ? (
+        <motion.div
+          key="challenge-not-started"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col items-center justify-center gap-4 min-h-[50vh]"
+        >
+          <div className="flex items-center justify-center w-24 h-24 rounded-full bg-white/20 backdrop-blur-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+              <path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4" />
+              <path d="m7 7 10 6-10 6z" />
+              <circle cx="17" cy="17" r="5" />
+              <path d="M17 12v5" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-white">Challenge not started</h3>
+          <p className="text-sm text-white/60 text-center max-w-[280px]">
+            Start your quest to compete on the leaderboard
+          </p>
+          <Link
             href="/app/homepage"
             className="mt-2 inline-block px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/40 text-white text-sm font-semibold hover:bg-white/40 shadow-lg transition-all"
           >
-            Start a Quest →
+            Start Quest →
           </Link>
         </motion.div>
       ) : (
@@ -127,4 +154,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

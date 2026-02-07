@@ -140,7 +140,7 @@ const ProfileUserline = ({ userId }: { userId?: string }) => {
           </div>
           <div className="w-px h-8 sm:h-10 bg-white/30 self-center shrink-0" />
           <div className="flex flex-col items-center min-w-0 flex-1">
-            <span className="text-[8px] sm:text-[9px] text-white/70 font-medium tracking-tight sm:tracking-wide whitespace-nowrap">TIME ON TRACK</span>
+            <span className="text-[8px] sm:text-[9px] text-white/70 font-medium tracking-tight sm:tracking-wide whitespace-nowrap">TIME IN JOURNEY</span>
             <div className="flex items-center text-[6px] sm:text-[7px] text-white/50 h-[10px] gap-px sm:gap-0.5">
               <span className="w-4 sm:w-5 text-center">DAYS</span>
               <span className="w-1 sm:w-2" />

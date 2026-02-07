@@ -2,18 +2,23 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Play, Loader2 } from "lucide-react";
 
 interface StartJourneyProps {
   mode?: "choose" | "start";
   onStart?: () => void | Promise<void>;
   isLoading?: boolean;
+  challengeName?: string;
+  challengeLogo?: string | null;
 }
 
 export default function StartJourney({
   mode = "choose",
   onStart,
   isLoading = false,
+  challengeName,
+  challengeLogo,
 }: StartJourneyProps) {
   if (mode === "start") {
     return (
@@ -24,6 +29,21 @@ export default function StartJourney({
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex flex-col items-center gap-6 max-w-md text-center"
         >
+          {challengeLogo && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+              className="relative w-24 h-24 sm:w-32 sm:h-32 mb-2"
+            >
+              <Image
+                src={challengeLogo}
+                alt={challengeName || "Challenge"}
+                fill
+                className="object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+              />
+            </motion.div>
+          )}
           <div className="flex flex-col gap-3">
             <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Your quest is ready
